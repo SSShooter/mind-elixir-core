@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>index.js - mind-elixir</title>
+    
+    
+    
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="github" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">index.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import {
+  findEle,
+  createInputDiv,
+  addParentLink,
+  createLinkSvg,
+  createLine,
+} from './util'
+import {
+  selectNode,
+  unselectNode,
+  selectNextSibling,
+  selectPrevSibling,
+  selectFirstChild,
+  selectParent,
+  getAllDataString,
+  getAllData,
+  scale,
+  toCenter,
+  focusNode,
+  cancelFocus,
+  initLeft,
+  initRight,
+  initSide,
+} from './interact'
+import {
+  insertSibling,
+  addChild,
+  moveNode,
+  removeNode,
+  moveUpNode,
+  moveDownNode,
+  beginEdit,
+  updateNodeStyle,
+  updateNodeTags,
+  updateNodeIcons,
+  processPrimaryNode,
+} from './nodeOperation'
+import {
+  createLink,
+  removeLink,
+  selectLink,
+  hideLinkController,
+  showLinkController,
+} from './linkOperation'
+import { LEFT, RIGHT, SIDE } from './const'
+import example from './example'
+import layout from './layout'
+import linkDiv from './linkDiv'
+import initMouseEvent from './mouse'
+import contextMenu from './pluginContextMenu'
+import toolBar from './pluginToolBar'
+import nodeMenu from './pluginNodeMenu'
+import nodeDraggable from './pluginNodeDraggable'
+import keypress from './pluginKeypress'
+import Bus from './pubsub'
+import './index.less'
+import './pluginContextMenu.less'
+import './pluginToolBar.less'
+import './pluginNodeMenu.less'
+
+import './iconfont/iconfont.js'
+
+// TODO MindElixirLite
+// TODO Link label
+
+window.E = findEle
+export let E = findEle
+
+let $d = document
+/** 
+ * @class MindElixir 
+ * @example 
+ * let mind = new MindElixir({
+  el: '#map',
+  direction: 2,
+  data: data,
+  draggable: true,
+  contextMenu: true,
+  toolBar: true,
+  nodeMenu: true,
+  keypress: true,
+})
+mind.init()
+ *
+ */
+function MindElixir({
+  el,
+  data,
+  direction,
+  draggable,
+  contextMenu,
+  toolBar,
+  nodeMenu,
+  keypress,
+}) {
+  this.container = document.querySelector(el)
+  this.history = [] // TODO
+
+  this.nodeData = data.nodeData || {}
+  this.linkData = data.linkData || {}
+  this.nodeDataBackup = this.nodeData // help reset focus mode
+  this.contextMenu = contextMenu === undefined ? true : contextMenu
+  this.toolBar = toolBar === undefined ? true : toolBar
+  this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
+  this.keypress = keypress === undefined ? true : keypress
+  // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
+  this.direction = typeof direction === 'number' ? direction : 1
+  window.mevar_draggable = draggable === undefined ? true : draggable
+  this.parentMap = {} // deprecate?
+
+  this.currentNode = null // the selected &lt;tpc/> element
+  this.currentLink = null // the selected link svg element
+  this.inputDiv = null // editor
+  this.bus = new Bus()
+  this.scaleVal = 1
+  this.tempDir = null
+  /**
+   * @function
+   * @global
+   * @name E
+   * @param {string} id Node id.
+   * @return {TargetElement} Target element.
+   * @example
+   * E('bd4313fbac40284b')
+   */
+  addParentLink(this.nodeData)
+}
+
+MindElixir.prototype = {
+  insertSibling,
+  addChild,
+  removeNode,
+  moveNode,
+  moveUpNode,
+  moveDownNode,
+  beginEdit,
+  updateNodeStyle,
+  updateNodeTags,
+  updateNodeIcons,
+
+  createLink,
+  removeLink,
+  selectLink,
+  hideLinkController,
+  showLinkController,
+
+  layout,
+  linkDiv,
+  createInputDiv,
+  processPrimaryNode,
+
+  selectNode,
+  unselectNode,
+  selectNextSibling,
+  selectPrevSibling,
+  selectFirstChild,
+  selectParent,
+  getAllDataString,
+  getAllData,
+  scale,
+  toCenter,
+  focusNode,
+  cancelFocus,
+  initLeft,
+  initRight,
+  initSide,
+  init: function() {
+    this.container.className = 'map-container'
+    this.container.innerHTML = ''
+    this.map = $d.createElement('div') // map-canvas Element
+    this.map.className = 'map-canvas'
+    this.map.setAttribute('tabindex', '0')
+    this.container.appendChild(this.map)
+    this.root = $d.createElement('root')
+
+    this.box = $d.createElement('children')
+    this.box.className = 'box'
+
+    // infrastructure
+
+    this.svg2nd = createLinkSvg('svg2nd') // main link container
+
+    this.linkController = createLinkSvg('linkcontroller') // bezier controller container
+    this.P2 = $d.createElement('div') // bezier P2
+    this.P3 = $d.createElement('div') // bezier P3
+    this.P2.className = this.P3.className = 'circle'
+    this.line1 = createLine(0, 0, 0, 0) // bezier auxiliary line1
+    this.line2 = createLine(0, 0, 0, 0) // bezier auxiliary line2
+    this.linkController.appendChild(this.line1)
+    this.linkController.appendChild(this.line2)
+
+    this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
+
+    this.map.appendChild(this.root)
+    this.map.appendChild(this.box)
+    this.map.appendChild(this.svg2nd)
+    this.map.appendChild(this.linkController)
+    this.map.appendChild(this.linkSvgGroup)
+    this.map.appendChild(this.P2)
+    this.map.appendChild(this.P3)
+
+    // plugin
+    this.contextMenu &amp;&amp; contextMenu(this)
+    this.toolBar &amp;&amp; toolBar(this)
+    this.nodeMenu &amp;&amp; nodeMenu(this)
+    this.keypress &amp;&amp; keypress(this)
+    window.mevar_draggable &amp;&amp; nodeDraggable(this)
+
+    this.toCenter()
+    this.layout()
+    this.linkDiv()
+
+    initMouseEvent(this)
+
+    // this.bus.addListener('operation', operation => {
+    //   this.history = [operation]
+    //   this.history = this.getAllData()
+    // })
+  },
+}
+
+MindElixir.LEFT = LEFT
+MindElixir.RIGHT = RIGHT
+MindElixir.SIDE = SIDE
+/**
+ * @memberof MindElixir
+ * @static
+ */
+MindElixir.version = '0.8.2'
+MindElixir.E = findEle
+/**
+ * @memberof MindElixir
+ * @static
+ * @description Example data help you try Mind-elxir quickly.
+ */
+MindElixir.example = example
+/**
+ * @function new
+ * @memberof MindElixir
+ * @static
+ * @param {String} topic root topic
+ */
+MindElixir.new = topic => ({
+  nodeData: {
+    id: 'root',
+    topic: topic || 'new topic',
+    root: true,
+    children: [],
+  },
+  linkData: {},
+})
+
+export default MindElixir
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Aug 01 2019 09:02:01 GMT+0800 (GMT+08:00) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

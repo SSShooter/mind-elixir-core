@@ -1,0 +1,39 @@
+{
+  "name": "mind-elixir",
+  "version": "0.8.2",
+  "description": "",
+  "main": "dist/mind-elixir.js",
+  "scripts": {
+    "start": "webpack-dev-server --mode development",
+    "lite": "webpack --mode production --env.lite=1",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production --env.lite=0",
+    "doc": "./node_modules/.bin/jsdoc src/ -R readme.md -c conf.json",
+    "md": "./node_modules/.bin/jsdoc2md 'src/*.js' > api.md"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^2.1.1",
+    "docdash": "^1.1.1",
+    "file-loader": "^4.0.0",
+    "html-webpack-plugin": "^3.2.0",
+    "jsdoc": "^3.6.3",
+    "jsdoc-to-markdown": "^5.0.0",
+    "less": "^3.9.0",
+    "less-loader": "^5.0.0",
+    "style-loader": "^0.23.1",
+    "uglifyjs-webpack-plugin": "^2.1.3",
+    "url-loader": "^2.0.0",
+    "webpack": "^4.33.0",
+    "webpack-bundle-analyzer": "^3.3.2",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.5.1"
+  },
+  "dependencies": {
+    "hotkeys-js": "^3.6.11"
+  }
+}
