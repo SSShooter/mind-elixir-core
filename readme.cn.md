@@ -1,10 +1,10 @@
-# mind elixir
+![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/logo.png)
 
 Mind elixir 是一个免费开源的思维导图内核
 
 ## 立即试用
 
-![mindelixir](screenshot.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
 
 https://mindelixir.ink/#/
 

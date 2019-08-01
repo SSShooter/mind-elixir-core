@@ -1,12 +1,12 @@
-# mind elixir
+![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/logo.png)
 
-![mindelixir logo](logo.png)
+Mind elixir is a free open source mind map core.
 
-Mind elixir is a free open source mind map core
+[中文](https://github.com/ssshooter/mind-elixir-core/blob/master/readme.cn.md)
 
 ## Use now
 
-![mindelixir](screenshot.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
 
 https://mindelixir.ink/#/
 
