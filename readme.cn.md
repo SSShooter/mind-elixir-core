@@ -25,7 +25,7 @@ import MindElixir, { E } from 'mind-elixir'
 #### script 标签引入
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/mind-elixir@0.6.1/dist/mind-elixir.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/mind-elixir.js"></script>
 ```
 
 ### HTML 结构
