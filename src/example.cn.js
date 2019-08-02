@@ -5,7 +5,7 @@ export default {
     root: true,
     children: [
       {
-        topic: 'What is Minde Elixir',
+        topic: '什么是 Minde Elixir',
         id: 'bd4313fbac40284b',
         selected: true,
         new: true,
@@ -13,25 +13,25 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'A mind map core',
+            topic: '一个思维导图内核',
             id: 'beeb823afd6d2114',
             selected: true,
             new: true,
           },
           {
-            topic: 'Free',
+            topic: '免费',
             id: 'c1f068377de9f3a0',
             selected: true,
             new: true,
           },
           {
-            topic: 'Open-Source',
+            topic: '即将开源',
             id: 'c1f06d38a09f23ca',
             selected: true,
             new: true,
           },
           {
-            topic: 'Without framework',
+            topic: '无框架依赖',
             id: 'c1f06e4cbcf16463',
             selected: true,
             new: true,
@@ -39,7 +39,7 @@ export default {
             children: [],
           },
           {
-            topic: 'Use in your own project',
+            topic: '两步轻松接入已有项目',
             id: 'c1f1f11a7fbf7550',
             selected: true,
             new: true,
@@ -59,14 +59,14 @@ export default {
             ],
           },
           {
-            topic: 'Easy to use',
+            topic: '使用简单',
             id: 'c1f0723c07b408d7',
             selected: true,
             new: true,
             expanded: true,
             children: [
               {
-                topic: 'Use it like other mind map application',
+                topic: '操作手感类似其他主流思维导图应用',
                 id: 'c1f09612fd89920d',
                 selected: true,
                 new: true,
@@ -76,7 +76,7 @@ export default {
         ],
       },
       {
-        topic: 'Basics',
+        topic: '基本操作',
         id: 'bd1b66c4b56754d9',
         selected: true,
         new: true,
@@ -84,19 +84,19 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'tab - Create a child node',
+            topic: 'tab 新建子节点',
             id: 'bd1b6892bcab126a',
             selected: true,
             new: true,
           },
           {
-            topic: 'enter - Create a sibling node',
+            topic: 'enter 新建同级节点',
             id: 'bd1b6b632a434b27',
             selected: true,
             new: true,
           },
           {
-            topic: 'del - Remove a node',
+            topic: 'del 删除节点',
             id: 'bd1b983085187c0a',
             selected: true,
             new: true,
@@ -104,7 +104,7 @@ export default {
         ],
       },
       {
-        topic: 'Focus mode',
+        topic: '专注',
         id: 'bd1b9b94a9a7a913',
         selected: true,
         new: true,
@@ -112,13 +112,13 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'Right click and select Focus Mode',
+            topic: '点击右键，专注模式',
             id: 'bd1bb2ac4bbab458',
             selected: true,
             new: true,
           },
           {
-            topic: 'Right click and select Cancel Focus Mode',
+            topic: '需要取消专注时同样通过右键菜单，点击取消专注',
             id: 'bd1bb4b14d6697c3',
             selected: true,
             new: true,
@@ -126,7 +126,7 @@ export default {
         ],
       },
       {
-        topic: 'Left menu',
+        topic: '左侧菜单',
         id: 'bd1b9d1816ede134',
         selected: true,
         new: true,
@@ -134,26 +134,26 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'Node distribution',
+            topic: '选择节点分布方式',
             id: 'bd1ba11e620c3c1a',
             selected: true,
             new: true,
             expanded: true,
             children: [
               {
-                topic: 'Left',
+                topic: '左侧分布',
                 id: 'bd1c1cb51e6745d3',
                 selected: true,
                 new: true,
               },
               {
-                topic: 'Right',
+                topic: '右侧分布',
                 id: 'bd1c1e12fd603ff6',
                 selected: true,
                 new: true,
               },
               {
-                topic: 'Both l & r',
+                topic: '左右分布',
                 id: 'bd1c1f03def5c97b',
                 selected: true,
                 new: true,
@@ -163,7 +163,7 @@ export default {
         ],
       },
       {
-        topic: 'Bottom menu',
+        topic: '下方菜单',
         id: 'bd1ba66996df4ba4',
         selected: true,
         new: true,
@@ -171,25 +171,25 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'Full screen',
+            topic: '全屏',
             id: 'bd1ba81d9bc95a7e',
             selected: true,
             new: true,
           },
           {
-            topic: 'Return to Center',
+            topic: '定位到中点',
             id: 'bd1babdd5c18a7a2',
             selected: true,
             new: true,
           },
           {
-            topic: 'Zoom in',
+            topic: '画布缩小',
             id: 'bd1bae68e0ab186e',
             selected: true,
             new: true,
           },
           {
-            topic: 'Zoom out',
+            topic: '画布放大',
             id: 'bd1bb06377439977',
             selected: true,
             new: true,
@@ -197,7 +197,7 @@ export default {
         ],
       },
       {
-        topic: 'Link',
+        topic: '节点连接',
         id: 'bd1beff607711025',
         selected: true,
         new: true,
@@ -205,19 +205,19 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'Right click and select Link',
+            topic: '点击右键菜单——连接',
             id: 'bd1bf320da90046a',
             selected: true,
             new: true,
           },
           {
-            topic: 'Click the target you want to link',
+            topic: '然后直接点击连接目标',
             id: 'bd1bf6f94ff2e642',
             selected: true,
             new: true,
           },
           {
-            topic: 'Modify link with control points',
+            topic: '可以通过贝塞尔曲线控制点修改连线弧度',
             id: 'bd1c0c4a487bd036',
             selected: true,
             new: true,
@@ -225,7 +225,7 @@ export default {
         ],
       },
       {
-        topic: 'Node style',
+        topic: '节点样式修改',
         id: 'bd1c217f9d0b20bd',
         selected: true,
         new: true,
@@ -233,7 +233,7 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'Font Size',
+            topic: '字体大小',
             id: 'bd1c24420cd2c2f5',
             selected: true,
             new: true,
@@ -243,7 +243,7 @@ export default {
             },
           },
           {
-            topic: 'Font Color',
+            topic: '字体颜色',
             id: 'bd1c2a59b9a2739c',
             selected: true,
             new: true,
@@ -252,7 +252,7 @@ export default {
             },
           },
           {
-            topic: 'Background Color',
+            topic: '背景颜色',
             id: 'bd1c2de33f057eb4',
             selected: true,
             new: true,
@@ -262,21 +262,21 @@ export default {
             },
           },
           {
-            topic: 'Add tags',
+            topic: '添加标签',
             id: 'bd1cff58364436d0',
             selected: true,
             new: true,
-            tags: ['Completed'],
+            tags: ['已完成'],
           },
           {
-            topic: 'Add icons',
+            topic: '添加图标',
             id: 'bd1d0317f7e8a61a',
             selected: true,
             new: true,
             icons: ['😂'],
           },
           {
-            topic: 'Bolder',
+            topic: '文字加粗',
             id: 'bd41fd4ca32322a4',
             selected: true,
             new: true,
@@ -287,7 +287,7 @@ export default {
         ],
       },
       {
-        topic: 'Draggable',
+        topic: '节点拖拽',
         id: 'bd1f03fee1f63bc6',
         selected: true,
         new: true,
@@ -295,8 +295,7 @@ export default {
         expanded: true,
         children: [
           {
-            topic:
-              'Drag a node to another node and the former one become a child node of latter one',
+            topic: '将一个节点拖拽到另一个节点，会成为另一个节点的子节点',
             id: 'bd1f07c598e729dc',
             selected: true,
             new: true,
@@ -304,7 +303,7 @@ export default {
         ],
       },
       {
-        topic: 'TODO',
+        topic: '未来功能',
         id: 'bd1facea32a1967c',
         selected: true,
         new: true,
@@ -312,19 +311,19 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'Add image',
+            topic: '节点插入图片',
             id: 'bd1fb1ec53010749',
             selected: true,
             new: true,
           },
           {
-            topic: 'Free node (position)',
+            topic: '自由节点',
             id: 'bd42d3e3bee992b9',
             selected: true,
             new: true,
           },
           {
-            topic: 'Style adjustment',
+            topic: '样式优化',
             id: 'beeb7f3db6ad6496',
             selected: true,
             new: true,
@@ -332,7 +331,7 @@ export default {
         ],
       },
       {
-        topic: 'Export data',
+        topic: '导出数据',
         id: 'beeb7586973430db',
         selected: true,
         new: true,
@@ -354,7 +353,7 @@ export default {
         ],
       },
       {
-        topic: 'Caution',
+        topic: '注意',
         id: 'bd42dad21aaf6bae',
         selected: true,
         new: true,
@@ -365,14 +364,14 @@ export default {
         expanded: true,
         children: [
           {
-            topic: 'Only save manually',
+            topic: '暂时只能手动保存',
             id: 'bd42e1d0163ebf04',
             selected: true,
             new: true,
             expanded: true,
             children: [
               {
-                topic: 'Save button in the top-right corner',
+                topic: '点击右上角保存',
                 id: 'bd42e619051878b3',
                 selected: true,
                 new: true,
@@ -380,7 +379,7 @@ export default {
                 children: [],
               },
               {
-                topic: 'ctrl + S',
+                topic: 'ctrl + S 保存',
                 id: 'bd42e97d7ac35e99',
                 selected: true,
                 new: true,
