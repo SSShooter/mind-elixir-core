@@ -168,7 +168,7 @@ MindElixir.prototype = {
   initRight,
   initSide,
   setLocale,
-  
+
   init: function() {
     this.container.className = 'map-container'
     this.container.innerHTML = ''
@@ -231,7 +231,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '0.8.3'
+MindElixir.version = '0.9.0'
 MindElixir.E = findEle
 /**
  * @memberof MindElixir
