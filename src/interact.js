@@ -1,7 +1,7 @@
 /**
  * @namespace MapInteraction
  */
-/** 
+/**
  * @function
  * @instance
  * @name selectNode
@@ -226,5 +226,16 @@ export let initRight = function() {
  */
 export let initSide = function() {
   this.direction = 2
+  this.init()
+}
+
+/**
+ * @function
+ * @instance
+ * @name setLocale
+ * @memberof MapInteraction
+ */
+export let setLocale = function(locale) {
+  this.locale = locale
   this.init()
 }

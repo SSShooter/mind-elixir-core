@@ -6,6 +6,7 @@ let mind = new MindElixir({
   direction: MindElixir.SIDE,
   // data: MindElixir.new('new topic'),
   data: MindElixir.example,
+  locale: 'en',
   draggable: true,
   contextMenu: true,
   toolBar: true,

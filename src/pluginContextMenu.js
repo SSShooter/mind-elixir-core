@@ -1,67 +1,41 @@
-let i18n = {
-  cn: {
-    addChild: '插入子节点',
-    addSibling: '插入同级节点',
-    removeNode: '删除节点',
-    focus: '专注',
-    cancelFocus: '取消专注',
-    moveUp: '上移',
-    moveDown: '下移',
-    link: '连接',
-  },
-  en: {
-    addChild: 'Add a child',
-    addSibling: 'Add a sibling',
-    removeNode: 'Remove node',
-    focus: 'Focus Mode',
-    cancelFocus: 'Cancel Focus Mode',
-    moveUp: 'Move up',
-    moveDown: 'Move down',
-    link: 'Link',
-  },
-  ja: {
-    addChild: '插入子节点',
-    addSibling: '插入同级节点',
-    removeNode: '删除节点',
-    focus: '专注',
-    cancelFocus: '取消专注',
-    moveUp: '上移',
-    moveDown: '下移',
-    link: '连接',
-  },
-}
-
-let createLi = (id, name, keyname) => {
-  let li = document.createElement('li')
-  li.id = id
-  li.innerHTML = `<span>${name}</span><span>${keyname}</span>`
-  return li
-}
-
-let add_child = createLi('cm-add_child', '插入子节点', 'tab')
-let add_sibling = createLi('cm-add_sibling', '插入同级节点', 'enter')
-let remove_child = createLi('cm-remove_child', '删除节点', 'delete')
-let focus = createLi('cm-fucus', '专注', '')
-let unfocus = createLi('cm-unfucus', '取消专注', '')
-let up = createLi('cm-up', '上移', 'PgUp')
-let down = createLi('cm-down', '下移', 'Pgdn')
-let link = createLi('cm-down', '连接', '')
-
-let menuUl = document.createElement('ul')
-menuUl.className = 'menu-list'
-menuUl.appendChild(add_child)
-menuUl.appendChild(add_sibling)
-menuUl.appendChild(remove_child)
-menuUl.appendChild(focus)
-menuUl.appendChild(unfocus)
-menuUl.appendChild(up)
-menuUl.appendChild(down)
-menuUl.appendChild(link)
-let menuContainer = document.createElement('cmenu')
-menuContainer.appendChild(menuUl)
-menuContainer.hidden = true
+import i18n from './i18n'
 
 export default function(mind) {
+  let createLi = (id, name, keyname) => {
+    let li = document.createElement('li')
+    li.id = id
+    li.innerHTML = `<span>${name}</span><span>${keyname}</span>`
+    return li
+  }
+  let locale = i18n[mind.locale] ? mind.locale : 'en'
+
+  let add_child = createLi('cm-add_child', i18n[locale].addChild, 'tab')
+  let add_sibling = createLi('cm-add_sibling', i18n[locale].addSibling, 'enter')
+  let remove_child = createLi(
+    'cm-remove_child',
+    i18n[locale].removeNode,
+    'delete'
+  )
+  let focus = createLi('cm-fucus', i18n[locale].focus, '')
+  let unfocus = createLi('cm-unfucus', i18n[locale].cancelFocus, '')
+  let up = createLi('cm-up', i18n[locale].moveUp, 'PgUp')
+  let down = createLi('cm-down', i18n[locale].moveDown, 'Pgdn')
+  let link = createLi('cm-down', i18n[locale].link, '')
+
+  let menuUl = document.createElement('ul')
+  menuUl.className = 'menu-list'
+  menuUl.appendChild(add_child)
+  menuUl.appendChild(add_sibling)
+  menuUl.appendChild(remove_child)
+  menuUl.appendChild(focus)
+  menuUl.appendChild(unfocus)
+  menuUl.appendChild(up)
+  menuUl.appendChild(down)
+  menuUl.appendChild(link)
+  let menuContainer = document.createElement('cmenu')
+  menuContainer.appendChild(menuUl)
+  menuContainer.hidden = true
+
   mind.container.append(menuContainer)
   mind.container.oncontextmenu = function(e) {
     e.preventDefault()

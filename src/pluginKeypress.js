@@ -65,7 +65,6 @@ export default function(mind) {
     // ctrl z
     // 90: e => {
     //   if (e.ctrl || e.metaKey) {
-    //     // 难度太高先放一下
     //     let oparation = mind.history.pop()
     //     console.log(oparation)
     //     let oparationName = oparation.name

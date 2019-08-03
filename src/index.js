@@ -21,6 +21,7 @@ import {
   initLeft,
   initRight,
   initSide,
+  setLocale,
 } from './interact'
 import {
   insertSibling,
@@ -87,6 +88,7 @@ function MindElixir({
   el,
   data,
   direction,
+  locale,
   draggable,
   contextMenu,
   toolBar,
@@ -98,6 +100,7 @@ function MindElixir({
 
   this.nodeData = data.nodeData || {}
   this.linkData = data.linkData || {}
+  this.locale = locale
   this.nodeDataBackup = this.nodeData // help reset focus mode
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
@@ -164,6 +167,8 @@ MindElixir.prototype = {
   initLeft,
   initRight,
   initSide,
+  setLocale,
+  
   init: function() {
     this.container.className = 'map-container'
     this.container.innerHTML = ''
