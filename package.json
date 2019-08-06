@@ -12,7 +12,7 @@
     "md": "./node_modules/.bin/jsdoc2md 'src/*.js' > api.md"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
