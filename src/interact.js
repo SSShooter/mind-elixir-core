@@ -137,6 +137,33 @@ export let getAllData = function() {
 /**
  * @function
  * @instance
+ * @name getAllDataMd
+ * @description Get all node data as markdown.
+ * @memberof MapInteraction
+ * @return {Object}
+ */
+export let getAllDataMd = function() {
+  let data = this.nodeData
+  let mdString = '# ' + data.topic + '\n\n'
+  function writeMd(children, deep) {
+    for (let i = 0; i < children.length; i++) {
+      if (deep <= 6) {
+        mdString += ''.padStart(deep, '#') + ' ' + children[i].topic + '\n\n'
+      } else {
+        mdString +=
+          ''.padStart(deep - 7, '\t') + '- ' + children[i].topic + '\n'
+      }
+      if (children[i].children) {
+        writeMd(children[i].children, deep + 1)
+      }
+    }
+  }
+  writeMd(data.children, 2)
+  return mdString
+}
+/**
+ * @function
+ * @instance
  * @name scale
  * @description Change the scale of the mind map.
  * @memberof MapInteraction
