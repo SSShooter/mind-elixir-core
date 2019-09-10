@@ -134,6 +134,27 @@ export let getAllData = function() {
     })
   )
 }
+
+/**
+ * @function
+ * @instance
+ * @name enableEdit
+ * @memberof MapInteraction
+ */
+export let enableEdit = function() {
+  this.editable = true
+}
+
+/**
+ * @function
+ * @instance
+ * @name disableEdit
+ * @memberof MapInteraction
+ */
+export let disableEdit = function() {
+  this.editable = false
+}
+
 /**
  * @function
  * @instance

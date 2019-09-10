@@ -8,6 +8,7 @@ let mind = new MindElixir({
   data: MindElixir.example,
   locale: 'en',
   draggable: true,
+  editable: true,
   contextMenu: true,
   toolBar: true,
   nodeMenu: true,
