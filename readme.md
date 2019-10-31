@@ -89,7 +89,7 @@ mind.getAllData()
 
 ## Doc
 
-https://inspiring-golick-3c01b9.netlify.com/
+https://doc.mindelixir.ink/
 
 ## Dependency
 
