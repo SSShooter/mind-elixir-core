@@ -104,13 +104,16 @@ html {
       cursor: pointer;
       padding: 0 @GAP;
       tpc {
+        max-width: 31em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         display: block;
         padding: 5px;
         margin-top: 10px;
         border-radius: 3px;
         color: rgb(102, 102, 102);
         pointer-events: all;
-        max-width: 800px;
         [contentEditable] {
           position: absolute;
           top: 0;

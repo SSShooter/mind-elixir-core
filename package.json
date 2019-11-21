@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir-jenysun",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "",
   "main": "dist/mind-elixir.js",
   "scripts": {
