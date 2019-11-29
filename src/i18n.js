@@ -8,7 +8,7 @@ export default {
     moveUp: '上移',
     moveDown: '下移',
     link: '连接',
-
+    clone: '克隆',
     font: '文字',
     background: '背景',
     tag: '标签',
@@ -25,7 +25,7 @@ export default {
     moveUp: 'Move up',
     moveDown: 'Move down',
     link: 'Link',
-
+    clone: 'clone',
     font: 'Font',
     background: 'Background',
     tag: 'Tag',
