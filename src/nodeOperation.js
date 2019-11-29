@@ -6,6 +6,7 @@ import {
   removeNodeObj,
   insertNodeObj,
   generateNewObj,
+  cloneNewObj,
   checkMoveValid,
   addParentLink,
   moveUpObj,
@@ -365,7 +366,7 @@ export let cloneNode = function (el) {
     this.addChild()
     return
   }
-  let newNodeObj = generateNewObj(nodeObj)
+  let newNodeObj = cloneNewObj(nodeObj)
   insertNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
   let t = nodeEle.parentElement
