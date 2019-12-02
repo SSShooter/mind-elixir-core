@@ -8,6 +8,7 @@ export default {
     moveUp: '上移',
     moveDown: '下移',
     link: '连接',
+    cloneChild: '克隆节点',
 
     font: '文字',
     background: '背景',
@@ -15,6 +16,8 @@ export default {
     icon: '图标',
     tagsSeparate: '多个标签半角逗号分隔',
     iconsSeparate: '多个图标半角逗号分隔',
+    spanTagName: '样式',
+    spanProperty: '属性',
   },
   en: {
     addChild: 'Add a child',
@@ -25,6 +28,7 @@ export default {
     moveUp: 'Move up',
     moveDown: 'Move down',
     link: 'Link',
+    cloneChild: 'Clone node',
 
     font: 'Font',
     background: 'Background',
@@ -32,6 +36,8 @@ export default {
     icon: 'Icon',
     tagsSeparate: 'Separate tags by comma',
     iconsSeparate: 'Separate icons by comma',
+    spanTagName: 'Style',
+    spanProperty: 'Property',
   },
   ja: {
     addChild: '子ノードを追加する',
@@ -42,6 +48,7 @@ export default {
     moveUp: '上へ移動',
     moveDown: '下へ移動',
     link: 'コネクト',
+    cloneChild: 'クローンノードを',
 
     font: 'フォント',
     background: 'バックグラウンド',

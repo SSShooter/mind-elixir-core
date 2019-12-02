@@ -269,3 +269,21 @@ export let showLinkController = function (
     linkObj.delta2.y = p3y - toData.cy
   })
 }
+
+
+export let cloneLink = function (linkSvg) {
+  let link
+  if (linkSvg) {
+    link = linkSvg
+  } else {
+    link = this.currentLink
+  }
+  if (!link) return
+  console.log(link)
+  this.hideLinkController()
+  let id = link.linkObj.id
+  console.log(id)
+  let clone = Object.assign({}, this.linkData[id])
+  link.createLink(clone)
+  link = null
+}

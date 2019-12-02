@@ -8,6 +8,8 @@ export default function(mind) {
     div.innerHTML = `<span>${name}</span>`
     return div
   }
+
+
   let bgOrFont
   let styleDiv = createDiv('nm-style', 'style')
   let tagDiv = createDiv('nm-tag', 'tag')
@@ -33,6 +35,8 @@ export default function(mind) {
     '#27ae61',
     '#2ecc71',
   ]
+
+
   styleDiv.innerHTML = `
       <div class="nm-fontsize-container">
         ${['15', '24', '32']
@@ -70,15 +74,25 @@ export default function(mind) {
   `
 
   let menuContainer = document.createElement('nmenu')
+  let allStyle = document.createElement('allmenu')
+  let innerStyle = document.createElement('innermenu')
+
   menuContainer.innerHTML = `
   <div class="button-container"><svg class="icon" aria-hidden="true">
   <use xlink:href="#icon-close"></use>
   </svg></div>
   `
-  menuContainer.appendChild(styleDiv)
-  menuContainer.appendChild(tagDiv)
-  menuContainer.appendChild(iconDiv)
+
+
+
+  allStyle.appendChild(styleDiv)
+  allStyle.appendChild(tagDiv)
+  allStyle.appendChild(iconDiv)
+  menuContainer.appendChild(allStyle)
+  menuContainer.appendChild(innerStyle)
   menuContainer.hidden = true
+  // allStyle.hidden = true
+  // innerStyle.appendChild(xxxx)
 
   function clearSelect(klass, remove) {
     var elems = document.querySelectorAll(klass)
@@ -94,6 +108,7 @@ export default function(mind) {
   let fontBtn = menuContainer.querySelector('.font')
   let tagInput = document.querySelector('.nm-tag')
   let iconInput = document.querySelector('.nm-icon')
+  
   menuContainer.onclick = e => {
     if (!mind.currentNode) return
     let nodeObj = mind.currentNode.nodeObj
@@ -127,6 +142,7 @@ export default function(mind) {
         ).className = 'palette nmenu-selected'
     }
   }
+
   Array.from(sizeSelector).map(
     dom =>
       (dom.onclick = e => {

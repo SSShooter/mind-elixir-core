@@ -338,6 +338,13 @@ export function removeNodeObj(obj) {
   return childrenList.length
 }
 
+export function cloneNodeObj(obj, newObj) {
+  let childrenList = obj.parent.children
+  let index = childrenList.indexOf(obj)
+  childrenList.splice(index + 1, 0, newObj)
+  return childrenList.length
+}
+
 export function insertNodeObj(obj, newObj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)

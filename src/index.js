@@ -38,6 +38,7 @@ import {
   updateNodeTags,
   updateNodeIcons,
   processPrimaryNode,
+  cloneNode,
 } from './nodeOperation'
 import {
   createLink,
@@ -45,6 +46,7 @@ import {
   selectLink,
   hideLinkController,
   showLinkController,
+  cloneLink,
 } from './linkOperation'
 import { LEFT, RIGHT, SIDE } from './const'
 import example from './example'
@@ -146,12 +148,14 @@ MindElixir.prototype = {
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
+  cloneNode,
 
   createLink,
   removeLink,
   selectLink,
   hideLinkController,
   showLinkController,
+  cloneLink,
 
   layout,
   linkDiv,
