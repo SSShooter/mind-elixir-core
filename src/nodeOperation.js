@@ -253,44 +253,6 @@ export let removeNode = function (el) {
   this.linkDiv()
 }
 
-
-/**
- * 
- * @param {*} el 
- */
-export let cloneNode = function (el) {
-  let nodeEle = el || this.currentNode
-  if (!nodeEle) return
-  this.bus.fire('operation', {
-    name: 'cloneNode',
-    obj: nodeEle.nodeObj
-  })
-  let childrenLength = cloneNodeObj(nodeEle.nodeObj)
-  nodeEle = nodeEle.parentNode
-  if (nodeEle.tagName === 'T') {
-    if (childrenLength === 0) {
-      // clone epd when children length === 0
-      let parentT = nodeEle.parentNode.parentNode.previousSibling
-      if (parentT.tagName !== 'ROOT') // root doesn't have epd
-        parentT.children[1].clone()
-      this.selectParent()
-    } else {
-      // select sibling automatically
-      let success = this.selectPrevSibling()
-      if(!success) this.selectNextSibling()
-    }
-    for (let prop in this.linkData) {
-      // BUG should traversal all children node
-      let link = this.linkData[prop]
-      if (link.from === nodeEle.firstChild || link.to === nodeEle.firstChild) {
-        this.cloneLink(document.querySelector(`[data-linkid=${this.linkData[prop].id}]`))
-      }
-    }
-    nodeEle.parentNode.createElement()
-  }
-  this.linkDiv()
-}
-
 /** 
  * @function
  * @instance

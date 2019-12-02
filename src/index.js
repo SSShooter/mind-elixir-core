@@ -39,7 +39,6 @@ import {
   updateNodeTags,
   updateNodeIcons,
   processPrimaryNode,
-  cloneNode,
 } from './nodeOperation'
 import {
   createLink,
