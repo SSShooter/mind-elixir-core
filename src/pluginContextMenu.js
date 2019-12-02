@@ -75,9 +75,6 @@ export default function(mind) {
   remove_child.onclick = e => {
     mind.removeNode()
   }
-  clone_child.onclick = e => {
-    mind.cloneNode()
-  }
   focus.onclick = e => {
     mind.focusNode(mind.currentNode)
   }
@@ -110,9 +107,6 @@ export default function(mind) {
       }
     )
   },
-  clone_child.onclick = e => {
-    mind.cloneChild()
-  }
   clone.onclick = e => {
     mind.cloneNode()
   }
