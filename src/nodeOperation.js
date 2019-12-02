@@ -6,7 +6,7 @@ import {
   removeNodeObj,
   insertNodeObj,
   generateNewObj,
-  cloneNodeObj,
+  cloneNewObj,
   checkMoveValid,
   addParentLink,
   moveUpObj,
@@ -387,3 +387,42 @@ export function processPrimaryNode(primaryNode, obj) {
 }
 
 
+/** 
+ * @function
+ * @instance
+ * @name cloneNode
+ * @memberof NodeOperation
+ * @description Remove the target node.
+ * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
+ * @example
+ */
+export let cloneNode = function (el) {
+  let nodeEle = el || this.currentNode
+  if (!nodeEle) return
+  let nodeObj = nodeEle.nodeObj
+  if (nodeObj.root === true) {
+    this.addChild()
+    return
+  }
+  let newNodeObj = cloneNewObj(nodeObj)
+  insertNodeObj(nodeObj, newNodeObj)
+  addParentLink(this.nodeData)
+  let t = nodeEle.parentElement
+  let grp = $d.createElement('GRP')
+  let top = createSimpleTop(newNodeObj)
+  grp.appendChild(top)
+  let children = t.parentNode.parentNode
+  if (children.className === 'box') {
+    this.processPrimaryNode(grp, newNodeObj)
+  }
+  children.insertBefore(grp, t.parentNode.nextSibling)
+  this.createInputDiv(top.children[0])
+  this.selectNode(top.children[0])
+  this.linkDiv(grp.offsetParent)
+  this.inputDiv.scrollIntoViewIfNeeded()
+  this.bus.fire('operation', {
+    name: 'cloneNode',
+    obj: newNodeObj
+  })
+  
+}

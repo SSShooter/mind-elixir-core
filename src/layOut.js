@@ -102,10 +102,14 @@ export default function layout() {
   let tpc = createTopic(this.nodeData)
   tpc.draggable = false
   this.root.appendChild(tpc)
-
+  
   let primaryNodes = this.nodeData.children
   if (!primaryNodes || primaryNodes.length === 0) return
-  if (this.direction === LEFT || this.direction === RIGHT) {
+  if (this.direction === LEFT) {
+    this.map.style.cssText = `margin-left:40%`;
+    generateDOMStructure(this.nodeData.children, this.box, this.direction)
+  } else if(this.direction === RIGHT){
+    this.map.style.cssText = `margin-left:-40%`;
     generateDOMStructure(this.nodeData.children, this.box, this.direction)
   } else if (this.direction === SIDE) {
     // init direction of primary node

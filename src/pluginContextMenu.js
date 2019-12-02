@@ -21,7 +21,7 @@ export default function(mind) {
   let up = createLi('cm-up', i18n[locale].moveUp, 'PgUp')
   let down = createLi('cm-down', i18n[locale].moveDown, 'Pgdn')
   let link = createLi('cm-down', i18n[locale].link, '')
-  let clone_child = createLi('cm-clone_child', i18n[locale].cloneChild, '')
+  let clone = createLi('cm-down', i18n[locale].clone, '')
 
   let menuUl = document.createElement('ul')
   menuUl.className = 'menu-list'
@@ -33,7 +33,7 @@ export default function(mind) {
   menuUl.appendChild(up)
   menuUl.appendChild(down)
   menuUl.appendChild(link)
-  menuUl.appendChild(clone_child)
+  menuUl.appendChild(clone)
   let menuContainer = document.createElement('cmenu')
   menuContainer.appendChild(menuUl)
   menuContainer.hidden = true
@@ -112,6 +112,9 @@ export default function(mind) {
   },
   clone_child.onclick = e => {
     mind.cloneChild()
+  }
+  clone.onclick = e => {
+    mind.cloneNode()
   }
 }
 

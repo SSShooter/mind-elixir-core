@@ -268,6 +268,16 @@ export function generateNewObj() {
   }
 }
 
+export function cloneNewObj(nodeObj) {
+  let id = generateUUID()
+  return {
+    topic: nodeObj.topic,
+    id,
+    selected: true,
+    new: true,
+  }
+}
+
 export function generateNewLink(from, to) {
   let id = generateUUID()
   return {
