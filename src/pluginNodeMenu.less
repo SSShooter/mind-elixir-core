@@ -22,6 +22,12 @@ nmenu {
   #nm-tag {
     margin-top: 20px;
   }
+  .pro-div{
+    padding: 3px 0;
+    font-family: 'SimHei';
+    font-style: initial;
+    font-size: 14px;
+  }
   .nm-fontsize-container {
     display: flex;
     justify-content: space-around;
@@ -85,21 +91,38 @@ nmenu {
       padding: 2px 5px;
     }
     .selected {
-      background-color: tomato;
-      color: white;
+      background-color: white;
+      color: tomato;
+      font-weight: bold;
     }
   }
-  .span-bof{
+  .nm-span{
     text-align: center;
     span {
       display: inline-block;
-      font-size: 14px;
+      font-size: 20px;
       border-radius: 4px;
-      padding: 2px 5px;
+      padding: 4px 20px;
+      margin: 5px 0px 15px 0px;
     }
     .selected {
       background-color: tomato;
       color: white;
+      opacity: 90%;
+    }
+  }
+  .nm-pro{
+    height: 335px;
+    span {
+      display: inline-block;
+      font-size: 14px;
+      border-radius: 4px;
+      padding: 2px 12px 0px 12px;
+    }
+    input {
+      padding: 2px 12px 0px 12px;
+      width: 90%;
+      margin: 7px 10px;
     }
   }
 }
