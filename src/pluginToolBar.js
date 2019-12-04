@@ -45,6 +45,7 @@ infoSpan.innerHTML = `
   Delete 删除节点     (Mac 为 Delete) </br>
   PgUp   上移        (Mac 为 PgUp) </br>
   PgDn   下移        (Mac 为 PgDn) </br>
+  Save   保存        (Mac 为 command + s) </br>
 </div>
 `
 infoSpan.hidden =true
