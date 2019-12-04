@@ -10,7 +10,7 @@ export default function(mind) {
   }
 
   let spanDiv = createDiv('nm-span','spanTagName')
-  let spanaSelect
+  let spanSelect
   let bgOrFont
   let styleDiv = createDiv('nm-style', 'style')
   let tagDiv = createDiv('nm-tag', 'tag')
@@ -107,7 +107,6 @@ export default function(mind) {
   allStyle.appendChild(iconDiv)
   menuContainer.appendChild(allStyle)
   menuContainer.appendChild(innerStyle)
-  menuContainer.hidden = true
   innerStyle.hidden = true
 
   function clearSelect(klass, remove) {
@@ -128,27 +127,27 @@ export default function(mind) {
   let isopen = document.querySelector('.nm-pro')
 
   menuContainer.onclick = e => {
-    if (!mind.currentNode) return
-    let nodeObj = mind.currentNode.nodeObj
-
+    
     //切换tab
     if (e.target.className === 'spanProperty') {
       clearSelect('.swicth', 'nspan-selected')
-      spanaSelect = 'spanProperty'
+      spanSelect = 'spanProperty'
       e.target.className = 'spanProperty selected'
       e.target.previousElementSibling.className = 'spanTagName'
       allStyle.hidden = true
       innerStyle.hidden = false
     }else if (e.target.className === 'spanTagName') {
       clearSelect('.swicth', 'nspan-selected')
-      spanaSelect = 'spanTagName'
+      spanSelect = 'spanTagName'
       e.target.className = 'spanTagName selected'
       e.target.nextElementSibling.className = 'spanProperty'
       allStyle.hidden = false
       innerStyle.hidden = true
     }
 
-    
+    let nodeObj = mind.currentNode
+    if(!nodeObj)
+    return
     //切换background、color
     if (e.target.className === 'palette') {
       if (!nodeObj.style) nodeObj.style = {}
@@ -184,24 +183,28 @@ export default function(mind) {
   Array.from(sizeSelector).map(
     dom =>
       (dom.onclick = e => {
-        if (!mind.currentNode.nodeObj.style) mind.currentNode.nodeObj.style = {}
+        let nodeObj = mind.currentNode
+        if(!nodeObj) return
+        if (!nodeObj.nodeObj.style) nodeObj.nodeObj.style = {}
         clearSelect('.size', 'size-selected')
         let size = e.currentTarget
-        mind.currentNode.nodeObj.style.fontSize = size.dataset.size
+        nodeObj.nodeObj.style.fontSize = size.dataset.size
         size.className = 'size size-selected'
-        mind.updateNodeStyle(mind.currentNode.nodeObj)
+        mind.updateNodeStyle(nodeObj.nodeObj)
       })
   )
   bold.onclick = e => {
-    if (!mind.currentNode.nodeObj.style) mind.currentNode.nodeObj.style = {}
-    if (mind.currentNode.nodeObj.style.fontWeight === 'bold') {
-      delete mind.currentNode.nodeObj.style.fontWeight
+    let nodeObj = mind.currentNode
+    if(!nodeObj) return
+    if (!nodeObj.nodeObj.style) nodeObj.nodeObj.style = {}
+    if (nodeObj.nodeObj.style.fontWeight === 'bold') {
+      delete nodeObj.nodeObj.style.fontWeight
       e.currentTarget.className = 'bold'
-      mind.updateNodeStyle(mind.currentNode.nodeObj)
+      mind.updateNodeStyle(nodeObj.nodeObj)
     } else {
-      mind.currentNode.nodeObj.style.fontWeight = 'bold'
+      nodeObj.nodeObj.style.fontWeight = 'bold'
       e.currentTarget.className = 'bold size-selected'
-      mind.updateNodeStyle(mind.currentNode.nodeObj)
+      mind.updateNodeStyle(nodeObj.nodeObj)
     }
   }
   tagInput.onchange = e => {
@@ -218,8 +221,20 @@ export default function(mind) {
     mind.currentNode.nodeObj.icons = e.target.value.split(',')
     mind.updateNodeIcons(mind.currentNode.nodeObj)
   }
-  let state = 'open'
+
+  //菜单默认收起
+  menuContainer.className = 'close'
+  buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true">
+  <use xlink:href="#icon-menu"></use>
+  </svg>`
+  let state = 'close'
   buttonContainer.onclick = e => {
+    //默认选中样式标签
+    if(spanDiv.querySelectorAll('.selected').length === 0){
+      spanbof.className ='spanTagName selected'
+    }
+
+    console.info()
     if (state === 'open') {
       state = 'close'
       menuContainer.className = 'close'
@@ -234,11 +249,11 @@ export default function(mind) {
     </svg>`
     }
   }
-  mind.bus.addListener('unselectNode', function() {
-    menuContainer.hidden = true
-  })
+
+
+  
   mind.bus.addListener('selectNode', function(nodeObj) {
-    menuContainer.hidden = false
+    isopen.querySelector('.pro-tag').value = nodeObj.id
     clearSelect('.palette', 'nmenu-selected')
     clearSelect('.size', 'size-selected')
     clearSelect('.bold', 'size-selected')
@@ -246,9 +261,6 @@ export default function(mind) {
     bgOrFont = 'font'
     fontBtn.className = 'font selected'
     fontBtn.nextElementSibling.className = 'background'
-    spanaSelect = 'spanTagName'
-    spanbof.className ='spanTagName selected'
-    spanbof.nextElementSibling.className = 'spanProperty'
     if (nodeObj.style) {
       if (nodeObj.style.fontSize)
         menuContainer.querySelector(
