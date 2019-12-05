@@ -145,9 +145,9 @@ export default function(mind) {
       innerStyle.hidden = true
     }
 
-    let nodeObj = mind.currentNode
-    if(!nodeObj)
+    if(!mind.currentNode)
     return
+    let nodeObj = mind.currentNode.nodeObj
     //切换background、color
     if (e.target.className === 'palette') {
       if (!nodeObj.style) nodeObj.style = {}
@@ -183,28 +183,28 @@ export default function(mind) {
   Array.from(sizeSelector).map(
     dom =>
       (dom.onclick = e => {
-        let nodeObj = mind.currentNode
-        if(!nodeObj) return
-        if (!nodeObj.nodeObj.style) nodeObj.nodeObj.style = {}
+        if(!mind.currentNode) return
+        let nodeObj = mind.currentNode.nodeObj
+        if (!nodeObj.style) nodeObj.style = {}
         clearSelect('.size', 'size-selected')
         let size = e.currentTarget
-        nodeObj.nodeObj.style.fontSize = size.dataset.size
+        nodeObj.style.fontSize = size.dataset.size
         size.className = 'size size-selected'
-        mind.updateNodeStyle(nodeObj.nodeObj)
+        mind.updateNodeStyle(nodeObj)
       })
   )
   bold.onclick = e => {
-    let nodeObj = mind.currentNode
-    if(!nodeObj) return
-    if (!nodeObj.nodeObj.style) nodeObj.nodeObj.style = {}
-    if (nodeObj.nodeObj.style.fontWeight === 'bold') {
-      delete nodeObj.nodeObj.style.fontWeight
+    if(!mind.currentNode) return
+    let nodeObj = mind.currentNode.nodeObj
+    if (!nodeObj.style) nodeObj.style = {}
+    if (nodeObj.style.fontWeight === 'bold') {
+      delete nodeObj.style.fontWeight
       e.currentTarget.className = 'bold'
-      mind.updateNodeStyle(nodeObj.nodeObj)
+      mind.updateNodeStyle(nodeObj)
     } else {
-      nodeObj.nodeObj.style.fontWeight = 'bold'
+      nodeObj.style.fontWeight = 'bold'
       e.currentTarget.className = 'bold size-selected'
-      mind.updateNodeStyle(nodeObj.nodeObj)
+      mind.updateNodeStyle(nodeObj)
     }
   }
   tagInput.onchange = e => {
