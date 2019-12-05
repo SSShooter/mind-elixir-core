@@ -257,7 +257,6 @@ export default function(mind) {
     clearSelect('.palette', 'nmenu-selected')
     clearSelect('.size', 'size-selected')
     clearSelect('.bold', 'size-selected')
-    clearSelect('.switch', 'nspan-selected')
     bgOrFont = 'font'
     fontBtn.className = 'font selected'
     fontBtn.nextElementSibling.className = 'background'
@@ -272,10 +271,6 @@ export default function(mind) {
         menuContainer.querySelector(
           '.palette[data-color="' + nodeObj.style.color + '"]'
         ).className = 'palette nmenu-selected'
-      if (nodeObj.style.color)
-        menuContainer.querySelector(
-          '.switch[data-color="' + nodeObj.style.color + '"]'
-        ).className = 'switch nspan-selected'
     }
     if (nodeObj.tags) {
       tagInput.value = nodeObj.tags.join(',')
