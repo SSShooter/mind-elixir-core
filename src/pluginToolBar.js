@@ -65,7 +65,7 @@ toolBarLTContainer.className = 'lt'
 export default function (mind) {
     let scale = 1
     mind.container.append(toolBarRBContainer)
-    mind.container.append(toolBarLTContainer)
+    // mind.container.append(toolBarLTContainer)
     mind.container.append(infoContainer)
 
 
