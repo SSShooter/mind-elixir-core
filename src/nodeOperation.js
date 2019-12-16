@@ -118,7 +118,7 @@ export let insertSibling = function (el) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export let addChild = function (el) {
+export let addChild = function (el,topic) {
   console.time('addChild')
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -127,7 +127,15 @@ export let addChild = function (el) {
     console.warn('目标节点必须展开')
     return
   }
-  let newNodeObj = generateNewObj()
+  
+  let newNodeObj
+  if(topic){
+    nodeObj.topic = topic
+    newNodeObj = cloneNewObj(nodeObj)
+  }else{
+    newNodeObj = generateNewObj()
+  }
+  console.log(newNodeObj)
   nodeObj.expanded = true
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
@@ -179,6 +187,10 @@ export let moveUpNode = function(el){
   if (!nodeEle) return
   let grp = nodeEle.parentNode.parentNode
   let obj = nodeEle.nodeObj
+  this.bus.fire('operation', {
+    name: 'moveUpNode',
+    obj: nodeEle.nodeObj
+  })
   moveUpObj(obj)
   grp.parentNode.insertBefore(grp,grp.previousSibling)
   this.linkDiv()
@@ -200,6 +212,10 @@ export let moveDownNode = function(el){
   if (!nodeEle) return
   let grp = nodeEle.parentNode.parentNode
   let obj = nodeEle.nodeObj
+  this.bus.fire('operation', {
+    name: 'moveDownNode',
+    obj: nodeEle.nodeObj
+  })
   moveDownObj(obj)
   if(grp.nextSibling){
     grp.parentNode.insertBefore(grp,grp.nextSibling.nextSibling)
@@ -253,6 +269,78 @@ export let removeNode = function (el) {
   this.linkDiv()
 }
 
+
+/** 
+ * @function
+ * @instance
+ * @name pre
+ * @memberof NodeOperation
+ * @description 撤回
+ * @param 
+ * @example
+ * pre()
+ */
+export let pre = function () {
+  let legth = this.history.length
+  let endWith = this.history[legth - 1]
+  this.history.some((element,i)=>{
+      if(!element) return
+      if(element.obj.id === endWith.obj.id){
+        if(element.name === 'addChild'){
+          let nodeEle = findEle(element.obj.id)
+          this.removeNode(nodeEle)
+        }
+
+        if(element.name === 'removeNode'){
+          let topic = element.obj.topic
+          let parentEle = findEle(element.obj.parent.id)
+          this.addChild(parentEle,topic)
+        }
+        
+        //TODO
+        if(element.name === 'moveNode'){
+          let formEle = findEle(element.obj.fromObj.id)
+          let toEle = findEle(element.obj.toObj.id)
+          this.moveNode(toEle,formEle)
+        }
+
+        if(element.name === 'moveUpNode'){
+          let nodeEle = findEle(element.obj.id)
+          this.moveDownNode(nodeEle)
+        }
+
+        if(element.name === 'moveDownNode'){
+          let nodeEle = findEle(element.obj.id)
+          this.moveUpNode(nodeEle)
+        }
+        this.history.pop()
+        return
+      }
+  })
+  
+  
+  
+}
+
+/** 
+ * @function
+ * @instance
+ * @name pro
+ * @memberof NodeOperation
+ * @description 重做
+ * @param 
+ * @example
+ * pro()
+ */
+export let pro = function (){
+  console.log(this.history)
+  let element = this.history.pop()
+  if(!element) return
+  if(element.name === 'removeNode'){
+    let nodeEle = findEle(element.obj.id)
+    this.addChild(nodeEle)
+  }
+}
 /** 
  * @function
  * @instance
@@ -262,7 +350,7 @@ export let removeNode = function (el) {
  * @param {TargetElement} from - The target you want to move.
  * @param {TargetElement} to - The target you want to move to.
  * @example
- * removeNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
+ * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
 export let moveNode = function (from, to) {
   console.time('moveNode')
@@ -272,11 +360,14 @@ export let moveNode = function (from, to) {
     console.warn('Target node must be expanded')
     return
   }
+  
   if (!checkMoveValid(fromObj, toObj)) {
     console.warn('Invalid move')
     return
   }
+  console.log('======')
   moveNodeObj(fromObj, toObj)
+  
   addParentLink(this.nodeData) // update parent property
   let PFrom = from.parentElement
   let PTo = to.parentElement
@@ -321,11 +412,13 @@ export let moveNode = function (from, to) {
  * @description Begin to edit the target node.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  * @example
- * removeNode(E('bd4313fbac40284b'))
+ * beginEdit(E('bd4313fbac40284b'))
  */
 export let beginEdit = function(el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
+  console.log(nodeEle)
+  this.history.push(nodeEle)
   this.createInputDiv(nodeEle)
 }
 

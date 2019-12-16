@@ -21,6 +21,12 @@ export default function(mind) {
       key2func[handler.key]()
     }
   )
+  hotkeys('command + z,ctrl + z',{element: mind.map},e => {
+    mind.pre()
+  })
+  hotkeys('command + shift + z, ctrl + shift + z',{element: mind.map},e => {
+    mind.pro()
+  })
 
   let key2func = {
     enter: () => {
@@ -30,6 +36,7 @@ export default function(mind) {
       mind.addChild()
     },
     f2: () => {
+      console.log('f2')
       mind.beginEdit()
     },
     up: () => {
@@ -61,24 +68,6 @@ export default function(mind) {
     },
     pagedown() {
       mind.moveDownNode()
-    },
-    // ctrl z
-    // 90: e => {
-    //   if (e.ctrl || e.metaKey) {
-    //     let oparation = mind.history.pop()
-    //     console.log(oparation)
-    //     let oparationName = oparation.name
-    //     console.log(mind.history)
-    //     mind.nodeData = JSON.parse(mind.history)
-    //     addParentLink(mind.nodeData)
-    //     mind.history = null
-    //     mind.layout()
-    //     let ctrlZ = {
-    //       remove(nodeObj) {
-    //         mind.addChild
-    //       }
-    //     }
-    //   }
-    // },
+    }
   }
 }

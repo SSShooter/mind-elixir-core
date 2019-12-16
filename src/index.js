@@ -31,6 +31,8 @@ import {
   addChild,
   moveNode,
   removeNode,
+  pre,
+  pro,
   cloneNode,
   moveUpNode,
   moveDownNode,
@@ -141,6 +143,8 @@ MindElixir.prototype = {
   insertSibling,
   addChild,
   removeNode,
+  pre,
+  pro,
   cloneNode,
   moveNode,
   moveUpNode,
@@ -231,10 +235,10 @@ MindElixir.prototype = {
 
     initMouseEvent(this)
 
-    // this.bus.addListener('operation', operation => {
-    //   this.history = [operation]
-    //   this.history = this.getAllData()
-    // })
+    //事件总线记录每一个操作到history
+    this.bus.addListener('operation', operation => {
+      this.history.push(operation)
+    })
   },
 }
 

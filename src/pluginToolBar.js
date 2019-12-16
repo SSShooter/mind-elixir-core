@@ -45,6 +45,8 @@ infoSpan.innerHTML = `
   Delete 删除节点     (Mac 为 Delete) </br>
   PgUp   上移        (Mac 为 PgUp) </br>
   PgDn   下移        (Mac 为 PgDn) </br>
+  Pre    撤回        (Mac 为 command + z) </br>
+  Pro    重做        (Mac 为 command + shift + z) </br>
   Save   保存        (Mac 为 command + s) </br>
 </div>
 `
