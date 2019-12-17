@@ -12,7 +12,7 @@ import {
   moveUpObj,
   moveDownObj
 } from './util'
-import { LEFT, RIGHT, SIDE } from './const'
+import { LEFT, RIGHT, SIDE, PRE_FINISHED, PRO_FINISHED} from './const'
 let $d = document
 /**
  * @namespace NodeOperation
@@ -76,7 +76,7 @@ export let updateNodeSvgChart = function () {
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export let insertSibling = function (el) {
+export let insertSibling = function (el,type) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let nodeObj = nodeEle.nodeObj
@@ -102,10 +102,19 @@ export let insertSibling = function (el) {
   this.linkDiv(grp.offsetParent)
   this.inputDiv.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
-  this.bus.fire('operation', {
-    name: 'insertSibling',
-    obj: newNodeObj
-  })
+
+  if(type === undefined || type === PRO_FINISHED){
+    this.bus.fire('pre', {
+      name: 'insertSibling',
+      obj: newNodeObj
+    })
+  }
+  if(type === PRE_FINISHED){
+    this.bus.fire('pro', {
+      name: 'insertSibling',
+      obj: newNodeObj
+    })
+  }
 }
 
 /** 
@@ -118,7 +127,7 @@ export let insertSibling = function (el) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export let addChild = function (el,topic) {
+export let addChild = function (el,topic,type) {
   console.time('addChild')
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -135,7 +144,6 @@ export let addChild = function (el,topic) {
   }else{
     newNodeObj = generateNewObj()
   }
-  // console.log(newNodeObj)
   nodeObj.expanded = true
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
@@ -163,11 +171,19 @@ export let addChild = function (el,topic) {
   this.selectNode(newTop.children[0])
   this.linkDiv(grp.offsetParent)
   this.inputDiv.scrollIntoViewIfNeeded()
+  if(type === undefined || type === PRO_FINISHED){
+    this.bus.fire('pre', {
+      name: 'addChild',
+      obj: newNodeObj
+    })
+  }
+  if(type === PRE_FINISHED){
+    this.bus.fire('pro', {
+      name: 'addChild',
+      obj: newNodeObj
+    })
+  }
   console.timeEnd('addChild')
-  this.bus.fire('operation', {
-    name: 'addChild',
-    obj: newNodeObj
-  })
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
@@ -182,15 +198,23 @@ export let addChild = function (el,topic) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export let moveUpNode = function(el){
+export let moveUpNode = function(el,type){
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let grp = nodeEle.parentNode.parentNode
   let obj = nodeEle.nodeObj
-  this.bus.fire('operation', {
-    name: 'moveUpNode',
-    obj: nodeEle.nodeObj
-  })
+  if(type === undefined || type === PRO_FINISHED){
+    this.bus.fire('pre', {
+      name: 'moveUpNode',
+      obj: newNodeObj
+    })
+  }
+  if(type === PRE_FINISHED){
+    this.bus.fire('pro', {
+      name: 'moveUpNode',
+      obj: nodeEle.nodeObj
+    })
+  }
   moveUpObj(obj)
   grp.parentNode.insertBefore(grp,grp.previousSibling)
   this.linkDiv()
@@ -207,15 +231,23 @@ export let moveUpNode = function(el){
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export let moveDownNode = function(el){
+export let moveDownNode = function(el,type){
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let grp = nodeEle.parentNode.parentNode
   let obj = nodeEle.nodeObj
-  this.bus.fire('operation', {
-    name: 'moveDownNode',
-    obj: nodeEle.nodeObj
-  })
+  if(type === undefined || type === PRO_FINISHED){
+    this.bus.fire('pre', {
+      name: 'moveDownNode',
+      obj: newNodeObj
+    })
+  }
+  if(type === PRE_FINISHED){
+    this.bus.fire('pro', {
+      name: 'moveDownNode',
+      obj: nodeEle.nodeObj
+    })
+  }
   moveDownObj(obj)
   if(grp.nextSibling){
     grp.parentNode.insertBefore(grp,grp.nextSibling.nextSibling)
@@ -236,13 +268,21 @@ export let moveDownNode = function(el){
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export let removeNode = function (el) {
+export let removeNode = function (el,type) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
-  this.bus.fire('operation', {
-    name: 'removeNode',
-    obj: nodeEle.nodeObj
-  })
+  if(type === undefined || type === PRO_FINISHED){
+    this.bus.fire('pre', {
+      name: 'removeNode',
+      obj: nodeEle.nodeObj
+    })
+  }
+  if(type === PRE_FINISHED){
+    this.bus.fire('pro', {
+      name: 'removeNode',
+      obj: nodeEle.nodeObj
+    })
+  }
   let childrenLength = removeNodeObj(nodeEle.nodeObj)
   nodeEle = nodeEle.parentNode
   if (nodeEle.tagName === 'T') {
@@ -269,7 +309,6 @@ export let removeNode = function (el) {
   this.linkDiv()
 }
 
-
 /** 
  * @function
  * @instance
@@ -281,41 +320,42 @@ export let removeNode = function (el) {
  * pre()
  */
 export let pre = function () {
-  let legth = this.history.length
-  let endWith = this.history[legth - 1]
-  console.log(this.history)
-  this.history.some((element,i)=>{
+  let length = this.preHistory.length
+  let endWith = this.preHistory[length - 1]
+  
+  this.preHistory.some((element,i)=>{
       if(!element) return
       if(element.obj.id === endWith.obj.id){
         //插入子节点、兄弟节点、克隆节点
         if(element.name === 'addChild' || element.name === 'insertSibling' || element.name === 'cloneNode'){
           let nodeEle = findEle(element.obj.id)
-          this.removeNode(nodeEle)
+          this.removeNode(nodeEle,PRE_FINISHED)
         }
 
         if(element.name === 'removeNode'){
           let topic = element.obj.topic
           let parentEle = findEle(element.obj.parent.id)
-          this.addChild(parentEle,topic)
+          this.addChild(parentEle,topic,PRE_FINISHED)
         }
         
         //TODO
         if(element.name === 'moveNode'){
           let formEle = findEle(element.obj.fromObj.id)
           let toEle = findEle(element.obj.toObj.id)
-          this.moveNode(toEle,formEle)
+          this.moveNode(toEle,formEle,PRE_FINISHED)
         }
 
         if(element.name === 'moveUpNode'){
           let nodeEle = findEle(element.obj.id)
-          this.moveDownNode(nodeEle)
+          this.moveDownNode(nodeEle,PRE_FINISHED)
         }
 
         if(element.name === 'moveDownNode'){
           let nodeEle = findEle(element.obj.id)
-          this.moveUpNode(nodeEle)
+          this.moveUpNode(nodeEle,PRE_FINISHED)
         }
-        this.history.splice(i,2)
+
+        this.preHistory.splice(i,1)
         return
       }
   })
@@ -335,13 +375,46 @@ export let pre = function () {
  * pro()
  */
 export let pro = function (){
-  console.log(this.history)
-  let element = this.history.pop()
-  if(!element) return
-  if(element.name === 'removeNode'){
-    let nodeEle = findEle(element.obj.id)
-    this.addChild(nodeEle)
-  }
+  let length = this.proHistory.length
+  let endWith = this.proHistory[length - 1]
+  
+  this.proHistory.some((element,i)=>{
+      if(!element) return
+      if(element.obj.id === endWith.obj.id){
+        //插入子节点、兄弟节点、克隆节点
+        if(element.name === 'addChild' || element.name === 'insertSibling' || element.name === 'cloneNode'){
+          let nodeEle = findEle(element.obj.id)
+          this.removeNode(nodeEle,PRO_FINISHED)
+        }
+
+        if(element.name === 'removeNode'){
+          let topic = element.obj.topic
+          let parentEle = findEle(element.obj.parent.id)
+          this.addChild(parentEle,topic,PRO_FINISHED)
+        }
+        
+        //TODO
+        if(element.name === 'moveNode'){
+          let formEle = findEle(element.obj.fromObj.id)
+          let toEle = findEle(element.obj.toObj.id)
+          this.moveNode(toEle,formEle,PRO_FINISHED)
+        }
+
+        if(element.name === 'moveUpNode'){
+          let nodeEle = findEle(element.obj.id)
+          this.moveDownNode(nodeEle,PRO_FINISHED)
+        }
+
+        if(element.name === 'moveDownNode'){
+          let nodeEle = findEle(element.obj.id)
+          this.moveUpNode(nodeEle,PRO_FINISHED)
+        }
+
+        this.proHistory.splice(i,1)
+        return
+      }
+  })
+      
 }
 /** 
  * @function
@@ -354,7 +427,7 @@ export let pro = function (){
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export let moveNode = function (from, to) {
+export let moveNode = function (from, to, type) {
   console.time('moveNode')
   let fromObj = from.nodeObj
   let toObj = to.nodeObj
@@ -366,6 +439,18 @@ export let moveNode = function (from, to) {
   if (!checkMoveValid(fromObj, toObj)) {
     console.warn('Invalid move')
     return
+  }
+  if(type === undefined || type === PRO_FINISHED){
+    this.bus.fire('pre', {
+      name: 'moveNode',
+      obj: { fromObj, toObj }
+    })
+  }
+  if(type === PRE_FINISHED){
+    this.bus.fire('pro', {
+      name: 'moveNode',
+      obj: { fromObj, toObj }
+    })
   }
   console.log('======')
   moveNodeObj(fromObj, toObj)
@@ -399,10 +484,6 @@ export let moveNode = function (from, to) {
     PTo.nextSibling.appendChild(PFrom.parentNode)
   }
   this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'moveNode',
-    obj: { fromObj, toObj }
-  })
   console.timeEnd('moveNode')
 }
 
@@ -420,7 +501,7 @@ export let beginEdit = function(el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   console.log(nodeEle)
-  this.history.push(nodeEle)
+  this.preHistory.push(nodeEle)
   this.createInputDiv(nodeEle)
 }
 
@@ -453,7 +534,7 @@ export function processPrimaryNode(primaryNode, obj) {
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  * @example
  */
-export let cloneNode = function (el) {
+export let cloneNode = function (el,type) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let nodeObj = nodeEle.nodeObj
@@ -477,9 +558,17 @@ export let cloneNode = function (el) {
   this.selectNode(top.children[0])
   this.linkDiv(grp.offsetParent)
   this.inputDiv.scrollIntoViewIfNeeded()
-  this.bus.fire('operation', {
-    name: 'cloneNode',
-    obj: newNodeObj
-  })
+  if(type === undefined || type === PRO_FINISHED){
+    this.bus.fire('pre', {
+      name: 'cloneNode',
+      obj: newNodeObj
+    })
+  }
+  if(type === PRE_FINISHED){
+    this.bus.fire('pro', {
+      name: 'cloneNode',
+      obj: newNodeObj
+    })
+  }
   
 }

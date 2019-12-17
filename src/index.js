@@ -33,6 +33,7 @@ import {
   removeNode,
   pre,
   pro,
+  updateListenerStatus,
   cloneNode,
   moveUpNode,
   moveDownNode,
@@ -105,7 +106,8 @@ function MindElixir({
   keypress,
 }) {
   this.container = document.querySelector(el)
-  this.history = [] // TODO
+  this.preHistory = [] // TODO
+  this.proHistory = []
 
   this.nodeData = data.nodeData || {}
   this.linkData = data.linkData || {}
@@ -145,6 +147,7 @@ MindElixir.prototype = {
   removeNode,
   pre,
   pro,
+  updateListenerStatus,
   cloneNode,
   moveNode,
   moveUpNode,
@@ -236,8 +239,12 @@ MindElixir.prototype = {
     initMouseEvent(this)
 
     //事件总线记录每一个操作到history
-    this.bus.addListener('operation', operation => {
-      this.history.push(operation)
+    this.bus.addListener('pre', operation => {
+      this.preHistory.push(operation)
+    })
+
+    this.bus.addListener('pro',operation => {
+      this.proHistory.push(operation)
     })
   },
 }

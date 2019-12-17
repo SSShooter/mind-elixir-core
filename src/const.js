@@ -7,5 +7,5 @@ export const PRIMARYNODEHORIZONTALGAP = 65
 export const PRIMARYNODEVERTICALGAP = 25
 export const TURNPOINT_R = 8
 
-export const SUCCESS = 1
-export const ERROR = 0
+export const PRE_FINISHED = `pre_finished`
+export const PRO_FINISHED = `pro_finished`
