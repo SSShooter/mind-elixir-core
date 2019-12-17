@@ -27,6 +27,9 @@ export default function(mind) {
   hotkeys('command + shift + z, ctrl + shift + z',{element: mind.map},e => {
     mind.pro()
   })
+  hotkeys('command + c, ctrl + c',{element:mind.map},e => {
+    mind.cloneNode()
+  })
 
   let key2func = {
     enter: () => {

@@ -135,7 +135,7 @@ export let addChild = function (el,topic) {
   }else{
     newNodeObj = generateNewObj()
   }
-  console.log(newNodeObj)
+  // console.log(newNodeObj)
   nodeObj.expanded = true
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
@@ -283,10 +283,12 @@ export let removeNode = function (el) {
 export let pre = function () {
   let legth = this.history.length
   let endWith = this.history[legth - 1]
+  console.log(this.history)
   this.history.some((element,i)=>{
       if(!element) return
       if(element.obj.id === endWith.obj.id){
-        if(element.name === 'addChild'){
+        //插入子节点、兄弟节点、克隆节点
+        if(element.name === 'addChild' || element.name === 'insertSibling' || element.name === 'cloneNode'){
           let nodeEle = findEle(element.obj.id)
           this.removeNode(nodeEle)
         }
@@ -313,7 +315,7 @@ export let pre = function () {
           let nodeEle = findEle(element.obj.id)
           this.moveUpNode(nodeEle)
         }
-        this.history.pop()
+        this.history.splice(i,2)
         return
       }
   })

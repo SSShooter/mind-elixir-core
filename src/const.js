@@ -6,3 +6,6 @@ export const GAP = 15
 export const PRIMARYNODEHORIZONTALGAP = 65
 export const PRIMARYNODEVERTICALGAP = 25
 export const TURNPOINT_R = 8
+
+export const SUCCESS = 1
+export const ERROR = 0
