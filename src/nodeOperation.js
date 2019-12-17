@@ -97,10 +97,14 @@ export let insertSibling = function (el,type) {
     this.processPrimaryNode(grp, newNodeObj)
   }
   children.insertBefore(grp, t.parentNode.nextSibling)
-  this.createInputDiv(top.children[0])
-  this.selectNode(top.children[0])
-  this.linkDiv(grp.offsetParent)
-  this.inputDiv.scrollIntoViewIfNeeded()
+  if(type === undefined){
+    this.createInputDiv(newTop.children[0])
+    this.selectNode(newTop.children[0])
+    this.linkDiv(grp.offsetParent)
+    this.inputDiv.scrollIntoViewIfNeeded()
+  }else{
+    this.linkDiv(grp.offsetParent)
+  }
   console.timeEnd('insertSibling_DOM')
 
   if(type === undefined || type === PRO_FINISHED){
@@ -167,10 +171,15 @@ export let addChild = function (el,topic,type) {
     this.processPrimaryNode(grp, newNodeObj)
     top.nextSibling.appendChild(grp)
   }
-  this.createInputDiv(newTop.children[0])
-  this.selectNode(newTop.children[0])
-  this.linkDiv(grp.offsetParent)
-  this.inputDiv.scrollIntoViewIfNeeded()
+  if(type === undefined){
+    this.createInputDiv(newTop.children[0])
+    this.selectNode(newTop.children[0])
+    this.linkDiv(grp.offsetParent)
+    this.inputDiv.scrollIntoViewIfNeeded()
+  }else{
+    this.linkDiv(grp.offsetParent)
+  }
+  
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'addChild',
@@ -377,7 +386,7 @@ export let pre = function () {
 export let pro = function (){
   let length = this.proHistory.length
   let endWith = this.proHistory[length - 1]
-  
+  console.log(this.proHistory)
   this.proHistory.some((element,i)=>{
       if(!element) return
       if(element.obj.id === endWith.obj.id){
@@ -500,8 +509,6 @@ export let moveNode = function (from, to, type) {
 export let beginEdit = function(el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
-  console.log(nodeEle)
-  this.preHistory.push(nodeEle)
   this.createInputDiv(nodeEle)
 }
 
@@ -554,10 +561,14 @@ export let cloneNode = function (el,type) {
     this.processPrimaryNode(grp, newNodeObj)
   }
   children.insertBefore(grp, t.parentNode.nextSibling)
-  this.createInputDiv(top.children[0])
-  this.selectNode(top.children[0])
-  this.linkDiv(grp.offsetParent)
-  this.inputDiv.scrollIntoViewIfNeeded()
+  if(type === undefined){
+    this.createInputDiv(newTop.children[0])
+    this.selectNode(newTop.children[0])
+    this.linkDiv(grp.offsetParent)
+    this.inputDiv.scrollIntoViewIfNeeded()
+  }else{
+    this.linkDiv(grp.offsetParent)
+  }
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'cloneNode',
