@@ -22,7 +22,8 @@ export default function(mind) {
     }
   )
   hotkeys('command + z,ctrl + z',{element: mind.map},e => {
-    mind.pre()
+    var length = mind.preHistory.length
+    mind.pre(length --)
   })
   hotkeys('command + shift + z, ctrl + shift + z',{element: mind.map},e => {
     mind.pro()
