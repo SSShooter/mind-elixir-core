@@ -14,6 +14,8 @@ import {
 } from './util'
 import { LEFT, RIGHT, SIDE, PRE_FINISHED, PRO_FINISHED} from './const'
 let $d = document
+let flag = false
+
 /**
  * @namespace NodeOperation
  */
@@ -112,6 +114,7 @@ export let insertSibling = function (el,type) {
       name: 'insertSibling',
       obj: newNodeObj
     })
+    flag = false
   }
   if(type === PRE_FINISHED){
     this.bus.fire('pro', {
@@ -176,6 +179,7 @@ export let addChild = function (el,topic,type) {
     this.selectNode(newTop.children[0])
     this.linkDiv(grp.offsetParent)
     this.inputDiv.scrollIntoViewIfNeeded()
+    flag = false
   }else{
     this.linkDiv(grp.offsetParent)
   }
@@ -280,6 +284,9 @@ export let moveDownNode = function(el,type){
 export let removeNode = function (el,type) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
+  if(type === undefined){
+    flag = false
+  }
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'removeNode',
@@ -318,6 +325,35 @@ export let removeNode = function (el,type) {
   this.linkDiv()
 }
 
+
+
+/** 
+ * @function
+ * @instance
+ * @name turnHistoryArr
+ * @memberof NodeOperation
+ * @description 反转history的opertion name
+ * @param arr
+ * @example
+ * turnHistoryArr()
+ */
+export function turnHistoryArr(arr) {
+  let newArr = []
+  arr.forEach(element => {
+    if(element.name === 'addChild' || element.name === 'insertSibling' || element.name === 'cloneNode'){
+      element.name = 'removeNode'
+      newArr.push(element)
+      return
+    }
+    if(element.name === 'removeNode'){
+      element.name = 'addChild'
+      newArr.push(element)
+      return
+    }
+  });
+  flag = true
+  return newArr
+}
 /** 
  * @function
  * @instance
@@ -329,22 +365,34 @@ export let removeNode = function (el,type) {
  * pre()
  */
 export let pre = function () {
+  if(!flag){
+    this.preHistory = turnHistoryArr(this.preHistory)
+  }
+  
+  console.log(this.preHistory)
   let length = this.preHistory.length
   let endWith = this.preHistory[length - 1]
-  
   this.preHistory.some((element,i)=>{
       if(!element) return
       if(element.obj.id === endWith.obj.id){
         //插入子节点、兄弟节点、克隆节点
-        if(element.name === 'addChild' || element.name === 'insertSibling' || element.name === 'cloneNode'){
-          let nodeEle = findEle(element.obj.id)
-          this.removeNode(nodeEle,PRE_FINISHED)
-        }
-
-        if(element.name === 'removeNode'){
+        if(element.name === 'addChild'){
           let topic = element.obj.topic
           let parentEle = findEle(element.obj.parent.id)
           this.addChild(parentEle,topic,PRE_FINISHED)
+        }
+
+        if(element.name === 'insertSibling'){
+
+        }
+
+        if(element.name === 'cloneNode'){
+
+        }
+
+        if(element.name === 'removeNode'){
+          let nodeEle = findEle(element.obj.id)
+          this.removeNode(nodeEle,PRE_FINISHED)
         }
         
         //TODO
@@ -368,9 +416,6 @@ export let pre = function () {
         return
       }
   })
-  
-  
-  
 }
 
 /** 
@@ -384,6 +429,7 @@ export let pre = function () {
  * pro()
  */
 export let pro = function (){
+  turnHistoryArr(this.proHistory)
   let length = this.proHistory.length
   let endWith = this.proHistory[length - 1]
   console.log(this.proHistory)
