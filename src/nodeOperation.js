@@ -321,39 +321,32 @@ export let removeNode = function (el,type) {
 
 var NodeOperationStrategies = {
   addChild:function(element,type){
-    console.log(element)
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
   insertSibling:function(element,type){
-    console.log(element)
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
   cloneNode:function(element,type){
-    console.log(element)
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
   removeNode:function(element,type){
-    console.log(element)
     let topic = element.obj.topic
     let parentEle = findEle(element.obj.parent.id)
     this.addChild(parentEle,topic,type)
   },
   moveNode:function(element,type){
-    console.log(element)
     let formEle = findEle(element.obj.fromObj.id)
     let toEle = findEle(element.obj.toObj.id)
     this.moveNode(toEle,formEle,type)
   },
   moveUpNode:function(element,type){
-    console.log(element)
     let nodeEle = findEle(element.obj.id)
     this.moveDownNode(nodeEle,type)
   },
   moveDownNode:function(element,type){
-    console.log(element)
     let nodeEle = findEle(element.obj.id)
     this.moveUpNode(nodeEle,type)
   }
@@ -372,8 +365,7 @@ var NodeOperationStrategies = {
 export let pre = function () {
   let element = this.preHistory.pop()
   if(!element) return
-  console.log(element)
-  this.NodeOperationStrategies[element.name](element,PRE_FINISHED)
+  NodeOperationStrategies[element.name].call(this,element,PRE_FINISHED)
 }
 
 /** 
@@ -389,7 +381,7 @@ export let pre = function () {
 export let pro = function (){
   let element = this.proHistory.pop()
   if(!element) return
-  NodeOperationStrategies[element.name](element,PRO_FINISHED)
+  NodeOperationStrategies[element.name].call(this,element,PRO_FINISHED)
 }
 
 /** 
