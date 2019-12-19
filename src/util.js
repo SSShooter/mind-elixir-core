@@ -269,7 +269,7 @@ export function generateNewObj() {
 }
 
 export function cloneNewObj(nodeObj) {
-  let id = nodeObj.id === undefined?generateUUID():nodeObj.id
+  let id = generateUUID()
   return {
     topic: nodeObj.topic,
     id,
