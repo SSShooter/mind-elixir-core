@@ -384,15 +384,11 @@ export let pre = function () {
  */
 export let pro = function (){
   let element = this.proHistory.pop()
-
   if(!element) return
   //插入子节点
   if(element.name === 'addChild'){
-    let topic = element.obj.topic
-    let id = element.obj.id
-    let parentEle = findEle(element.obj.parent.id)
-    this.addChild(parentEle,id,topic,PRE_FINISHED)
-    
+    let nodeEle = findEle(element.obj.id)
+    this.removeNode(nodeEle,PRO_FINISHED)
   }
   //兄弟节点
   if(element.name === 'insertSibling'){
@@ -404,25 +400,26 @@ export let pro = function (){
   }
 
   if(element.name === 'removeNode'){
-    let nodeEle = findEle(element.obj.id)
-    this.removeNode(nodeEle,PRE_FINISHED)
+    let topic = element.obj.topic
+    let parentEle = findEle(element.obj.parent.id)
+    this.addChild(parentEle,topic,PRO_FINISHED)
   }
 
   //TODO
   if(element.name === 'moveNode'){
     let formEle = findEle(element.obj.fromObj.id)
     let toEle = findEle(element.obj.toObj.id)
-    this.moveNode(toEle,formEle,PRE_FINISHED)
+    this.moveNode(toEle,formEle,PRO_FINISHED)
   }
 
   if(element.name === 'moveUpNode'){
     let nodeEle = findEle(element.obj.id)
-    this.moveDownNode(nodeEle,PRE_FINISHED)
+    this.moveDownNode(nodeEle,PRO_FINISHED)
   }
 
   if(element.name === 'moveDownNode'){
     let nodeEle = findEle(element.obj.id)
-    this.moveUpNode(nodeEle,PRE_FINISHED)
+    this.moveUpNode(nodeEle,PRO_FINISHED)
   } 
 }
 
