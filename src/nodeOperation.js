@@ -15,6 +15,43 @@ import {
 import { LEFT, RIGHT, SIDE, PRE_FINISHED, PRO_FINISHED} from './const'
 let $d = document
 
+/** 
+ * @function
+ * @instance
+ * @name turnHistoryArr
+ * @memberof NodeOperation
+ * @description 反转history的opertion name
+ * @param arr
+ * @example
+ * turnHistoryArr()
+ */
+export function turnHistoryArr(arr) {
+  let operationArr = []
+  let ObjArr = []
+  let newArr = []
+  arr.forEach(element => {
+    operationArr.push(element.name)
+    ObjArr.push(element.obj)
+  });
+
+  operationArr.reverse();
+  operationArr.forEach((element,i) => {
+      if(element === 'addChild' || element === 'insertSibling' || element === 'cloneNode'){
+        newArr.push({
+          name: 'removeNode',
+          obj: ObjArr[i]
+        })
+      }
+      if(element === 'removeNode'){
+        newArr.push({
+          name: 'addChild',
+          obj: ObjArr[i]
+        })
+      }
+  })
+  return newArr
+}
+
 /**
  * @namespace NodeOperation
  */
@@ -325,44 +362,6 @@ export let removeNode = function (el,type) {
 /** 
  * @function
  * @instance
- * @name turnHistoryArr
- * @memberof NodeOperation
- * @description 反转history的opertion name
- * @param arr
- * @example
- * turnHistoryArr()
- */
-
-let flag = false
-export let turnHistoryArr = function(arr) {
-  let operationArr = []
-  let ObjArr = []
-  let newArr = []
-  arr.map(element => {
-    operationArr.push(element.name)
-    ObjArr.push(element.obj)
-  });
-
-  operationArr.reverse();
-  operationArr.forEach((element,i) => {
-      if(element === 'addChild' || element === 'insertSibling' || element === 'cloneNode'){
-        newArr.push({
-          name: 'removeNode',
-          obj: ObjArr[i]
-        })
-      }
-      if(element === 'removeNode'){
-        newArr.push({
-          name: 'addChild',
-          obj: ObjArr[i]
-        })
-      }
-  })
-  return newArr
-}
-/** 
- * @function
- * @instance
  * @name pre
  * @memberof NodeOperation
  * @description 撤回
@@ -370,27 +369,27 @@ export let turnHistoryArr = function(arr) {
  * @example
  * pre()
  */
+const historyBeforeLengthArr = []
 export let pre = function () {
-  // this.preHistory.splice(i,1)
-  
-  if(!flag){
+  let preHistoryLength = this.preHistory.length
+  preHistoryLength --
+  historyBeforeLengthArr.push(this.preHistory.length)
+  if(this.preHistory.length === historyBeforeLengthArr[0]){
     this.preHistory = turnHistoryArr(this.preHistory)
-    flag = true
   }
-  
-  
+  if(preHistoryLength === 0){
+    historyBeforeLengthArr.splice(0)
+  }
   console.log(this.preHistory)
-  this.preHistory.some((element,i)=>{
+  this.preHistory.find((element,i)=>{
       if(!element) return
-      // if(length === i){
+      if(element.obj.id === this.preHistory[preHistoryLength].obj.id){
         //插入子节点
         if(element.name === 'addChild'){
           let topic = element.obj.topic
           let id = element.obj.id
           let parentEle = findEle(element.obj.parent.id)
           this.addChild(parentEle,id,topic,PRE_FINISHED)
-          this.preHistory.splice(i,1)
-          return
         }
         //兄弟节点
         if(element.name === 'insertSibling'){
@@ -404,10 +403,8 @@ export let pre = function () {
         if(element.name === 'removeNode'){
           let nodeEle = findEle(element.obj.id)
           this.removeNode(nodeEle,PRE_FINISHED)
-          this.preHistory.splice(i,1)
-          return
         }
-        
+
         //TODO
         if(element.name === 'moveNode'){
           let formEle = findEle(element.obj.fromObj.id)
@@ -424,7 +421,10 @@ export let pre = function () {
           let nodeEle = findEle(element.obj.id)
           this.moveUpNode(nodeEle,PRE_FINISHED)
         }
-      // }
+        this.preHistory.splice(i,1)
+        return
+      }
+        
   })
 }
 
@@ -439,48 +439,58 @@ export let pre = function () {
  * pro()
  */
 export let pro = function (){
-  turnHistoryArr(this.proHistory)
-  let length = this.proHistory.length
-  let endWith = this.proHistory[length - 1]
-  console.log(this.proHistory)
+  let proHistoryLength = this.proHistory.length
+  proHistoryLength --
+  historyBeforeLengthArr.push(this.preHistory.length)
+  if(this.proHistory.length === historyBeforeLengthArr[0]){
+    this.proHistory = turnHistoryArr(this.proHistory)
+  }
   this.proHistory.some((element,i)=>{
       if(!element) return
-      if(element.obj.id === endWith.obj.id){
-        //插入子节点、兄弟节点、克隆节点
-        if(element.name === 'addChild' || element.name === 'insertSibling' || element.name === 'cloneNode'){
-          let nodeEle = findEle(element.obj.id)
-          this.removeNode(nodeEle,PRO_FINISHED)
-        }
-
-        if(element.name === 'removeNode'){
+      if(proHistoryLength === i){
+        if(element.name === 'addChild'){
           let topic = element.obj.topic
+          let id = element.obj.id
           let parentEle = findEle(element.obj.parent.id)
-          this.addChild(parentEle,topic,PRO_FINISHED)
+          this.addChild(parentEle,id,topic,PRE_FINISHED)
+        }
+        //兄弟节点
+        if(element.name === 'insertSibling'){
+  
+        }
+        //克隆节点
+        if(element.name === 'cloneNode'){
+  
+        }
+  
+        if(element.name === 'removeNode'){
+          let nodeEle = findEle(element.obj.id)
+          this.removeNode(nodeEle,PRE_FINISHED)
         }
         
         //TODO
         if(element.name === 'moveNode'){
           let formEle = findEle(element.obj.fromObj.id)
           let toEle = findEle(element.obj.toObj.id)
-          this.moveNode(toEle,formEle,PRO_FINISHED)
+          this.moveNode(toEle,formEle,PRE_FINISHED)
         }
-
+  
         if(element.name === 'moveUpNode'){
           let nodeEle = findEle(element.obj.id)
-          this.moveDownNode(nodeEle,PRO_FINISHED)
+          this.moveDownNode(nodeEle,PRE_FINISHED)
         }
-
+  
         if(element.name === 'moveDownNode'){
           let nodeEle = findEle(element.obj.id)
-          this.moveUpNode(nodeEle,PRO_FINISHED)
+          this.moveUpNode(nodeEle,PRE_FINISHED)
         }
-
         this.proHistory.splice(i,1)
         return
       }
-  })
-      
+           
+  })   
 }
+
 /** 
  * @function
  * @instance
