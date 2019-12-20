@@ -282,7 +282,13 @@ export let moveDownNode = function(el,type){
 export let removeNode = function (el,type) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
-  if(type === undefined || type === PRO_FINISHED){
+  if(type === undefined){
+    this.bus.fire('pre', {
+      name: 'removeNode',
+      obj: nodeEle.nodeObj
+    })
+  }
+  if(type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'removeNode',
       obj: nodeEle.nodeObj
@@ -294,6 +300,8 @@ export let removeNode = function (el,type) {
       obj: nodeEle.nodeObj
     })
   }
+  console.log(this.preHistory)
+  console.log(this.proHistory)
   let childrenLength = removeNodeObj(nodeEle.nodeObj)
   nodeEle = nodeEle.parentNode
   if (nodeEle.tagName === 'T') {
@@ -320,56 +328,43 @@ export let removeNode = function (el,type) {
   this.linkDiv()
 }
 
-const parentArr = []
+let id
 var NodeOperationStrategies = {
-  addChild:function(element,type){
-    console.log(element)
-    let nodeEle = findEle(element.obj.id)
-    parentArr.splice(0)
-    this.removeNode(nodeEle,type)
-  },
-  insertSibling:function(element,type){
+  addChild:function(element,isSibling,type){
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
-  cloneNode:function(element,type){
+  insertSibling:function(element,isSibling,type){
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
-  removeNode:function(element,type){
+  cloneNode:function(element,isSibling,type){
+    let nodeEle = findEle(element.obj.id)
+    this.removeNode(nodeEle,type)
+  },
+  removeNode:function(element,isSibling,type){
     let topic = element.obj.topic
     let parentId = element.obj.parent.id
-    //维护一个父节点列表
-    if(parentArr.length === 0){
+    //isSibling true/false 如果是兄弟节点,父节点则是parent.id 否则是node.id
+    console.log(isSibling)
+    if(isSibling){
       parentId = element.obj.parent.id
     }else{
-      parentId = parentArr.pop()
+      parentId = (id !== undefined)?id : element.obj.parent.id
     }
-    //找到父节点
     let parentEle = findEle(parentId)
-    console.log(parentEle)
-    //todo
-    if(parentEle){
-      //向父节点添加子节点
-      let result = addChild.call(this,parentEle,topic,type)
-      if(result){
-        parentArr.push(result)
-      }
-    }else{
-      parentArr.splice(0)
-    }
-    
+    id = this.addChild(parentEle,topic,type)
   },
-  moveNode:function(element,type){
+  moveNode:function(element,isSibling,type){
     let formEle = findEle(element.obj.fromObj.id)
     let toEle = findEle(element.obj.toObj.id)
     this.moveNode(toEle,formEle,type)
   },
-  moveUpNode:function(element,type){
+  moveUpNode:function(element,isSibling,type){
     let nodeEle = findEle(element.obj.id)
     this.moveDownNode(nodeEle,type)
   },
-  moveDownNode:function(element,type){
+  moveDownNode:function(element,isSibling,type){
     let nodeEle = findEle(element.obj.id)
     this.moveUpNode(nodeEle,type)
   }
@@ -386,9 +381,10 @@ var NodeOperationStrategies = {
  * pre()
  */
 export let pre = function () {
+  let isSibling = isAllEqual(this.preHistory)
   let element = this.preHistory.pop()
   if(!element) return
-  NodeOperationStrategies[element.name].call(this,element,PRE_FINISHED)
+  NodeOperationStrategies[element.name].call(this,element,isSibling,PRE_FINISHED)
 }
 
 /** 
@@ -402,9 +398,20 @@ export let pre = function () {
  * pro()
  */
 export let pro = function (){
+  let isSibling = isAllEqual(this.proHistory)
   let element = this.proHistory.pop()
   if(!element) return
-  NodeOperationStrategies[element.name].call(this,element,PRO_FINISHED)
+  NodeOperationStrategies[element.name].call(this,element,isSibling,PRO_FINISHED)
+}
+
+ let isAllEqual = function(array){
+  if(array.length>0){
+     return !array.some(function(value,index){
+        return value.obj.parent.id !== array[0].obj.parent.id;
+     })
+  }else{
+      return true;
+  }
 }
 
 /** 
@@ -443,7 +450,6 @@ export let moveNode = function (from, to, type) {
       obj: { fromObj, toObj }
     })
   }
-  console.log('======')
   moveNodeObj(fromObj, toObj)
   
   addParentLink(this.nodeData) // update parent property

@@ -14,6 +14,7 @@ Bus.prototype = {
       var handlers = this.handlers[type]
       for (var i = 0; i < handlers.length; i++) {
         handlers[i](payload)
+        return
       }
     }
   },

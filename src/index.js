@@ -240,6 +240,7 @@ MindElixir.prototype = {
 
     //事件总线记录每一个操作到history
     this.bus.addListener('pre', operation => {
+      debugger
       this.preHistory.push(operation)
     })
 

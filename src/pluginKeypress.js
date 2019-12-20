@@ -1,6 +1,6 @@
 import hotkeys from 'hotkeys-js'
 export default function(mind) {
-  hotkeys.unbind('del,backspace,f2,tab,enter,left,right,down,up')
+  hotkeys.unbind('del,backspace,f2,tab,enter,left,right,down,up,command+z,ctrl+z,command+shift+z,ctrl+shift+z,command+c,ctrl+c')
   hotkeys(
     'del,backspace',
     {
@@ -21,14 +21,13 @@ export default function(mind) {
       key2func[handler.key]()
     }
   )
-  hotkeys('command + z,ctrl + z',{element: mind.map},e => {
-    var length = mind.preHistory.length
-    mind.pre(length --)
+  hotkeys('command+z, ctrl+z',{element: mind.map},e => {
+    mind.pre()
   })
-  hotkeys('command + shift + z, ctrl + shift + z',{element: mind.map},e => {
+  hotkeys('command+shift+z, ctrl+shift+z',{element: mind.map},e => {
     mind.pro()
   })
-  hotkeys('command + c, ctrl + c',{element:mind.map},e => {
+  hotkeys('command+c,ctrl+c',{element:mind.map},e => {
     mind.cloneNode()
   })
 
