@@ -325,6 +325,7 @@ var NodeOperationStrategies = {
   addChild:function(element,type){
     console.log(element)
     let nodeEle = findEle(element.obj.id)
+    parentArr.splice(0)
     this.removeNode(nodeEle,type)
   },
   insertSibling:function(element,type){
@@ -338,7 +339,7 @@ var NodeOperationStrategies = {
   removeNode:function(element,type){
     let topic = element.obj.topic
     let parentId = element.obj.parent.id
-    debugger
+    // debugger
     if(parentArr.length === 0){
       parentId = element.obj.parent.id
     }else{
