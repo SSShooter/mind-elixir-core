@@ -194,6 +194,7 @@ export let addChild = function (el,topic,type) {
     })
   }
   console.timeEnd('addChild')
+  return newNodeObj.id
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
@@ -319,8 +320,10 @@ export let removeNode = function (el,type) {
   this.linkDiv()
 }
 
+const parentArr = []
 var NodeOperationStrategies = {
   addChild:function(element,type){
+    console.log(element)
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
@@ -334,8 +337,21 @@ var NodeOperationStrategies = {
   },
   removeNode:function(element,type){
     let topic = element.obj.topic
-    let parentEle = findEle(element.obj.parent.id)
-    this.addChild(parentEle,topic,type)
+    let parentId = element.obj.parent.id
+    debugger
+    if(parentArr.length === 0){
+      parentId = element.obj.parent.id
+    }else{
+      parentId = parentArr.pop()
+    }
+    let parentEle = findEle(parentId)
+    if(parentEle){
+      let result = this.addChild(parentEle,topic,type)
+      if(result){
+        parentArr.push(result)
+      }
+    }
+    
   },
   moveNode:function(element,type){
     let formEle = findEle(element.obj.fromObj.id)
