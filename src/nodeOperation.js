@@ -217,7 +217,7 @@ export let moveUpNode = function(el,type){
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'moveUpNode',
-      obj: newNodeObj
+      obj: obj
     })
   }
   if(type === PRE_FINISHED){
@@ -250,7 +250,7 @@ export let moveDownNode = function(el,type){
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'moveDownNode',
-      obj: newNodeObj
+      obj: obj
     })
   }
   if(type === PRE_FINISHED){
@@ -339,18 +339,24 @@ var NodeOperationStrategies = {
   removeNode:function(element,type){
     let topic = element.obj.topic
     let parentId = element.obj.parent.id
-    // debugger
+    //维护一个父节点列表
     if(parentArr.length === 0){
       parentId = element.obj.parent.id
     }else{
       parentId = parentArr.pop()
     }
+    //找到父节点
     let parentEle = findEle(parentId)
+    console.log(parentEle)
+    //todo
     if(parentEle){
-      let result = this.addChild(parentEle,topic,type)
+      //向父节点添加子节点
+      let result = addChild.call(this,parentEle,topic,type)
       if(result){
         parentArr.push(result)
       }
+    }else{
+      parentArr.splice(0)
     }
     
   },
@@ -538,8 +544,8 @@ export let cloneNode = function (el,type) {
   }
   children.insertBefore(grp, t.parentNode.nextSibling)
   if(type === undefined){
-    this.createInputDiv(newTop.children[0])
-    this.selectNode(newTop.children[0])
+    this.createInputDiv(top.children[0])
+    this.selectNode(top.children[0])
     this.linkDiv(grp.offsetParent)
     this.inputDiv.scrollIntoViewIfNeeded()
   }else{
