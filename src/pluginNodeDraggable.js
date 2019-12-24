@@ -26,6 +26,7 @@ export default function (mind) {
     // 进入某元素
     if (event.target.tagName == 'TPC' && event.target !== dragged) {
       event.target.style.opacity = 0.5
+      event.target.style.outline = `2px solid #4dc4ff`
     }
   })
 
@@ -33,6 +34,7 @@ export default function (mind) {
     // 离开某元素
     if (event.target.tagName == 'TPC' && event.target !== dragged) {
       event.target.style.opacity = 1
+      event.target.style.outline = `none`
     }
   })
 
@@ -40,6 +42,7 @@ export default function (mind) {
     event.preventDefault()
     if (event.target.tagName == 'TPC' && event.target !== dragged) {
       event.target.style.opacity = 1
+      event.target.style.outline = `none`
       mind.moveNode(dragged, event.target)
       dragged = null
     }

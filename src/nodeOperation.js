@@ -355,6 +355,9 @@ var NodeOperationStrategies = {
   moveDownNode:function(element,type){
     let nodeEle = findEle(element.obj.id)
     this.moveUpNode(nodeEle,type)
+  },
+  beginEdit:function(element,type) {
+    console.log(element)
   }
 }
 
@@ -471,18 +474,16 @@ export let moveNode = function (from, to, type) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-const editArr = []
-export let beginEdit = function(el,type) {
+export let beginEdit = function(el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let obj = nodeEle.nodeObj
-  editArr.push(obj)
+  this.bus.fire('pre', {
+    name: 'beginEdit',
+    obj: nodeEle
+  })
   this.createInputDiv(nodeEle)
 }
 
-// export let restEdit = function(el,type) {
-//   console.log(el)
-// }
 
 // Judge L or R
 export function processPrimaryNode(primaryNode, obj) {
