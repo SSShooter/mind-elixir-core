@@ -132,7 +132,7 @@ export let insertSibling = function (el,type) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export let addChild = function (el,topic,type) {
+export let addChild = function (el,childObj,type) {
   console.time('addChild')
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -141,22 +141,21 @@ export let addChild = function (el,topic,type) {
     console.warn('目标节点必须展开')
     return
   }
-  
-  let newNodeObj
-  if(topic){
-    nodeObj.topic = topic
-    newNodeObj = cloneNewObj(nodeObj)
+  let child
+  if(type !== undefined){
+    child = childObj
   }else{
-    newNodeObj = generateNewObj()
+    child = generateNewObj()
   }
+  
   nodeObj.expanded = true
-  if (nodeObj.children) nodeObj.children.push(newNodeObj)
-  else nodeObj.children = [newNodeObj]
+  if (nodeObj.children) nodeObj.children.push(child)
+  else nodeObj.children = [child]
   addParentLink(this.nodeData)
   let top = nodeEle.parentElement
 
   let grp = $d.createElement('GRP')
-  let newTop = createSimpleTop(newNodeObj)
+  let newTop = createSimpleTop(child)
   grp.appendChild(newTop)
 
   if (top.tagName === 'T') {
@@ -169,7 +168,7 @@ export let addChild = function (el,topic,type) {
       top.parentElement.insertBefore(c, top.nextSibling)
     }
   } else if (top.tagName === 'ROOT') {
-    this.processPrimaryNode(grp, newNodeObj)
+    this.processPrimaryNode(grp, child)
     top.nextSibling.appendChild(grp)
   }
   if(type === undefined){
@@ -184,17 +183,16 @@ export let addChild = function (el,topic,type) {
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'addChild',
-      obj: newNodeObj
+      obj: child
     })
   }
   if(type === PRE_FINISHED){
     this.bus.fire('pro', {
       name: 'addChild',
-      obj: newNodeObj
+      obj: child
     })
   }
   console.timeEnd('addChild')
-  return newNodeObj.id
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
@@ -300,8 +298,6 @@ export let removeNode = function (el,type) {
       obj: nodeEle.nodeObj
     })
   }
-  console.log(this.preHistory)
-  console.log(this.proHistory)
   let childrenLength = removeNodeObj(nodeEle.nodeObj)
   nodeEle = nodeEle.parentNode
   if (nodeEle.tagName === 'T') {
@@ -328,43 +324,35 @@ export let removeNode = function (el,type) {
   this.linkDiv()
 }
 
-let id
 var NodeOperationStrategies = {
-  addChild:function(element,isSibling,type){
+  addChild:function(element,type){
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
-  insertSibling:function(element,isSibling,type){
+  insertSibling:function(element,type){
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
-  cloneNode:function(element,isSibling,type){
+  cloneNode:function(element,type){
     let nodeEle = findEle(element.obj.id)
     this.removeNode(nodeEle,type)
   },
-  removeNode:function(element,isSibling,type){
-    let topic = element.obj.topic
+  removeNode:function(element,type){
     let parentId = element.obj.parent.id
-    //isSibling true/false 如果是兄弟节点,父节点则是parent.id 否则是node.id
-    console.log(isSibling)
-    if(isSibling){
-      parentId = element.obj.parent.id
-    }else{
-      parentId = (id !== undefined)?id : element.obj.parent.id
-    }
+    let nodeObj = element.obj
     let parentEle = findEle(parentId)
-    id = this.addChild(parentEle,topic,type)
+    this.addChild(parentEle,nodeObj,type)
   },
-  moveNode:function(element,isSibling,type){
+  moveNode:function(element,type){
     let formEle = findEle(element.obj.fromObj.id)
     let toEle = findEle(element.obj.toObj.id)
     this.moveNode(toEle,formEle,type)
   },
-  moveUpNode:function(element,isSibling,type){
+  moveUpNode:function(element,type){
     let nodeEle = findEle(element.obj.id)
     this.moveDownNode(nodeEle,type)
   },
-  moveDownNode:function(element,isSibling,type){
+  moveDownNode:function(element,type){
     let nodeEle = findEle(element.obj.id)
     this.moveUpNode(nodeEle,type)
   }
@@ -381,10 +369,9 @@ var NodeOperationStrategies = {
  * pre()
  */
 export let pre = function () {
-  let isSibling = isAllEqual(this.preHistory)
   let element = this.preHistory.pop()
   if(!element) return
-  NodeOperationStrategies[element.name].call(this,element,isSibling,PRE_FINISHED)
+  NodeOperationStrategies[element.name].call(this,element,PRE_FINISHED)
 }
 
 /** 
@@ -398,21 +385,11 @@ export let pre = function () {
  * pro()
  */
 export let pro = function (){
-  let isSibling = isAllEqual(this.proHistory)
   let element = this.proHistory.pop()
   if(!element) return
-  NodeOperationStrategies[element.name].call(this,element,isSibling,PRO_FINISHED)
+  NodeOperationStrategies[element.name].call(this,element,PRO_FINISHED)
 }
 
- let isAllEqual = function(array){
-  if(array.length>0){
-     return !array.some(function(value,index){
-        return value.obj.parent.id !== array[0].obj.parent.id;
-     })
-  }else{
-      return true;
-  }
-}
 
 /** 
  * @function
@@ -494,11 +471,18 @@ export let moveNode = function (from, to, type) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-export let beginEdit = function(el) {
+const editArr = []
+export let beginEdit = function(el,type) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
+  let obj = nodeEle.nodeObj
+  editArr.push(obj)
   this.createInputDiv(nodeEle)
 }
+
+// export let restEdit = function(el,type) {
+//   console.log(el)
+// }
 
 // Judge L or R
 export function processPrimaryNode(primaryNode, obj) {

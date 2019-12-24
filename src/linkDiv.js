@@ -141,6 +141,13 @@ export default function linkDiv(primaryNode) {
       let children = el.children[1].children
       let path = ''
       loopChildren(children, parent, true)
+      // debugger
+      svg.innerHTML = `  <defs>
+                            <marker id="Triangle" viewBox="0 0 10 10" refX="1" refY="5"
+                                markerWidth="6" markerHeight="6" orient="auto">
+                              <path d="M0,0 L0,6 L9,3 z" />
+                            </marker>
+                          </defs>`
       svg.appendChild(createPath(path))
       function loopChildren(children, parent, first) {
         for (let i = 0; i < children.length; i++) {
