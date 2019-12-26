@@ -39,7 +39,6 @@ export let createPath = function (d) {
   path.setAttribute('fill', 'none')
   path.setAttribute('stroke-linecap', 'square')
   path.setAttribute('stroke-width', '1')
-  path.setAttribute('marker-end','url(#Triangle)')
   return path
 }
 

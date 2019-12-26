@@ -6,11 +6,11 @@ import {
   removeNodeObj,
   insertNodeObj,
   generateNewObj,
-  cloneNewObj,
   checkMoveValid,
   addParentLink,
   moveUpObj,
-  moveDownObj
+  moveDownObj,
+  cloneNewObj
 } from './util'
 import { LEFT, RIGHT, SIDE, PRE_FINISHED, PRO_FINISHED} from './const'
 let $d = document
@@ -141,19 +141,35 @@ export let addChild = function (el,childObj,type) {
     console.warn('目标节点必须展开')
     return
   }
+  
   let childNode
-  if(type !== undefined){
-    childNode = childObj
-  }else{
+  if(type === undefined){
     childNode = generateNewObj()
+    if (nodeObj.children) nodeObj.children.push(childNode)
+      else nodeObj.children = [childNode]
+      addParentLink(this.nodeData)
+    each.call(this,childNode,nodeObj.id)
+  }else {
+    childNode = childObj
+    if(el){
+      //回退删除操作
+      addParentLink(this.nodeData)
+      if (nodeObj.children) nodeObj.children.push(childNode)
+      else nodeObj.children = [childNode]
+      each.call(this,childObj,childObj.parent.id)
+    }else{
+      //复制到指定节点
+      childObj = cloneNewObj(childObj)
+      //todo
+      addParentLink(this.nodeData)
+      each.call(this,childObj,nodeObj.id)
+      console.log('xxxx')
+    }
   }
-  each.call(this,childNode,childNode.parent.id)
 
   function each(childNode,parentId){
       nodeObj.expanded = true
-      if (nodeObj.children) nodeObj.children.push(childNode)
-      else nodeObj.children = [childNode]
-      addParentLink(this.nodeData)
+      
       nodeEle = findEle(parentId)
       let top = nodeEle.parentElement
     
@@ -187,11 +203,8 @@ export let addChild = function (el,childObj,type) {
           each.call(this,child,childNode.id)
         })
       }
-      
   }
-  
-  
-  
+  console.log(childNode)
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'addChild',
@@ -204,6 +217,7 @@ export let addChild = function (el,childObj,type) {
       obj: childNode
     })
   }
+  console.log(this.preHistory)
   console.timeEnd('addChild')
 }
 // uncertain link disappear sometimes??
@@ -516,55 +530,14 @@ export function processPrimaryNode(primaryNode, obj) {
   }
 }
 
+let clipboard
 
-/** 
- * @function
- * @instance
- * @name cloneNode
- * @memberof NodeOperation
- * @description Remove the target node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @example
- */
-export let cloneNode = function (el,type) {
+export let paste = function () {
+  let nodeObj = clipboard.nodeObj
+  this.addChild(null,nodeObj,PRO_FINISHED)
+}
+export let copy = function (el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
-    this.addChild()
-    return
-  }
-  let newNodeObj = cloneNewObj(nodeObj)
-  insertNodeObj(nodeObj, newNodeObj)
-  addParentLink(this.nodeData)
-  let t = nodeEle.parentElement
-  let grp = $d.createElement('GRP')
-  let top = createSimpleTop(newNodeObj)
-  grp.appendChild(top)
-  let children = t.parentNode.parentNode
-  if (children.className === 'box') {
-    this.processPrimaryNode(grp, newNodeObj)
-  }
-  children.insertBefore(grp, t.parentNode.nextSibling)
-  if(type === undefined){
-    this.createInputDiv(top.children[0])
-    this.selectNode(top.children[0])
-    this.linkDiv(grp.offsetParent)
-    this.inputDiv.scrollIntoViewIfNeeded()
-  }else{
-    this.linkDiv(grp.offsetParent)
-  }
-  if(type === undefined || type === PRO_FINISHED){
-    this.bus.fire('pre', {
-      name: 'cloneNode',
-      obj: newNodeObj
-    })
-  }
-  if(type === PRE_FINISHED){
-    this.bus.fire('pro', {
-      name: 'cloneNode',
-      obj: newNodeObj
-    })
-  }
-  
+  clipboard = nodeEle
 }

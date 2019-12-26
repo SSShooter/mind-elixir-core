@@ -1,6 +1,6 @@
 import hotkeys from 'hotkeys-js'
 export default function(mind) {
-  hotkeys.unbind('del,backspace,f2,tab,enter,left,right,down,up,command+z,ctrl+z,command+shift+z,ctrl+shift+z,command+c,ctrl+c')
+  hotkeys.unbind('del,backspace,space,spacebar,tab,enter,left,right,down,up,pageup,pagedown,command+z,ctrl+z,command+shift+z,ctrl+shift+z,command+c,ctrl+c')
   hotkeys(
     'del,backspace',
     {
@@ -12,7 +12,7 @@ export default function(mind) {
     }
   )
   hotkeys(
-    'f2,tab,enter,left,right,down,up,pageup,pagedown',
+    'tab,enter,left,right,down,up,pageup,pagedown',
     {
       element: mind.map,
     },
@@ -28,19 +28,22 @@ export default function(mind) {
     mind.pro()
   })
   hotkeys('command+c,ctrl+c',{element:mind.map},e => {
-    mind.cloneNode()
+    mind.copy()
+  })
+  hotkeys('command+v,ctrl+v',{element:mind.map},e => {
+    mind.paste()
   })
 
+  hotkeys('space,spacebar',{element:mind.map},e =>{
+    console.log('space')
+    mind.beginEdit()
+  })
   let key2func = {
     enter: () => {
       mind.insertSibling()
     },
     tab: () => {
       mind.addChild()
-    },
-    f2: () => {
-      console.log('f2')
-      mind.beginEdit()
     },
     up: () => {
       mind.selectPrevSibling()

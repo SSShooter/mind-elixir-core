@@ -40,15 +40,16 @@ infoSpan.innerHTML = `
 快捷键使用说明：
 </div>
 <div class = 'helpInfo'>
-  Tab    插入子节点   (Mac 为 Tab) </br>
-  Enter  插入同级节点 (Mac 为 Enter) </br>
-  Delete 删除节点     (Mac 为 Delete) </br>
-  PgUp   上移        (Mac 为 PgUp) </br>
-  PgDn   下移        (Mac 为 PgDn) </br>
-  Clone  克隆        (Mac 为 command + c) </br>
-  Pre    撤回        (Mac 为 command + z) </br>
-  Pro    重做        (Mac 为 command + shift + z) </br>
-  Save   保存        (Mac 为 command + s) </br>
+  编辑        (Mac 为 空格) </br>
+  插入子节点   (Mac 为 Tab) </br>
+  插入同级节点 (Mac 为 Enter) </br>
+  删除节点     (Mac 为 Delete) </br>
+  上移        (Mac 为 PgUp,Windows为pageup) </br>
+  下移        (Mac 为 PgDn,Windows为pagedown) </br>
+  克隆        (Mac 为 command + c) </br>
+  redo        (Mac 为 command + z) </br>
+  undo        (Mac 为 command + shift + z) </br>
+  保存        (Mac 为 command + s) </br>
 </div>
 `
 infoSpan.hidden =true
