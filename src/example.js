@@ -87,6 +87,12 @@ export default {
                 selected: true,
                 new: true,
               },
+              {
+                topic: 'ctrl + Z',
+                id: 'bd42e97d7ac35e921',
+                selected: true,
+                new: true,
+              },
             ],
           },
         ],

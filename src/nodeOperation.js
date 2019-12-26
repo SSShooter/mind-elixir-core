@@ -141,55 +141,67 @@ export let addChild = function (el,childObj,type) {
     console.warn('目标节点必须展开')
     return
   }
-  let child
+  let childNode
   if(type !== undefined){
-    child = childObj
+    childNode = childObj
   }else{
-    child = generateNewObj()
+    childNode = generateNewObj()
+  }
+  each.call(this,childNode,childNode.parent.id)
+
+  function each(childNode,parentId){
+      nodeObj.expanded = true
+      if (nodeObj.children) nodeObj.children.push(childNode)
+      else nodeObj.children = [childNode]
+      addParentLink(this.nodeData)
+      nodeEle = findEle(parentId)
+      let top = nodeEle.parentElement
+    
+      let grp = $d.createElement('GRP')
+      let newTop = createSimpleTop(childNode)
+      grp.appendChild(newTop)
+    
+      if (top.tagName === 'T') {
+        if (top.children[1]) {
+          top.nextSibling.appendChild(grp)
+        } else {
+          let c = $d.createElement('children')
+          c.appendChild(grp)
+          top.appendChild(createExpander(true))
+          top.parentElement.insertBefore(c, top.nextSibling)
+        }
+      } else if (top.tagName === 'ROOT') {
+        this.processPrimaryNode(grp, childNode)
+        top.nextSibling.appendChild(grp)
+      }
+      if(type === undefined){
+        this.createInputDiv(newTop.children[0])
+        this.selectNode(newTop.children[0])
+        this.linkDiv(grp.offsetParent)
+        this.inputDiv.scrollIntoViewIfNeeded()
+      }else{
+        this.linkDiv(grp.offsetParent)
+      }
+      if(childNode.children !== undefined){
+        childNode.children.forEach(child=>{
+          each.call(this,child,childNode.id)
+        })
+      }
+      
   }
   
-  nodeObj.expanded = true
-  if (nodeObj.children) nodeObj.children.push(child)
-  else nodeObj.children = [child]
-  addParentLink(this.nodeData)
-  let top = nodeEle.parentElement
-
-  let grp = $d.createElement('GRP')
-  let newTop = createSimpleTop(child)
-  grp.appendChild(newTop)
-
-  if (top.tagName === 'T') {
-    if (top.children[1]) {
-      top.nextSibling.appendChild(grp)
-    } else {
-      let c = $d.createElement('children')
-      c.appendChild(grp)
-      top.appendChild(createExpander(true))
-      top.parentElement.insertBefore(c, top.nextSibling)
-    }
-  } else if (top.tagName === 'ROOT') {
-    this.processPrimaryNode(grp, child)
-    top.nextSibling.appendChild(grp)
-  }
-  if(type === undefined){
-    this.createInputDiv(newTop.children[0])
-    this.selectNode(newTop.children[0])
-    this.linkDiv(grp.offsetParent)
-    this.inputDiv.scrollIntoViewIfNeeded()
-  }else{
-    this.linkDiv(grp.offsetParent)
-  }
+  
   
   if(type === undefined || type === PRO_FINISHED){
     this.bus.fire('pre', {
       name: 'addChild',
-      obj: child
+      obj: childNode
     })
   }
   if(type === PRE_FINISHED){
     this.bus.fire('pro', {
       name: 'addChild',
-      obj: child
+      obj: childNode
     })
   }
   console.timeEnd('addChild')
