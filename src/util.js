@@ -62,7 +62,7 @@ export let createSvgGroup = function (d, arrowd) {
   return g
 }
 
-export function getArrowPoints(p3x, p3y, p4x, p4y) {
+export function getArrowPoints (p3x, p3y, p4x, p4y) {
   let deltay = p4y - p3y
   let deltax = p3x - p4x
   let angle = (Math.atan(Math.abs(deltay) / Math.abs(deltax)) / 3.14) * 180
@@ -87,7 +87,7 @@ export function getArrowPoints(p3x, p3y, p4x, p4y) {
   }
 }
 
-export function calcP1(fromData, p2x, p2y) {
+export function calcP1 (fromData, p2x, p2y) {
   let x, y
   let k = (fromData.cy - p2y) / (p2x - fromData.cx)
   if (k > fromData.h / fromData.w || k < -fromData.h / fromData.w) {
@@ -115,7 +115,7 @@ export function calcP1(fromData, p2x, p2y) {
   }
 }
 
-export function calcP4(toData, p3x, p3y) {
+export function calcP4 (toData, p3x, p3y) {
   let x, y
   let k = (toData.cy - p3y) / (p3x - toData.cx)
   if (k > toData.h / toData.w || k < -toData.h / toData.w) {
@@ -196,7 +196,7 @@ export let createExpander = function (expanded) {
   return expander
 }
 
-export function createInputDiv(tpc) {
+export function createInputDiv (tpc) {
   console.time('createInputDiv')
   if (!tpc) return
   let div = $d.createElement('div')
@@ -211,6 +211,12 @@ export function createInputDiv(tpc) {
 
   selectText(div)
   this.inputDiv = div
+
+  this.bus.fire('operation', {
+    name: 'beginEdit',
+    obj: tpc.nodeObj,
+  })
+
   div.addEventListener('keydown', e => {
     let key = e.keyCode
     if (key === 8) {
@@ -225,18 +231,23 @@ export function createInputDiv(tpc) {
   div.addEventListener('blur', () => {
     if (!div) return // 防止重复blur
     let node = tpc.nodeObj
-    if (div.innerText.trim() === '') node.topic = origin
-    else node.topic = div.innerText.trim()
+    let topic = div.textContent.trim()
+    if (topic === '') node.topic = origin
+    else node.topic = topic
     div.remove()
-    this.inputDiv = null
-    div = null
+    this.inputDiv = div = null
+    this.bus.fire('operation', {
+      name: 'finishEdit',
+      obj: node,
+    })
+    if (topic === origin) return // 没有修改不做处理
     tpc.childNodes[0].textContent = node.topic
     this.linkDiv()
   })
   console.timeEnd('createInputDiv')
 }
 
-export function selectText(div) {
+export function selectText (div) {
   if ($d.selection) {
     let range = $d.body.createTextRange()
     range.moveToElementText(div)
@@ -249,7 +260,7 @@ export function selectText(div) {
   }
 }
 
-export function generateUUID() {
+export function generateUUID () {
   return (
     new Date().getTime().toString(16) +
     Math.random()
@@ -258,17 +269,17 @@ export function generateUUID() {
   ).substr(2, 16)
 }
 
-export function generateNewObj() {
+export function generateNewObj () {
   let id = generateUUID()
   return {
     topic: 'new node',
     id,
-    selected: true,
-    new: true,
+    // selected: true,
+    // new: true,
   }
 }
 
-export function generateNewLink(from, to) {
+export function generateNewLink (from, to) {
   let id = generateUUID()
   return {
     id,
@@ -280,7 +291,7 @@ export function generateNewLink(from, to) {
   }
 }
 
-export function checkMoveValid(from, to) {
+export function checkMoveValid (from, to) {
   let valid = true
   while (to.parent) {
     if (to.parent === from) {
@@ -292,7 +303,7 @@ export function checkMoveValid(from, to) {
   return valid
 }
 
-export function getObjSibling(obj) {
+export function getObjSibling (obj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   if (index + 1 >= childrenList.length) {
@@ -303,7 +314,7 @@ export function getObjSibling(obj) {
   }
 }
 
-export function moveUpObj(obj) {
+export function moveUpObj (obj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   let t = childrenList[index]
@@ -317,7 +328,7 @@ export function moveUpObj(obj) {
   t = null
 }
 
-export function moveDownObj(obj) {
+export function moveDownObj (obj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   let t = childrenList[index]
@@ -331,20 +342,20 @@ export function moveDownObj(obj) {
   t = null
 }
 
-export function removeNodeObj(obj) {
+export function removeNodeObj (obj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   childrenList.splice(index, 1)
   return childrenList.length
 }
 
-export function insertNodeObj(obj, newObj) {
+export function insertNodeObj (obj, newObj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   childrenList.splice(index + 1, 0, newObj)
 }
 
-export function moveNodeObj(from, to) {
+export function moveNodeObj (from, to) {
   removeNodeObj(from)
   if (to.children) to.children.push(from)
   else to.children = [from]
@@ -355,7 +366,7 @@ export let dragMoveHelper = {
   mousedown: false,
   lastX: null,
   lastY: null,
-  onMove(e, container) {
+  onMove (e, container) {
     if (this.mousedown) {
       this.afterMoving = true
       if (!this.lastX) {
@@ -373,7 +384,7 @@ export let dragMoveHelper = {
       this.lastY = e.pageY
     }
   },
-  clear() {
+  clear () {
     this.afterMoving = false
     this.mousedown = false
     this.lastX = null
@@ -381,7 +392,7 @@ export let dragMoveHelper = {
   },
 }
 
-export function dmhelper(dom) {
+export function dmhelper (dom) {
   this.dom = dom
   this.mousedown = false
   this.lastX = null

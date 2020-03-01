@@ -320,7 +320,7 @@ export let moveNode = function (from, to) {
  * @description Begin to edit the target node.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  * @example
- * removeNode(E('bd4313fbac40284b'))
+ * beginEdit(E('bd4313fbac40284b'))
  */
 export let beginEdit = function(el) {
   let nodeEle = el || this.currentNode

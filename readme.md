@@ -44,9 +44,7 @@ import MindElixir, { E } from 'mind-elixir'
 ### HTML structure
 
 ```html
-<div class="outer">
-  <div id="map"></div>
-</div>
+<div id="map"></div>
 <style>
   #map {
     height: 500px;
@@ -75,13 +73,36 @@ mind.init()
 
 // get a node
 E('node-id')
+
+```
+
+### Event Handling
+
+```javascript
+mind.bus.addListener('operation', operation => {
+  console.log(operation)
+  // return {
+  //   name: action name,
+  //   obj: target object
+  // }
+
+  // name: [insertSibling|addChild|removeNode|beginEdit|finishEdit]
+  // obj: target
+
+  // name: moveNode
+  // obj: {from:target1,to:target2}
+})
+mind.bus.addListener('selectNode', node => {
+  console.log(node)
+})
 ```
 
 ### Data Export
 
 ```javascript
-mind.getAllData()
-// see src/example.js
+mind.getAllData() // javascript object, see src/example.js
+mind.getAllDataString() // stringify object
+mind.getAllDataMd() // markdown
 ```
 
 ## Doc

@@ -26,6 +26,19 @@ console.log('test E function', E('bd4313fbac40284b'))
 // mind2.init()
 
 mind.bus.addListener('operation', operation => {
-  // console.log(operation)
+  console.log(operation)
+  // return {
+  //   name: action name,
+  //   obj: target object
+  // }
+
+  // name: [insertSibling|addChild|removeNode|beginEdit|finishEdit]
+  // obj: target
+
+  // name: moveNode
+  // obj: {from:target1,to:target2}
+})
+mind.bus.addListener('selectNode', node => {
+  console.log(node)
 })
 window.m = mind

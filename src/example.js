@@ -7,69 +7,49 @@ export default {
       {
         topic: 'What is Minde Elixir',
         id: 'bd4313fbac40284b',
-        selected: true,
-        new: true,
         direction: 0,
         expanded: true,
         children: [
           {
             topic: 'A mind map core',
             id: 'beeb823afd6d2114',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Free',
             id: 'c1f068377de9f3a0',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Open-Source',
             id: 'c1f06d38a09f23ca',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Without framework',
             id: 'c1f06e4cbcf16463',
-            selected: true,
-            new: true,
             expanded: true,
             children: [],
           },
           {
             topic: 'Use in your own project',
             id: 'c1f1f11a7fbf7550',
-            selected: true,
-            new: true,
             children: [
               {
                 topic: "import MindElixir from 'mind-elixir'",
                 id: 'c1f1e245b0a89f9b',
-                selected: true,
-                new: true,
               },
               {
                 topic: 'new MindElixir({...}).init()',
                 id: 'c1f1ebc7072c8928',
-                selected: true,
-                new: true,
               },
             ],
           },
           {
             topic: 'Easy to use',
             id: 'c1f0723c07b408d7',
-            selected: true,
-            new: true,
             expanded: true,
             children: [
               {
                 topic: 'Use it like other mind map application',
                 id: 'c1f09612fd89920d',
-                selected: true,
-                new: true,
               },
             ],
           },
@@ -78,85 +58,61 @@ export default {
       {
         topic: 'Basics',
         id: 'bd1b66c4b56754d9',
-        selected: true,
-        new: true,
         direction: 0,
         expanded: true,
         children: [
           {
             topic: 'tab - Create a child node',
             id: 'bd1b6892bcab126a',
-            selected: true,
-            new: true,
           },
           {
             topic: 'enter - Create a sibling node',
             id: 'bd1b6b632a434b27',
-            selected: true,
-            new: true,
           },
           {
             topic: 'del - Remove a node',
             id: 'bd1b983085187c0a',
-            selected: true,
-            new: true,
           },
         ],
       },
       {
         topic: 'Focus mode',
         id: 'bd1b9b94a9a7a913',
-        selected: true,
-        new: true,
         direction: 1,
         expanded: true,
         children: [
           {
             topic: 'Right click and select Focus Mode',
             id: 'bd1bb2ac4bbab458',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Right click and select Cancel Focus Mode',
             id: 'bd1bb4b14d6697c3',
-            selected: true,
-            new: true,
           },
         ],
       },
       {
         topic: 'Left menu',
         id: 'bd1b9d1816ede134',
-        selected: true,
-        new: true,
         direction: 0,
         expanded: true,
         children: [
           {
             topic: 'Node distribution',
             id: 'bd1ba11e620c3c1a',
-            selected: true,
-            new: true,
             expanded: true,
             children: [
               {
                 topic: 'Left',
                 id: 'bd1c1cb51e6745d3',
-                selected: true,
-                new: true,
               },
               {
                 topic: 'Right',
                 id: 'bd1c1e12fd603ff6',
-                selected: true,
-                new: true,
               },
               {
                 topic: 'Both l & r',
                 id: 'bd1c1f03def5c97b',
-                selected: true,
-                new: true,
               },
             ],
           },
@@ -165,78 +121,56 @@ export default {
       {
         topic: 'Bottom menu',
         id: 'bd1ba66996df4ba4',
-        selected: true,
-        new: true,
         direction: 1,
         expanded: true,
         children: [
           {
             topic: 'Full screen',
             id: 'bd1ba81d9bc95a7e',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Return to Center',
             id: 'bd1babdd5c18a7a2',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Zoom in',
             id: 'bd1bae68e0ab186e',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Zoom out',
             id: 'bd1bb06377439977',
-            selected: true,
-            new: true,
           },
         ],
       },
       {
         topic: 'Link',
         id: 'bd1beff607711025',
-        selected: true,
-        new: true,
         direction: 0,
         expanded: true,
         children: [
           {
             topic: 'Right click and select Link',
             id: 'bd1bf320da90046a',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Click the target you want to link',
             id: 'bd1bf6f94ff2e642',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Modify link with control points',
             id: 'bd1c0c4a487bd036',
-            selected: true,
-            new: true,
           },
         ],
       },
       {
         topic: 'Node style',
         id: 'bd1c217f9d0b20bd',
-        selected: true,
-        new: true,
         direction: 0,
         expanded: true,
         children: [
           {
             topic: 'Font Size',
             id: 'bd1c24420cd2c2f5',
-            selected: true,
-            new: true,
             style: {
               fontSize: '32',
               color: '#3298db',
@@ -245,8 +179,6 @@ export default {
           {
             topic: 'Font Color',
             id: 'bd1c2a59b9a2739c',
-            selected: true,
-            new: true,
             style: {
               color: '#c0392c',
             },
@@ -254,8 +186,6 @@ export default {
           {
             topic: 'Background Color',
             id: 'bd1c2de33f057eb4',
-            selected: true,
-            new: true,
             style: {
               color: '#bdc3c7',
               background: '#2c3e50',
@@ -264,22 +194,16 @@ export default {
           {
             topic: 'Add tags',
             id: 'bd1cff58364436d0',
-            selected: true,
-            new: true,
             tags: ['Completed'],
           },
           {
             topic: 'Add icons',
             id: 'bd1d0317f7e8a61a',
-            selected: true,
-            new: true,
             icons: ['😂'],
           },
           {
             topic: 'Bolder',
             id: 'bd41fd4ca32322a4',
-            selected: true,
-            new: true,
             style: {
               fontWeight: 'bold',
             },
@@ -289,8 +213,6 @@ export default {
       {
         topic: 'Draggable',
         id: 'bd1f03fee1f63bc6',
-        selected: true,
-        new: true,
         direction: 1,
         expanded: true,
         children: [
@@ -298,66 +220,48 @@ export default {
             topic:
               'Drag a node to another node and the former one become a child node of latter one',
             id: 'bd1f07c598e729dc',
-            selected: true,
-            new: true,
           },
         ],
       },
       {
         topic: 'TODO',
         id: 'bd1facea32a1967c',
-        selected: true,
-        new: true,
         direction: 1,
         expanded: true,
         children: [
           {
             topic: 'Add image',
             id: 'bd1fb1ec53010749',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Free node (position)',
             id: 'bd42d3e3bee992b9',
-            selected: true,
-            new: true,
           },
           {
             topic: 'Style adjustment',
             id: 'beeb7f3db6ad6496',
-            selected: true,
-            new: true,
           },
         ],
       },
       {
         topic: 'Export data',
         id: 'beeb7586973430db',
-        selected: true,
-        new: true,
         direction: 1,
         expanded: true,
         children: [
           {
             topic: 'JSON',
             id: 'beeb784cc189375f',
-            selected: true,
-            new: true,
           },
           {
             topic: 'HTML',
             id: 'beeb7a6bec2d68f5',
-            selected: true,
-            new: true,
           },
         ],
       },
       {
         topic: 'Caution',
         id: 'bd42dad21aaf6bae',
-        selected: true,
-        new: true,
         direction: 0,
         style: {
           background: '#f1c40e',
@@ -367,23 +271,17 @@ export default {
           {
             topic: 'Only save manually',
             id: 'bd42e1d0163ebf04',
-            selected: true,
-            new: true,
             expanded: true,
             children: [
               {
                 topic: 'Save button in the top-right corner',
                 id: 'bd42e619051878b3',
-                selected: true,
-                new: true,
                 expanded: true,
                 children: [],
               },
               {
                 topic: 'ctrl + S',
                 id: 'bd42e97d7ac35e99',
-                selected: true,
-                new: true,
               },
             ],
           },
