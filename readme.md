@@ -15,9 +15,11 @@ Mind elixir is a free open source mind map core.
 
 https://mindelixir.ink/#/
 
-### Try it in codepen
+### Playground
 
 https://codepen.io/ssshooter/pen/GVQRYK
+
+React https://codesandbox.io/s/mind-elixir-playground-9sisb
 
 ## Use in your project
 

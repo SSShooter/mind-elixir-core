@@ -186,12 +186,10 @@ MindElixir.prototype = {
     console.log('ME_version ' + MindElixir.version)
     console.log(this)
     this.mindElixirBox.className += ' mind-elixir'
-    this.mindElixirBox.style = 'position: relative;'
     this.mindElixirBox.innerHTML = ''
     
     this.container = $d.createElement('div') // map container
     this.container.className = 'map-container'
-    this.container.style = 'height: 100%;width: 100%;'
 
     this.map = $d.createElement('div') // map-canvas Element
     this.map.className = 'map-canvas'
