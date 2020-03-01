@@ -1,3 +1,4 @@
+import info from '../package.json'
 import {
   findEle,
   createInputDiv,
@@ -51,12 +52,15 @@ import example from './example'
 import layout from './layout'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
+
 import contextMenu from './pluginContextMenu'
 import toolBar from './pluginToolBar'
 import nodeMenu from './pluginNodeMenu'
 import nodeDraggable from './pluginNodeDraggable'
 import keypress from './pluginKeypress'
+
 import Bus from './pubsub'
+
 import './index.less'
 import './pluginContextMenu.less'
 import './pluginToolBar.less'
@@ -100,7 +104,7 @@ function MindElixir({
   nodeMenu,
   keypress,
 }) {
-  this.container = document.querySelector(el)
+  this.mindElixirBox = document.querySelector(el)
   this.history = [] // TODO
 
   this.nodeData = data.nodeData || {}
@@ -179,12 +183,21 @@ MindElixir.prototype = {
   disableEdit,
 
   init: function() {
+    console.log('ME_version ' + MindElixir.version)
+    console.log(this)
+    this.mindElixirBox.className += ' mind-elixir'
+    this.mindElixirBox.style = 'position: relative;'
+    this.mindElixirBox.innerHTML = ''
+    
+    this.container = $d.createElement('div') // map container
     this.container.className = 'map-container'
-    this.container.innerHTML = ''
+    this.container.style = 'height: 100%;width: 100%;'
+
     this.map = $d.createElement('div') // map-canvas Element
     this.map.className = 'map-canvas'
     this.map.setAttribute('tabindex', '0')
     this.container.appendChild(this.map)
+    this.mindElixirBox.appendChild(this.container)
     this.root = $d.createElement('root')
 
     this.box = $d.createElement('children')
@@ -240,7 +253,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '0.9.2'
+MindElixir.version = info.version
 MindElixir.E = findEle
 /**
  * @memberof MindElixir

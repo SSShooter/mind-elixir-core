@@ -46,14 +46,9 @@ import MindElixir, { E } from 'mind-elixir'
   <div id="map"></div>
 </div>
 <style>
-  .outer {
-    position: relative;
-    margin: 50px;
-  }
   #map {
     height: 500px;
     width: 100%;
-    overflow: auto;
   }
 </style>
 ```
