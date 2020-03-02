@@ -10,7 +10,7 @@ import {
 } from './const'
 
 /**
- * functionality: 
+ * functionality:
  * 1. calculate position of primary nodes
  * 2. layout primary node, generate main link
  * 3. generate link inside primary node
@@ -143,16 +143,16 @@ export default function linkDiv(primaryNode) {
       loopChildren(children, parent, true)
       svg.appendChild(createPath(path))
       function loopChildren(children, parent, first) {
+        // parent node of the child dom
+        let parentOT = parent.offsetTop
+        let parentOL = parent.offsetLeft
+        let parentOW = parent.offsetWidth
+        let parentOH = parent.offsetHeight
         for (let i = 0; i < children.length; i++) {
           let child = children[i]
           let childT = child.children[0] // t tag inside the child dom
           let childTOT = childT.offsetTop
           let childTOH = childT.offsetHeight
-          // parent node of the child dom
-          let parentOT = parent.offsetTop
-          let parentOL = parent.offsetLeft
-          let parentOW = parent.offsetWidth
-          let parentOH = parent.offsetHeight
           let y1
           if (first) {
             y1 = parentOT + parentOH / 2
@@ -166,12 +166,15 @@ export default function linkDiv(primaryNode) {
             x1 = parentOL + GAP
             xMiddle = parentOL
             x2 = parentOL - childT.offsetWidth
+            // console.log('x1,y1,x2,y2,child',x1,y1,x2,y2,child)
             if (
               childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
               childTOT + childTOH > parentOT + parentOH / 2 - 50
             ) {
+              // 相差+-50内直接直线
               path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
             } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
+              // 子底部高于父中点
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 - TURNPOINT_R} 
@@ -179,6 +182,7 @@ export default function linkDiv(primaryNode) {
             ${xMiddle - TURNPOINT_R},${y2} 
             L ${x2} ${y2}`
             } else {
+              // 子底部低于父中点
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 + TURNPOINT_R} 

@@ -76,6 +76,20 @@ E('node-id')
 
 ```
 
+### Data Structure
+
+```javascript
+// whole node data structure up to now
+{
+  topic: 'Font Size',
+  id: 'bd1c24420cd2c2f5',
+  style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
+  parent: null,
+  tags: ['Tag'],
+  icons: ['😀'],
+}
+```
+
 ### Event Handling
 
 ```javascript
