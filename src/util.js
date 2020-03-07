@@ -207,7 +207,7 @@ export function createInputDiv (tpc) {
   div.innerHTML = origin
   div.contentEditable = true
   div.spellcheck = false
-  div.style.cssText = `min-width:${tpc.offsetWidth}px;`
+  div.style.cssText = `min-width:${tpc.offsetWidth-8}px;`
   if (this.direction === LEFT) div.style.right = 0
   div.focus()
 
