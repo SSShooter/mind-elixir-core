@@ -19,7 +19,9 @@ https://mindelixir.ink/#/
 
 https://codepen.io/ssshooter/pen/GVQRYK
 
-React https://codesandbox.io/s/mind-elixir-playground-9sisb
+with React https://codesandbox.io/s/mind-elixir-react-9sisb
+
+with Vue https://codesandbox.io/s/mind-elixir-vue-nqjjl
 
 ## Use in your project
 
@@ -81,7 +83,7 @@ E('node-id')
 ```javascript
 // whole node data structure up to now
 {
-  topic: 'Font Size',
+  topic: 'node topic',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
   parent: null,
