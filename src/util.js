@@ -11,7 +11,7 @@ export let addParentLink = (data, parent) => {
 }
 
 export let findEle = id => {
-  return $d.querySelector(`[data-nodeid=${id}]`)
+  return $d.querySelector(`[data-nodeid=me${id}]`)
 }
 
 export let createLinkSvg = function (klass) {
@@ -184,7 +184,7 @@ export let createTopic = function (nodeObj) {
   let topic = $d.createElement('tpc')
   topic.nodeObj = nodeObj
   topic.innerHTML = nodeObj.topic
-  topic.dataset.nodeid = nodeObj.id
+  topic.dataset.nodeid = 'me' + nodeObj.id
   topic.draggable = window.mevar_draggable
   return topic
 }

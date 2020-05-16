@@ -28,7 +28,7 @@ export let unselectNode = function() {
   this.bus.fire('unselectNode')
 }
 export let selectNextSibling = function() {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'root') return
+  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   let sibling = this.currentNode.parentElement.parentElement.nextSibling
   let target
@@ -51,7 +51,7 @@ export let selectNextSibling = function() {
   return true
 }
 export let selectPrevSibling = function() {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'root') return
+  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   let sibling = this.currentNode.parentElement.parentElement.previousSibling
   let target
@@ -83,7 +83,8 @@ export let selectFirstChild = function() {
   }
 }
 export let selectParent = function() {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'root') return
+  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
+  
   let parent = this.currentNode.parentElement.parentElement.parentElement
     .previousSibling
   if (parent) {
