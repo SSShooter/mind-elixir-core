@@ -128,3 +128,8 @@ https://doc.mindelixir.ink/
 ## Dependency
 
 [hotkeys-js](https://www.npmjs.com/package/hotkeys-js)
+
+## TODO
+
+- Image export
+- Undo/Redo
