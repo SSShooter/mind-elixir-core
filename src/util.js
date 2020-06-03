@@ -241,6 +241,7 @@ export function createInputDiv (tpc) {
     this.bus.fire('operation', {
       name: 'finishEdit',
       obj: node,
+      origin
     })
     if (topic === origin) return // 没有修改不做处理
     tpc.childNodes[0].textContent = node.topic

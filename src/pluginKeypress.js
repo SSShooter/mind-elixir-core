@@ -1,22 +1,23 @@
 import hotkeys from 'hotkeys-js'
-export default function(mind) {
+export default function (mind) {
   hotkeys.unbind('del,backspace,f2,tab,enter,left,right,down,up')
   hotkeys(
     'del,backspace',
     {
       element: mind.map,
     },
-    e => {
+    (e) => {
       if (mind.currentLink) mind.removeLink()
       else mind.removeNode()
     }
   )
   hotkeys(
-    'f2,tab,enter,left,right,down,up,pageup,pagedown',
+    'f2,tab,enter,left,right,down,up,pageup,pagedown,ctrl+z, command+z',
     {
       element: mind.map,
     },
     (e, handler) => {
+      console.log(e, handler)
       e.preventDefault()
       key2func[handler.key]()
     }
@@ -63,22 +64,8 @@ export default function(mind) {
       mind.moveDownNode()
     },
     // ctrl z
-    // 90: e => {
-    //   if (e.ctrl || e.metaKey) {
-    //     let oparation = mind.history.pop()
-    //     console.log(oparation)
-    //     let oparationName = oparation.name
-    //     console.log(mind.history)
-    //     mind.nodeData = JSON.parse(mind.history)
-    //     addParentLink(mind.nodeData)
-    //     mind.history = null
-    //     mind.layout()
-    //     let ctrlZ = {
-    //       remove(nodeObj) {
-    //         mind.addChild
-    //       }
-    //     }
-    //   }
-    // },
+    'command+z': () => {
+      mind.undo()
+    },
   }
 }

@@ -117,7 +117,7 @@ export let insertSibling = function (el) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export let addChild = function (el) {
+export let addChild = function (el, node) {
   console.time('addChild')
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -126,7 +126,7 @@ export let addChild = function (el) {
     console.warn('目标节点必须展开')
     return
   }
-  let newNodeObj = generateNewObj()
+  let newNodeObj = node?node:generateNewObj()
   nodeObj.expanded = true
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
@@ -150,10 +150,12 @@ export let addChild = function (el) {
     this.processPrimaryNode(grp, newNodeObj)
     top.nextSibling.appendChild(grp)
   }
-  this.createInputDiv(newTop.children[0])
-  this.selectNode(newTop.children[0])
   this.linkDiv(grp.offsetParent)
-  this.inputDiv.scrollIntoViewIfNeeded()
+  if(!node){
+    this.createInputDiv(newTop.children[0])
+    this.selectNode(newTop.children[0])
+    this.inputDiv.scrollIntoViewIfNeeded()
+  }
   console.timeEnd('addChild')
   this.bus.fire('operation', {
     name: 'addChild',
@@ -224,7 +226,8 @@ export let removeNode = function (el) {
   if (!nodeEle) return
   this.bus.fire('operation', {
     name: 'removeNode',
-    obj: nodeEle.nodeObj
+    obj: nodeEle.nodeObj,
+    originParentId: nodeEle.nodeObj.parent.id
   })
   let childrenLength = removeNodeObj(nodeEle.nodeObj)
   nodeEle = nodeEle.parentNode
@@ -259,14 +262,15 @@ export let removeNode = function (el) {
  * @memberof NodeOperation
  * @description Move the target node to another node (as child node).
  * @param {TargetElement} from - The target you want to move.
- * @param {TargetElement} to - The target you want to move to.
+ * @param {TargetElement} to - The target(as parent node) you want to move to.
  * @example
- * removeNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
+ * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
 export let moveNode = function (from, to) {
   console.time('moveNode')
   let fromObj = from.nodeObj
   let toObj = to.nodeObj
+  let originParentId = fromObj.parent.id
   if (toObj.expanded === false) {
     console.warn('Target node must be expanded')
     return
@@ -307,7 +311,7 @@ export let moveNode = function (from, to) {
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNode',
-    obj: { fromObj, toObj }
+    obj: { fromObj, toObj,originParentId}
   })
   console.timeEnd('moveNode')
 }
@@ -326,6 +330,11 @@ export let beginEdit = function(el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   this.createInputDiv(nodeEle)
+}
+
+export let setNodeTopic = function(tpc,topic){
+  tpc.childNodes[0].textContent = topic
+  this.linkDiv()
 }
 
 // Judge L or R

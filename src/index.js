@@ -39,6 +39,7 @@ import {
   updateNodeTags,
   updateNodeIcons,
   processPrimaryNode,
+  setNodeTopic,
 } from './nodeOperation'
 import {
   createLink,
@@ -137,6 +138,42 @@ function MindElixir({
    * E('bd4313fbac40284b')
    */
   addParentLink(this.nodeData)
+
+  this.isUndo = false
+  this.bus.addListener('operation', (operation) => {
+    if (this.isUndo) {
+      this.isUndo = false
+      return
+    }
+    if (
+      ['moveNode', 'removeNode', 'addChild', 'finishEdit'].includes(
+        operation.name
+      )
+    ) {
+      this.history.push(operation)
+      console.log(operation, this.history)
+    }
+  })
+
+  this.undo = function () {
+    let operation = this.history.pop()
+    if (!operation) return
+    this.isUndo = true
+    if (operation.name === 'moveNode') {
+      this.moveNode(
+        E(operation.obj.fromObj.id),
+        E(operation.obj.originParentId)
+      )
+    } else if (operation.name === 'removeNode') {
+      this.addChild(E(operation.originParentId), operation.obj)
+    } else if (operation.name === 'addChild') {
+      this.removeNode(E(operation.obj.id))
+    } else if (operation.name === 'finishEdit') {
+      this.setNodeTopic(E(operation.obj.id), operation.origin)
+    } else {
+      this.isUndo = false
+    }
+  }
 }
 
 MindElixir.prototype = {
@@ -181,13 +218,14 @@ MindElixir.prototype = {
   setLocale,
   enableEdit,
   disableEdit,
+  setNodeTopic,
 
-  init: function() {
+  init: function () {
     console.log('ME_version ' + MindElixir.version)
     console.log(this)
     this.mindElixirBox.className += ' mind-elixir'
     this.mindElixirBox.innerHTML = ''
-    
+
     this.container = $d.createElement('div') // map container
     this.container.className = 'map-container'
 
@@ -236,11 +274,6 @@ MindElixir.prototype = {
     this.linkDiv()
 
     initMouseEvent(this)
-
-    // this.bus.addListener('operation', operation => {
-    //   this.history = [operation]
-    //   this.history = this.getAllData()
-    // })
   },
 }
 
@@ -265,7 +298,7 @@ MindElixir.example = example
  * @static
  * @param {String} topic root topic
  */
-MindElixir.new = topic => ({
+MindElixir.new = (topic) => ({
   nodeData: {
     id: 'root',
     topic: topic || 'new topic',
