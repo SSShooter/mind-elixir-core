@@ -29,6 +29,7 @@ import {
 } from './interact'
 import {
   insertSibling,
+  insertSiblingBefore,
   addChild,
   moveNode,
   removeNode,
@@ -165,7 +166,13 @@ function MindElixir({
         E(operation.obj.originParentId)
       )
     } else if (operation.name === 'removeNode') {
-      this.addChild(E(operation.originParentId), operation.obj)
+      if (operation.originSiblingId) {
+        this.insertSibling(E(operation.originSiblingId), operation.obj)
+      } else if (operation.originSibling2Id) {
+        this.insertSiblingBefore(E(operation.originSibling2Id), operation.obj)
+      } else {
+        this.addChild(E(operation.originParentId), operation.obj)
+      }
     } else if (operation.name === 'addChild') {
       this.removeNode(E(operation.obj.id))
     } else if (operation.name === 'finishEdit') {
@@ -178,6 +185,7 @@ function MindElixir({
 
 MindElixir.prototype = {
   insertSibling,
+  insertSiblingBefore,
   addChild,
   removeNode,
   moveNode,

@@ -5,11 +5,12 @@ import {
   moveNodeObj,
   removeNodeObj,
   insertNodeObj,
+  insertBeforeNodeObj,
   generateNewObj,
   checkMoveValid,
   addParentLink,
   moveUpObj,
-  moveDownObj
+  moveDownObj,
 } from './util'
 import { LEFT, RIGHT, SIDE } from './const'
 let $d = document
@@ -52,11 +53,15 @@ export let updateNodeIcons = function (object) {
   } else {
     let iconsContainer = $d.createElement('span')
     iconsContainer.className = 'icons'
-    iconsContainer.innerHTML = icons.map(icon => `<span>${icon}</span>`).join('')
+    iconsContainer.innerHTML = icons
+      .map(icon => `<span>${icon}</span>`)
+      .join('')
     // fixed sequence: text -> icons -> tags
     if (nodeEle.lastChild.className === 'tags') {
       nodeEle.insertBefore(iconsContainer, nodeEle.lastChild)
-    } else { nodeEle.appendChild(iconsContainer) }
+    } else {
+      nodeEle.appendChild(iconsContainer)
+    }
   }
   this.linkDiv()
 }
@@ -65,7 +70,7 @@ export let updateNodeSvgChart = function () {
   // TODO
 }
 
-/** 
+/**
  * @function
  * @instance
  * @name insertSibling
@@ -75,7 +80,7 @@ export let updateNodeSvgChart = function () {
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export let insertSibling = function (el) {
+export let insertSibling = function (el, node) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let nodeObj = nodeEle.nodeObj
@@ -83,7 +88,7 @@ export let insertSibling = function (el) {
     this.addChild()
     return
   }
-  let newNodeObj = generateNewObj()
+  let newNodeObj = node || generateNewObj()
   insertNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
   let t = nodeEle.parentElement
@@ -96,18 +101,54 @@ export let insertSibling = function (el) {
     this.processPrimaryNode(grp, newNodeObj)
   }
   children.insertBefore(grp, t.parentNode.nextSibling)
-  this.createInputDiv(top.children[0])
-  this.selectNode(top.children[0])
   this.linkDiv(grp.offsetParent)
-  this.inputDiv.scrollIntoViewIfNeeded()
+  if (!node) {
+    this.createInputDiv(top.children[0])
+    this.selectNode(top.children[0])
+    this.inputDiv.scrollIntoViewIfNeeded()
+  }
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
-    obj: newNodeObj
+    obj: newNodeObj,
   })
 }
 
-/** 
+export let insertSiblingBefore = function (el, node) {
+  let nodeEle = el || this.currentNode
+  if (!nodeEle) return
+  let nodeObj = nodeEle.nodeObj
+  if (nodeObj.root === true) {
+    this.addChild()
+    return
+  }
+  let newNodeObj = node || generateNewObj()
+  insertBeforeNodeObj(nodeObj, newNodeObj)
+  addParentLink(this.nodeData)
+  let t = nodeEle.parentElement
+  console.time('insertSibling_DOM')
+  let grp = $d.createElement('GRP')
+  let top = createSimpleTop(newNodeObj)
+  grp.appendChild(top)
+  let children = t.parentNode.parentNode
+  if (children.className === 'box') {
+    this.processPrimaryNode(grp, newNodeObj)
+  }
+  children.insertBefore(grp, t.parentNode)
+  this.linkDiv(grp.offsetParent)
+  if (!node) {
+    this.createInputDiv(top.children[0])
+    this.selectNode(top.children[0])
+    this.inputDiv.scrollIntoViewIfNeeded()
+  }
+  console.timeEnd('insertSibling_DOM')
+  this.bus.fire('operation', {
+    name: 'insertSibling',
+    obj: newNodeObj,
+  })
+}
+
+/**
  * @function
  * @instance
  * @name addChild
@@ -126,7 +167,7 @@ export let addChild = function (el, node) {
     console.warn('目标节点必须展开')
     return
   }
-  let newNodeObj = node?node:generateNewObj()
+  let newNodeObj = node || generateNewObj()
   nodeObj.expanded = true
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
@@ -151,7 +192,7 @@ export let addChild = function (el, node) {
     top.nextSibling.appendChild(grp)
   }
   this.linkDiv(grp.offsetParent)
-  if(!node){
+  if (!node) {
     this.createInputDiv(newTop.children[0])
     this.selectNode(newTop.children[0])
     this.inputDiv.scrollIntoViewIfNeeded()
@@ -159,13 +200,13 @@ export let addChild = function (el, node) {
   console.timeEnd('addChild')
   this.bus.fire('operation', {
     name: 'addChild',
-    obj: newNodeObj
+    obj: newNodeObj,
   })
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
 
-/** 
+/**
  * @function
  * @instance
  * @name moveUpNode
@@ -175,18 +216,18 @@ export let addChild = function (el, node) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export let moveUpNode = function(el){
+export let moveUpNode = function (el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let grp = nodeEle.parentNode.parentNode
   let obj = nodeEle.nodeObj
   moveUpObj(obj)
-  grp.parentNode.insertBefore(grp,grp.previousSibling)
+  grp.parentNode.insertBefore(grp, grp.previousSibling)
   this.linkDiv()
   nodeEle.scrollIntoViewIfNeeded()
 }
 
-/** 
+/**
  * @function
  * @instance
  * @name moveDownNode
@@ -196,22 +237,22 @@ export let moveUpNode = function(el){
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export let moveDownNode = function(el){
+export let moveDownNode = function (el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let grp = nodeEle.parentNode.parentNode
   let obj = nodeEle.nodeObj
   moveDownObj(obj)
-  if(grp.nextSibling){
-    grp.parentNode.insertBefore(grp,grp.nextSibling.nextSibling)
-  }else{
+  if (grp.nextSibling) {
+    grp.parentNode.insertBefore(grp, grp.nextSibling.nextSibling)
+  } else {
     grp.parentNode.prepend(grp)
   }
   this.linkDiv()
   nodeEle.scrollIntoViewIfNeeded()
 }
 
-/** 
+/**
  * @function
  * @instance
  * @name removeNode
@@ -224,10 +265,23 @@ export let moveDownNode = function(el){
 export let removeNode = function (el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
+  let index = nodeEle.nodeObj.parent.children.findIndex(
+    node => node === nodeEle.nodeObj
+  )
+  let originSiblingId = null
+  let originSibling2Id = null
+  if (index !== 0) {
+    originSiblingId = nodeEle.nodeObj.parent.children[index - 1].id
+  } else {
+    originSibling2Id = nodeEle.nodeObj.parent.children[index + 1].id
+  }
+  console.log(originSiblingId, originSibling2Id)
   this.bus.fire('operation', {
     name: 'removeNode',
     obj: nodeEle.nodeObj,
-    originParentId: nodeEle.nodeObj.parent.id
+    originSiblingId,
+    originSibling2Id,
+    originParentId: nodeEle.nodeObj.parent.id,
   })
   let childrenLength = removeNodeObj(nodeEle.nodeObj)
   nodeEle = nodeEle.parentNode
@@ -235,19 +289,22 @@ export let removeNode = function (el) {
     if (childrenLength === 0) {
       // remove epd when children length === 0
       let parentT = nodeEle.parentNode.parentNode.previousSibling
-      if (parentT.tagName !== 'ROOT') // root doesn't have epd
+      if (parentT.tagName !== 'ROOT')
+        // root doesn't have epd
         parentT.children[1].remove()
       this.selectParent()
     } else {
       // select sibling automatically
       let success = this.selectPrevSibling()
-      if(!success) this.selectNextSibling()
+      if (!success) this.selectNextSibling()
     }
     for (let prop in this.linkData) {
       // BUG should traversal all children node
       let link = this.linkData[prop]
       if (link.from === nodeEle.firstChild || link.to === nodeEle.firstChild) {
-        this.removeLink(document.querySelector(`[data-linkid=${this.linkData[prop].id}]`))
+        this.removeLink(
+          document.querySelector(`[data-linkid=${this.linkData[prop].id}]`)
+        )
       }
     }
     nodeEle.parentNode.remove()
@@ -255,7 +312,7 @@ export let removeNode = function (el) {
   this.linkDiv()
 }
 
-/** 
+/**
  * @function
  * @instance
  * @name moveNode
@@ -311,12 +368,12 @@ export let moveNode = function (from, to) {
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNode',
-    obj: { fromObj, toObj,originParentId}
+    obj: { fromObj, toObj, originParentId },
   })
   console.timeEnd('moveNode')
 }
 
-/** 
+/**
  * @function
  * @instance
  * @name beginEdit
@@ -326,13 +383,13 @@ export let moveNode = function (from, to) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-export let beginEdit = function(el) {
+export let beginEdit = function (el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   this.createInputDiv(nodeEle)
 }
 
-export let setNodeTopic = function(tpc,topic){
+export let setNodeTopic = function (tpc, topic) {
   tpc.childNodes[0].textContent = topic
   this.linkDiv()
 }
