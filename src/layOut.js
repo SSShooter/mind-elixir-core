@@ -1,6 +1,5 @@
 import { LEFT, RIGHT, SIDE } from './const'
-import { createTopic, createExpander } from './util'
-import { pieChart } from './paintSvg'
+import { createTopic, createCompleteTop, createExpander } from './util'
 let $d = document
 /**
  * traversal data and generate dom structure of mind map
@@ -8,6 +7,7 @@ let $d = document
  * @param {object} data node data object
  * @param {object} first 'the box'
  * @param {number} direction primary node direction
+ * @return {ChildrenElement} children element.
  */
 function generateDOMStructure(data, first, direction) {
   let chldr = $d.createElement('children')
@@ -17,8 +17,6 @@ function generateDOMStructure(data, first, direction) {
   for (let i = 0; i < data.length; i++) {
     let nodeObj = data[i]
     let grp = $d.createElement('GRP')
-    let top = $d.createElement('t')
-    let tpc = createTopic(nodeObj)
     if (first) {
       if (direction === LEFT) {
         grp.className = 'left-side'
@@ -32,54 +30,7 @@ function generateDOMStructure(data, first, direction) {
         }
       }
     }
-    // TODO allow to add online image
-    if (nodeObj.style) {
-      tpc.style.color = nodeObj.style.color
-      tpc.style.background = nodeObj.style.background
-      tpc.style.fontSize = nodeObj.style.fontSize + 'px'
-      tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
-    }
-    if (nodeObj.icons) {
-      let iconsContainer = $d.createElement('span')
-      iconsContainer.className = 'icons'
-      iconsContainer.innerHTML = nodeObj.icons
-        .map(icon => `<span>${icon}</span>`)
-        .join('')
-      tpc.appendChild(iconsContainer)
-    }
-    if (nodeObj.tags) {
-      let tagsContainer = $d.createElement('div')
-      tagsContainer.className = 'tags'
-      tagsContainer.innerHTML = nodeObj.tags
-        .map(tag => `<span>${tag}</span>`)
-        .join('')
-      tpc.appendChild(tagsContainer)
-    }
-    if (nodeObj.pie) {
-      let pieContainer = $d.createElement('div')
-      pieContainer.className = 'pie'
-      let pieData = [
-        {
-          value: 12,
-          label: 'a',
-        },
-        {
-          value: 15,
-          label: 'b',
-        },
-        {
-          value: 42,
-          label: 'c',
-        },
-        {
-          value: 33,
-          label: 'd',
-        },
-      ]
-      pieContainer.appendChild(pieChart(pieData))
-      tpc.appendChild(pieContainer)
-    }
-    top.appendChild(tpc)
+    let top = createCompleteTop(nodeObj)
     if (nodeObj.children && nodeObj.children.length > 0) {
       top.appendChild(createExpander(nodeObj.expanded))
       grp.appendChild(top)

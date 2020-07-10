@@ -72,6 +72,7 @@ import './iconfont/iconfont.js'
 
 // TODO MindElixirLite
 // TODO Link label
+// TODO show up animation
 
 window.E = findEle
 export let E = findEle
@@ -141,7 +142,7 @@ function MindElixir({
   addParentLink(this.nodeData)
 
   this.isUndo = false
-  this.bus.addListener('operation', (operation) => {
+  this.bus.addListener('operation', operation => {
     if (this.isUndo) {
       this.isUndo = false
       return
@@ -306,7 +307,7 @@ MindElixir.example = example
  * @static
  * @param {String} topic root topic
  */
-MindElixir.new = (topic) => ({
+MindElixir.new = topic => ({
   nodeData: {
     id: 'root',
     topic: topic || 'new topic',
@@ -315,5 +316,14 @@ MindElixir.new = (topic) => ({
   },
   linkData: {},
 })
+MindElixir.newNode = ({ topic }) => {
+  let id = generateUUID()
+  return {
+    id,
+    topic,
+    // selected: true,
+    // new: true,
+  }
+}
 
 export default MindElixir

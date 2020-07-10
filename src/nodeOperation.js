@@ -1,6 +1,7 @@
 import {
   findEle,
   createSimpleTop,
+  createCompleteTop,
   createExpander,
   moveNodeObj,
   removeNodeObj,
@@ -94,7 +95,12 @@ export let insertSibling = function (el, node) {
   let t = nodeEle.parentElement
   console.time('insertSibling_DOM')
   let grp = $d.createElement('GRP')
-  let top = createSimpleTop(newNodeObj)
+  let top
+  if (node) {
+    top = createCompleteTop(newNodeObj)
+  } else {
+    top = createSimpleTop(newNodeObj)
+  }
   grp.appendChild(top)
   let children = t.parentNode.parentNode
   if (children.className === 'box') {
@@ -128,7 +134,12 @@ export let insertSiblingBefore = function (el, node) {
   let t = nodeEle.parentElement
   console.time('insertSibling_DOM')
   let grp = $d.createElement('GRP')
-  let top = createSimpleTop(newNodeObj)
+  let top
+  if (node) {
+    top = createCompleteTop(newNodeObj)
+  } else {
+    top = createSimpleTop(newNodeObj)
+  }
   grp.appendChild(top)
   let children = t.parentNode.parentNode
   if (children.className === 'box') {
@@ -175,7 +186,12 @@ export let addChild = function (el, node) {
   let top = nodeEle.parentElement
 
   let grp = $d.createElement('GRP')
-  let newTop = createSimpleTop(newNodeObj)
+  let newTop
+  if (node) {
+    newTop = createCompleteTop(newNodeObj)
+  } else {
+    newTop = createSimpleTop(newNodeObj)
+  }
   grp.appendChild(newTop)
 
   if (top.tagName === 'T') {

@@ -74,3 +74,29 @@ export function pieChart(data) {
 // padding: 5px;
 // border-radius: 5px;
 // border: 1px solid #ccc;
+
+// example
+if (nodeObj.pie) {
+  let pieContainer = $d.createElement('div')
+  pieContainer.className = 'pie'
+  let pieData = [
+    {
+      value: 12,
+      label: 'a',
+    },
+    {
+      value: 15,
+      label: 'b',
+    },
+    {
+      value: 42,
+      label: 'c',
+    },
+    {
+      value: 33,
+      label: 'd',
+    },
+  ]
+  pieContainer.appendChild(pieChart(pieData))
+  tpc.appendChild(pieContainer)
+}
