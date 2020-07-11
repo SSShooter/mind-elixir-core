@@ -1,11 +1,11 @@
 import MindElixir, { E } from './index'
-import data from './example.cn'
 
 let mind = new MindElixir({
   el: '#map',
-  direction: MindElixir.SIDE,
+  // direction: MindElixir.SIDE,
+  direction: MindElixir.RIGHT,
   // data: MindElixir.new('new topic'),
-  data: MindElixir.example,
+  data: MindElixir.example2,
   locale: 'en',
   draggable: true,
   editable: true,

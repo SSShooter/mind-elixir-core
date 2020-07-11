@@ -1,8 +1,9 @@
 import {
   findEle,
   createSimpleTop,
-  createCompleteTop,
+  createTop,
   createExpander,
+  createGroup,
   moveNodeObj,
   removeNodeObj,
   insertNodeObj,
@@ -13,6 +14,7 @@ import {
   moveUpObj,
   moveDownObj,
 } from './util'
+import { createChildren } from './layout'
 import { LEFT, RIGHT, SIDE } from './const'
 let $d = document
 /**
@@ -94,25 +96,22 @@ export let insertSibling = function (el, node) {
   addParentLink(this.nodeData)
   let t = nodeEle.parentElement
   console.time('insertSibling_DOM')
-  let grp = $d.createElement('GRP')
-  let top
-  if (node) {
-    top = createCompleteTop(newNodeObj)
-  } else {
-    top = createSimpleTop(newNodeObj)
-  }
-  grp.appendChild(top)
+
+  let { grp, top } = createGroup(newNodeObj)
+
   let children = t.parentNode.parentNode
+  children.insertBefore(grp, t.parentNode.nextSibling)
   if (children.className === 'box') {
     this.processPrimaryNode(grp, newNodeObj)
+    this.linkDiv()
+  } else {
+    this.linkDiv(grp.offsetParent)
   }
-  children.insertBefore(grp, t.parentNode.nextSibling)
-  this.linkDiv(grp.offsetParent)
   if (!node) {
     this.createInputDiv(top.children[0])
-    this.selectNode(top.children[0])
-    this.inputDiv.scrollIntoViewIfNeeded()
   }
+  this.selectNode(top.children[0])
+  top.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
@@ -133,25 +132,22 @@ export let insertSiblingBefore = function (el, node) {
   addParentLink(this.nodeData)
   let t = nodeEle.parentElement
   console.time('insertSibling_DOM')
-  let grp = $d.createElement('GRP')
-  let top
-  if (node) {
-    top = createCompleteTop(newNodeObj)
-  } else {
-    top = createSimpleTop(newNodeObj)
-  }
-  grp.appendChild(top)
+
+  let { grp, top } = createGroup(newNodeObj)
+
   let children = t.parentNode.parentNode
+  children.insertBefore(grp, t.parentNode)
   if (children.className === 'box') {
     this.processPrimaryNode(grp, newNodeObj)
+    this.linkDiv()
+  } else {
+    this.linkDiv(grp.offsetParent)
   }
-  children.insertBefore(grp, t.parentNode)
-  this.linkDiv(grp.offsetParent)
   if (!node) {
     this.createInputDiv(top.children[0])
-    this.selectNode(top.children[0])
-    this.inputDiv.scrollIntoViewIfNeeded()
   }
+  this.selectNode(top.children[0])
+  top.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
@@ -185,14 +181,7 @@ export let addChild = function (el, node) {
   addParentLink(this.nodeData)
   let top = nodeEle.parentElement
 
-  let grp = $d.createElement('GRP')
-  let newTop
-  if (node) {
-    newTop = createCompleteTop(newNodeObj)
-  } else {
-    newTop = createSimpleTop(newNodeObj)
-  }
-  grp.appendChild(newTop)
+  let { grp, top:newTop } = createGroup(newNodeObj)
 
   if (top.tagName === 'T') {
     if (top.children[1]) {
@@ -203,16 +192,17 @@ export let addChild = function (el, node) {
       top.appendChild(createExpander(true))
       top.parentElement.insertBefore(c, top.nextSibling)
     }
+    this.linkDiv(grp.offsetParent)
   } else if (top.tagName === 'ROOT') {
     this.processPrimaryNode(grp, newNodeObj)
     top.nextSibling.appendChild(grp)
+    this.linkDiv()
   }
-  this.linkDiv(grp.offsetParent)
   if (!node) {
     this.createInputDiv(newTop.children[0])
-    this.selectNode(newTop.children[0])
-    this.inputDiv.scrollIntoViewIfNeeded()
   }
+  this.selectNode(newTop.children[0])
+  newTop.scrollIntoViewIfNeeded()
   console.timeEnd('addChild')
   this.bus.fire('operation', {
     name: 'addChild',
@@ -289,9 +279,10 @@ export let removeNode = function (el) {
   if (index !== 0) {
     originSiblingId = nodeEle.nodeObj.parent.children[index - 1].id
   } else {
-    originSibling2Id = nodeEle.nodeObj.parent.children[index + 1].id
+    let next = nodeEle.nodeObj.parent.children[index + 1]
+    originSibling2Id = next && next.id
   }
-  console.log(originSiblingId, originSibling2Id)
+
   this.bus.fire('operation', {
     name: 'removeNode',
     obj: nodeEle.nodeObj,
@@ -413,17 +404,17 @@ export let setNodeTopic = function (tpc, topic) {
 // Judge L or R
 export function processPrimaryNode(primaryNode, obj) {
   if (this.direction === LEFT) {
-    primaryNode.className = 'left-side'
+    primaryNode.className = 'lhs'
   } else if (this.direction === RIGHT) {
-    primaryNode.className = 'right-side'
+    primaryNode.className = 'rhs'
   } else if (this.direction === SIDE) {
-    let l = $d.querySelectorAll('.left-side').length
-    let r = $d.querySelectorAll('.right-side').length
+    let l = $d.querySelectorAll('.lhs').length
+    let r = $d.querySelectorAll('.rhs').length
     if (l <= r) {
-      primaryNode.className = 'left-side'
+      primaryNode.className = 'lhs'
       obj.direction = LEFT
     } else {
-      primaryNode.className = 'right-side'
+      primaryNode.className = 'rhs'
       obj.direction = RIGHT
     }
   }

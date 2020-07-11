@@ -42,7 +42,7 @@ export default function linkDiv(primaryNode) {
     let totalHeightRWithoutGap = 0
     for (let i = 0; i < primaryNodeList.length; i++) {
       let el = primaryNodeList[i]
-      if (el.className === 'left-side') {
+      if (el.className === 'lhs') {
         totalHeightL += el.offsetHeight + PRIMARYNODEVERTICALGAP
         totalHeightLWithoutGap += el.offsetHeight
         countL += 1
@@ -77,7 +77,7 @@ export default function linkDiv(primaryNode) {
     let el = primaryNodeList[i]
     let elOffsetH = el.offsetHeight
     let deviation, Cy
-    if (el.className === 'left-side') {
+    if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
       el.style.left =
         10000 -
@@ -117,7 +117,7 @@ export default function linkDiv(primaryNode) {
     if (expander) {
       expander.style.top =
         (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
-      if (el.className === 'left-side') {
+      if (el.className === 'lhs') {
         expander.style.left = -10 + 'px'
       } else {
         expander.style.left = expander.parentNode.offsetWidth - 10 + 'px'
@@ -162,7 +162,7 @@ export default function linkDiv(primaryNode) {
           let y2 = childTOT + childTOH
           let x1, x2, xMiddle
           let direction = child.offsetParent.className
-          if (direction === 'left-side') {
+          if (direction === 'lhs') {
             x1 = parentOL + GAP
             xMiddle = parentOL
             x2 = parentOL - childT.offsetWidth
@@ -190,7 +190,7 @@ export default function linkDiv(primaryNode) {
             ${xMiddle - TURNPOINT_R},${y2} 
             L ${x2} ${y2}`
             }
-          } else if (direction === 'right-side') {
+          } else if (direction === 'rhs') {
             x1 = parentOL + parentOW - GAP
             xMiddle = parentOL + parentOW
             x2 = parentOL + parentOW + childT.offsetWidth
@@ -221,9 +221,9 @@ export default function linkDiv(primaryNode) {
           if (expander) {
             expander.style.top =
               (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
-            if (direction === 'left-side') {
+            if (direction === 'lhs') {
               expander.style.left = -10 + 'px'
-            } else if (direction === 'right-side') {
+            } else if (direction === 'rhs') {
               expander.style.left = childT.offsetWidth - 10 + 'px'
             }
             // this property is added in the layout phase

@@ -41,29 +41,32 @@ export default function (mind) {
     },
     left: () => {
       if (!mind.currentNode) return
-      if (mind.currentNode.offsetParent.offsetParent.className === 'right-side')
+      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
         mind.selectParent()
       else if (
-        mind.currentNode.offsetParent.offsetParent.className === 'left-side'
+        mind.currentNode.offsetParent.offsetParent.className === 'lhs'
       )
         mind.selectFirstChild()
     },
     right: () => {
       if (!mind.currentNode) return
-      if (mind.currentNode.offsetParent.offsetParent.className === 'right-side')
+      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
         mind.selectFirstChild()
       else if (
-        mind.currentNode.offsetParent.offsetParent.className === 'left-side'
+        mind.currentNode.offsetParent.offsetParent.className === 'lhs'
       )
         mind.selectParent()
     },
-    pageup() {
+    pageup () {
       mind.moveUpNode()
     },
-    pagedown() {
+    pagedown () {
       mind.moveDownNode()
     },
     // ctrl z
+    'ctrl+z': () => {
+      mind.undo()
+    },
     'command+z': () => {
       mind.undo()
     },

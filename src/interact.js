@@ -33,7 +33,7 @@ export let selectNextSibling = function() {
   let sibling = this.currentNode.parentElement.parentElement.nextSibling
   let target
   let grp = this.currentNode.parentElement.parentElement
-  if (grp.className === 'right-side' || grp.className === 'left-side') {
+  if (grp.className === 'rhs' || grp.className === 'lhs') {
     let siblingList = document.querySelectorAll('.' + grp.className)
     let i = Array.from(siblingList).indexOf(grp)
     if (i + 1 < siblingList.length) {
@@ -56,7 +56,7 @@ export let selectPrevSibling = function() {
   let sibling = this.currentNode.parentElement.parentElement.previousSibling
   let target
   let grp = this.currentNode.parentElement.parentElement
-  if (grp.className === 'right-side' || grp.className === 'left-side') {
+  if (grp.className === 'rhs' || grp.className === 'lhs') {
     let siblingList = document.querySelectorAll('.' + grp.className)
     let i = Array.from(siblingList).indexOf(grp)
     if (i - 1 >= 0) {

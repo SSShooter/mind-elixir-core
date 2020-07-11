@@ -1,5 +1,5 @@
+import { LEFT, RIGHT, SIDE } from './const'
 let $d = document
-import { LEFT } from './const'
 
 export let addParentLink = (data, parent) => {
   data.parent = parent
@@ -160,27 +160,21 @@ export let createListItem = function (topic) {
   return listItem
 }
 
-export let createGroup = function (firstChild, secondChild) {
-  let group = $d.createElement('GRP')
-  group.appendChild(firstChild)
-  group.appendChild(secondChild)
-  return group
+export let createGroup = function (node) {
+  let grp = $d.createElement('GRP')
+  let top = createTop(node)
+  grp.appendChild(top)
+  if (node.children && node.children.length > 0) {
+    top.appendChild(createExpander(node.expanded))
+    if (node.expanded !== false) {
+      let children = createChildren(node.children)
+      grp.appendChild(children)
+    }
+  }
+  return { grp, top }
 }
 
 export let createTop = function (nodeObj) {
-  let top = $d.createElement('t')
-  top.appendChild(createTopic(nodeObj))
-  top.appendChild(createExpander(nodeObj.expanded))
-  return top
-}
-
-export let createSimpleTop = function (nodeObj) {
-  let top = $d.createElement('t')
-  top.appendChild(createTopic(nodeObj))
-  return top
-}
-
-export let createCompleteTop = function (nodeObj) {
   let top = $d.createElement('t')
   let tpc = createTopic(nodeObj)
   // TODO allow to add online image
@@ -226,6 +220,51 @@ export let createExpander = function (expanded) {
   expander.expanded = expanded !== false ? true : false
   expander.className = expanded !== false ? 'minus' : ''
   return expander
+}
+
+/**
+ * traversal data and generate dom structure of mind map
+ * @ignore
+ * @param {object} data node data object
+ * @param {object} first 'the box'
+ * @param {number} direction primary node direction
+ * @return {ChildrenElement} children element.
+ */
+export function createChildren(data, first, direction) {
+  let chldr = $d.createElement('children')
+  if (first) {
+    chldr = first
+  }
+  for (let i = 0; i < data.length; i++) {
+    let nodeObj = data[i]
+    let grp = $d.createElement('GRP')
+    if (first) {
+      if (direction === LEFT) {
+        grp.className = 'lhs'
+      } else if (direction === RIGHT) {
+        grp.className = 'rhs'
+      } else if (direction === SIDE) {
+        if (nodeObj.direction === LEFT) {
+          grp.className = 'lhs'
+        } else if (nodeObj.direction === RIGHT) {
+          grp.className = 'rhs'
+        }
+      }
+    }
+    let top = createTop(nodeObj)
+    if (nodeObj.children && nodeObj.children.length > 0) {
+      top.appendChild(createExpander(nodeObj.expanded))
+      grp.appendChild(top)
+      if (nodeObj.expanded !== false) {
+        let children = createChildren(nodeObj.children)
+        grp.appendChild(children)
+      }
+    } else {
+      grp.appendChild(top)
+    }
+    chldr.appendChild(grp)
+  }
+  return chldr
 }
 
 export function createInputDiv(tpc) {
