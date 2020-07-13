@@ -1,6 +1,6 @@
 import { LEFT, RIGHT, SIDE } from './const'
 let $d = document
-
+// TODO 文件命名方式研究
 export let addParentLink = (data, parent) => {
   data.parent = parent
   if (data.children) {
@@ -152,12 +152,6 @@ export let createMainPath = function (d) {
   path.setAttribute('fill', 'none')
   path.setAttribute('stroke-width', '2')
   return path
-}
-
-export let createListItem = function (topic) {
-  let listItem = $d.createElement('l')
-  listItem.appendChild(topic)
-  return listItem
 }
 
 export let createGroup = function (node) {

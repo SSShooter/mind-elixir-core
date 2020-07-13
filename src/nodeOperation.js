@@ -1,7 +1,5 @@
 import {
   findEle,
-  createSimpleTop,
-  createTop,
   createExpander,
   createGroup,
   moveNodeObj,
@@ -14,7 +12,6 @@ import {
   moveUpObj,
   moveDownObj,
 } from './util'
-import { createChildren } from './layout'
 import { LEFT, RIGHT, SIDE } from './const'
 let $d = document
 /**

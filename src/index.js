@@ -56,18 +56,18 @@ import layout from './layout'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
 
-import contextMenu from './pluginContextMenu'
-import toolBar from './pluginToolBar'
-import nodeMenu from './pluginNodeMenu'
-import nodeDraggable from './pluginNodeDraggable'
-import keypress from './pluginKeypress'
+import contextMenu from './plugin/contextMenu'
+import toolBar from './plugin/toolBar'
+import nodeMenu from './plugin/nodeMenu'
+import nodeDraggable from './plugin/nodeDraggable'
+import keypress from './plugin/keypress'
 
 import Bus from './pubsub'
 
 import './index.less'
-import './pluginContextMenu.less'
-import './pluginToolBar.less'
-import './pluginNodeMenu.less'
+import './plugin/contextMenu.less'
+import './plugin/toolBar.less'
+import './plugin/nodeMenu.less'
 
 import './iconfont/iconfont.js'
 
