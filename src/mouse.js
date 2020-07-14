@@ -1,4 +1,4 @@
-import { dragMoveHelper } from './util'
+import { dragMoveHelper } from './utils/index'
 export default function(mind) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return

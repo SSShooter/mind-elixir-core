@@ -1,4 +1,4 @@
-import {dragMoveHelper} from '../util'
+import {dragMoveHelper} from '../utils/index'
 export default function (mind) {
   var dragged
 

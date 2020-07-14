@@ -1,11 +1,7 @@
 import info from '../package.json'
-import {
-  findEle,
-  createInputDiv,
-  addParentLink,
-  createLinkSvg,
-  createLine,
-} from './util'
+import { addParentLink } from './utils/index'
+import { findEle, createInputDiv, layout } from './utils/dom'
+import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
   unselectNode,
@@ -50,9 +46,8 @@ import {
   showLinkController,
 } from './linkOperation'
 import { LEFT, RIGHT, SIDE } from './const'
-import example from './example'
-import example2 from './example2'
-import layout from './layout'
+import example from './exampleData/1'
+import example2 from './exampleData/2'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
 
@@ -62,7 +57,7 @@ import nodeMenu from './plugin/nodeMenu'
 import nodeDraggable from './plugin/nodeDraggable'
 import keypress from './plugin/keypress'
 
-import Bus from './pubsub'
+import Bus from './utils/pubsub'
 
 import './index.less'
 import './plugin/contextMenu.less'

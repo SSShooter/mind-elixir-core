@@ -1,7 +1,6 @@
-import { findEle, createPath, createMainPath, createLinkSvg } from './util'
+import { createPath, createMainPath, createLinkSvg } from './utils/svg'
+import { findEle } from './utils/dom'
 import {
-  LEFT,
-  RIGHT,
   SIDE,
   GAP,
   TURNPOINT_R,
@@ -12,7 +11,7 @@ import {
 /**
  * functionality:
  * 1. calculate position of primary nodes
- * 2. layout primary node, generate main link
+ * 2. layout primary node, generate primary link
  * 3. generate link inside primary node
  * 4. generate custom link
  * @param {object} primaryNode process the specific primary node only
@@ -20,8 +19,9 @@ import {
 export default function linkDiv(primaryNode) {
   console.time('linkDiv')
   let root = this.root
-  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 -
-    root.offsetWidth / 2}px;`
+  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${
+    10000 - root.offsetWidth / 2
+  }px;`
   let primaryNodeList = this.box.children
   this.svg2nd.innerHTML = ''
 
@@ -73,7 +73,6 @@ export default function linkDiv(primaryNode) {
   let path = ''
   for (let i = 0; i < primaryNodeList.length; i++) {
     let x2, y2
-    let root = this.root
     let el = primaryNodeList[i]
     let elOffsetH = el.offsetHeight
     let deviation, Cy
@@ -89,8 +88,9 @@ export default function linkDiv(primaryNode) {
       y2 = base + currentOffsetL + elOffsetH / 2
       deviation = ((totalHeightL - elOffsetH) / 2) * 0.02
       Cy = base + currentOffsetL + elOffsetH / 2 + deviation // bezier curve control point y coordinate
-      path += `M ${10000} ${10000} C 10000 10000 ${10000 +
-        2 * PRIMARYNODEHORIZONTALGAP * 0.03} ${Cy} ${x2} ${y2}`
+      path += `M ${10000} ${10000} C 10000 10000 ${
+        10000 + 2 * PRIMARYNODEHORIZONTALGAP * 0.03
+      } ${Cy} ${x2} ${y2}`
       if (shortSide === 'l') {
         currentOffsetL += elOffsetH + shortSideGap
       } else {
@@ -104,8 +104,9 @@ export default function linkDiv(primaryNode) {
       y2 = base + currentOffsetR + elOffsetH / 2
       deviation = ((totalHeightR - elOffsetH) / 2) * 0.02
       Cy = base + currentOffsetR + elOffsetH / 2 + deviation
-      path += `M ${10000} ${10000} C 10000 10000 ${10000 +
-        2 * PRIMARYNODEHORIZONTALGAP * 0.03} ${Cy} ${x2} ${y2}`
+      path += `M ${10000} ${10000} C 10000 10000 ${
+        10000 + 2 * PRIMARYNODEHORIZONTALGAP * 0.03
+      } ${Cy} ${x2} ${y2}`
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
       } else {
@@ -204,15 +205,17 @@ export default function linkDiv(primaryNode) {
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 - TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle +
-                TURNPOINT_R},${y2} 
+            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${
+                xMiddle + TURNPOINT_R
+              },${y2} 
             L ${x2} ${y2}`
             } else {
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 + TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle +
-                TURNPOINT_R},${y2} 
+            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${
+                xMiddle + TURNPOINT_R
+              },${y2} 
             L ${x2} ${y2}`
             }
           }

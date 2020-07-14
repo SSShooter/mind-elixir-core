@@ -1,7 +1,4 @@
 import {
-  findEle,
-  createExpander,
-  createGroup,
   moveNodeObj,
   removeNodeObj,
   insertNodeObj,
@@ -11,7 +8,8 @@ import {
   addParentLink,
   moveUpObj,
   moveDownObj,
-} from './util'
+} from './utils/index'
+import { findEle, createExpander, createGroup } from './utils/dom'
 import { LEFT, RIGHT, SIDE } from './const'
 let $d = document
 /**
@@ -178,7 +176,7 @@ export let addChild = function (el, node) {
   addParentLink(this.nodeData)
   let top = nodeEle.parentElement
 
-  let { grp, top:newTop } = createGroup(newNodeObj)
+  let { grp, top: newTop } = createGroup(newNodeObj)
 
   if (top.tagName === 'T') {
     if (top.children[1]) {

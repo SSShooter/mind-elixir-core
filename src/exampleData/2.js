@@ -12,6 +12,7 @@ export default {
           {
             topic: 'div.map-canvas',
             id: '33905d3c66649e8f',
+            tags: ['A special case of grp tag'],
             expanded: true,
             children: [
               {

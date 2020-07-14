@@ -1,11 +1,12 @@
 import {
   dmhelper,
-  createSvgGroup,
   generateUUID,
   getArrowPoints,
   calcP1,
   calcP4,
-} from './util'
+} from './utils/index'
+import { createSvgGroup } from './utils/svg'
+// custom link
 export let createLink = function (from, to, isInitPaint, obj) {
   let map = this.map.getBoundingClientRect()
   if (!from || !to) {
@@ -17,7 +18,7 @@ export let createLink = function (from, to, isInitPaint, obj) {
   let fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
   let toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
   let toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
-  
+
   let p2x, p2y, p3x, p3y
   if (isInitPaint) {
     p2x = fromCenterX + obj.delta1.x
@@ -68,9 +69,7 @@ export let createLink = function (from, to, isInitPaint, obj) {
 
   let newSvgGroup = createSvgGroup(
     `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`,
-    `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${
-    arrowPoint.y2
-    }`
+    `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
   )
 
   let newLinkObj
@@ -221,7 +220,7 @@ export let showLinkController = function (
      */
     p2x = p2x - deltaX / this.scaleVal
     p2y = p2y - deltaY / this.scaleVal
-    
+
     let p1 = calcP1(fromData, p2x, p2y)
     p1x = p1.x
     p1y = p1.y
@@ -257,9 +256,7 @@ export let showLinkController = function (
     )
     this.currentLink.children[1].setAttribute(
       'd',
-      `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${
-      arrowPoint.y2
-      }`
+      `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
     )
     this.line2.setAttribute('x1', p3x)
     this.line2.setAttribute('y1', p3y)

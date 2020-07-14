@@ -1,6 +1,5 @@
-import { LEFT, RIGHT, SIDE } from './const'
 let $d = document
-// TODO 文件命名方式研究
+
 export let addParentLink = (data, parent) => {
   data.parent = parent
   if (data.children) {
@@ -8,60 +7,6 @@ export let addParentLink = (data, parent) => {
       addParentLink(data.children[i], data)
     }
   }
-}
-
-export let findEle = id => {
-  return $d.querySelector(`[data-nodeid=me${id}]`)
-}
-
-export let createLinkSvg = function (klass) {
-  let svg = $d.createElementNS('http://www.w3.org/2000/svg', 'svg')
-  svg.setAttribute('class', klass)
-  return svg
-}
-
-export let createLine = function (x1, y1, x2, y2) {
-  let line = $d.createElementNS('http://www.w3.org/2000/svg', 'line')
-  line.setAttribute('x1', x1)
-  line.setAttribute('y1', y1)
-  line.setAttribute('x2', x2)
-  line.setAttribute('y2', y2)
-  line.setAttribute('stroke', '#bbb')
-  line.setAttribute('fill', 'none')
-  line.setAttribute('stroke-width', '2')
-  return line
-}
-
-export let createPath = function (d) {
-  let path = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
-  path.setAttribute('d', d)
-  path.setAttribute('stroke', '#555')
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke-linecap', 'square')
-  path.setAttribute('stroke-width', '1')
-  path.setAttribute('transform', 'translate(0.5,-0.5)')
-  // adding translate(0.5,-0.5) can fix render error on windows, but i still dunno why
-  return path
-}
-
-export let createSvgGroup = function (d, arrowd) {
-  let g = $d.createElementNS('http://www.w3.org/2000/svg', 'g')
-  let path = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
-  let arrow = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
-  arrow.setAttribute('d', arrowd)
-  arrow.setAttribute('stroke', 'rgb(235, 95, 82)')
-  arrow.setAttribute('fill', 'none')
-  arrow.setAttribute('stroke-linecap', 'cap')
-  arrow.setAttribute('stroke-width', '2')
-  path.setAttribute('d', d)
-  path.setAttribute('stroke', 'rgb(235, 95, 82)')
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke-linecap', 'cap')
-  path.setAttribute('stroke-width', '2')
-
-  g.appendChild(path)
-  g.appendChild(arrow)
-  return g
 }
 
 export function getArrowPoints(p3x, p3y, p4x, p4y) {
@@ -101,8 +46,8 @@ export function calcP1(fromData, p2x, p2y) {
       y = fromData.cy - fromData.h / 2
     }
   } else {
-    console.log('斜率', k)
-    console.log('fromData.cx-x', fromData.cx - p2x)
+    // console.log('斜率', k)
+    // console.log('fromData.cx-x', fromData.cx - p2x)
     if (fromData.cx - p2x < 0) {
       x = fromData.cx + fromData.w / 2
       y = fromData.cy - (fromData.w * k) / 2
@@ -129,8 +74,8 @@ export function calcP4(toData, p3x, p3y) {
       y = toData.cy - toData.h / 2
     }
   } else {
-    console.log('斜率', k)
-    console.log('toData.cx-x', toData.cx - p3x)
+    // console.log('斜率', k)
+    // console.log('toData.cx-x', toData.cx - p3x)
     if (toData.cx - p3x < 0) {
       x = toData.cx + toData.w / 2
       y = toData.cy - (toData.w * k) / 2
@@ -143,174 +88,6 @@ export function calcP4(toData, p3x, p3y) {
     x,
     y,
   }
-}
-
-export let createMainPath = function (d) {
-  let path = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
-  path.setAttribute('d', d)
-  path.setAttribute('stroke', '#666')
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke-width', '2')
-  return path
-}
-
-export let createGroup = function (node) {
-  let grp = $d.createElement('GRP')
-  let top = createTop(node)
-  grp.appendChild(top)
-  if (node.children && node.children.length > 0) {
-    top.appendChild(createExpander(node.expanded))
-    if (node.expanded !== false) {
-      let children = createChildren(node.children)
-      grp.appendChild(children)
-    }
-  }
-  return { grp, top }
-}
-
-export let createTop = function (nodeObj) {
-  let top = $d.createElement('t')
-  let tpc = createTopic(nodeObj)
-  // TODO allow to add online image
-  if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color
-    tpc.style.background = nodeObj.style.background
-    tpc.style.fontSize = nodeObj.style.fontSize + 'px'
-    tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
-  }
-  if (nodeObj.icons) {
-    let iconsContainer = $d.createElement('span')
-    iconsContainer.className = 'icons'
-    iconsContainer.innerHTML = nodeObj.icons
-      .map(icon => `<span>${icon}</span>`)
-      .join('')
-    tpc.appendChild(iconsContainer)
-  }
-  if (nodeObj.tags) {
-    let tagsContainer = $d.createElement('div')
-    tagsContainer.className = 'tags'
-    tagsContainer.innerHTML = nodeObj.tags
-      .map(tag => `<span>${tag}</span>`)
-      .join('')
-    tpc.appendChild(tagsContainer)
-  }
-  top.appendChild(tpc)
-  return top
-}
-
-export let createTopic = function (nodeObj) {
-  let topic = $d.createElement('tpc')
-  topic.nodeObj = nodeObj
-  topic.innerHTML = nodeObj.topic
-  topic.dataset.nodeid = 'me' + nodeObj.id
-  topic.draggable = window.mevar_draggable
-  return topic
-}
-
-export let createExpander = function (expanded) {
-  let expander = $d.createElement('epd')
-  // 包含未定义 expanded 的情况，未定义视为展开
-  expander.innerHTML = expanded !== false ? '-' : '+'
-  expander.expanded = expanded !== false ? true : false
-  expander.className = expanded !== false ? 'minus' : ''
-  return expander
-}
-
-/**
- * traversal data and generate dom structure of mind map
- * @ignore
- * @param {object} data node data object
- * @param {object} first 'the box'
- * @param {number} direction primary node direction
- * @return {ChildrenElement} children element.
- */
-export function createChildren(data, first, direction) {
-  let chldr = $d.createElement('children')
-  if (first) {
-    chldr = first
-  }
-  for (let i = 0; i < data.length; i++) {
-    let nodeObj = data[i]
-    let grp = $d.createElement('GRP')
-    if (first) {
-      if (direction === LEFT) {
-        grp.className = 'lhs'
-      } else if (direction === RIGHT) {
-        grp.className = 'rhs'
-      } else if (direction === SIDE) {
-        if (nodeObj.direction === LEFT) {
-          grp.className = 'lhs'
-        } else if (nodeObj.direction === RIGHT) {
-          grp.className = 'rhs'
-        }
-      }
-    }
-    let top = createTop(nodeObj)
-    if (nodeObj.children && nodeObj.children.length > 0) {
-      top.appendChild(createExpander(nodeObj.expanded))
-      grp.appendChild(top)
-      if (nodeObj.expanded !== false) {
-        let children = createChildren(nodeObj.children)
-        grp.appendChild(children)
-      }
-    } else {
-      grp.appendChild(top)
-    }
-    chldr.appendChild(grp)
-  }
-  return chldr
-}
-
-export function createInputDiv(tpc) {
-  console.time('createInputDiv')
-  if (!tpc) return
-  let div = $d.createElement('div')
-  let origin = tpc.childNodes[0].textContent
-  tpc.appendChild(div)
-  div.innerHTML = origin
-  div.contentEditable = true
-  div.spellcheck = false
-  div.style.cssText = `min-width:${tpc.offsetWidth - 8}px;`
-  if (this.direction === LEFT) div.style.right = 0
-  div.focus()
-
-  selectText(div)
-  this.inputDiv = div
-
-  this.bus.fire('operation', {
-    name: 'beginEdit',
-    obj: tpc.nodeObj,
-  })
-
-  div.addEventListener('keydown', e => {
-    let key = e.keyCode
-    if (key === 8) {
-      // 不停止冒泡冒到document就把节点删了
-      e.stopPropagation()
-    } else if (key === 13 || key === 9) {
-      e.preventDefault()
-      this.inputDiv.blur()
-      this.map.focus()
-    }
-  })
-  div.addEventListener('blur', () => {
-    if (!div) return // 防止重复blur
-    let node = tpc.nodeObj
-    let topic = div.textContent.trim()
-    if (topic === '') node.topic = origin
-    else node.topic = topic
-    div.remove()
-    this.inputDiv = div = null
-    this.bus.fire('operation', {
-      name: 'finishEdit',
-      obj: node,
-      origin,
-    })
-    if (topic === origin) return // 没有修改不做处理
-    tpc.childNodes[0].textContent = node.topic
-    this.linkDiv()
-  })
-  console.timeEnd('createInputDiv')
 }
 
 export function selectText(div) {
