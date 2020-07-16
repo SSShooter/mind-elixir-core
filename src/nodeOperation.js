@@ -114,7 +114,7 @@ export let insertSibling = function (el, node) {
   })
 }
 
-export let insertSiblingBefore = function (el, node) {
+export let insertBefore = function (el, node) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   let nodeObj = nodeEle.nodeObj
@@ -166,7 +166,7 @@ export let addChild = function (el, node) {
   if (!nodeEle) return
   let nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
-    console.warn('目标节点必须展开')
+    console.warn('Node should be extended')
     return
   }
   let newNodeObj = node || generateNewObj()
@@ -269,20 +269,13 @@ export let removeNode = function (el) {
   let index = nodeEle.nodeObj.parent.children.findIndex(
     node => node === nodeEle.nodeObj
   )
-  let originSiblingId = null
-  let originSibling2Id = null
-  if (index !== 0) {
-    originSiblingId = nodeEle.nodeObj.parent.children[index - 1].id
-  } else {
-    let next = nodeEle.nodeObj.parent.children[index + 1]
-    originSibling2Id = next && next.id
-  }
+  let next = nodeEle.nodeObj.parent.children[index + 1]
+  let originSiblingId = next && next.id
 
   this.bus.fire('operation', {
     name: 'removeNode',
     obj: nodeEle.nodeObj,
     originSiblingId,
-    originSibling2Id,
     originParentId: nodeEle.nodeObj.parent.id,
   })
   let childrenLength = removeNodeObj(nodeEle.nodeObj)

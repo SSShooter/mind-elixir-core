@@ -1,6 +1,6 @@
 import i18n from '../i18n'
 
-export default function(mind) {
+export default function (mind) {
   let createLi = (id, name, keyname) => {
     let li = document.createElement('li')
     li.id = id
@@ -37,27 +37,28 @@ export default function(mind) {
   menuContainer.hidden = true
 
   mind.container.append(menuContainer)
-  mind.container.oncontextmenu = function(e) {
+  mind.container.oncontextmenu = function (e) {
     e.preventDefault()
+    // console.log(e.pageY, e.screenY, e.clientY)
     let target = e.target
     if (target.tagName === 'TPC') {
       mind.selectNode(target)
       menuContainer.hidden = false
       let height = menuUl.offsetHeight
       let width = menuUl.offsetWidth
-      if (height + e.pageY > window.innerHeight) {
+      if (height + e.clientY > window.innerHeight) {
         menuUl.style.top = ''
         menuUl.style.bottom = '0px'
       } else {
         menuUl.style.bottom = ''
-        menuUl.style.top = e.pageY + 15 + 'px'
+        menuUl.style.top = e.clientY + 15 + 'px'
       }
-      if (width + e.pageX > window.innerWidth) {
+      if (width + e.clientX > window.innerWidth) {
         menuUl.style.left = ''
         menuUl.style.right = '0px'
       } else {
         menuUl.style.right = ''
-        menuUl.style.left = e.pageX + 10 + 'px'
+        menuUl.style.left = e.clientX + 10 + 'px'
       }
     }
   }

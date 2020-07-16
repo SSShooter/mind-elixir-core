@@ -59,6 +59,19 @@ export let createTopic = function (nodeObj) {
   return topic
 }
 
+export function selectText(div) {
+  if ($d.selection) {
+    let range = $d.body.createTextRange()
+    range.moveToElementText(div)
+    range.select()
+  } else if (window.getSelection) {
+    let range = $d.createRange()
+    range.selectNodeContents(div)
+    window.getSelection().removeAllRanges()
+    window.getSelection().addRange(range)
+  }
+}
+
 export function createInputDiv(tpc) {
   console.time('createInputDiv')
   if (!tpc) return

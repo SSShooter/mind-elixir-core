@@ -90,19 +90,6 @@ export function calcP4(toData, p3x, p3y) {
   }
 }
 
-export function selectText(div) {
-  if ($d.selection) {
-    let range = $d.body.createTextRange()
-    range.moveToElementText(div)
-    range.select()
-  } else if (window.getSelection) {
-    let range = $d.createRange()
-    range.selectNodeContents(div)
-    window.getSelection().removeAllRanges()
-    window.getSelection().addRange(range)
-  }
-}
-
 export function generateUUID() {
   return (
     new Date().getTime().toString(16) + Math.random().toString(16).substr(2)
