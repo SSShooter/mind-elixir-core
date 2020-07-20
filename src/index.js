@@ -22,6 +22,7 @@ import {
   setLocale,
   enableEdit,
   disableEdit,
+  expandNode,
 } from './interact'
 import {
   insertSibling,
@@ -222,6 +223,7 @@ MindElixir.prototype = {
   enableEdit,
   disableEdit,
   setNodeTopic,
+  expandNode,
 
   init: function () {
     console.log('ME_version ' + MindElixir.version)

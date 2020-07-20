@@ -1,18 +1,10 @@
 import { dragMoveHelper } from './utils/index'
-export default function(mind) {
+export default function (mind) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return
     e.preventDefault()
     if (e.target.nodeName === 'EPD') {
-      let target = e.target
-      let node = target.previousSibling.nodeObj
-      if (node.expanded !== false) {
-        node.expanded = false
-      } else {
-        node.expanded = true
-      }
-      mind.layout()
-      mind.linkDiv()
+      mind.expandNode(e.target.previousSibling)
     } else if (
       e.target.parentElement.nodeName === 'T' ||
       e.target.parentElement.nodeName === 'ROOT'
