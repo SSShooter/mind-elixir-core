@@ -10,6 +10,18 @@ let mind = new MindElixir({
   draggable: true,
   editable: true,
   contextMenu: true,
+  contextMenuOption: {
+    focus: true,
+    link: true,
+    extend: [
+      {
+        name: 'Node edit',
+        onclick: () => {
+          alert('extend menu')
+        },
+      },
+    ],
+  },
   toolBar: true,
   nodeMenu: true,
   keypress: true,

@@ -1,6 +1,6 @@
 import i18n from '../i18n'
 
-export default function (mind) {
+export default function (mind, option) {
   let createLi = (id, name, keyname) => {
     let li = document.createElement('li')
     li.id = id
@@ -27,11 +27,25 @@ export default function (mind) {
   menuUl.appendChild(add_child)
   menuUl.appendChild(add_sibling)
   menuUl.appendChild(remove_child)
-  menuUl.appendChild(focus)
-  menuUl.appendChild(unfocus)
+  if (!option || option.focus) {
+    menuUl.appendChild(focus)
+    menuUl.appendChild(unfocus)
+  }
   menuUl.appendChild(up)
   menuUl.appendChild(down)
-  menuUl.appendChild(link)
+  if (!option || option.link) {
+    menuUl.appendChild(link)
+  }
+  if (option && option.extend) {
+    for (let i = 0; i < option.extend.length; i++) {
+      let item = option.extend[i]
+      let dom = createLi(item.name, item.name ,'')
+      menuUl.appendChild(dom)
+      dom.onclick = e => {
+        item.onclick(e)
+      }
+    }
+  }
   let menuContainer = document.createElement('cmenu')
   menuContainer.appendChild(menuUl)
   menuContainer.hidden = true

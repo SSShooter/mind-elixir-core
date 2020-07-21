@@ -100,6 +100,7 @@ function MindElixir({
   draggable,
   editable,
   contextMenu,
+  contextMenuOption,
   toolBar,
   nodeMenu,
   keypress,
@@ -111,6 +112,7 @@ function MindElixir({
   this.linkData = data.linkData || {}
   this.locale = locale
   this.nodeDataBackup = this.nodeData // help reset focus mode
+  this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
   this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
@@ -268,7 +270,7 @@ MindElixir.prototype = {
     this.map.appendChild(this.P3)
 
     // plugin
-    this.contextMenu && contextMenu(this)
+    this.contextMenu && contextMenu(this, this.contextMenuOption)
     this.toolBar && toolBar(this)
     this.nodeMenu && nodeMenu(this)
     this.keypress && keypress(this)

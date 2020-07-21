@@ -71,3 +71,4 @@ yarn-error.log
 src/
 webpack.config.js
 out/
+doc/
