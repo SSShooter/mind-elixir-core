@@ -129,16 +129,6 @@ function MindElixir({
   this.bus = new Bus()
   this.scaleVal = 1
   this.tempDir = null
-  /**
-   * @function
-   * @global
-   * @name E
-   * @param {string} id Node id.
-   * @return {TargetElement} Target element.
-   * @example
-   * E('bd4313fbac40284b')
-   */
-  addParentLink(this.nodeData)
 
   this.isUndo = false
   this.bus.addListener('operation', operation => {
@@ -182,6 +172,8 @@ function MindElixir({
 }
 
 MindElixir.prototype = {
+  addParentLink,
+
   insertSibling,
   insertBefore,
   addChild,
@@ -228,6 +220,16 @@ MindElixir.prototype = {
   expandNode,
 
   init: function () {
+    /**
+     * @function
+     * @global
+     * @name E
+     * @param {string} id Node id.
+     * @return {TargetElement} Target element.
+     * @example
+     * E('bd4313fbac40284b')
+     */
+    addParentLink(this.nodeData)
     console.log('ME_version ' + MindElixir.version)
     console.log(this)
     this.mindElixirBox.className += ' mind-elixir'
