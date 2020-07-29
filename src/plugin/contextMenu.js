@@ -39,7 +39,7 @@ export default function (mind, option) {
   if (option && option.extend) {
     for (let i = 0; i < option.extend.length; i++) {
       let item = option.extend[i]
-      let dom = createLi(item.name, item.name ,'')
+      let dom = createLi(item.name, item.name, item.key || '')
       menuUl.appendChild(dom)
       dom.onclick = e => {
         item.onclick(e)

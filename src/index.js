@@ -104,10 +104,11 @@ function MindElixir({
   toolBar,
   nodeMenu,
   keypress,
+  before,
 }) {
   this.mindElixirBox = document.querySelector(el)
   this.history = [] // TODO
-
+  this.before = before || {}
   this.nodeData = data.nodeData || {}
   this.linkData = data.linkData || {}
   this.locale = locale
@@ -173,18 +174,50 @@ function MindElixir({
 
 MindElixir.prototype = {
   addParentLink,
-
-  insertSibling,
-  insertBefore,
-  addChild,
-  removeNode,
-  moveNode,
+  // node operation
+  insertSibling: function (...args) {
+    if (
+      !this.before.insertSibling ||
+      this.before.insertSibling.apply(this, args)
+    ) {
+      insertSibling.apply(this, args)
+    }
+  },
+  insertBefore: function (...args) {
+    if (
+      !this.before.insertBefore ||
+      this.before.insertBefore.apply(this, args)
+    ) {
+      insertBefore.apply(this, args)
+    }
+  },
+  addChild: function (...args) {
+    if (!this.before.addChild || this.before.addChild.apply(this, args)) {
+      addChild.apply(this, args)
+    }
+  },
+  moveNode: function (...args) {
+    if (!this.before.moveNode || this.before.moveNode.apply(this, args)) {
+      moveNode.apply(this, args)
+    }
+  },
+  removeNode: function (...args) {
+    if (!this.before.removeNode || this.before.removeNode.apply(this, args)) {
+      removeNode.apply(this, args)
+    }
+  },
   moveUpNode,
   moveDownNode,
-  beginEdit,
+  beginEdit: function (...args) {
+    if (!this.before.beginEdit || this.before.beginEdit.apply(this, args)) {
+      beginEdit.apply(this, args)
+    }
+  },
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
+  processPrimaryNode,
+  setNodeTopic,
 
   createLink,
   removeLink,
@@ -195,7 +228,6 @@ MindElixir.prototype = {
   layout,
   linkDiv,
   createInputDiv,
-  processPrimaryNode,
 
   selectNode,
   unselectNode,
@@ -216,7 +248,6 @@ MindElixir.prototype = {
   setLocale,
   enableEdit,
   disableEdit,
-  setNodeTopic,
   expandNode,
 
   init: function () {

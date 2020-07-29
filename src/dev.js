@@ -25,6 +25,15 @@ let mind = new MindElixir({
   toolBar: true,
   nodeMenu: true,
   keypress: true,
+  before: {
+    insertSibling(el, obj) {
+      console.log(el, obj)
+      if (this.currentNode.nodeObj.parent.root) {
+        return false
+      }
+      return true
+    },
+  },
 })
 mind.init()
 
