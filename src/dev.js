@@ -33,10 +33,21 @@ let mind = new MindElixir({
       }
       return true
     },
+    async addChild(el, obj) {
+      await sleep()
+      if (this.currentNode.nodeObj.parent.root) {
+        return false
+      }
+      return true
+    },
   },
 })
 mind.init()
-
+function sleep() {
+  return new Promise((res, rej) => {
+    setTimeout(() => res(), 1000)
+  })
+}
 console.log('test E function', E('bd4313fbac40284b'))
 // let mind2 = new MindElixir({
 //   el: '#map2',

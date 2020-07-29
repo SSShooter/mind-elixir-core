@@ -175,41 +175,53 @@ function MindElixir({
 MindElixir.prototype = {
   addParentLink,
   // node operation
-  insertSibling: function (...args) {
+  insertSibling: async function (...args) {
     if (
       !this.before.insertSibling ||
-      this.before.insertSibling.apply(this, args)
+      (await this.before.insertSibling.apply(this, args))
     ) {
       insertSibling.apply(this, args)
     }
   },
-  insertBefore: function (...args) {
+  insertBefore: async function (...args) {
     if (
       !this.before.insertBefore ||
-      this.before.insertBefore.apply(this, args)
+      (await this.before.insertBefore.apply(this, args))
     ) {
       insertBefore.apply(this, args)
     }
   },
-  addChild: function (...args) {
-    if (!this.before.addChild || this.before.addChild.apply(this, args)) {
+  addChild: async function (...args) {
+    if (
+      !this.before.addChild ||
+      (await this.before.addChild.apply(this, args))
+    ) {
       addChild.apply(this, args)
     }
   },
-  moveNode: function (...args) {
-    if (!this.before.moveNode || this.before.moveNode.apply(this, args)) {
+  moveNode: async function (...args) {
+    if (
+      !this.before.moveNode ||
+      (await this.before.moveNode.apply(this, args))
+    ) {
       moveNode.apply(this, args)
     }
   },
-  removeNode: function (...args) {
-    if (!this.before.removeNode || this.before.removeNode.apply(this, args)) {
+  removeNode: async function (...args) {
+    if (
+      !this.before.removeNode ||
+      (await this.before.removeNode.apply(this, args))
+    ) {
       removeNode.apply(this, args)
     }
   },
   moveUpNode,
   moveDownNode,
-  beginEdit: function (...args) {
-    if (!this.before.beginEdit || this.before.beginEdit.apply(this, args)) {
+  beginEdit: async function (...args) {
+    if (
+      !this.before.beginEdit ||
+      (await this.before.beginEdit.apply(this, args))
+    ) {
       beginEdit.apply(this, args)
     }
   },
