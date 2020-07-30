@@ -1,4 +1,5 @@
 import { LEFT, RIGHT, SIDE } from '../const'
+import vari from '../var'
 
 // DOM manipulation
 let $d = document
@@ -55,7 +56,7 @@ export let createTopic = function (nodeObj) {
   topic.nodeObj = nodeObj
   topic.innerHTML = nodeObj.topic
   topic.dataset.nodeid = 'me' + nodeObj.id
-  topic.draggable = window.mevar_draggable
+  topic.draggable = vari.mevar_draggable
   return topic
 }
 

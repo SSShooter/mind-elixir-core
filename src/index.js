@@ -1,4 +1,5 @@
 import info from '../package.json'
+import vari from './var'
 import { addParentLink } from './utils/index'
 import { findEle, createInputDiv, layout } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
@@ -104,7 +105,9 @@ function MindElixir({
   toolBar,
   nodeMenu,
   keypress,
+  newTopicName,
 }) {
+  vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
   this.history = [] // TODO
 
@@ -119,7 +122,7 @@ function MindElixir({
   this.keypress = keypress === undefined ? true : keypress
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   this.direction = typeof direction === 'number' ? direction : 1
-  window.mevar_draggable = draggable === undefined ? true : draggable
+  vari.mevar_draggable = draggable === undefined ? true : draggable
   this.editable = editable === undefined ? true : editable
   this.parentMap = {} // deprecate?
 
@@ -276,7 +279,7 @@ MindElixir.prototype = {
     this.toolBar && toolBar(this)
     this.nodeMenu && nodeMenu(this)
     this.keypress && keypress(this)
-    window.mevar_draggable && nodeDraggable(this)
+    vari.mevar_draggable && nodeDraggable(this)
 
     this.toCenter()
     this.layout()

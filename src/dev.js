@@ -2,6 +2,7 @@ import MindElixir, { E } from './index'
 
 let mind = new MindElixir({
   el: '#map',
+  newTopicName: '子节点',
   // direction: MindElixir.SIDE,
   direction: MindElixir.RIGHT,
   // data: MindElixir.new('new topic'),
