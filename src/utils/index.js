@@ -1,4 +1,4 @@
-let $d = document
+import vari from '../var'
 
 export let addParentLink = (data, parent) => {
   data.parent = parent
@@ -99,7 +99,7 @@ export function generateUUID() {
 export function generateNewObj() {
   let id = generateUUID()
   return {
-    topic: 'new node',
+    topic: vari.newTopicName || 'new node',
     id,
     // selected: true,
     // new: true,
