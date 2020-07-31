@@ -105,7 +105,7 @@ export let insertSibling = function (el, node) {
   if (!node) {
     this.createInputDiv(top.children[0])
   }
-  this.selectNode(top.children[0])
+  this.selectNode(top.children[0], true)
   top.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
@@ -141,7 +141,7 @@ export let insertBefore = function (el, node) {
   if (!node) {
     this.createInputDiv(top.children[0])
   }
-  this.selectNode(top.children[0])
+  this.selectNode(top.children[0], true)
   top.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
@@ -196,7 +196,7 @@ export let addChild = function (el, node) {
   if (!node) {
     this.createInputDiv(newTop.children[0])
   }
-  this.selectNode(newTop.children[0])
+  this.selectNode(newTop.children[0], true)
   newTop.scrollIntoViewIfNeeded()
   console.timeEnd('addChild')
   this.bus.fire('operation', {

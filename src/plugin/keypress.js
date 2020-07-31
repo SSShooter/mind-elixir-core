@@ -1,13 +1,18 @@
 import hotkeys from 'hotkeys-js'
 export default function (mind) {
   hotkeys.unbind('del,backspace,f2,tab,enter,left,right,down,up')
-  hotkeys('del,backspace', { scope: 'mind-elixir' }, e => {
-    if (mind.currentLink) mind.removeLink()
-    else mind.removeNode()
-  })
+  hotkeys(
+    'del,backspace',
+    { scope: 'mind-elixir', element: mind.hotkeysElement || mind.map },
+    e => {
+      e.preventDefault()
+      if (mind.currentLink) mind.removeLink()
+      else mind.removeNode()
+    }
+  )
   hotkeys(
     'f2,tab,enter,left,right,down,up,pageup,pagedown,ctrl+z, command+z',
-    { scope: 'mind-elixir' },
+    { scope: 'mind-elixir', element: mind.hotkeysElement || mind.map },
     (e, handler) => {
       console.log(e, handler)
       e.preventDefault()
