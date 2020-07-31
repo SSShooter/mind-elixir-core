@@ -1,27 +1,20 @@
 import hotkeys from 'hotkeys-js'
 export default function (mind) {
   hotkeys.unbind('del,backspace,f2,tab,enter,left,right,down,up')
-  hotkeys(
-    'del,backspace',
-    {
-      element: mind.map,
-    },
-    (e) => {
-      if (mind.currentLink) mind.removeLink()
-      else mind.removeNode()
-    }
-  )
+  hotkeys('del,backspace', { scope: 'mind-elixir' }, e => {
+    if (mind.currentLink) mind.removeLink()
+    else mind.removeNode()
+  })
   hotkeys(
     'f2,tab,enter,left,right,down,up,pageup,pagedown,ctrl+z, command+z',
-    {
-      element: mind.map,
-    },
+    { scope: 'mind-elixir' },
     (e, handler) => {
       console.log(e, handler)
       e.preventDefault()
       key2func[handler.key]()
     }
   )
+  hotkeys.setScope('mind-elixir')
 
   let key2func = {
     enter: () => {
@@ -43,24 +36,20 @@ export default function (mind) {
       if (!mind.currentNode) return
       if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
         mind.selectParent()
-      else if (
-        mind.currentNode.offsetParent.offsetParent.className === 'lhs'
-      )
+      else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs')
         mind.selectFirstChild()
     },
     right: () => {
       if (!mind.currentNode) return
       if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
         mind.selectFirstChild()
-      else if (
-        mind.currentNode.offsetParent.offsetParent.className === 'lhs'
-      )
+      else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs')
         mind.selectParent()
     },
-    pageup () {
+    pageup() {
       mind.moveUpNode()
     },
-    pagedown () {
+    pagedown() {
       mind.moveDownNode()
     },
     // ctrl z
@@ -71,4 +60,5 @@ export default function (mind) {
       mind.undo()
     },
   }
+  return hotkeys
 }
