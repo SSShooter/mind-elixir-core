@@ -1,69 +1,67 @@
-import hotkeys from 'hotkeys-js'
 export default function (mind) {
-  hotkeys.unbind('del,backspace,f2,tab,enter,left,right,down,up')
-  hotkeys(
-    'del,backspace',
-    { scope: 'mind-elixir', element: mind.hotkeysElement || mind.map },
-    e => {
-      e.preventDefault()
+  mind.map.onkeydown = e => {
+    console.log(e, e.target)
+    if (e.target !== e.currentTarget) {
+      // input
+      return
+    }
+    e.preventDefault()
+    if (e.keyCode === 8 || e.keyCode === 46) {
+      // del,backspace
       if (mind.currentLink) mind.removeLink()
       else mind.removeNode()
+    } else {
+      key2func[e.keyCode] && key2func[e.keyCode](e)
     }
-  )
-  hotkeys(
-    'f2,tab,enter,left,right,down,up,pageup,pagedown,ctrl+z, command+z',
-    { scope: 'mind-elixir', element: mind.hotkeysElement || mind.map },
-    (e, handler) => {
-      console.log(e, handler)
-      e.preventDefault()
-      key2func[handler.key]()
-    }
-  )
-  hotkeys.setScope('mind-elixir')
-
+  }
   let key2func = {
-    enter: () => {
+    13: () => {
+      // enter
       mind.insertSibling()
     },
-    tab: () => {
+    9: () => {
+      // tab
       mind.addChild()
     },
-    f2: () => {
+    113: () => {
+      // f2
       mind.beginEdit()
     },
-    up: () => {
+    38: () => {
+      // up
       mind.selectPrevSibling()
     },
-    down: () => {
+    40: () => {
+      // down
       mind.selectNextSibling()
     },
-    left: () => {
+    37: () => {
+      // left
       if (!mind.currentNode) return
       if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
         mind.selectParent()
       else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs')
         mind.selectFirstChild()
     },
-    right: () => {
+    39: () => {
+      // right
       if (!mind.currentNode) return
       if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
         mind.selectFirstChild()
       else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs')
         mind.selectParent()
     },
-    pageup() {
+    33() {
+      // pageUp
       mind.moveUpNode()
     },
-    pagedown() {
+    34() {
+      // pageDown
       mind.moveDownNode()
     },
     // ctrl z
-    'ctrl+z': () => {
-      mind.undo()
-    },
-    'command+z': () => {
-      mind.undo()
+    90: e => {
+      if (e.metaKey || e.ctrlKey) mind.undo()
     },
   }
-  return hotkeys
 }

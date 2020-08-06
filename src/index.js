@@ -321,7 +321,7 @@ MindElixir.prototype = {
     this.contextMenu && contextMenu(this, this.contextMenuOption)
     this.toolBar && toolBar(this)
     this.nodeMenu && nodeMenu(this)
-    this.hotkeys = this.keypress && keypress(this)
+    
     vari.mevar_draggable && nodeDraggable(this)
 
     this.toCenter()
