@@ -158,5 +158,6 @@ https://doc.mindelixir.ink/
 
 ## TODO
 
-- Image export
 - Undo/Redo
+- drag as sibling
+- Image export
