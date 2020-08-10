@@ -112,6 +112,7 @@ export let insertSibling = function (el, node) {
     name: 'insertSibling',
     obj: newNodeObj,
   })
+  return top
 }
 
 export let insertBefore = function (el, node) {
@@ -148,6 +149,7 @@ export let insertBefore = function (el, node) {
     name: 'insertSibling',
     obj: newNodeObj,
   })
+  return top
 }
 
 /**
