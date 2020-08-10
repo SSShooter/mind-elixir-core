@@ -105,12 +105,13 @@ function MindElixir({
   toolBar,
   nodeMenu,
   keypress,
+  before,
   newTopicName,
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
   this.history = [] // TODO
-
+  this.before = before || {}
   this.nodeData = data.nodeData || {}
   this.linkData = data.linkData || {}
   this.locale = locale
@@ -176,18 +177,62 @@ function MindElixir({
 
 MindElixir.prototype = {
   addParentLink,
-
-  insertSibling,
-  insertBefore,
-  addChild,
-  removeNode,
-  moveNode,
+  // node operation
+  insertSibling: async function (...args) {
+    if (
+      !this.before.insertSibling ||
+      (await this.before.insertSibling.apply(this, args))
+    ) {
+      insertSibling.apply(this, args)
+    }
+  },
+  insertBefore: async function (...args) {
+    if (
+      !this.before.insertBefore ||
+      (await this.before.insertBefore.apply(this, args))
+    ) {
+      insertBefore.apply(this, args)
+    }
+  },
+  addChild: async function (...args) {
+    if (
+      !this.before.addChild ||
+      (await this.before.addChild.apply(this, args))
+    ) {
+      addChild.apply(this, args)
+    }
+  },
+  moveNode: async function (...args) {
+    if (
+      !this.before.moveNode ||
+      (await this.before.moveNode.apply(this, args))
+    ) {
+      moveNode.apply(this, args)
+    }
+  },
+  removeNode: async function (...args) {
+    if (
+      !this.before.removeNode ||
+      (await this.before.removeNode.apply(this, args))
+    ) {
+      removeNode.apply(this, args)
+    }
+  },
   moveUpNode,
   moveDownNode,
-  beginEdit,
+  beginEdit: async function (...args) {
+    if (
+      !this.before.beginEdit ||
+      (await this.before.beginEdit.apply(this, args))
+    ) {
+      beginEdit.apply(this, args)
+    }
+  },
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
+  processPrimaryNode,
+  setNodeTopic,
 
   createLink,
   removeLink,
@@ -198,7 +243,6 @@ MindElixir.prototype = {
   layout,
   linkDiv,
   createInputDiv,
-  processPrimaryNode,
 
   selectNode,
   unselectNode,
@@ -219,7 +263,6 @@ MindElixir.prototype = {
   setLocale,
   enableEdit,
   disableEdit,
-  setNodeTopic,
   expandNode,
 
   init: function () {
@@ -278,7 +321,7 @@ MindElixir.prototype = {
     this.contextMenu && contextMenu(this, this.contextMenuOption)
     this.toolBar && toolBar(this)
     this.nodeMenu && nodeMenu(this)
-    this.keypress && keypress(this)
+    
     vari.mevar_draggable && nodeDraggable(this)
 
     this.toCenter()

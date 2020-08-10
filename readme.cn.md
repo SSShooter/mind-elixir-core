@@ -97,7 +97,3 @@ mind.insertSibling(E('bd4313fbac40284b'))
 ## 文档
 
 https://inspiring-golick-3c01b9.netlify.com/
-
-## 依赖
-
-[hotkeys-js](https://www.npmjs.com/package/hotkeys-js)

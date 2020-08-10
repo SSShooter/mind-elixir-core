@@ -23,14 +23,12 @@ export default function (mind) {
   })
 
   mind.map.addEventListener('dragenter', function (event) {
-    // 进入某元素
     if (event.target.tagName == 'TPC' && event.target !== dragged) {
       event.target.style.opacity = 0.5
     }
   })
 
   mind.map.addEventListener('dragleave', function (event) {
-    // 离开某元素
     if (event.target.tagName == 'TPC' && event.target !== dragged) {
       event.target.style.opacity = 1
     }

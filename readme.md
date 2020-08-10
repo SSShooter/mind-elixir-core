@@ -152,10 +152,6 @@ let mind = new MindElixir({
 
 https://doc.mindelixir.ink/
 
-## Dependency
-
-[hotkeys-js](https://www.npmjs.com/package/hotkeys-js)
-
 ## TODO
 
 - Undo/Redo

@@ -29,7 +29,7 @@ export default function (mind) {
       e.target.parentElement.nodeName === 'T' ||
       e.target.parentElement.nodeName === 'ROOT'
     ) {
-      mind.createInputDiv(e.target)
+      mind.beginEdit(e.target)
     }
   })
 
