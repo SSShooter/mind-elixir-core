@@ -107,6 +107,7 @@ function MindElixir({
   keypress,
   before,
   newTopicName,
+  allowUndo,
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
@@ -125,6 +126,7 @@ function MindElixir({
   this.direction = typeof direction === 'number' ? direction : 1
   vari.mevar_draggable = draggable === undefined ? true : draggable
   this.editable = editable === undefined ? true : editable
+  this.allowUndo = allowUndo === undefined ? true : allowUndo
   this.parentMap = {} // deprecate?
 
   this.currentNode = null // the selected <tpc/> element
@@ -321,7 +323,7 @@ MindElixir.prototype = {
     this.contextMenu && contextMenu(this, this.contextMenuOption)
     this.toolBar && toolBar(this)
     this.nodeMenu && nodeMenu(this)
-    
+    this.keypress && keypress(this)
     vari.mevar_draggable && nodeDraggable(this)
 
     this.toCenter()

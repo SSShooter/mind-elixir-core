@@ -123,9 +123,6 @@ mind.getAllDataMd() // markdown
 
 ### Operation Guards
 
-```
-npm i mind-elixir@beta -S
-```
 ```javascript
 let mind = new MindElixir({
   ...

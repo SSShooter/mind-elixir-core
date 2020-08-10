@@ -1,19 +1,4 @@
 export default function (mind) {
-  mind.map.onkeydown = e => {
-    console.log(e, e.target)
-    if (e.target !== e.currentTarget) {
-      // input
-      return
-    }
-    e.preventDefault()
-    if (e.keyCode === 8 || e.keyCode === 46) {
-      // del,backspace
-      if (mind.currentLink) mind.removeLink()
-      else mind.removeNode()
-    } else {
-      key2func[e.keyCode] && key2func[e.keyCode](e)
-    }
-  }
   let key2func = {
     13: () => {
       // enter
@@ -61,7 +46,23 @@ export default function (mind) {
     },
     // ctrl z
     90: e => {
+      if (!mind.allowUndo) return
       if (e.metaKey || e.ctrlKey) mind.undo()
     },
+  }
+  mind.map.onkeydown = e => {
+    console.log(e, e.target)
+    if (e.target !== e.currentTarget) {
+      // input
+      return
+    }
+    e.preventDefault()
+    if (e.keyCode === 8 || e.keyCode === 46) {
+      // del,backspace
+      if (mind.currentLink) mind.removeLink()
+      else mind.removeNode()
+    } else {
+      key2func[e.keyCode] && key2func[e.keyCode](e)
+    }
   }
 }

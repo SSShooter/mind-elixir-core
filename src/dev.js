@@ -26,6 +26,7 @@ let mind = new MindElixir({
   toolBar: true,
   nodeMenu: true,
   keypress: true,
+  allowUndo: false,
   before: {
     insertSibling(el, obj) {
       console.log(el, obj)
@@ -46,7 +47,7 @@ let mind = new MindElixir({
 mind.init()
 function sleep() {
   return new Promise((res, rej) => {
-    setTimeout(() => res(), 1000)
+    setTimeout(() => res(), 100)
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
