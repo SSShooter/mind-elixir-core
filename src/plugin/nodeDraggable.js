@@ -1,9 +1,71 @@
 import {dragMoveHelper} from '../utils/index'
+let $d = document
+
+export let insertPreview = function (el, insertLocation) {
+  if (!insertLocation) {
+    clearPreview(el)
+    return el
+  }
+  let query = el.getElementsByClassName('insert-preview')
+  let className = `insert-preview ${insertLocation} show`
+  if (query.length > 0) {
+    query[0].className = className
+  } else {
+    let insertPreviewEL = $d.createElement('div')
+    insertPreviewEL.className = className
+    el.appendChild(insertPreviewEL)
+  }
+  return el
+}
+
+export let clearPreview = function (el) {
+  if (!el) {return el}
+  let query = el.getElementsByClassName('insert-preview')
+  for (const queryElement of query || []) {
+    el.removeChild(queryElement)
+  }
+  return el
+}
+
+export let canPreview = function (el, dragged) {
+  return el && el.tagName === 'TPC' && el !== dragged && el.nodeObj.root !== true
+}
+
 export default function (mind) {
   var dragged
+  var insertLocation
+  var meet
 
   /* events fired on the draggable target */
-  mind.map.addEventListener('drag', function (event) { })
+  mind.map.addEventListener('drag', function (event) {
+    clearPreview(meet)
+    let topMeet = $d.elementFromPoint(event.clientX, event.clientY - (event.target.clientHeight / 2))
+    if (canPreview(topMeet, dragged)) {
+      meet = topMeet
+      switch (true) {
+        case event.clientY > topMeet.getBoundingClientRect().y  + (2 * topMeet.clientHeight) / 3:
+          insertLocation = 'after'
+          break
+        case event.clientY > topMeet.getBoundingClientRect().y + topMeet.clientHeight / 3:
+          insertLocation = 'in'
+          break
+      }
+    } else {
+      let bottomMeet = $d.elementFromPoint(event.clientX, event.clientY + (event.target.clientHeight / 2))
+      if (canPreview(bottomMeet, dragged)) {
+        meet = bottomMeet
+        switch (true) {
+          case event.clientY > bottomMeet.getBoundingClientRect().y:
+            insertLocation = 'before'
+            break
+          case event.clientY > bottomMeet.getBoundingClientRect().y + bottomMeet.clientHeight / 3:
+            insertLocation = 'in'
+            break
+        }
+      }
+    }
+    insertPreview(meet, insertLocation)
+  })
 
   mind.map.addEventListener('dragstart', function (event) {
     // store a ref. on the dragged elem
@@ -14,6 +76,24 @@ export default function (mind) {
   mind.map.addEventListener('dragend', function (event) {
     // reset the transparency
     event.target.style.opacity = ''
+    clearPreview(meet)
+    let newNode
+    switch (insertLocation) {
+      case 'before':
+        newNode = mind.insertBefore(meet, dragged.nodeObj)
+        mind.removeNode(dragged)
+        mind.selectNode(newNode.children[0])
+        break
+      case 'after':
+        newNode = mind.insertSibling(meet, dragged.nodeObj)
+        mind.removeNode(dragged)
+        mind.selectNode(newNode.children[0])
+        break
+      case 'in':
+        mind.moveNode(dragged, meet)
+        break
+    }
+    dragged = null
   })
 
   /* events fired on the drop targets */
@@ -38,8 +118,7 @@ export default function (mind) {
     event.preventDefault()
     if (event.target.tagName == 'TPC' && event.target !== dragged) {
       event.target.style.opacity = 1
-      mind.moveNode(dragged, event.target)
-      dragged = null
+      clearPreview(meet)
     }
   })
 }
