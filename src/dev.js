@@ -24,7 +24,7 @@ let mind = new MindElixir({
     ],
   },
   toolBar: true,
-  nodeMenu: true,
+  nodeMenu: false,
   keypress: true,
   allowUndo: false,
   before: {

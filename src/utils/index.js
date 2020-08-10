@@ -9,6 +9,19 @@ export let addParentLink = (data, parent) => {
   }
 }
 
+export let throttle = (fn, wait) => {
+  var pre = Date.now()
+  return function () {
+    var context = this
+    var args = arguments
+    var now = Date.now()
+    if (now - pre >= wait) {
+      fn.apply(context, args)
+      pre = Date.now()
+    }
+  }
+}
+
 export function getArrowPoints(p3x, p3y, p4x, p4y) {
   let deltay = p4y - p3y
   let deltax = p3x - p4x

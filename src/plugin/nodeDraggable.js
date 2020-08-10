@@ -1,6 +1,6 @@
-import {dragMoveHelper} from '../utils/index'
+import {dragMoveHelper,throttle} from '../utils/index'
 let $d = document
-
+var meet
 export let insertPreview = function (el, insertLocation) {
   if (!insertLocation) {
     clearPreview(el)
@@ -22,9 +22,8 @@ export let clearPreview = function (el) {
   if (!el) {return el}
   let query = el.getElementsByClassName('insert-preview')
   for (const queryElement of query || []) {
-    el.removeChild(queryElement)
+    queryElement.remove()
   }
-  return el
 }
 
 export let canPreview = function (el, dragged) {
@@ -34,14 +33,14 @@ export let canPreview = function (el, dragged) {
 export default function (mind) {
   var dragged
   var insertLocation
-  var meet
 
   /* events fired on the draggable target */
-  mind.map.addEventListener('drag', function (event) {
+  mind.map.addEventListener('drag',throttle( function (event) {
     clearPreview(meet)
     let topMeet = $d.elementFromPoint(event.clientX, event.clientY - (event.target.clientHeight / 2))
     if (canPreview(topMeet, dragged)) {
       meet = topMeet
+      // if else
       switch (true) {
         case event.clientY > topMeet.getBoundingClientRect().y  + (2 * topMeet.clientHeight) / 3:
           insertLocation = 'after'
@@ -62,10 +61,12 @@ export default function (mind) {
             insertLocation = 'in'
             break
         }
+      }else{
+        insertLocation = meet = null
       }
-    }
-    insertPreview(meet, insertLocation)
-  })
+      }
+    if(meet)insertPreview(meet, insertLocation)
+  },100))
 
   mind.map.addEventListener('dragstart', function (event) {
     // store a ref. on the dragged elem
