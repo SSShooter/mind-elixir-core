@@ -30,16 +30,16 @@ let mind = new MindElixir({
   before: {
     insertSibling(el, obj) {
       console.log(el, obj)
-      if (this.currentNode.nodeObj.parent.root) {
-        return false
-      }
+      // if (this.currentNode.nodeObj.parent.root) {
+      //   return false
+      // }
       return true
     },
     async addChild(el, obj) {
       await sleep()
-      if (this.currentNode.nodeObj.parent.root) {
-        return false
-      }
+      // if (this.currentNode.nodeObj.parent.root) {
+      //   return false
+      // }
       return true
     },
   },

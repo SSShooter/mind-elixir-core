@@ -27,7 +27,8 @@ export let clearPreview = function (el) {
 }
 
 export let canPreview = function (el, dragged) {
-  return el && el.tagName === 'TPC' && el !== dragged && el.nodeObj.root !== true
+  let isContain = dragged.parentNode.parentNode.contains(el)
+  return el && el.tagName === 'TPC' && el !== dragged && !isContain && el.nodeObj.root !== true
 }
 
 export default function (mind) {
@@ -71,6 +72,7 @@ export default function (mind) {
   mind.map.addEventListener('dragstart', function (event) {
     // store a ref. on the dragged elem
     dragged = event.target
+    dragged.parentNode.parentNode.style.opacity = 0.5
     dragMoveHelper.clear()
   })
 
@@ -78,22 +80,23 @@ export default function (mind) {
     // reset the transparency
     event.target.style.opacity = ''
     clearPreview(meet)
-    let newNode
+    let obj = dragged.nodeObj
     switch (insertLocation) {
       case 'before':
-        newNode = mind.insertBefore(meet, dragged.nodeObj)
+        mind.insertBefore(meet, obj)
         mind.removeNode(dragged)
-        mind.selectNode(newNode.children[0])
+        mind.selectNode(E(obj.id))
         break
       case 'after':
-        newNode = mind.insertSibling(meet, dragged.nodeObj)
+        mind.insertSibling(meet, obj)
         mind.removeNode(dragged)
-        mind.selectNode(newNode.children[0])
+        mind.selectNode(E(obj.id))
         break
       case 'in':
         mind.moveNode(dragged, meet)
         break
     }
+    dragged.parentNode.parentNode.style.opacity = 1
     dragged = null
   })
 
@@ -104,15 +107,15 @@ export default function (mind) {
   })
 
   mind.map.addEventListener('dragenter', function (event) {
-    if (event.target.tagName == 'TPC' && event.target !== dragged) {
-      event.target.style.opacity = 0.5
-    }
+    // if (event.target.tagName == 'TPC' && event.target !== dragged) {
+    //   event.target.style.opacity = 0.5
+    // }
   })
 
   mind.map.addEventListener('dragleave', function (event) {
-    if (event.target.tagName == 'TPC' && event.target !== dragged) {
-      event.target.style.opacity = 1
-    }
+    // if (event.target.tagName == 'TPC' && event.target !== dragged) {
+    //   event.target.style.opacity = 1
+    // }
   })
 
   mind.map.addEventListener('drop', event => {
