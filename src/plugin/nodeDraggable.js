@@ -1,4 +1,4 @@
-import {dragMoveHelper,throttle} from '../utils/index'
+import { dragMoveHelper, throttle } from '../utils/index'
 let $d = document
 var meet
 export let insertPreview = function (el, insertLocation) {
@@ -19,7 +19,9 @@ export let insertPreview = function (el, insertLocation) {
 }
 
 export let clearPreview = function (el) {
-  if (!el) {return el}
+  if (!el) {
+    return el
+  }
   let query = el.getElementsByClassName('insert-preview')
   for (const queryElement of query || []) {
     queryElement.remove()
@@ -28,46 +30,58 @@ export let clearPreview = function (el) {
 
 export let canPreview = function (el, dragged) {
   let isContain = dragged.parentNode.parentNode.contains(el)
-  return el && el.tagName === 'TPC' && el !== dragged && !isContain && el.nodeObj.root !== true
+  return (
+    el &&
+    el.tagName === 'TPC' &&
+    el !== dragged &&
+    !isContain &&
+    el.nodeObj.root !== true
+  )
 }
 
 export default function (mind) {
   var dragged
   var insertLocation
-
+  let threshold = 12
   /* events fired on the draggable target */
-  mind.map.addEventListener('drag',throttle( function (event) {
-    clearPreview(meet)
-    let topMeet = $d.elementFromPoint(event.clientX, event.clientY - (event.target.clientHeight / 2))
-    if (canPreview(topMeet, dragged)) {
-      meet = topMeet
-      // if else
-      switch (true) {
-        case event.clientY > topMeet.getBoundingClientRect().y  + (2 * topMeet.clientHeight) / 3:
+  mind.map.addEventListener(
+    'drag',
+    throttle(function (event) {
+      clearPreview(meet)
+      let topMeet = $d.elementFromPoint(
+        event.clientX,
+        event.clientY - threshold
+      )
+      if (canPreview(topMeet, dragged)) {
+        meet = topMeet
+        console.log('topMeet')
+        let y = topMeet.getBoundingClientRect().y
+        if (event.clientY > y + topMeet.clientHeight) {
           insertLocation = 'after'
-          break
-        case event.clientY > topMeet.getBoundingClientRect().y + topMeet.clientHeight / 3:
+        } else if (event.clientY > y + topMeet.clientHeight / 2) {
           insertLocation = 'in'
-          break
-      }
-    } else {
-      let bottomMeet = $d.elementFromPoint(event.clientX, event.clientY + (event.target.clientHeight / 2))
-      if (canPreview(bottomMeet, dragged)) {
-        meet = bottomMeet
-        switch (true) {
-          case event.clientY > bottomMeet.getBoundingClientRect().y:
-            insertLocation = 'before'
-            break
-          case event.clientY > bottomMeet.getBoundingClientRect().y + bottomMeet.clientHeight / 3:
-            insertLocation = 'in'
-            break
         }
-      }else{
-        insertLocation = meet = null
+      } else {
+        let bottomMeet = $d.elementFromPoint(
+          event.clientX,
+          event.clientY + threshold
+        )
+        if (canPreview(bottomMeet, dragged)) {
+          meet = bottomMeet
+          console.log('bottomMeet')
+          let y = bottomMeet.getBoundingClientRect().y
+          if (event.clientY < y) {
+            insertLocation = 'before'
+          } else if (event.clientY < y + bottomMeet.clientHeight / 2) {
+            insertLocation = 'in'
+          }
+        } else {
+          insertLocation = meet = null
+        }
       }
-      }
-    if(meet)insertPreview(meet, insertLocation)
-  },100))
+      if (meet) insertPreview(meet, insertLocation)
+    }, 100)
+  )
 
   mind.map.addEventListener('dragstart', function (event) {
     // store a ref. on the dragged elem
