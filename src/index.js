@@ -39,6 +39,8 @@ import {
   updateNodeIcons,
   processPrimaryNode,
   setNodeTopic,
+  moveNodeBefore,
+  moveNodeAfter
 } from './nodeOperation'
 import {
   createLink,
@@ -148,7 +150,7 @@ function MindElixir({
       )
     ) {
       this.history.push(operation)
-      console.log(operation, this.history)
+      // console.log(operation, this.history)
     }
   })
 
@@ -230,6 +232,8 @@ MindElixir.prototype = {
       beginEdit.apply(this, args)
     }
   },
+  moveNodeBefore,
+  moveNodeAfter,
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,

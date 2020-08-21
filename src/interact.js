@@ -1,3 +1,4 @@
+import { findEle } from './utils/dom'
 /**
  * @namespace MapInteraction
  */
@@ -10,6 +11,7 @@
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
 export let selectNode = function (targetElement, isNewNode) {
+  if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
     return this.selectNode(findEle(targetElement))

@@ -207,6 +207,32 @@ export function moveNodeObj(from, to) {
   else to.children = [from]
 }
 
+export function moveNodeBeforeObj(from, to) {
+  removeNodeObj(from)
+  let childrenList = to.parent.children
+  let toIndex = 0
+  for (let i = 0; i < childrenList.length; i++) {
+    if (childrenList[i] === to) {
+      toIndex = i
+      break
+    }
+  }
+  childrenList.splice(toIndex, 0, from)
+}
+
+export function moveNodeAfterObj(from, to) {
+  removeNodeObj(from)
+  let childrenList = to.parent.children
+  let toIndex = 0
+  for (let i = 0; i < childrenList.length; i++) {
+    if (childrenList[i] === to) {
+      toIndex = i
+      break
+    }
+  }
+  childrenList.splice(toIndex + 1, 0, from)
+}
+
 export let dragMoveHelper = {
   afterMoving: false, // 区别click事件
   mousedown: false,

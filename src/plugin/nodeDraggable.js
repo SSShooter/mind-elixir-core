@@ -54,7 +54,6 @@ export default function (mind) {
       )
       if (canPreview(topMeet, dragged)) {
         meet = topMeet
-        console.log('topMeet')
         let y = topMeet.getBoundingClientRect().y
         if (event.clientY > y + topMeet.clientHeight) {
           insertLocation = 'after'
@@ -68,7 +67,6 @@ export default function (mind) {
         )
         if (canPreview(bottomMeet, dragged)) {
           meet = bottomMeet
-          console.log('bottomMeet')
           let y = bottomMeet.getBoundingClientRect().y
           if (event.clientY < y) {
             insertLocation = 'before'
@@ -90,20 +88,18 @@ export default function (mind) {
     dragMoveHelper.clear()
   })
 
-  mind.map.addEventListener('dragend', function (event) {
+  mind.map.addEventListener('dragend', async function (event) {
     // reset the transparency
     event.target.style.opacity = ''
     clearPreview(meet)
     let obj = dragged.nodeObj
     switch (insertLocation) {
       case 'before':
-        mind.insertBefore(meet, obj)
-        mind.removeNode(dragged)
+        mind.moveNodeBefore(dragged, meet)
         mind.selectNode(E(obj.id))
         break
       case 'after':
-        mind.insertSibling(meet, obj)
-        mind.removeNode(dragged)
+        mind.moveNodeAfter(dragged, meet)
         mind.selectNode(E(obj.id))
         break
       case 'in':

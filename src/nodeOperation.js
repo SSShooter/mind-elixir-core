@@ -8,6 +8,8 @@ import {
   addParentLink,
   moveUpObj,
   moveDownObj,
+  moveNodeBeforeObj,
+  moveNodeAfterObj
 } from './utils/index'
 import { findEle, createExpander, createGroup } from './utils/dom'
 import { LEFT, RIGHT, SIDE } from './const'
@@ -75,6 +77,7 @@ export let updateNodeSvgChart = function () {
  * @memberof NodeOperation
  * @description Create a sibling node.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
+ * @param {node} node - New node information.
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
@@ -266,45 +269,46 @@ export let moveDownNode = function (el) {
 export let removeNode = function (el) {
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let index = nodeEle.nodeObj.parent.children.findIndex(
-    node => node === nodeEle.nodeObj
-  )
-  let next = nodeEle.nodeObj.parent.children[index + 1]
+  let nodeObj = nodeEle.nodeObj
+  let index = nodeObj.parent.children.findIndex(node => node === nodeObj)
+  let next = nodeObj.parent.children[index + 1]
   let originSiblingId = next && next.id
 
+  let childrenLength = removeNodeObj(nodeObj)
+  let t = nodeEle.parentNode // T
+  if (t.tagName === 'ROOT') {
+    return
+  }
+  if (childrenLength === 0) {
+    // remove epd when children length === 0
+    let parentT = t.parentNode.parentNode.previousSibling
+    if (parentT.tagName !== 'ROOT')
+      // root doesn't have epd
+      parentT.children[1].remove()
+    this.selectParent()
+  } else {
+    // select sibling automatically
+    let success = this.selectPrevSibling()
+    if (!success) this.selectNextSibling()
+  }
+  for (let prop in this.linkData) {
+    // MAYBEBUG should traversal all children node
+    let link = this.linkData[prop]
+    if (link.from === t.firstChild || link.to === t.firstChild) {
+      this.removeLink(
+        document.querySelector(`[data-linkid=${this.linkData[prop].id}]`)
+      )
+    }
+  }
+  // remove GRP
+  t.parentNode.remove()
+  this.linkDiv()
   this.bus.fire('operation', {
     name: 'removeNode',
-    obj: nodeEle.nodeObj,
+    obj: nodeObj,
     originSiblingId,
-    originParentId: nodeEle.nodeObj.parent.id,
+    originParentId: nodeObj.parent.id,
   })
-  let childrenLength = removeNodeObj(nodeEle.nodeObj)
-  nodeEle = nodeEle.parentNode
-  if (nodeEle.tagName === 'T') {
-    if (childrenLength === 0) {
-      // remove epd when children length === 0
-      let parentT = nodeEle.parentNode.parentNode.previousSibling
-      if (parentT.tagName !== 'ROOT')
-        // root doesn't have epd
-        parentT.children[1].remove()
-      this.selectParent()
-    } else {
-      // select sibling automatically
-      let success = this.selectPrevSibling()
-      if (!success) this.selectNextSibling()
-    }
-    for (let prop in this.linkData) {
-      // BUG should traversal all children node
-      let link = this.linkData[prop]
-      if (link.from === nodeEle.firstChild || link.to === nodeEle.firstChild) {
-        this.removeLink(
-          document.querySelector(`[data-linkid=${this.linkData[prop].id}]`)
-        )
-      }
-    }
-    nodeEle.parentNode.remove()
-  }
-  this.linkDiv()
 }
 
 /**
@@ -319,7 +323,6 @@ export let removeNode = function (el) {
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
 export let moveNode = function (from, to) {
-  console.time('moveNode')
   let fromObj = from.nodeObj
   let toObj = to.nodeObj
   let originParentId = fromObj.parent.id
@@ -331,34 +334,36 @@ export let moveNode = function (from, to) {
     console.warn('Invalid move')
     return
   }
+  console.time('moveNode')
   moveNodeObj(fromObj, toObj)
   addParentLink(this.nodeData) // update parent property
-  let PFrom = from.parentElement
-  let PTo = to.parentElement
-  if (PFrom.parentNode.parentNode.className === 'box') {
+  let fromTop = from.parentElement
+  let fromChilren = fromTop.parentNode.parentNode
+  let toTop = to.parentElement
+  if (fromChilren.className === 'box') {
     // clear svg group of primary node
-    PFrom.parentNode.lastChild.remove()
-  } else if (PFrom.parentNode.className === 'box') {
-    PFrom.style.cssText = '' // clear style
+    fromTop.parentNode.lastChild.remove()
+  } else if (fromTop.parentNode.className === 'box') {
+    fromTop.style.cssText = '' // clear style
   }
-  if (PTo.tagName === 'T') {
-    if (PFrom.parentNode.parentNode.className === 'box') {
+  if (toTop.tagName === 'T') {
+    if (fromChilren.className === 'box') {
       // clear direaction class of primary node
-      PFrom.parentNode.className = ''
+      fromTop.parentNode.className = ''
     }
-    if (PTo.children[1]) {
+    if (toTop.children[1]) {
       // expander exist
-      PTo.nextSibling.appendChild(PFrom.parentNode)
+      toTop.nextSibling.appendChild(fromTop.parentNode)
     } else {
       // expander not exist, no child
       let c = $d.createElement('children')
-      c.appendChild(PFrom.parentNode)
-      PTo.appendChild(createExpander(true))
-      PTo.parentElement.insertBefore(c, PTo.nextSibling)
+      c.appendChild(fromTop.parentNode)
+      toTop.appendChild(createExpander(true))
+      toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }
-  } else if (PTo.tagName === 'ROOT') {
-    this.processPrimaryNode(PFrom.parentNode, fromObj)
-    PTo.nextSibling.appendChild(PFrom.parentNode)
+  } else if (toTop.tagName === 'ROOT') {
+    this.processPrimaryNode(fromTop.parentNode, fromObj)
+    toTop.nextSibling.appendChild(fromTop.parentNode)
   }
   this.linkDiv()
   this.bus.fire('operation', {
@@ -366,6 +371,34 @@ export let moveNode = function (from, to) {
     obj: { fromObj, toObj, originParentId },
   })
   console.timeEnd('moveNode')
+}
+
+export let moveNodeBefore = function (from, to) {
+  let fromObj = from.nodeObj
+  let toObj = to.nodeObj
+  moveNodeBeforeObj(fromObj, toObj)
+  addParentLink(this.nodeData)
+  let fromTop = from.parentElement
+  let fromGrp = fromTop.parentNode
+  let toTop = to.parentElement
+  let toGrp = toTop.parentNode
+  let toChilren = toTop.parentNode.parentNode
+  toChilren.insertBefore(fromGrp, toGrp)
+  this.linkDiv()
+}
+
+export let moveNodeAfter = function (from, to) {
+  let fromObj = from.nodeObj
+  let toObj = to.nodeObj
+  moveNodeAfterObj(fromObj, toObj)
+  addParentLink(this.nodeData)
+  let fromTop = from.parentElement
+  let fromGrp = fromTop.parentNode
+  let toTop = to.parentElement
+  let toGrp = toTop.parentNode
+  let toChilren = toTop.parentNode.parentNode
+  toChilren.insertBefore(fromGrp, toGrp.nextSibling)
+  this.linkDiv()
 }
 
 /**
