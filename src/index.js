@@ -40,7 +40,7 @@ import {
   processPrimaryNode,
   setNodeTopic,
   moveNodeBefore,
-  moveNodeAfter
+  moveNodeAfter,
 } from './nodeOperation'
 import {
   createLink,
@@ -67,6 +67,8 @@ import './index.less'
 import './plugin/contextMenu.less'
 import './plugin/toolBar.less'
 import './plugin/nodeMenu.less'
+
+import { exportSvg, exportPng } from '../painter'
 
 import './iconfont/iconfont.js'
 
@@ -337,7 +339,8 @@ MindElixir.prototype = {
     initMouseEvent(this)
   },
 }
-
+MindElixir.exportSvg = exportSvg
+MindElixir.exportPng = exportPng
 MindElixir.LEFT = LEFT
 MindElixir.RIGHT = RIGHT
 MindElixir.SIDE = SIDE

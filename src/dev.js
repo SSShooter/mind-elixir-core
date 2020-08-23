@@ -3,10 +3,10 @@ import MindElixir, { E } from './index'
 let mind = new MindElixir({
   el: '#map',
   newTopicName: '子节点',
-  // direction: MindElixir.SIDE,
-  direction: MindElixir.RIGHT,
+  direction: MindElixir.SIDE,
+  // direction: MindElixir.RIGHT,
   // data: MindElixir.new('new topic'),
-  data: MindElixir.example2,
+  data: MindElixir.example,
   locale: 'en',
   draggable: true,
   editable: true,
@@ -69,3 +69,4 @@ mind.bus.addListener('selectNode', node => {
   console.log(node)
 })
 window.m = mind
+window.M = MindElixir
