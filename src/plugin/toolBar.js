@@ -34,7 +34,6 @@ toolBarLTContainer.appendChild(s)
 toolBarLTContainer.className = 'lt'
 
 export default function (mind) {
-    let scale = 1
     mind.container.append(toolBarRBContainer)
     mind.container.append(toolBarLTContainer)
     fc.onclick = () => {
@@ -44,13 +43,13 @@ export default function (mind) {
         mind.toCenter()
     }
     zo.onclick = () => {
-        if (scale < 0.6) return
-        mind.scale(scale -= .2)
+        if (mind.scaleVal < 0.6) return
+        mind.scale(mind.scaleVal -= .2)
         // percentage.innerHTML = Math.round(scale * 100) + '%'
     }
     zi.onclick = () => {
-        if (scale > 1.6) return
-        mind.scale(scale += .2)
+        if (mind.scaleVal > 1.6) return
+        mind.scale(mind.scaleVal += .2)
         // percentage.innerHTML = Math.round(scale * 100) + '%'
     }
     l.onclick = () => {

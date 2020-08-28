@@ -49,9 +49,23 @@ export default function (mind) {
       if (!mind.allowUndo) return
       if (e.metaKey || e.ctrlKey) mind.undo()
     },
+    // +
+    187: e => {
+      if (e.metaKey || e.ctrlKey) {
+        if (mind.scaleVal > 1.6) return
+        mind.scale((mind.scaleVal += 0.2))
+      }
+    },
+    // -
+    189: e => {
+      if (e.metaKey || e.ctrlKey) {
+        if (mind.scaleVal < 0.6) return
+        mind.scale((mind.scaleVal -= 0.2))
+      }
+    },
   }
   mind.map.onkeydown = e => {
-    console.log(e, e.target)
+    // console.log(e, e.target)
     if (e.target !== e.currentTarget) {
       // input
       return

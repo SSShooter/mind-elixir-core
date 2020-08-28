@@ -79,7 +79,7 @@ export let createSvg = function (height, width) {
   svg.setAttribute('height', height)
   svg.setAttribute('width', width)
   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-  svg.setAttribute('version', '1.1')
+  svg.setAttribute('version', '1.2')
   svg.setAttribute('xlink', 'http://www.w3.org/1999/xlink')
   return svg
 }
@@ -106,7 +106,7 @@ export let RootToSvg = function () {
     })">
       <rect x="${left}" y="${top}" rx="5px" ry="5px" width="${
       rect.width
-    }" height="${rect.height}" style="fill: #00aaff; "></rect>
+    }" height="${rect.height}" style="fill: #00aaff;"></rect>
       <text x="${left + 15}" y="${
       top + 35
     }" text-anchor="start" align="top" anchor="start" font-family="微软雅黑" font-size="25px" font-weight="normal" fill="#ffffff">

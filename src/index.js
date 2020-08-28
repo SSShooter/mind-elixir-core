@@ -132,7 +132,6 @@ function MindElixir({
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? true : allowUndo
   this.parentMap = {} // deprecate?
-
   this.currentNode = null // the selected <tpc/> element
   this.currentLink = null // the selected link svg element
   this.inputDiv = null // editor
