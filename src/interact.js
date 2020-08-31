@@ -230,6 +230,10 @@ export let focusNode = function (tpcEl) {
   if (!this.tempDir) {
     this.tempDir = this.direction
   }
+  if (!this.isFocusMode) {
+    this.nodeDataBackup = this.nodeData // help reset focus mode
+    this.isFocusMode = true
+  }
   this.nodeData = tpcEl.nodeObj
   this.nodeData.root = true
   this.initRight()
@@ -242,6 +246,7 @@ export let focusNode = function (tpcEl) {
  * @memberof MapInteraction
  */
 export let cancelFocus = function () {
+  this.isFocusMode = false
   if (this.tempDir) {
     delete this.nodeData.root
     this.nodeData = this.nodeDataBackup

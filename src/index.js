@@ -120,7 +120,6 @@ function MindElixir({
   this.nodeData = data.nodeData || {}
   this.linkData = data.linkData || {}
   this.locale = locale
-  this.nodeDataBackup = this.nodeData // help reset focus mode
   this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
