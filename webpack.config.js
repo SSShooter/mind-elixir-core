@@ -50,13 +50,13 @@ module.exports = (env, argv) => {
     config = {
       ...config,
       entry: {
-        'mind-elixir': './src/index.js',
+        MindElixir: './src/index.js',
         painter: './painter/index.js'
       },
       output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
-        library: 'MindElixir',
+        library: '[name]',
         libraryTarget: 'umd',
         libraryExport: 'default'
         // libraryTarget: 'window'
