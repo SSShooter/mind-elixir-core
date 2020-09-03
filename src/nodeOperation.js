@@ -419,6 +419,7 @@ export let beginEdit = function (el) {
 
 export let setNodeTopic = function (tpc, topic) {
   tpc.childNodes[0].textContent = topic
+  tpc.nodeObj.topic = topic
   this.linkDiv()
 }
 

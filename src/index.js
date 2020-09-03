@@ -126,6 +126,7 @@ function MindElixir({
   this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
   this.keypress = keypress === undefined ? true : keypress
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
+  // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
   vari.mevar_draggable = draggable === undefined ? true : draggable
   this.editable = editable === undefined ? true : editable

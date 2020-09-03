@@ -122,4 +122,3 @@ export default function (mind, option) {
   }
 }
 
-// TODO 允许拓展右键菜单
