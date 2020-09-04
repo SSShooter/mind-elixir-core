@@ -51,9 +51,11 @@ console.log('test E function', E('bd4313fbac40284b'))
 //   draggable: true
 // })
 // mind2.init()
-
+window.currentOperation = null
 mind.bus.addListener('operation', operation => {
   console.log(operation)
+  if (operation.name !== 'finishEdit')
+    window.currentOperation = operation
   // return {
   //   name: action name,
   //   obj: target object

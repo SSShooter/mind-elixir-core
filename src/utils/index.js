@@ -1,5 +1,18 @@
 import vari from '../var'
 
+export let getObjById = (data, id) => {
+  if (data.id === id) {
+    return data
+  } else if (data.children && data.children.length) {
+    for (let i = 0; i < data.children.length; i++) {
+      let res = getObjById(data.children[i],id)
+      if (res) return res
+    }
+  } else {
+    return null
+  }
+}
+
 export let addParentLink = (data, parent) => {
   data.parent = parent
   if (data.children) {
