@@ -23,6 +23,7 @@ beforeAll(async () => {
 describe('nodeOperation', () => {
   it('addChild"', async () => {
     await page.evaluate(`m.addChild(E('bd1f07c598e729dc'))`)
+    await page.waitFor('[contentEditable]')
     await page.keyboard.press('Enter')
     let id = await page.evaluate(() => {
       return E('bd1f07c598e729dc').nodeObj.children[0].parent.id
@@ -32,6 +33,7 @@ describe('nodeOperation', () => {
   it('insertSibling"', async () => {
     await page.evaluate(`m.insertSibling(E('bd1f07c598e729dc'))`)
     let newId = await page.evaluate(`currentOperation.obj.id`)
+    await page.waitFor('[contentEditable]')
     await page.keyboard.press('Enter')
     let res = await page.evaluate(newId => {
       let newNode = E(newId).nodeObj
@@ -69,7 +71,8 @@ describe('nodeOperation', () => {
       let to = E('bd1babdd5c18a7a2')
       await m.moveNode(from, to)
 
-      let domCheck = from.closest('children').previousElementSibling === to.parentNode
+      let domCheck =
+        from.closest('children').previousElementSibling === to.parentNode
 
       from = from.nodeObj
       to = to.nodeObj
@@ -86,7 +89,8 @@ describe('nodeOperation', () => {
       let to = E('bd1babdd5c18a7a2')
       await m.moveNodeBefore(from, to)
 
-      let domCheck = from.closest('grp') === to.closest('grp').previousElementSibling
+      let domCheck =
+        from.closest('grp') === to.closest('grp').previousElementSibling
 
       from = from.nodeObj
       to = to.nodeObj
@@ -107,7 +111,8 @@ describe('nodeOperation', () => {
       let to = E('bd1babdd5c18a7a2')
       await m.moveNodeAfter(from, to)
 
-      let domCheck = from.closest('grp').previousElementSibling === to.closest('grp')
+      let domCheck =
+        from.closest('grp').previousElementSibling === to.closest('grp')
 
       from = from.nodeObj
       to = to.nodeObj
@@ -129,12 +134,22 @@ describe('nodeOperation', () => {
 
       let domCheck = E('bd1f07c598e729dc')
 
-      let objCheck = i1 - i2 === 1
+      let objCheck = m.getObjById('bd1f07c598e729dc', m.nodeData)
 
       return [objCheck, domCheck]
     })
-    expect(res[0]).toEqual(true)
-    expect(res[1]).toEqual(true)
+    expect(res[0]).toBeFalsy()
+    expect(res[1]).toBeFalsy()
+
+    let delRoot = await page.evaluate(async () => {
+      let el = E('root')
+      try {
+        await m.removeNode(el)
+      } catch (err) {
+        return err.message
+      }
+    })
+    expect(delRoot).toEqual('Can not remove root node')
   })
 })
 

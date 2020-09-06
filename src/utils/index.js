@@ -1,11 +1,12 @@
 import vari from '../var'
 
-export let getObjById = (data, id) => {
+export let getObjById = (id, data) => {
+  data = data || this.nodeData
   if (data.id === id) {
     return data
   } else if (data.children && data.children.length) {
     for (let i = 0; i < data.children.length; i++) {
-      let res = getObjById(data.children[i],id)
+      let res = getObjById(id, data.children[i])
       if (res) return res
     }
   } else {

@@ -94,7 +94,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: "jest-puppeteer",
+  // preset: "jest-puppeteer",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -138,7 +138,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  "testEnvironment": "jest-environment-puppeteer",
+  // "testEnvironment": "jest-environment-puppeteer",
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
