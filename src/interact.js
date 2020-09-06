@@ -309,6 +309,7 @@ export let expandNode = function (el, isExpand) {
   } else {
     node.expanded = true
   }
+  // TODO 在此函数构造 html 结构，而非调用 layout
   this.layout()
   this.linkDiv()
 }

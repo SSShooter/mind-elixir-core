@@ -9,7 +9,7 @@ import {
   moveUpObj,
   moveDownObj,
   moveNodeBeforeObj,
-  moveNodeAfterObj
+  moveNodeAfterObj,
 } from './utils/index'
 import { findEle, createExpander, createGroup } from './utils/dom'
 import { LEFT, RIGHT, SIDE } from './const'
@@ -169,8 +169,9 @@ export let addChild = function (el, node) {
   if (!nodeEle) return
   let nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
-    console.warn('Node should be extended')
-    return
+    this.expandNode(nodeEle, true)
+    // dom reset thus
+    nodeEle = E(nodeObj.id)
   }
   let newNodeObj = node || generateNewObj()
   nodeObj.expanded = true
@@ -330,8 +331,9 @@ export let moveNode = function (from, to) {
   let toObj = to.nodeObj
   let originParentId = fromObj.parent.id
   if (toObj.expanded === false) {
-    console.warn('Target node must be expanded')
-    return
+    this.expandNode(to, true)
+    from = E(fromObj.id)
+    to = E(toObj.id)
   }
   if (!checkMoveValid(fromObj, toObj)) {
     console.warn('Invalid move')
