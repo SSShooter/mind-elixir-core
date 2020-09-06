@@ -1,6 +1,6 @@
 import info from '../package.json'
 import vari from './var'
-import { addParentLink } from './utils/index'
+import { addParentLink, getObjById } from './utils/index'
 import { findEle, createInputDiv, layout } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
@@ -182,6 +182,7 @@ function MindElixir({
 
 MindElixir.prototype = {
   addParentLink,
+  getObjById,
   // node operation
   insertSibling: async function (...args) {
     if (
