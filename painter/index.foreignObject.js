@@ -115,6 +115,10 @@ function PrimaryToSvg(primaryNode) {
       parseInt(tStyle.paddingTop) +
       parseInt(tpcStyle.paddingTop) +
       parseInt(tpcStyle.fontSize)
+    let topicOffsetTopTop =
+      top +
+      parseInt(tStyle.paddingTop) +
+      parseInt(tpcStyle.paddingTop)
     // style render
     let border = ''
     if (tpcStyle.borderWidth != '0px') {
@@ -159,36 +163,21 @@ function PrimaryToSvg(primaryNode) {
         <tspan>${icon.innerHTML}</tspan>`
       }
     }
+    // render every single node
     svg += `<g id="${nodeObj.id}">
       ${border}
       ${backgroundColor}
-      <text x="${topicOffsetLeft}" y="${topicOffsetTop}" text-anchor="start" align="top" anchor="start" font-family="微软雅黑" font-size="${tpcStyle.fontSize}" font-weight="${tpcStyle.fontWeight}" fill="${tpcStyle.color}">
+      <foreignObject  x="${topicOffsetLeft}" y="${topicOffsetTopTop}" width="${tpcStyle.width}" height="${tpcStyle.height}">
+      <p xmlns="http://www.w3.org/1999/xhtml" style="padding:0;margin:0;font-family:微软雅黑;font-size:${tpcStyle.fontSize};font-weight:${tpcStyle.fontWeight};color:${tpcStyle.color}">
         ${nodeObj.topic}
         ${icons}
-      </text>
+      </p>
+      </foreignObject>
       ${tags}
   </g>`
   }
   svg += '</g>'
   return svg
-}
-
-function splitMultipleLineText() {
-  const maxWidth = 800 // should minus padding
-  let text = ''
-  let textEl = document.createElement('span')
-  textEl.style.cssText = 'padding:0;margin:0;font-family:微软雅黑;font-size:18px;font-weight:bolder;'
-  textEl.innerHTML = ''
-  let lines = []
-  for (let i = 0; i < text.length; i++) {
-    textEl.innerHTML += text[i]
-    let w = textEl.getBoundingClientRect().width
-    if (w > maxWidth) {
-      lines.push(textEl.innerHTML)
-      textEl.innerHTML = ''
-    }
-  }
-  return lines
 }
 
 export let exportSvg = function () {
@@ -207,7 +196,7 @@ export let exportPng = async function () {
   const canvas = document.createElement('canvas')
   canvas.style.display = 'none'
   const ctx = canvas.getContext('2d')
-
+  // Canvg do not support foreignObject
   let v = await Canvg.fromString(
     ctx,
     head + svgFile.outerHTML.replace(/&nbsp;/g, ' ')

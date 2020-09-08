@@ -1,4 +1,5 @@
 import MindElixir, { E } from './index'
+import { exportSvg, exportPng } from '../painter/index'
 
 let mind = new MindElixir({
   el: '#map',
@@ -72,3 +73,5 @@ mind.bus.addListener('selectNode', node => {
 })
 window.m = mind
 window.M = MindElixir
+window.exportSvg = exportSvg
+window.exportPng = exportPng
