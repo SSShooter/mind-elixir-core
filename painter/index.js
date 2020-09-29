@@ -191,18 +191,22 @@ function splitMultipleLineText() {
   return lines
 }
 
-export let exportSvg = function () {
+function getFileName(){
+  return document.querySelector('root > tpc').innerText
+}
+
+export let exportSvg = function (fileName) {
   let svgFile = generateSvgDom()
   let dlUrl = URL.createObjectURL(
     new Blob([head + svgFile.outerHTML.replace(/&nbsp;/g, ' ')])
   )
   let a = document.createElement('a')
   a.href = dlUrl
-  a.download = 'me-mindmap.svg'
+  a.download = fileName || getFileName() + '.svg'
   a.click()
 }
 
-export let exportPng = async function () {
+export let exportPng = async function (fileName) {
   let svgFile = generateSvgDom()
   const canvas = document.createElement('canvas')
   canvas.style.display = 'none'
@@ -216,7 +220,7 @@ export let exportPng = async function () {
   let imgURL = canvas.toDataURL('image/png')
   let a = document.createElement('a')
   a.href = imgURL
-  a.download = 'me-mindmap.png'
+  a.download = fileName || getFileName() + '.png'
   a.click()
 }
 
