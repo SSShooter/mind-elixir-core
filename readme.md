@@ -40,6 +40,7 @@ import MindElixir, { E } from 'mind-elixir'
 #### Script tag
 
 ```html
+<script src="https://cdn.jsdelivr.net/npm/regenerator-runtime"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/mind-elixir.js"></script>
 ```
 
@@ -121,6 +122,14 @@ mind.getAllDataString() // stringify object
 mind.getAllDataMd() // markdown
 ```
 
+### Export as image
+
+```javascript
+import painter from 'mind-elixir/dist/painter'
+painter.exportSvg()
+painter.exportPng()
+```
+
 ### Operation Guards
 
 ```javascript
@@ -153,4 +162,3 @@ https://doc.mindelixir.ink/
 
 - Undo/Redo
 - drag as sibling
-- Image export
