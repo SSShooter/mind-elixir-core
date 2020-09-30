@@ -1,20 +1,39 @@
+let cn = {
+  addChild: '插入子节点',
+  addSibling: '插入同级节点',
+  removeNode: '删除节点',
+  focus: '专注',
+  cancelFocus: '取消专注',
+  moveUp: '上移',
+  moveDown: '下移',
+  link: '连接',
+
+  font: '文字',
+  background: '背景',
+  tag: '标签',
+  icon: '图标',
+  tagsSeparate: '多个标签半角逗号分隔',
+  iconsSeparate: '多个图标半角逗号分隔',
+}
 export default {
-  cn: {
-    addChild: '插入子节点',
-    addSibling: '插入同级节点',
-    removeNode: '删除节点',
-    focus: '专注',
-    cancelFocus: '取消专注',
+  cn,
+  zh_CN:cn,
+  zh_TW:{
+    addChild: '插入子節點',
+    addSibling: '插入同級節點',
+    removeNode: '刪除節點',
+    focus: '專注',
+    cancelFocus: '取消專注',
     moveUp: '上移',
     moveDown: '下移',
-    link: '连接',
-
+    link: '連接',
+  
     font: '文字',
     background: '背景',
-    tag: '标签',
-    icon: '图标',
-    tagsSeparate: '多个标签半角逗号分隔',
-    iconsSeparate: '多个图标半角逗号分隔',
+    tag: '標簽',
+    icon: '圖標',
+    tagsSeparate: '多個標簽半角逗號分隔',
+    iconsSeparate: '多個圖標半角逗號分隔',
   },
   en: {
     addChild: 'Add a child',

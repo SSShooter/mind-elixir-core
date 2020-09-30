@@ -71,6 +71,29 @@ let mind = new MindElixir({
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
+  locale: 'en', // [zh_CN,zh_TW,en,ja]
+  contextMenuOption: {
+    focus: true,
+    link: true,
+    extend: [
+      {
+        name: 'Node edit',
+        onclick: () => {
+          alert('extend menu')
+        },
+      },
+    ],
+  },
+  allowUndo: false,
+  before: {
+    insertSibling(el, obj) {
+      return true
+    },
+    async addChild(el, obj) {
+      await sleep()
+      return true
+    },
+  },
 })
 mind.init()
 
