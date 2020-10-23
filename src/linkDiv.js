@@ -4,8 +4,8 @@ import {
   SIDE,
   GAP,
   TURNPOINT_R,
-  PRIMARYNODEHORIZONTALGAP,
-  PRIMARYNODEVERTICALGAP,
+  PRIMARY_NODE_HORIZONTAL_GAP,
+  PRIMARY_NODE_VERTICAL_GAP,
 } from './const'
 
 /**
@@ -27,8 +27,8 @@ export default function linkDiv(primaryNode) {
 
   // 1. calculate position of primary nodes
   let totalHeight = 0
-  let shortSideGap = 0
-  let shortSide
+  let shortSide // side with smaller height
+  let shortSideGap = 0 // balance heigt of two side
   let currentOffsetL = 0 // left side total offset
   let currentOffsetR = 0 // right side total offset
   let totalHeightL = 0
@@ -43,11 +43,11 @@ export default function linkDiv(primaryNode) {
     for (let i = 0; i < primaryNodeList.length; i++) {
       let el = primaryNodeList[i]
       if (el.className === 'lhs') {
-        totalHeightL += el.offsetHeight + PRIMARYNODEVERTICALGAP
+        totalHeightL += el.offsetHeight + PRIMARY_NODE_VERTICAL_GAP
         totalHeightLWithoutGap += el.offsetHeight
         countL += 1
       } else {
-        totalHeightR += el.offsetHeight + PRIMARYNODEVERTICALGAP
+        totalHeightR += el.offsetHeight + PRIMARY_NODE_VERTICAL_GAP
         totalHeightRWithoutGap += el.offsetHeight
         countR += 1
       }
@@ -64,7 +64,7 @@ export default function linkDiv(primaryNode) {
   } else {
     for (let i = 0; i < primaryNodeList.length; i++) {
       let el = primaryNodeList[i]
-      totalHeight += el.offsetHeight + PRIMARYNODEVERTICALGAP
+      totalHeight += el.offsetHeight + PRIMARY_NODE_VERTICAL_GAP
     }
     base = 10000 - totalHeight / 2
   }
@@ -75,42 +75,38 @@ export default function linkDiv(primaryNode) {
     let x2, y2
     let el = primaryNodeList[i]
     let elOffsetH = el.offsetHeight
-    let deviation, Cy
+    let Cy
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
       el.style.left =
         10000 -
         root.offsetWidth / 2 -
-        PRIMARYNODEHORIZONTALGAP -
+        PRIMARY_NODE_HORIZONTAL_GAP -
         el.offsetWidth +
         'px'
-      x2 = 10000 - root.offsetWidth / 2 - PRIMARYNODEHORIZONTALGAP - 15 // padding
+      x2 = 10000 - root.offsetWidth / 2 - PRIMARY_NODE_HORIZONTAL_GAP - 15 // padding
       y2 = base + currentOffsetL + elOffsetH / 2
-      deviation = ((totalHeightL - elOffsetH) / 2) * 0.02
-      Cy = base + currentOffsetL + elOffsetH / 2 + deviation // bezier curve control point y coordinate
       path += `M ${10000} ${10000} C 10000 10000 ${
-        10000 + 2 * PRIMARYNODEHORIZONTALGAP * 0.03
-      } ${Cy} ${x2} ${y2}`
+        10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
+      } ${y2} ${x2} ${y2}`
       if (shortSide === 'l') {
         currentOffsetL += elOffsetH + shortSideGap
       } else {
-        currentOffsetL += elOffsetH + PRIMARYNODEVERTICALGAP
+        currentOffsetL += elOffsetH + PRIMARY_NODE_VERTICAL_GAP
       }
     } else {
       el.style.top = base + currentOffsetR + 'px'
       el.style.left =
-        10000 + root.offsetWidth / 2 + PRIMARYNODEHORIZONTALGAP + 'px'
-      x2 = 10000 + root.offsetWidth / 2 + PRIMARYNODEHORIZONTALGAP + 15 // padding
+        10000 + root.offsetWidth / 2 + PRIMARY_NODE_HORIZONTAL_GAP + 'px'
+      x2 = 10000 + root.offsetWidth / 2 + PRIMARY_NODE_HORIZONTAL_GAP + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
-      deviation = ((totalHeightR - elOffsetH) / 2) * 0.02
-      Cy = base + currentOffsetR + elOffsetH / 2 + deviation
       path += `M ${10000} ${10000} C 10000 10000 ${
-        10000 + 2 * PRIMARYNODEHORIZONTALGAP * 0.03
-      } ${Cy} ${x2} ${y2}`
+        10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
+      } ${y2} ${x2} ${y2}`
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
       } else {
-        currentOffsetR += elOffsetH + PRIMARYNODEVERTICALGAP
+        currentOffsetR += elOffsetH + PRIMARY_NODE_VERTICAL_GAP
       }
     }
     // set position of expander
