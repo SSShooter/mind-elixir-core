@@ -27,7 +27,16 @@ cmenu {
         color: #333;
         text-decoration: none;
       }
+      &.disabled{
+        color: rgb(94, 94, 94);
+        background-color: rgb(247, 247, 247);
+        &:hover {
+          cursor: default;
+          background-color: rgb(247, 247, 247);
+        }
+      }
       &:hover {
+        cursor: pointer;
         background-color: #ecf0f1;
       }
       &:first-child {

@@ -51,11 +51,28 @@ export default function (mind, option) {
   menuContainer.hidden = true
 
   mind.container.append(menuContainer)
+  let isRoot = true
   mind.container.oncontextmenu = function (e) {
     e.preventDefault()
     // console.log(e.pageY, e.screenY, e.clientY)
     let target = e.target
     if (target.tagName === 'TPC') {
+      if (target.parentElement.tagName === 'ROOT') {
+        isRoot = true
+      } else {
+        isRoot = false
+      }
+      if (isRoot) {
+        focus.className = 'disabled'
+        up.className = 'disabled'
+        down.className = 'disabled'
+        add_sibling.className = 'disabled'
+      } else {
+        focus.className = ''
+        up.className = ''
+        down.className = ''
+        add_sibling.className = ''
+      }
       mind.selectNode(target)
       menuContainer.hidden = false
       let height = menuUl.offsetHeight
@@ -76,29 +93,37 @@ export default function (mind, option) {
       }
     }
   }
-  mind.container.onclick = e => {
-    menuContainer.hidden = true
-  }
   add_child.onclick = e => {
     mind.addChild()
+    menuContainer.hidden = true
   }
   add_sibling.onclick = e => {
+    if (isRoot) return
     mind.insertSibling()
+    menuContainer.hidden = true
   }
   remove_child.onclick = e => {
     mind.removeNode()
+    menuContainer.hidden = true
   }
   focus.onclick = e => {
+    if (isRoot) return
     mind.focusNode(mind.currentNode)
+    menuContainer.hidden = true
   }
   unfocus.onclick = e => {
     mind.cancelFocus()
+    menuContainer.hidden = true
   }
   up.onclick = e => {
+    if (isRoot) return
     mind.moveUpNode()
+    menuContainer.hidden = true
   }
   down.onclick = e => {
+    if (isRoot) return
     mind.moveDownNode()
+    menuContainer.hidden = true
   }
   link.onclick = e => {
     let from = mind.currentNode
