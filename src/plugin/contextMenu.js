@@ -93,6 +93,12 @@ export default function (mind, option) {
       }
     }
   }
+
+  menuContainer.onclick = e => {
+    if (e.target === menuContainer)
+      menuContainer.hidden = true
+  }
+
   add_child.onclick = e => {
     mind.addChild()
     menuContainer.hidden = true
