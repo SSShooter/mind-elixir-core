@@ -67,6 +67,7 @@ export default function (mind, option) {
         up.className = 'disabled'
         down.className = 'disabled'
         add_sibling.className = 'disabled'
+        remove_child.className = 'disabled'
       } else {
         focus.className = ''
         up.className = ''
@@ -109,6 +110,7 @@ export default function (mind, option) {
     menuContainer.hidden = true
   }
   remove_child.onclick = e => {
+    if (isRoot) return
     mind.removeNode()
     menuContainer.hidden = true
   }
