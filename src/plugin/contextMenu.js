@@ -73,6 +73,7 @@ export default function (mind, option) {
         up.className = ''
         down.className = ''
         add_sibling.className = ''
+        remove_child.className = ''
       }
       mind.selectNode(target)
       menuContainer.hidden = false

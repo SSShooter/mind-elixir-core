@@ -69,7 +69,7 @@ export default function linkDiv(primaryNode) {
     base = 10000 - totalHeight / 2
   }
 
-  // 2. layout primary node, generate main link
+  // 2. layout primary node, generate primary link
   let path = ''
   for (let i = 0; i < primaryNodeList.length; i++) {
     let x2, y2
@@ -86,9 +86,28 @@ export default function linkDiv(primaryNode) {
         'px'
       x2 = 10000 - root.offsetWidth / 2 - PRIMARY_NODE_HORIZONTAL_GAP - 15 // padding
       y2 = base + currentOffsetL + elOffsetH / 2
-      path += `M ${10000} ${10000} C 10000 10000 ${
-        10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
-      } ${y2} ${x2} ${y2}`
+
+      let LEFT = 10000
+      if (this.primaryLinkStyle === 2) {
+        if(this.direction === SIDE){
+          LEFT = 10000 - root.offsetWidth / 6
+        }
+        if (y2 < 10000)
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 + 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
+          L ${x2} ${y2}`
+        else
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 - 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
+          L ${x2} ${y2}`
+      } else {
+        path += `M ${10000} ${10000} C 10000 10000 ${
+          10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
+        } ${y2} ${x2} ${y2}`
+      }
+
       if (shortSide === 'l') {
         currentOffsetL += elOffsetH + shortSideGap
       } else {
@@ -100,9 +119,27 @@ export default function linkDiv(primaryNode) {
         10000 + root.offsetWidth / 2 + PRIMARY_NODE_HORIZONTAL_GAP + 'px'
       x2 = 10000 + root.offsetWidth / 2 + PRIMARY_NODE_HORIZONTAL_GAP + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
-      path += `M ${10000} ${10000} C 10000 10000 ${
-        10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
-      } ${y2} ${x2} ${y2}`
+
+      let LEFT = 10000
+      if (this.primaryLinkStyle === 2) {
+        if(this.direction === SIDE){
+          LEFT = 10000 + root.offsetWidth / 6
+        }
+        if (y2 < 10000)
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 + 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
+          L ${x2} ${y2}`
+        else
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 - 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
+          L ${x2} ${y2}`
+      } else {
+        path += `M ${10000} ${10000} C 10000 10000 ${
+          10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
+        } ${y2} ${x2} ${y2}`
+      }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
       } else {

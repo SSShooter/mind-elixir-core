@@ -112,6 +112,7 @@ function MindElixir({
   before,
   newTopicName,
   allowUndo,
+  primaryLinkStyle
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
@@ -138,6 +139,7 @@ function MindElixir({
   this.bus = new Bus()
   this.scaleVal = 1
   this.tempDir = null
+  this.primaryLinkStyle = primaryLinkStyle || 0
 
   this.isUndo = false
   this.bus.addListener('operation', operation => {
