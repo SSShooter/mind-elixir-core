@@ -71,7 +71,9 @@ let mind = new MindElixir({
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja]
+  locale: 'en', // [zh_CN,zh_TW,en,ja] waiting for PRs
+  overflowHidden: false, // default false
+  primaryLinkStyle: 2, // [1,2] default 1
   contextMenuOption: {
     focus: true,
     link: true,

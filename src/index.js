@@ -112,7 +112,8 @@ function MindElixir({
   before,
   newTopicName,
   allowUndo,
-  primaryLinkStyle
+  primaryLinkStyle,
+  overflowHidden,
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
@@ -140,6 +141,7 @@ function MindElixir({
   this.scaleVal = 1
   this.tempDir = null
   this.primaryLinkStyle = primaryLinkStyle || 0
+  this.overflowHidden = overflowHidden
 
   this.isUndo = false
   this.bus.addListener('operation', operation => {
@@ -294,6 +296,8 @@ MindElixir.prototype = {
     this.container = $d.createElement('div') // map container
     this.container.className = 'map-container'
 
+    if (this.overflowHidden) this.container.style.overflow = 'hidden'
+
     this.map = $d.createElement('div') // map-canvas Element
     this.map.className = 'map-canvas'
     this.map.setAttribute('tabindex', '0')
@@ -337,8 +341,7 @@ MindElixir.prototype = {
     this.toCenter()
     this.layout()
     this.linkDiv()
-
-    initMouseEvent(this)
+    if (!this.overflowHidden) initMouseEvent(this)
   },
 }
 // MindElixir.exportSvg = exportSvg

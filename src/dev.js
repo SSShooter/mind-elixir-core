@@ -50,7 +50,8 @@ let mind2 = new MindElixir({
   el: '#map2',
   direction: 2,
   data: MindElixir.example2,
-  draggable: false
+  draggable: false,
+  overflowHidden: true,
 })
 mind2.init()
 window.currentOperation = null
