@@ -46,13 +46,13 @@ function sleep() {
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
-// let mind2 = new MindElixir({
-//   el: '#map2',
-//   direction: 2,
-//   data: data.data,
-//   draggable: true
-// })
-// mind2.init()
+let mind2 = new MindElixir({
+  el: '#map2',
+  direction: 2,
+  data: MindElixir.example2,
+  draggable: false
+})
+mind2.init()
 window.currentOperation = null
 mind.bus.addListener('operation', operation => {
   console.log(operation)

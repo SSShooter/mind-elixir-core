@@ -300,7 +300,7 @@ export let removeNode = function (el) {
     let link = this.linkData[prop]
     if (link.from === t.firstChild || link.to === t.firstChild) {
       this.removeLink(
-        document.querySelector(`[data-linkid=${this.linkData[prop].id}]`)
+        this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`)
       )
     }
   }

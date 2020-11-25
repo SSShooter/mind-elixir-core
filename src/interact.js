@@ -40,7 +40,7 @@ export let selectNextSibling = function () {
   let target
   let grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
-    let siblingList = document.querySelectorAll('.' + grp.className)
+    let siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
     let i = Array.from(siblingList).indexOf(grp)
     if (i + 1 < siblingList.length) {
       target = siblingList[i + 1].firstChild.firstChild
@@ -63,7 +63,7 @@ export let selectPrevSibling = function () {
   let target
   let grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
-    let siblingList = document.querySelectorAll('.' + grp.className)
+    let siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
     let i = Array.from(siblingList).indexOf(grp)
     if (i - 1 >= 0) {
       target = siblingList[i - 1].firstChild.firstChild
