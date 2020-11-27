@@ -114,6 +114,8 @@ function MindElixir({
   allowUndo,
   primaryLinkStyle,
   overflowHidden,
+  primaryNodeHorizontalGap,
+  primaryNodeVerticalGap
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
@@ -142,6 +144,8 @@ function MindElixir({
   this.tempDir = null
   this.primaryLinkStyle = primaryLinkStyle || 0
   this.overflowHidden = overflowHidden
+  this.primaryNodeHorizontalGap = primaryNodeHorizontalGap
+  this.primaryNodeVerticalGap = primaryNodeVerticalGap
 
   this.isUndo = false
   this.bus.addListener('operation', operation => {

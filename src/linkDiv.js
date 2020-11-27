@@ -17,6 +17,8 @@ import {
  * @param {object} primaryNode process the specific primary node only
  */
 export default function linkDiv(primaryNode) {
+  var primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
+  var primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
   let root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${
@@ -43,11 +45,11 @@ export default function linkDiv(primaryNode) {
     for (let i = 0; i < primaryNodeList.length; i++) {
       let el = primaryNodeList[i]
       if (el.className === 'lhs') {
-        totalHeightL += el.offsetHeight + PRIMARY_NODE_VERTICAL_GAP
+        totalHeightL += el.offsetHeight + primaryNodeVerticalGap
         totalHeightLWithoutGap += el.offsetHeight
         countL += 1
       } else {
-        totalHeightR += el.offsetHeight + PRIMARY_NODE_VERTICAL_GAP
+        totalHeightR += el.offsetHeight + primaryNodeVerticalGap
         totalHeightRWithoutGap += el.offsetHeight
         countR += 1
       }
@@ -64,7 +66,7 @@ export default function linkDiv(primaryNode) {
   } else {
     for (let i = 0; i < primaryNodeList.length; i++) {
       let el = primaryNodeList[i]
-      totalHeight += el.offsetHeight + PRIMARY_NODE_VERTICAL_GAP
+      totalHeight += el.offsetHeight + primaryNodeVerticalGap
     }
     base = 10000 - totalHeight / 2
   }
@@ -81,10 +83,10 @@ export default function linkDiv(primaryNode) {
       el.style.left =
         10000 -
         root.offsetWidth / 2 -
-        PRIMARY_NODE_HORIZONTAL_GAP -
+        primaryNodeHorizontalGap -
         el.offsetWidth +
         'px'
-      x2 = 10000 - root.offsetWidth / 2 - PRIMARY_NODE_HORIZONTAL_GAP - 15 // padding
+      x2 = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap - 15 // padding
       y2 = base + currentOffsetL + elOffsetH / 2
 
       let LEFT = 10000
@@ -104,20 +106,20 @@ export default function linkDiv(primaryNode) {
           L ${x2} ${y2}`
       } else {
         path += `M ${10000} ${10000} C 10000 10000 ${
-          10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
+          10000 + 2 * primaryNodeHorizontalGap * 0.03
         } ${y2} ${x2} ${y2}`
       }
 
       if (shortSide === 'l') {
         currentOffsetL += elOffsetH + shortSideGap
       } else {
-        currentOffsetL += elOffsetH + PRIMARY_NODE_VERTICAL_GAP
+        currentOffsetL += elOffsetH + primaryNodeVerticalGap
       }
     } else {
       el.style.top = base + currentOffsetR + 'px'
       el.style.left =
-        10000 + root.offsetWidth / 2 + PRIMARY_NODE_HORIZONTAL_GAP + 'px'
-      x2 = 10000 + root.offsetWidth / 2 + PRIMARY_NODE_HORIZONTAL_GAP + 15 // padding
+        10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 'px'
+      x2 = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
 
       let LEFT = 10000
@@ -137,13 +139,13 @@ export default function linkDiv(primaryNode) {
           L ${x2} ${y2}`
       } else {
         path += `M ${10000} ${10000} C 10000 10000 ${
-          10000 + 2 * PRIMARY_NODE_HORIZONTAL_GAP * 0.03
+          10000 + 2 * primaryNodeHorizontalGap * 0.03
         } ${y2} ${x2} ${y2}`
       }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
       } else {
-        currentOffsetR += elOffsetH + PRIMARY_NODE_VERTICAL_GAP
+        currentOffsetR += elOffsetH + primaryNodeVerticalGap
       }
     }
     // set position of expander

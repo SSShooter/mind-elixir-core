@@ -59,12 +59,12 @@ import MindElixir, { E } from 'mind-elixir'
 ### Init
 
 ```javascript
-let mind = new MindElixir({
+let options = {
   el: '#map',
   direction: MindElixir.LEFT,
   // create new map data
   data: MindElixir.new('new topic'),
-  // or set as data that is return from `.getAllData()`
+  // the data return from `.getAllData()`
   data: {...},
   draggable: true, // default true
   contextMenu: true, // default true
@@ -74,6 +74,8 @@ let mind = new MindElixir({
   locale: 'en', // [zh_CN,zh_TW,en,ja] waiting for PRs
   overflowHidden: false, // default false
   primaryLinkStyle: 2, // [1,2] default 1
+  primaryNodeVerticalGap: 15, // default 25
+  primaryNodeHorizontalGap: 15, // default 65
   contextMenuOption: {
     focus: true,
     link: true,
@@ -96,7 +98,9 @@ let mind = new MindElixir({
       return true
     },
   },
-})
+}
+
+let mind = new MindElixir(options)
 mind.init()
 
 // get a node
