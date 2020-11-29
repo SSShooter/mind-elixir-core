@@ -11,6 +11,8 @@ Mind elixir is a free open source mind map core.
 
 ## Use now
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/09fadec5bf094886b30cea6aabf3a88b)](https://app.codacy.com/gh/ssshooter/mind-elixir-core?utm_source=github.com&utm_medium=referral&utm_content=ssshooter/mind-elixir-core&utm_campaign=Badge_Grade_Settings)
+
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
 
 https://mindelixir.ink/#/
