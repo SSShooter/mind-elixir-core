@@ -30,7 +30,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h2><a href="github" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="github" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#disableEdit">disableEdit</a></li><li data-type='method'><a href="MapInteraction.html#enableEdit">enableEdit</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataMd">getAllDataMd</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#refresh">refresh</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
 </nav>
 
 <div id="main">
@@ -45,13 +45,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {
-  findEle,
-  createInputDiv,
-  addParentLink,
-  createLinkSvg,
-  createLine,
-} from './util'
+            <pre class="prettyprint source linenums"><code>import info from '../package.json'
+import vari from './var'
+import { isMobile, addParentLink, getObjById } from './utils/index'
+import { findEle, createInputDiv, layout } from './utils/dom'
+import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
   unselectNode,
@@ -61,6 +59,7 @@ import {
   selectParent,
   getAllDataString,
   getAllData,
+  getAllDataMd,
   scale,
   toCenter,
   focusNode,
@@ -69,9 +68,14 @@ import {
   initRight,
   initSide,
   setLocale,
+  enableEdit,
+  disableEdit,
+  expandNode,
+  refresh,
 } from './interact'
 import {
   insertSibling,
+  insertBefore,
   addChild,
   moveNode,
   removeNode,
@@ -82,6 +86,9 @@ import {
   updateNodeTags,
   updateNodeIcons,
   processPrimaryNode,
+  setNodeTopic,
+  moveNodeBefore,
+  moveNodeAfter,
 } from './nodeOperation'
 import {
   createLink,
@@ -91,25 +98,33 @@ import {
   showLinkController,
 } from './linkOperation'
 import { LEFT, RIGHT, SIDE } from './const'
-import example from './example'
-import layout from './layout'
+import example from './exampleData/1'
+import example2 from './exampleData/2'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
-import contextMenu from './pluginContextMenu'
-import toolBar from './pluginToolBar'
-import nodeMenu from './pluginNodeMenu'
-import nodeDraggable from './pluginNodeDraggable'
-import keypress from './pluginKeypress'
-import Bus from './pubsub'
+
+import contextMenu from './plugin/contextMenu'
+import toolBar from './plugin/toolBar'
+import nodeMenu from './plugin/nodeMenu'
+import nodeDraggable from './plugin/nodeDraggable'
+import keypress from './plugin/keypress'
+import mobileMenu from './plugin/mobileMenu'
+
+import Bus from './utils/pubsub'
+
 import './index.less'
-import './pluginContextMenu.less'
-import './pluginToolBar.less'
-import './pluginNodeMenu.less'
+import './plugin/contextMenu.less'
+import './plugin/toolBar.less'
+import './plugin/nodeMenu.less'
+import './plugin/mobileMenu.less'
+
+// import { exportSvg, exportPng } from '../painter'
 
 import './iconfont/iconfont.js'
 
 // TODO MindElixirLite
 // TODO Link label
+// TODO show up animation
 
 window.E = findEle
 export let E = findEle
@@ -123,6 +138,7 @@ let $d = document
   direction: 2,
   data: data,
   draggable: true,
+  editable: true,
   contextMenu: true,
   toolBar: true,
   nodeMenu: true,
@@ -137,56 +153,152 @@ function MindElixir({
   direction,
   locale,
   draggable,
+  editable,
   contextMenu,
+  contextMenuOption,
   toolBar,
   nodeMenu,
   keypress,
+  before,
+  newTopicName,
+  allowUndo,
+  primaryLinkStyle,
+  overflowHidden,
+  primaryNodeHorizontalGap,
+  primaryNodeVerticalGap,
 }) {
-  this.container = document.querySelector(el)
+  vari.newTopicName = newTopicName
+  this.mindElixirBox = document.querySelector(el)
   this.history = [] // TODO
-
+  this.before = before || {}
   this.nodeData = data.nodeData || {}
   this.linkData = data.linkData || {}
   this.locale = locale
-  this.nodeDataBackup = this.nodeData // help reset focus mode
+  this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
   this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
   this.keypress = keypress === undefined ? true : keypress
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
+  // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
-  window.mevar_draggable = draggable === undefined ? true : draggable
+  vari.mevar_draggable = draggable === undefined ? true : draggable
+  this.editable = editable === undefined ? true : editable
+  this.allowUndo = allowUndo === undefined ? true : allowUndo
   this.parentMap = {} // deprecate?
-
   this.currentNode = null // the selected &lt;tpc/> element
   this.currentLink = null // the selected link svg element
   this.inputDiv = null // editor
   this.bus = new Bus()
   this.scaleVal = 1
   this.tempDir = null
-  /**
-   * @function
-   * @global
-   * @name E
-   * @param {string} id Node id.
-   * @return {TargetElement} Target element.
-   * @example
-   * E('bd4313fbac40284b')
-   */
-  addParentLink(this.nodeData)
+  this.primaryLinkStyle = primaryLinkStyle || 0
+  this.overflowHidden = overflowHidden
+  this.primaryNodeHorizontalGap = primaryNodeHorizontalGap
+  this.primaryNodeVerticalGap = primaryNodeVerticalGap
+
+  this.isUndo = false
+  this.bus.addListener('operation', operation => {
+    if (this.isUndo) {
+      this.isUndo = false
+      return
+    }
+    if (
+      ['moveNode', 'removeNode', 'addChild', 'finishEdit'].includes(
+        operation.name
+      )
+    ) {
+      this.history.push(operation)
+      // console.log(operation, this.history)
+    }
+  })
+
+  this.undo = function () {
+    let operation = this.history.pop()
+    if (!operation) return
+    this.isUndo = true
+    if (operation.name === 'moveNode') {
+      this.moveNode(
+        E(operation.obj.fromObj.id),
+        E(operation.obj.originParentId)
+      )
+    } else if (operation.name === 'removeNode') {
+      if (operation.originSiblingId) {
+        this.insertBefore(E(operation.originSiblingId), operation.obj)
+      } else {
+        this.addChild(E(operation.originParentId), operation.obj)
+      }
+    } else if (operation.name === 'addChild') {
+      this.removeNode(E(operation.obj.id))
+    } else if (operation.name === 'finishEdit') {
+      this.setNodeTopic(E(operation.obj.id), operation.origin)
+    } else {
+      this.isUndo = false
+    }
+  }
 }
 
 MindElixir.prototype = {
-  insertSibling,
-  addChild,
-  removeNode,
-  moveNode,
+  addParentLink,
+  getObjById,
+  // node operation
+  insertSibling: async function (...args) {
+    if (
+      !this.before.insertSibling ||
+      (await this.before.insertSibling.apply(this, args))
+    ) {
+      insertSibling.apply(this, args)
+    }
+  },
+  insertBefore: async function (...args) {
+    if (
+      !this.before.insertBefore ||
+      (await this.before.insertBefore.apply(this, args))
+    ) {
+      insertBefore.apply(this, args)
+    }
+  },
+  addChild: async function (...args) {
+    if (
+      !this.before.addChild ||
+      (await this.before.addChild.apply(this, args))
+    ) {
+      addChild.apply(this, args)
+    }
+  },
+  moveNode: async function (...args) {
+    if (
+      !this.before.moveNode ||
+      (await this.before.moveNode.apply(this, args))
+    ) {
+      moveNode.apply(this, args)
+    }
+  },
+  removeNode: async function (...args) {
+    if (
+      !this.before.removeNode ||
+      (await this.before.removeNode.apply(this, args))
+    ) {
+      removeNode.apply(this, args)
+    }
+  },
   moveUpNode,
   moveDownNode,
-  beginEdit,
+  beginEdit: async function (...args) {
+    if (
+      !this.before.beginEdit ||
+      (await this.before.beginEdit.apply(this, args))
+    ) {
+      beginEdit.apply(this, args)
+    }
+  },
+  moveNodeBefore,
+  moveNodeAfter,
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
+  processPrimaryNode,
+  setNodeTopic,
 
   createLink,
   removeLink,
@@ -197,7 +309,6 @@ MindElixir.prototype = {
   layout,
   linkDiv,
   createInputDiv,
-  processPrimaryNode,
 
   selectNode,
   unselectNode,
@@ -207,6 +318,7 @@ MindElixir.prototype = {
   selectParent,
   getAllDataString,
   getAllData,
+  getAllDataMd,
   scale,
   toCenter,
   focusNode,
@@ -215,14 +327,37 @@ MindElixir.prototype = {
   initRight,
   initSide,
   setLocale,
-  
-  init: function() {
+  enableEdit,
+  disableEdit,
+  expandNode,
+  refresh,
+
+  init: function () {
+    /**
+     * @function
+     * @global
+     * @name E
+     * @param {string} id Node id.
+     * @return {TargetElement} Target element.
+     * @example
+     * E('bd4313fbac40284b')
+     */
+    addParentLink(this.nodeData)
+    console.log('ME_version ' + MindElixir.version)
+    console.log(this)
+    this.mindElixirBox.className += ' mind-elixir'
+    this.mindElixirBox.innerHTML = ''
+
+    this.container = $d.createElement('div') // map container
     this.container.className = 'map-container'
-    this.container.innerHTML = ''
+
+    if (this.overflowHidden) this.container.style.overflow = 'hidden'
+
     this.map = $d.createElement('div') // map-canvas Element
     this.map.className = 'map-canvas'
     this.map.setAttribute('tabindex', '0')
     this.container.appendChild(this.map)
+    this.mindElixirBox.appendChild(this.container)
     this.root = $d.createElement('root')
 
     this.box = $d.createElement('children')
@@ -252,25 +387,24 @@ MindElixir.prototype = {
     this.map.appendChild(this.P3)
 
     // plugin
-    this.contextMenu &amp;&amp; contextMenu(this)
     this.toolBar &amp;&amp; toolBar(this)
     this.nodeMenu &amp;&amp; nodeMenu(this)
     this.keypress &amp;&amp; keypress(this)
-    window.mevar_draggable &amp;&amp; nodeDraggable(this)
+
+    if (isMobile) mobileMenu(this)
+    else {
+      this.contextMenu &amp;&amp; contextMenu(this, this.contextMenuOption)
+    }
+    vari.mevar_draggable &amp;&amp; nodeDraggable(this)
 
     this.toCenter()
     this.layout()
     this.linkDiv()
-
-    initMouseEvent(this)
-
-    // this.bus.addListener('operation', operation => {
-    //   this.history = [operation]
-    //   this.history = this.getAllData()
-    // })
+    if (!this.overflowHidden) initMouseEvent(this)
   },
 }
-
+// MindElixir.exportSvg = exportSvg
+// MindElixir.exportPng = exportPng
 MindElixir.LEFT = LEFT
 MindElixir.RIGHT = RIGHT
 MindElixir.SIDE = SIDE
@@ -278,7 +412,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '0.9.2'
+MindElixir.version = info.version
 MindElixir.E = findEle
 /**
  * @memberof MindElixir
@@ -286,6 +420,7 @@ MindElixir.E = findEle
  * @description Example data help you try Mind-elxir quickly.
  */
 MindElixir.example = example
+MindElixir.example2 = example2
 /**
  * @function new
  * @memberof MindElixir
@@ -301,6 +436,15 @@ MindElixir.new = topic => ({
   },
   linkData: {},
 })
+MindElixir.newNode = ({ topic }) => {
+  let id = generateUUID()
+  return {
+    id,
+    topic,
+    // selected: true,
+    // new: true,
+  }
+}
 
 export default MindElixir
 </code></pre>
@@ -317,7 +461,7 @@ export default MindElixir
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sat Aug 03 2019 08:53:09 GMT+0800 (GMT+08:00) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Dec 17 2020 15:13:31 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

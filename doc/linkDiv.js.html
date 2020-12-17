@@ -30,7 +30,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h2><a href="github" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="github" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#disableEdit">disableEdit</a></li><li data-type='method'><a href="MapInteraction.html#enableEdit">enableEdit</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataMd">getAllDataMd</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#refresh">refresh</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
 </nav>
 
 <div id="main">
@@ -45,37 +45,39 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { findEle, createPath, createMainPath, createLinkSvg } from './util'
+            <pre class="prettyprint source linenums"><code>import { createPath, createMainPath, createLinkSvg } from './utils/svg'
+import { findEle } from './utils/dom'
 import {
-  LEFT,
-  RIGHT,
   SIDE,
   GAP,
   TURNPOINT_R,
-  PRIMARYNODEHORIZONTALGAP,
-  PRIMARYNODEVERTICALGAP,
+  PRIMARY_NODE_HORIZONTAL_GAP,
+  PRIMARY_NODE_VERTICAL_GAP,
 } from './const'
 
 /**
- * functionality: 
+ * functionality:
  * 1. calculate position of primary nodes
- * 2. layout primary node, generate main link
+ * 2. layout primary node, generate primary link
  * 3. generate link inside primary node
  * 4. generate custom link
  * @param {object} primaryNode process the specific primary node only
  */
 export default function linkDiv(primaryNode) {
+  var primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
+  var primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
   let root = this.root
-  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 -
-    root.offsetWidth / 2}px;`
+  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${
+    10000 - root.offsetWidth / 2
+  }px;`
   let primaryNodeList = this.box.children
   this.svg2nd.innerHTML = ''
 
   // 1. calculate position of primary nodes
   let totalHeight = 0
-  let shortSideGap = 0
-  let shortSide
+  let shortSide // side with smaller height
+  let shortSideGap = 0 // balance heigt of two side
   let currentOffsetL = 0 // left side total offset
   let currentOffsetR = 0 // right side total offset
   let totalHeightL = 0
@@ -89,12 +91,12 @@ export default function linkDiv(primaryNode) {
     let totalHeightRWithoutGap = 0
     for (let i = 0; i &lt; primaryNodeList.length; i++) {
       let el = primaryNodeList[i]
-      if (el.className === 'left-side') {
-        totalHeightL += el.offsetHeight + PRIMARYNODEVERTICALGAP
+      if (el.className === 'lhs') {
+        totalHeightL += el.offsetHeight + primaryNodeVerticalGap
         totalHeightLWithoutGap += el.offsetHeight
         countL += 1
       } else {
-        totalHeightR += el.offsetHeight + PRIMARYNODEVERTICALGAP
+        totalHeightR += el.offsetHeight + primaryNodeVerticalGap
         totalHeightRWithoutGap += el.offsetHeight
         countR += 1
       }
@@ -111,52 +113,86 @@ export default function linkDiv(primaryNode) {
   } else {
     for (let i = 0; i &lt; primaryNodeList.length; i++) {
       let el = primaryNodeList[i]
-      totalHeight += el.offsetHeight + PRIMARYNODEVERTICALGAP
+      totalHeight += el.offsetHeight + primaryNodeVerticalGap
     }
     base = 10000 - totalHeight / 2
   }
 
-  // 2. layout primary node, generate main link
+  // 2. layout primary node, generate primary link
   let path = ''
   for (let i = 0; i &lt; primaryNodeList.length; i++) {
     let x2, y2
-    let root = this.root
     let el = primaryNodeList[i]
     let elOffsetH = el.offsetHeight
-    let deviation, Cy
-    if (el.className === 'left-side') {
+    let Cy
+    if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
       el.style.left =
         10000 -
         root.offsetWidth / 2 -
-        PRIMARYNODEHORIZONTALGAP -
+        primaryNodeHorizontalGap -
         el.offsetWidth +
         'px'
-      x2 = 10000 - root.offsetWidth / 2 - PRIMARYNODEHORIZONTALGAP - 15 // padding
+      x2 = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap - 15 // padding
       y2 = base + currentOffsetL + elOffsetH / 2
-      deviation = ((totalHeightL - elOffsetH) / 2) * 0.02
-      Cy = base + currentOffsetL + elOffsetH / 2 + deviation // bezier curve control point y coordinate
-      path += `M ${10000} ${10000} C 10000 10000 ${10000 +
-        2 * PRIMARYNODEHORIZONTALGAP * 0.03} ${Cy} ${x2} ${y2}`
+
+      let LEFT = 10000
+      if (this.primaryLinkStyle === 2) {
+        if(this.direction === SIDE){
+          LEFT = 10000 - root.offsetWidth / 6
+        }
+        if (y2 &lt; 10000)
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 + 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
+          L ${x2} ${y2}`
+        else
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 - 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
+          L ${x2} ${y2}`
+      } else {
+        path += `M ${10000} ${10000} C 10000 10000 ${
+          10000 + 2 * primaryNodeHorizontalGap * 0.03
+        } ${y2} ${x2} ${y2}`
+      }
+
       if (shortSide === 'l') {
         currentOffsetL += elOffsetH + shortSideGap
       } else {
-        currentOffsetL += elOffsetH + PRIMARYNODEVERTICALGAP
+        currentOffsetL += elOffsetH + primaryNodeVerticalGap
       }
     } else {
       el.style.top = base + currentOffsetR + 'px'
       el.style.left =
-        10000 + root.offsetWidth / 2 + PRIMARYNODEHORIZONTALGAP + 'px'
-      x2 = 10000 + root.offsetWidth / 2 + PRIMARYNODEHORIZONTALGAP + 15 // padding
+        10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 'px'
+      x2 = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
-      deviation = ((totalHeightR - elOffsetH) / 2) * 0.02
-      Cy = base + currentOffsetR + elOffsetH / 2 + deviation
-      path += `M ${10000} ${10000} C 10000 10000 ${10000 +
-        2 * PRIMARYNODEHORIZONTALGAP * 0.03} ${Cy} ${x2} ${y2}`
+
+      let LEFT = 10000
+      if (this.primaryLinkStyle === 2) {
+        if(this.direction === SIDE){
+          LEFT = 10000 + root.offsetWidth / 6
+        }
+        if (y2 &lt; 10000)
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 + 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
+          L ${x2} ${y2}`
+        else
+          path += `M ${LEFT} 10000
+         L ${LEFT} ${y2 - 20} 
+        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
+          L ${x2} ${y2}`
+      } else {
+        path += `M ${10000} ${10000} C 10000 10000 ${
+          10000 + 2 * primaryNodeHorizontalGap * 0.03
+        } ${y2} ${x2} ${y2}`
+      }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
       } else {
-        currentOffsetR += elOffsetH + PRIMARYNODEVERTICALGAP
+        currentOffsetR += elOffsetH + primaryNodeVerticalGap
       }
     }
     // set position of expander
@@ -164,7 +200,7 @@ export default function linkDiv(primaryNode) {
     if (expander) {
       expander.style.top =
         (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
-      if (el.className === 'left-side') {
+      if (el.className === 'lhs') {
         expander.style.left = -10 + 'px'
       } else {
         expander.style.left = expander.parentNode.offsetWidth - 10 + 'px'
@@ -190,16 +226,16 @@ export default function linkDiv(primaryNode) {
       loopChildren(children, parent, true)
       svg.appendChild(createPath(path))
       function loopChildren(children, parent, first) {
+        // parent node of the child dom
+        let parentOT = parent.offsetTop
+        let parentOL = parent.offsetLeft
+        let parentOW = parent.offsetWidth
+        let parentOH = parent.offsetHeight
         for (let i = 0; i &lt; children.length; i++) {
           let child = children[i]
           let childT = child.children[0] // t tag inside the child dom
           let childTOT = childT.offsetTop
           let childTOH = childT.offsetHeight
-          // parent node of the child dom
-          let parentOT = parent.offsetTop
-          let parentOL = parent.offsetLeft
-          let parentOW = parent.offsetWidth
-          let parentOH = parent.offsetHeight
           let y1
           if (first) {
             y1 = parentOT + parentOH / 2
@@ -209,16 +245,19 @@ export default function linkDiv(primaryNode) {
           let y2 = childTOT + childTOH
           let x1, x2, xMiddle
           let direction = child.offsetParent.className
-          if (direction === 'left-side') {
+          if (direction === 'lhs') {
             x1 = parentOL + GAP
             xMiddle = parentOL
             x2 = parentOL - childT.offsetWidth
+            // console.log('x1,y1,x2,y2,child',x1,y1,x2,y2,child)
             if (
               childTOT + childTOH &lt; parentOT + parentOH / 2 + 50 &amp;&amp;
               childTOT + childTOH > parentOT + parentOH / 2 - 50
             ) {
+              // 相差+-50内直接直线
               path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
             } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
+              // 子底部高于父中点
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 - TURNPOINT_R} 
@@ -226,6 +265,7 @@ export default function linkDiv(primaryNode) {
             ${xMiddle - TURNPOINT_R},${y2} 
             L ${x2} ${y2}`
             } else {
+              // 子底部低于父中点
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 + TURNPOINT_R} 
@@ -233,7 +273,7 @@ export default function linkDiv(primaryNode) {
             ${xMiddle - TURNPOINT_R},${y2} 
             L ${x2} ${y2}`
             }
-          } else if (direction === 'right-side') {
+          } else if (direction === 'rhs') {
             x1 = parentOL + parentOW - GAP
             xMiddle = parentOL + parentOW
             x2 = parentOL + parentOW + childT.offsetWidth
@@ -247,15 +287,17 @@ export default function linkDiv(primaryNode) {
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 - TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle +
-                TURNPOINT_R},${y2} 
+            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${
+                xMiddle + TURNPOINT_R
+              },${y2} 
             L ${x2} ${y2}`
             } else {
               path += `M ${x1} ${y1} 
             L ${xMiddle} ${y1} 
             L ${xMiddle} ${y2 + TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle +
-                TURNPOINT_R},${y2} 
+            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${
+                xMiddle + TURNPOINT_R
+              },${y2} 
             L ${x2} ${y2}`
             }
           }
@@ -264,9 +306,9 @@ export default function linkDiv(primaryNode) {
           if (expander) {
             expander.style.top =
               (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
-            if (direction === 'left-side') {
+            if (direction === 'lhs') {
               expander.style.left = -10 + 'px'
-            } else if (direction === 'right-side') {
+            } else if (direction === 'rhs') {
               expander.style.left = childT.offsetWidth - 10 + 'px'
             }
             // this property is added in the layout phase
@@ -313,7 +355,7 @@ export default function linkDiv(primaryNode) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Sat Aug 03 2019 08:53:09 GMT+0800 (GMT+08:00) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Dec 17 2020 15:13:31 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
