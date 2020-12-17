@@ -97,8 +97,7 @@ export default function (mind, option) {
   }
 
   menuContainer.onclick = e => {
-    if (e.target === menuContainer)
-      menuContainer.hidden = true
+    if (e.target === menuContainer) menuContainer.hidden = true
   }
 
   add_child.onclick = e => {
@@ -155,4 +154,3 @@ export default function (mind, option) {
     )
   }
 }
-

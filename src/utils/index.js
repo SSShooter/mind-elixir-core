@@ -1,5 +1,10 @@
 import vari from '../var'
 
+export let isMobile = () =>
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  )
+
 export let getObjById = (id, data) => {
   data = data || this.nodeData
   if (data.id === id) {

@@ -13,6 +13,9 @@ import {
 } from './utils/index'
 import { findEle, createExpander, createGroup } from './utils/dom'
 import { LEFT, RIGHT, SIDE } from './const'
+
+// todo copy node
+
 let $d = document
 /**
  * @namespace NodeOperation

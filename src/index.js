@@ -1,6 +1,6 @@
 import info from '../package.json'
 import vari from './var'
-import { addParentLink, getObjById } from './utils/index'
+import { isMobile, addParentLink, getObjById } from './utils/index'
 import { findEle, createInputDiv, layout } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
@@ -60,6 +60,7 @@ import toolBar from './plugin/toolBar'
 import nodeMenu from './plugin/nodeMenu'
 import nodeDraggable from './plugin/nodeDraggable'
 import keypress from './plugin/keypress'
+import mobileMenu from './plugin/mobileMenu'
 
 import Bus from './utils/pubsub'
 
@@ -67,6 +68,7 @@ import './index.less'
 import './plugin/contextMenu.less'
 import './plugin/toolBar.less'
 import './plugin/nodeMenu.less'
+import './plugin/mobileMenu.less'
 
 // import { exportSvg, exportPng } from '../painter'
 
@@ -115,7 +117,7 @@ function MindElixir({
   primaryLinkStyle,
   overflowHidden,
   primaryNodeHorizontalGap,
-  primaryNodeVerticalGap
+  primaryNodeVerticalGap,
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
@@ -336,10 +338,14 @@ MindElixir.prototype = {
     this.map.appendChild(this.P3)
 
     // plugin
-    this.contextMenu && contextMenu(this, this.contextMenuOption)
     this.toolBar && toolBar(this)
     this.nodeMenu && nodeMenu(this)
     this.keypress && keypress(this)
+
+    if (isMobile) mobileMenu(this)
+    else {
+      this.contextMenu && contextMenu(this, this.contextMenuOption)
+    }
     vari.mevar_draggable && nodeDraggable(this)
 
     this.toCenter()
