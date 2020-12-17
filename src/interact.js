@@ -197,9 +197,9 @@ export let getAllDataMd = function () {
  * @memberof MapInteraction
  * @param {number}
  */
-export let scale = function (scale) {
-  this.scaleVal = scale
-  this.map.style.transform = 'scale(' + scale + ')'
+export let scale = function (scaleVal) {
+  this.scaleVal = scaleVal
+  this.map.style.transform = 'scale(' + scaleVal + ')'
 }
 /**
  * @function
@@ -314,4 +314,16 @@ export let expandNode = function (el, isExpand) {
   this.linkDiv()
 }
 
-// TODO reload function
+/**
+ * @function
+ * @instance
+ * @name refresh
+ * @description Refresh mind map, you can use it after modified `this.nodeData`
+ * @memberof MapInteraction
+ */
+export let refresh = function(){
+  // create dom element for every nodes
+  this.layout()
+  // generate links between nodes
+  this.linkDiv()
+}

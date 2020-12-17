@@ -197,8 +197,3 @@ let mind = new MindElixir({
 ## Doc
 
 https://doc.mindelixir.ink/
-
-## TODO
-
-- Undo/Redo
-- drag as sibling

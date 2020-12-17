@@ -24,6 +24,7 @@ import {
   enableEdit,
   disableEdit,
   expandNode,
+  refresh,
 } from './interact'
 import {
   insertSibling,
@@ -282,6 +283,7 @@ MindElixir.prototype = {
   enableEdit,
   disableEdit,
   expandNode,
+  refresh,
 
   init: function () {
     /**
