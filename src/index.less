@@ -37,11 +37,13 @@
     root {
       position: absolute;
       tpc {
+        display: block;
         color: rgb(255, 255, 255);
         padding: 10px @GAP;
         background-color: rgb(0, 170, 255);
         border-radius: 5px;
         font-size: 25px;
+        white-space: pre-wrap;
         [contentEditable] {
           position: absolute;
           top: 0;
@@ -106,6 +108,7 @@
         color: rgb(102, 102, 102);
         pointer-events: all;
         max-width: 800px;
+        white-space: pre-wrap;
         [contentEditable] {
           position: absolute;
           top: 0;

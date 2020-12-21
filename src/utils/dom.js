@@ -100,6 +100,10 @@ export function createInputDiv(tpc) {
       // 不停止冒泡冒到document就把节点删了
       e.stopPropagation()
     } else if (key === 13 || key === 9) {
+      // enter & tab
+      // keep wrap for shift enter
+      if (e.shiftKey) return
+      
       e.preventDefault()
       this.inputDiv.blur()
       this.map.focus()
