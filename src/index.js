@@ -119,6 +119,7 @@ function MindElixir({
   overflowHidden,
   primaryNodeHorizontalGap,
   primaryNodeVerticalGap,
+  mobileMenu,
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
@@ -132,6 +133,7 @@ function MindElixir({
   this.toolBar = toolBar === undefined ? true : toolBar
   this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
   this.keypress = keypress === undefined ? true : keypress
+  this.mobileMenu = mobileMenu
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
@@ -344,8 +346,9 @@ MindElixir.prototype = {
     this.nodeMenu && nodeMenu(this)
     this.keypress && keypress(this)
 
-    if (isMobile) mobileMenu(this)
-    else {
+    if (isMobile && this.mobileMenu) {
+      mobileMenu(this)
+    } else {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
     }
     vari.mevar_draggable && nodeDraggable(this)
