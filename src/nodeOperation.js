@@ -233,6 +233,10 @@ export let moveUpNode = function (el) {
   grp.parentNode.insertBefore(grp, grp.previousSibling)
   this.linkDiv()
   nodeEle.scrollIntoViewIfNeeded()
+  this.bus.fire('operation', {
+    name: 'moveUpNode',
+    obj,
+  })
 }
 
 /**
@@ -258,6 +262,10 @@ export let moveDownNode = function (el) {
   }
   this.linkDiv()
   nodeEle.scrollIntoViewIfNeeded()
+  this.bus.fire('operation', {
+    name: 'moveDownNode',
+    obj,
+  })
 }
 
 /**
@@ -303,7 +311,9 @@ export let removeNode = function (el) {
     let link = this.linkData[prop]
     if (link.from === t.firstChild || link.to === t.firstChild) {
       this.removeLink(
-        this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`)
+        this.mindElixirBox.querySelector(
+          `[data-linkid=${this.linkData[prop].id}]`
+        )
       )
     }
   }
@@ -384,6 +394,7 @@ export let moveNode = function (from, to) {
 export let moveNodeBefore = function (from, to) {
   let fromObj = from.nodeObj
   let toObj = to.nodeObj
+  let originParentId = fromObj.parent.id
   moveNodeBeforeObj(fromObj, toObj)
   addParentLink(this.nodeData)
   let fromTop = from.parentElement
@@ -393,11 +404,16 @@ export let moveNodeBefore = function (from, to) {
   let toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp)
   this.linkDiv()
+  this.bus.fire('operation', {
+    name: 'moveNodeBefore',
+    obj: { fromObj, toObj, originParentId },
+  })
 }
 
 export let moveNodeAfter = function (from, to) {
   let fromObj = from.nodeObj
   let toObj = to.nodeObj
+  let originParentId = fromObj.parent.id
   moveNodeAfterObj(fromObj, toObj)
   addParentLink(this.nodeData)
   let fromTop = from.parentElement
@@ -407,6 +423,10 @@ export let moveNodeAfter = function (from, to) {
   let toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp.nextSibling)
   this.linkDiv()
+  this.bus.fire('operation', {
+    name: 'moveNodeAfter',
+    obj: { fromObj, toObj, originParentId },
+  })
 }
 
 /**
