@@ -29,6 +29,9 @@ let mind = new MindElixir({
   keypress: true,
   allowUndo: false,
   before: {
+    moveDownNode(){
+      return false
+    },
     insertSibling(el, obj) {
       return true
     },

@@ -237,8 +237,22 @@ MindElixir.prototype = {
       removeNode.apply(this, args)
     }
   },
-  moveUpNode,
-  moveDownNode,
+  moveUpNode: async function (...args) {
+    if (
+      !this.before.moveUpNode ||
+      (await this.before.moveUpNode.apply(this, args))
+    ) {
+      moveUpNode.apply(this, args)
+    }
+  },
+  moveDownNode: async function (...args) {
+    if (
+      !this.before.moveDownNode ||
+      (await this.before.moveDownNode.apply(this, args))
+    ) {
+      moveDownNode.apply(this, args)
+    }
+  },
   beginEdit: async function (...args) {
     if (
       !this.before.beginEdit ||
@@ -247,8 +261,22 @@ MindElixir.prototype = {
       beginEdit.apply(this, args)
     }
   },
-  moveNodeBefore,
-  moveNodeAfter,
+  moveNodeBefore: async function (...args) {
+    if (
+      !this.before.moveNodeBefore ||
+      (await this.before.moveNodeBefore.apply(this, args))
+    ) {
+      moveNodeBefore.apply(this, args)
+    }
+  },
+  moveNodeAfter: async function (...args) {
+    if (
+      !this.before.moveNodeAfter ||
+      (await this.before.moveNodeAfter.apply(this, args))
+    ) {
+      moveNodeAfter.apply(this, args)
+    }
+  },
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
