@@ -22,7 +22,7 @@ let $d = document
  */
 export let updateNodeStyle = function (object) {
   if (!object.style) return
-  let nodeEle = findEle(object.id)
+  let nodeEle = findEle(object.id, this)
   nodeEle.style.color = object.style.color
   nodeEle.style.background = object.style.background
   nodeEle.style.fontSize = object.style.fontSize + 'px'

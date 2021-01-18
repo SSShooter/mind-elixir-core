@@ -413,7 +413,7 @@ MindElixir.example2 = example2
  */
 MindElixir.new = topic => ({
   nodeData: {
-    id: 'root',
+    id: generateUUID(),
     topic: topic || 'new topic',
     root: true,
     children: [],

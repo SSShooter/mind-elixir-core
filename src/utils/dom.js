@@ -3,8 +3,9 @@ import vari from '../var'
 
 // DOM manipulation
 let $d = document
-export let findEle = id => {
-  return $d.querySelector(`[data-nodeid=me${id}]`)
+export let findEle = (id, me) => {
+  let scope = me ? me.mindElixirBox : $d
+  return scope.querySelector(`[data-nodeid=me${id}]`)
 }
 
 export let createGroup = function (node) {
