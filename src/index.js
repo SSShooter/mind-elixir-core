@@ -1,6 +1,11 @@
 import info from '../package.json'
 import vari from './var'
-import { isMobile, addParentLink, getObjById } from './utils/index'
+import {
+  isMobile,
+  addParentLink,
+  getObjById,
+  generateUUID,
+} from './utils/index'
 import { findEle, createInputDiv, layout } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {

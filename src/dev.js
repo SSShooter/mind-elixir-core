@@ -6,8 +6,8 @@ let mind = new MindElixir({
   newTopicName: '子节点',
   direction: MindElixir.SIDE,
   // direction: MindElixir.RIGHT,
-  // data: MindElixir.new('new topic'),
-  data: MindElixir.example,
+  data: MindElixir.new('new topic'),
+  // data: MindElixir.example,
   locale: 'en',
   draggable: true,
   editable: true,
@@ -25,7 +25,7 @@ let mind = new MindElixir({
     ],
   },
   toolBar: true,
-  nodeMenu: false,
+  nodeMenu: true,
   keypress: true,
   allowUndo: false,
   before: {
@@ -56,7 +56,8 @@ let mind2 = new MindElixir({
   direction: 2,
   data: MindElixir.example2,
   draggable: false,
-  overflowHidden: true,
+  // overflowHidden: true,
+  nodeMenu: true,
 })
 mind2.init()
 window.currentOperation = null
