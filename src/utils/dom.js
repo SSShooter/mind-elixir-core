@@ -22,9 +22,7 @@ export let createGroup = function (node) {
   return { grp, top }
 }
 
-export let createTop = function (nodeObj) {
-  let top = $d.createElement('t')
-  let tpc = createTopic(nodeObj)
+let shapeTpc = function (tpc, nodeObj) {
   // TODO allow to add online image
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color
@@ -48,6 +46,12 @@ export let createTop = function (nodeObj) {
       .join('')
     tpc.appendChild(tagsContainer)
   }
+}
+
+export let createTop = function (nodeObj) {
+  let top = $d.createElement('t')
+  let tpc = createTopic(nodeObj)
+  shapeTpc(tpc, nodeObj)
   top.appendChild(tpc)
   return top
 }
@@ -104,7 +108,7 @@ export function createInputDiv(tpc) {
       // enter & tab
       // keep wrap for shift enter
       if (e.shiftKey) return
-      
+
       e.preventDefault()
       this.inputDiv.blur()
       this.map.focus()
@@ -190,6 +194,7 @@ export function layout() {
   this.root.innerHTML = ''
   this.box.innerHTML = ''
   let tpc = createTopic(this.nodeData)
+  shapeTpc(tpc, this.nodeData) // shape root tpc
   tpc.draggable = false
   this.root.appendChild(tpc)
 
