@@ -13,38 +13,33 @@ cmenu {
     font: 300 15px 'Roboto', sans-serif;
     color: #333;
     box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.2);
-    * {
-      transition: color 0.4s, background-color 0.4s;
-    }
     li {
       min-width: 150px;
       overflow: hidden;
       white-space: nowrap;
       padding: 6px 10px;
       background-color: #fff;
-      border-bottom: 1px solid #ecf0f1;
-      a {
-        color: #333;
-        text-decoration: none;
-      }
+      border-bottom: 1px solid lightgray;
+      color: #000;
       &.disabled {
-        color: rgb(94, 94, 94);
-        background-color: rgb(247, 247, 247);
+        color: grey;
         &:hover {
           cursor: default;
-          background-color: rgb(247, 247, 247);
+          color: grey;
+          font-weight: normal;
+          background-color: transparent;
         }
       }
       &:hover {
         cursor: pointer;
-        background-color: #ecf0f1;
+        font-weight: bold;
       }
       &:first-child {
-        border-radius: 5px 5px 0 0;
+        border-radius: 0px;
       }
       &:last-child {
         border-bottom: 0;
-        border-radius: 0 0 5px 5px;
+        border-radius: 0px;
       }
       span:last-child {
         float: right;

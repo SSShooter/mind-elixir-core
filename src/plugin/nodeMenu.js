@@ -1,6 +1,9 @@
 import i18n from '../i18n'
 
 export default function(mind) {
+  // Node menu drawer status
+  let state = 'close';
+
   let locale = i18n[mind.locale] ? mind.locale : 'en'
   let createDiv = (id, name) => {
     let div = document.createElement('div')
@@ -14,24 +17,24 @@ export default function(mind) {
   let iconDiv = createDiv('nm-icon', 'icon')
 
   let colorList = [
-    '#2c3e50',
-    '#34495e',
-    '#7f8c8d',
-    '#94a5a6',
-    '#bdc3c7',
-    '#ecf0f1',
-    '#8e44ad',
-    '#9b59b6',
-    '#2980b9',
-    '#3298db',
-    '#c0392c',
-    '#e74c3c',
-    '#d35400',
-    '#f39c11',
-    '#f1c40e',
-    '#17a085',
-    '#27ae61',
-    '#2ecc71',
+    '#F5F5F5',
+    '#FFAC77',
+    '#FFEB3B',
+    '#CDDC39',
+    '#41BBB4',
+    '#FFC107',
+    '#8BC34A',
+    '#F587C7',
+    '#FB8C01',
+    '#4CAF50',
+    '#2196F3',
+    '#607D8B',
+    '#F44336',
+    '#1A76D2',
+    '#E91E63',
+    '#795548',
+    '#9C27B0',
+    '#000000'
   ]
   styleDiv.innerHTML = `
       <div class="nm-fontsize-container">
@@ -70,15 +73,13 @@ export default function(mind) {
   `
 
   let menuContainer = document.createElement('nmenu')
-  menuContainer.innerHTML = `
-  <div class="button-container"><svg class="icon" aria-hidden="true">
-  <use xlink:href="#icon-close"></use>
-  </svg></div>
-  `
+  menuContainer.innerHTML = `<div class="button-container"><svg class="icon" aria-hidden="true">
+    <use xlink:href="#icon-menu"></use>
+    </svg></div>`
   menuContainer.appendChild(styleDiv)
   menuContainer.appendChild(tagDiv)
   menuContainer.appendChild(iconDiv)
-  menuContainer.hidden = true
+  menuContainer.className = 'close'
 
   function clearSelect(klass, remove) {
     var elems = document.querySelectorAll(klass)
@@ -95,7 +96,10 @@ export default function(mind) {
   let tagInput = document.querySelector('.nm-tag')
   let iconInput = document.querySelector('.nm-icon')
   menuContainer.onclick = e => {
-    if (!mind.currentNode) return
+    if (!mind.currentNode) {
+      alert('please select any node first!');
+      return;
+    }
     let nodeObj = mind.currentNode.nodeObj
     if (e.target.className === 'palette') {
       if (!nodeObj.style) nodeObj.style = {}
@@ -164,8 +168,9 @@ export default function(mind) {
     mind.currentNode.nodeObj.icons = e.target.value.split(',')
     mind.updateNodeIcons(mind.currentNode.nodeObj)
   }
-  let state = 'open'
+
   buttonContainer.onclick = e => {
+    if (!mind.currentNode) return;
     if (state === 'open') {
       state = 'close'
       menuContainer.className = 'close'
@@ -181,10 +186,13 @@ export default function(mind) {
     }
   }
   mind.bus.addListener('unselectNode', function() {
-    menuContainer.hidden = true
+    menuContainer.className = 'close'
+    buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true">
+    <use xlink:href="#icon-menu"></use>
+    </svg>`
+    state = 'close';
   })
   mind.bus.addListener('selectNode', function(nodeObj) {
-    menuContainer.hidden = false
     clearSelect('.palette', 'nmenu-selected')
     clearSelect('.size', 'size-selected')
     clearSelect('.bold', 'size-selected')

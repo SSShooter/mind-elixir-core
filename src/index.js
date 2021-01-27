@@ -88,9 +88,9 @@ window.E = findEle
 export let E = findEle
 
 let $d = document
-/** 
- * @class MindElixir 
- * @example 
+/**
+ * @class MindElixir
+ * @example
  * let mind = new MindElixir({
   el: '#map',
   direction: 2,
@@ -331,8 +331,20 @@ MindElixir.prototype = {
      * E('bd4313fbac40284b')
      */
     addParentLink(this.nodeData)
-    console.log('ME_version ' + MindElixir.version)
-    console.log(this)
+
+    /**
+     * When we change the position of map, the color of root node gets reset.
+     * So before proceed save the color of root node (If any), and after creating
+     * root node assign this color to root node again.
+     */
+    let rootNodeStyles = {};
+    if(this.nodeData.style) {
+      rootNodeStyles.background = this.nodeData.style.background;
+      rootNodeStyles.color = this.nodeData.style.color;
+      rootNodeStyles.fontSize = this.nodeData.style.fontSize;
+      rootNodeStyles.fontWeight = this.nodeData.style.fontWeight;
+    }
+
     this.mindElixirBox.className += ' mind-elixir'
     this.mindElixirBox.innerHTML = ''
 
@@ -347,7 +359,6 @@ MindElixir.prototype = {
     this.container.appendChild(this.map)
     this.mindElixirBox.appendChild(this.container)
     this.root = $d.createElement('root')
-
     this.box = $d.createElement('children')
     this.box.className = 'box'
 
@@ -390,6 +401,15 @@ MindElixir.prototype = {
     this.layout()
     this.linkDiv()
     if (!this.overflowHidden) initMouseEvent(this)
+
+    // Assign previous colors to root node again
+    if(rootNodeStyles) {
+      let el = $d.querySelector("root tpc").style;
+      el.background = rootNodeStyles.background;
+      el.color = rootNodeStyles.color;
+      el.fontSize = rootNodeStyles.fontSize;
+      el.fontWeight = rootNodeStyles.fontWeight;
+    }
   },
 }
 // MindElixir.exportSvg = exportSvg

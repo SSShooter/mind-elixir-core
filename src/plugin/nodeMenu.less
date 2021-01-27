@@ -3,12 +3,12 @@ nmenu {
   right: 20px;
   top: 20px;
   background: #fff;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  text-align: center;
+  border-radius: 3px;
+  box-shadow: 0 3px 4px 2px rgba(0, 0, 0, 0.2);
   width: 240px;
   box-sizing: border-box;
-  padding: 0 15px 15px;
+  padding: 10px 10px;
   transition: 0.3s all;
   &.close {
     height: 30px;
@@ -16,8 +16,11 @@ nmenu {
     overflow: hidden;
   }
   .button-container {
-    padding: 3px 0;
+    cursor: pointer;
     direction: rtl;
+    svg {
+      color: black;
+    }
   }
   #nm-tag {
     margin-top: 20px;
@@ -32,9 +35,9 @@ nmenu {
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+      box-shadow: 0 1px 2px 1px rgba(0, 0, 0, 0.2);
       background-color: white;
-      color: tomato;
+      color: #000;
       border-radius: 100%;
     }
   }
@@ -59,17 +62,20 @@ nmenu {
     border-radius: 100%;
     width: 21px;
     height: 21px;
-    border: 1px solid #edf1f2;
+    border: 1px solid transparent;
+    cursor: pointer;
     margin: auto;
   }
   .nmenu-selected,
   .palette:hover {
-    box-shadow: tomato 0 0 0 2px;
+    box-shadow: #000 0 0 0 2px;
     background-color: #c7e9fa;
   }
+
   .size-selected {
-    background-color: tomato !important;
-    border-color: tomato;
+    background-color: #000 !important;
+    border-color: #000;
+    border-color: transparent;
     fill: white;
     color: white;
     svg {
@@ -79,14 +85,18 @@ nmenu {
   .bof {
     text-align: center;
     span {
+      width: 90px;
       display: inline-block;
       font-size: 14px;
       border-radius: 4px;
       padding: 2px 5px;
+      cursor: pointer;
     }
     .selected {
-      background-color: tomato;
-      color: white;
+      background-color: #212121;
+      padding: 5px 0px;
+      color: #fff;
+      font-weight: bold;
     }
   }
 }

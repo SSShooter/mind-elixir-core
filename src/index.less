@@ -30,9 +30,9 @@
     user-select: none;
     transition: all 0.3s;
     transform: scale(1);
-    background: #f6f6f6;
+    background: transparent;
     .selected {
-      outline: 2px solid #4dc4ff;
+      outline: 2px solid #000;
     }
     root {
       position: absolute;
@@ -40,18 +40,38 @@
         display: block;
         color: rgb(255, 255, 255);
         padding: 10px @GAP;
-        background-color: rgb(0, 170, 255);
-        border-radius: 5px;
-        font-size: 25px;
+        background-color: #1A76D2;
+        border: none;
+        border-radius: 0px;
+        font-size: 20px;
+        width: 150px;
+        text-align: center;
         white-space: pre-wrap;
         [contentEditable] {
           position: absolute;
           top: 0;
           left: 0;
-          background-color: rgb(0, 170, 255);
+          padding: 10px @GAP;
+          background-color: #fff;
+          color: #000;
           max-width: 300px;
           z-index: 11;
           -webkit-user-select: auto;
+        }
+        .tags {
+          direction: ltr;
+          span {
+            display: inline-block;
+            border-radius: 3px;
+            padding: 2px 4px;
+            background: #fff;
+            color: #000;
+            margin: 0px;
+            font-size: 12px;
+            height: auto;
+            line-height: 16px;
+            margin-top: 10px;
+          }
         }
       }
     }
@@ -61,22 +81,42 @@
       // for primary node
       position: absolute;
       & > t > tpc {
-        background-color: rgb(255, 255, 255);
-        border: 1px solid rgb(68, 68, 68);
-        border-radius: 5px;
-        color: rgb(115, 92, 69);
+        background-color: #FB8C01;
+        border: none;
+        border-radius: 0px;
+        color: #fff;
         padding: 8px 10px;
+        font-size: 16px;
+        text-align: center;
+        width: 120px;
         margin: 0;
         [contentEditable] {
           position: absolute;
           top: 0;
           left: 0;
           background-color: #fff;
+          color: #000;
+          padding: 8px 10px;
           max-width: 300px;
           padding: 8px 10px;
           z-index: 11;
           direction: ltr;
           -webkit-user-select: auto;
+        }
+        .tags {
+          direction: ltr;
+          span {
+            display: inline-block;
+            border-radius: 3px;
+            padding: 2px 4px;
+            background: #fff;
+            color: #000;
+            margin: 0px;
+            font-size: 12px;
+            height: auto;
+            line-height: 16px;
+            margin-top: 10px;
+          }
         }
       }
     }
@@ -104,9 +144,12 @@
         position: relative;
         display: block;
         padding: 5px;
-        border-radius: 3px;
-        color: rgb(102, 102, 102);
+        border-radius: 0px;
+        background-color: #4CAF50;
+        color: #fff;
         pointer-events: all;
+        text-align: center;
+        width: 100px;
         max-width: 800px;
         white-space: pre-wrap;
         [contentEditable] {
@@ -114,6 +157,8 @@
           top: 0;
           left: 0;
           background-color: #fff;
+          color: #000;
+          padding: 5px;
           max-width: 300px;
           padding: 5px;
           z-index: 11;
@@ -126,14 +171,13 @@
             display: inline-block;
             border-radius: 3px;
             padding: 2px 4px;
-            background: #d6f0f8;
-            color: #276f86;
+            background: #fff;
+            color: #000;
             margin: 0px;
             font-size: 12px;
-            height: 16px;
+            height: auto;
             line-height: 16px;
-            margin-right: 3px;
-            margin-top: 2px;
+            margin-top: 10px;
           }
         }
         .icons {
@@ -172,16 +216,13 @@
         line-height: 12px;
         text-align: center;
         border-radius: 50%;
-        border: 1px solid #4f4f4f;
-        background-color: #fff;
+        border: 1px solid tomato;
+        background-color: tomato;
+        color: #fff;
         pointer-events: all;
         z-index: 9;
         &.minus {
-          transition: all 0.3s;
-          opacity: 0;
-          &:hover {
-            opacity: 1;
-          }
+          font-size: 23px;
         }
       }
     }
