@@ -403,7 +403,7 @@ MindElixir.prototype = {
     if (!this.overflowHidden) initMouseEvent(this)
 
     // Assign previous colors to root node again
-    if(rootNodeStyles) {
+    if(Object.keys(rootNodeStyles).length) {
       let el = $d.querySelector("root tpc").style;
       el.background = rootNodeStyles.background;
       el.color = rootNodeStyles.color;

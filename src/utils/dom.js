@@ -104,7 +104,7 @@ export function createInputDiv(tpc) {
       // enter & tab
       // keep wrap for shift enter
       if (e.shiftKey) return
-      
+
       e.preventDefault()
       this.inputDiv.blur()
       this.map.focus()
@@ -186,10 +186,23 @@ export function createChildren(data, first, direction) {
 
 // Set primary nodes' direction and invoke createChildren()
 export function layout() {
-  console.time('layout')
   this.root.innerHTML = ''
   this.box.innerHTML = ''
-  let tpc = createTopic(this.nodeData)
+  let tpc = createTopic(this.nodeData);
+
+   /**
+     * When we change the position of map, the color of root node gets reset.
+     * So before proceed save the color of root node (If any), and after creating
+     * root node assign this color to root node again.
+  */
+  let rootNodeStyles = {};
+  if(this.nodeData.style) {
+    rootNodeStyles.background = this.nodeData.style.background;
+    rootNodeStyles.color = this.nodeData.style.color;
+    rootNodeStyles.fontSize = this.nodeData.style.fontSize;
+    rootNodeStyles.fontWeight = this.nodeData.style.fontWeight;
+  }
+
   tpc.draggable = false
   this.root.appendChild(tpc)
 
@@ -217,6 +230,15 @@ export function layout() {
       }
     })
   }
-  createChildren(this.nodeData.children, this.box, this.direction)
-  console.timeEnd('layout')
+
+  // Assign previous colors to root node again
+  if(Object.keys(rootNodeStyles).length) {
+    let el = $d.querySelector("root tpc").style;
+    el.background = rootNodeStyles.background;
+    el.color = rootNodeStyles.color;
+    el.fontSize = rootNodeStyles.fontSize;
+    el.fontWeight = rootNodeStyles.fontWeight;
+  }
+
+  createChildren(this.nodeData.children, this.box, this.direction);
 }
