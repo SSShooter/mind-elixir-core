@@ -1,7 +1,5 @@
 .DS_Store
 node_modules
-/dist/MindElixir.js
-/dist/painter.js
 .nyc_output
 coverage
 # local env files
