@@ -1,3 +1,4 @@
+import { ApplyStylesOnRootNode } from "../../src/helper";
 import { LEFT, RIGHT, SIDE } from '../const'
 import vari from '../var'
 
@@ -190,18 +191,10 @@ export function layout() {
   this.box.innerHTML = ''
   let tpc = createTopic(this.nodeData);
 
-   /**
-     * When we change the position of map, the color of root node gets reset.
-     * So before proceed save the color of root node (If any), and after creating
-     * root node assign this color to root node again.
-  */
-  let rootNodeStyles = {};
-  if(this.nodeData.style) {
-    rootNodeStyles.background = this.nodeData.style.background;
-    rootNodeStyles.color = this.nodeData.style.color;
-    rootNodeStyles.fontSize = this.nodeData.style.fontSize;
-    rootNodeStyles.fontWeight = this.nodeData.style.fontWeight;
-  }
+  // Save root node's styling
+  let styleObj = this.nodeData.style
+    ? this.nodeData.style
+    : {}
 
   tpc.draggable = false
   this.root.appendChild(tpc)
@@ -231,14 +224,8 @@ export function layout() {
     })
   }
 
-  // Assign previous colors to root node again
-  if(Object.keys(rootNodeStyles).length) {
-    let el = $d.querySelector("root tpc").style;
-    el.background = rootNodeStyles.background;
-    el.color = rootNodeStyles.color;
-    el.fontSize = rootNodeStyles.fontSize;
-    el.fontWeight = rootNodeStyles.fontWeight;
-  }
+  // Assign previous colors to root node again.
+  ApplyStylesOnRootNode(this.nodeData.id, styleObj);
 
   createChildren(this.nodeData.children, this.box, this.direction);
 }

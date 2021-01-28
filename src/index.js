@@ -1,3 +1,4 @@
+import { ApplyStylesOnRootNode } from "../src/helper";
 import info from '../package.json'
 import vari from './var'
 import {
@@ -58,6 +59,7 @@ import {
 import { LEFT, RIGHT, SIDE } from './const'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
+import example3 from './exampleData/3'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
 
@@ -332,18 +334,10 @@ MindElixir.prototype = {
      */
     addParentLink(this.nodeData)
 
-    /**
-     * When we change the position of map, the color of root node gets reset.
-     * So before proceed save the color of root node (If any), and after creating
-     * root node assign this color to root node again.
-     */
-    let rootNodeStyles = {};
-    if(this.nodeData.style) {
-      rootNodeStyles.background = this.nodeData.style.background;
-      rootNodeStyles.color = this.nodeData.style.color;
-      rootNodeStyles.fontSize = this.nodeData.style.fontSize;
-      rootNodeStyles.fontWeight = this.nodeData.style.fontWeight;
-    }
+    // Save root node's styling
+    let styleObj = this.nodeData.style
+      ? this.nodeData.style
+      : {}
 
     this.mindElixirBox.className += ' mind-elixir'
     this.mindElixirBox.innerHTML = ''
@@ -402,14 +396,8 @@ MindElixir.prototype = {
     this.linkDiv()
     if (!this.overflowHidden) initMouseEvent(this)
 
-    // Assign previous colors to root node again
-    if(Object.keys(rootNodeStyles).length) {
-      let el = $d.querySelector("root tpc").style;
-      el.background = rootNodeStyles.background;
-      el.color = rootNodeStyles.color;
-      el.fontSize = rootNodeStyles.fontSize;
-      el.fontWeight = rootNodeStyles.fontWeight;
-    }
+    // Assign previous colors to root node again.
+    ApplyStylesOnRootNode(this.nodeData.id, styleObj);
   },
 }
 // MindElixir.exportSvg = exportSvg
@@ -430,6 +418,8 @@ MindElixir.E = findEle
  */
 MindElixir.example = example
 MindElixir.example2 = example2
+MindElixir.example3 = example3
+
 /**
  * @function new
  * @memberof MindElixir
