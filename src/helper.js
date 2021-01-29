@@ -11,6 +11,19 @@ const ApplyStylesOnRootNode = (root_node_id, styleObj) => {
   }
 }
 
+const updateNodeMenuStyle = (el, state) => {
+  if(state == "close") {
+    el.style.background = "transparent";
+    el.style.boxShadow = "none";
+    el.className = 'close'
+  } else {
+    el.style.background = "#fff";
+    el.style.boxShadow = "0 3px 4px 2px rgba(0, 0, 0, 0.2)";
+    el.className = ''
+  }
+}
+
 export {
-  ApplyStylesOnRootNode
+  ApplyStylesOnRootNode,
+  updateNodeMenuStyle
 }

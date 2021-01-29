@@ -22,7 +22,11 @@ function createToolBarRBContainer(mind) {
   // toolBarRBContainer.appendChild(percentage)
   toolBarRBContainer.className = 'rb'
   fc.onclick = () => {
-    mind.container.requestFullscreen()
+    // when full screen mode is on, change the bg color;
+    mind.mindElixirBox.style.background = "#fff";
+
+    // Make element in full screen mode
+    mind.mindElixirBox.requestFullscreen()
   }
   gc.onclick = () => {
     mind.toCenter()
@@ -35,6 +39,15 @@ function createToolBarRBContainer(mind) {
     if (mind.scaleVal > 1.6) return
     mind.scale((mind.scaleVal += 0.2))
   }
+
+  document.addEventListener('fullscreenchange', (event) => {
+    // Reset the transform scale
+    mind.mindElixirBox.querySelector(".map-canvas").style.transform = "scale(1)";
+
+    // Reset the map's position
+    mind.toCenter();
+  });
+
   return toolBarRBContainer
 }
 function createToolBarLTContainer(mind) {
@@ -42,7 +55,7 @@ function createToolBarLTContainer(mind) {
   let l = createButton('tbltl', 'left')
   let r = createButton('tbltr', 'right')
   let s = createButton('tblts', 'side')
-  
+
   toolBarLTContainer.appendChild(l)
   toolBarLTContainer.appendChild(r)
   toolBarLTContainer.appendChild(s)

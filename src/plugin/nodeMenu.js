@@ -1,4 +1,5 @@
 import i18n from '../i18n'
+import { updateNodeMenuStyle } from "../../src/helper";
 
 export default function(mind) {
   // Node menu drawer status
@@ -72,7 +73,10 @@ export default function(mind) {
   }" /><br>
   `
 
-  let menuContainer = document.createElement('nmenu')
+  let menuContainer = document.createElement('nmenu');
+
+  updateNodeMenuStyle(menuContainer, state);
+
   menuContainer.innerHTML = `<div class="button-container"><svg class="icon" aria-hidden="true">
     <use xlink:href="#icon-menu"></use>
     </svg></div>`
@@ -97,8 +101,7 @@ export default function(mind) {
   let iconInput = document.querySelector('.nm-icon')
   menuContainer.onclick = e => {
     if (!mind.currentNode) {
-      alert('please select any node first!');
-      return;
+      throw 'please select any node first!'
     }
     let nodeObj = mind.currentNode.nodeObj
     if (e.target.className === 'palette') {
@@ -155,7 +158,6 @@ export default function(mind) {
     }
   }
   tagInput.onchange = e => {
-    if (!mind.currentNode) return
     if (!e.target.value) {
       mind.currentNode.nodeObj.tags = []
     } else {
@@ -170,27 +172,34 @@ export default function(mind) {
   }
 
   buttonContainer.onclick = e => {
-    if (!mind.currentNode) return;
+    if (!mind.currentNode) {
+      return;
+    }
     if (state === 'open') {
       state = 'close'
-      menuContainer.className = 'close'
+      updateNodeMenuStyle(menuContainer, state);
+
       buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true">
-    <use xlink:href="#icon-menu"></use>
-    </svg>`
+        <use xlink:href="#icon-menu"></use>
+        </svg>
+      `
     } else {
       state = 'open'
-      menuContainer.className = ''
+      updateNodeMenuStyle(menuContainer, state);
+
       buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true">
-    <use xlink:href="#icon-close"></use>
-    </svg>`
+        <use xlink:href="#icon-close"></use>
+        </svg>
+      `
     }
   }
   mind.bus.addListener('unselectNode', function() {
-    menuContainer.className = 'close'
+    state = 'close';
+    updateNodeMenuStyle(menuContainer, state);
+
     buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true">
     <use xlink:href="#icon-menu"></use>
     </svg>`
-    state = 'close';
   })
   mind.bus.addListener('selectNode', function(nodeObj) {
     clearSelect('.palette', 'nmenu-selected')
