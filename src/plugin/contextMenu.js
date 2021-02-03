@@ -3,8 +3,13 @@ import i18n from '../i18n'
 export default function (mind, option) {
   let createLi = (id, name, keyname) => {
     let li = document.createElement('li')
-    li.id = id
-    li.innerHTML = `<span>${name}</span><span>${keyname}</span>`
+    li.id = id;
+    li.innerHTML = keyname
+      ? `
+        <span>${name}</span>
+        <span style="color:grey">${keyname}</span>
+      `
+      : `<span>${name}</span><span></span>`
     return li
   }
   let locale = i18n[mind.locale] ? mind.locale : 'en'

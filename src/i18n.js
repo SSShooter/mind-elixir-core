@@ -69,4 +69,21 @@ export default {
     tagsSeparate: '複数タグはカンマ区切り',
     iconsSeparate: '複数アイコンはカンマ区切り',
   },
+  heb: {
+    addChild: 'הוסף ילד',
+    addSibling: 'הוסף אח',
+    removeNode: 'הסר את הצומת',
+    focus: 'מצב ממוקד',
+    cancelFocus: 'בטל את מצב המיקוד',
+    moveUp: 'תעלה למעלה',
+    moveDown: 'לרדת',
+    link: 'קישור',
+
+    font: 'גוֹפָן',
+    background: 'רקע כללי',
+    tag: 'תָג',
+    icon: 'אייקון',
+    tagsSeparate: 'הפרד תגים לפי פסיק',
+    iconsSeparate: 'הפרד סמלים לפי פסיק',
+  },
 }
