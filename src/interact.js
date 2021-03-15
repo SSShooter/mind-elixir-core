@@ -231,7 +231,7 @@ export let install = function (plugin) {
  */
 export let focusNode = function (tpcEl) {
   if (tpcEl.nodeObj.root) return
-  if (!this.tempDir) {
+  if (this.tempDir === null) {
     this.tempDir = this.direction
   }
   if (!this.isFocusMode) {
@@ -251,7 +251,7 @@ export let focusNode = function (tpcEl) {
  */
 export let cancelFocus = function () {
   this.isFocusMode = false
-  if (this.tempDir) {
+  if (this.tempDir !== null) {
     delete this.nodeData.root
     this.nodeData = this.nodeDataBackup
     this.direction = this.tempDir
