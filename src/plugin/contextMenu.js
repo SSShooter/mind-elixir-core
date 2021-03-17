@@ -1,6 +1,12 @@
 import i18n from '../i18n'
 
 export default function (mind, option) {
+  let createTips = words => {
+    let div = document.createElement('div')
+    div.innerHTML = words
+    div.style.cssText= 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);'
+    return div
+  }
   let createLi = (id, name, keyname) => {
     let li = document.createElement('li')
     li.id = id
@@ -134,11 +140,15 @@ export default function (mind, option) {
     menuContainer.hidden = true
   }
   link.onclick = e => {
+    menuContainer.hidden = true
     let from = mind.currentNode
+    let tips = createTips(i18n[locale].clickTips)
+    m.container.appendChild(tips)
     mind.map.addEventListener(
       'click',
       e => {
         e.preventDefault()
+        tips.remove()
         if (
           e.target.parentElement.nodeName === 'T' ||
           e.target.parentElement.nodeName === 'ROOT'

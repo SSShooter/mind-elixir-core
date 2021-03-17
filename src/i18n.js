@@ -7,6 +7,7 @@ let cn = {
   moveUp: '上移',
   moveDown: '下移',
   link: '连接',
+  clickTips:'请点击目标节点',
 
   font: '文字',
   background: '背景',
@@ -27,6 +28,7 @@ export default {
     moveUp: '上移',
     moveDown: '下移',
     link: '連接',
+    clickTips:'請點擊目標節點',
   
     font: '文字',
     background: '背景',
@@ -44,6 +46,7 @@ export default {
     moveUp: 'Move up',
     moveDown: 'Move down',
     link: 'Link',
+    clickTips:'Please click the target node',
 
     font: 'Font',
     background: 'Background',
@@ -61,6 +64,7 @@ export default {
     moveUp: '上へ移動',
     moveDown: '下へ移動',
     link: 'コネクト',
+    clickTips:'ターゲットノードをクリックしてください',
 
     font: 'フォント',
     background: 'バックグラウンド',
