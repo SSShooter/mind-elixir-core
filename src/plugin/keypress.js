@@ -25,13 +25,13 @@ export default function (mind) {
       if (!mind.currentNode) return
       if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
         mind.selectParent()
-      else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs')
+      else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs' || mind.currentNode.nodeObj.root)
         mind.selectFirstChild()
     },
     39: () => {
       // right
       if (!mind.currentNode) return
-      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs')
+      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs' || mind.currentNode.nodeObj.root)
         mind.selectFirstChild()
       else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs')
         mind.selectParent()
