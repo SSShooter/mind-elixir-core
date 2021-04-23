@@ -31,7 +31,7 @@ export default function (mind) {
     39: () => {
       // right
       if (!mind.currentNode) return
-      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs' mind.currentNode.nodeObj.root)
+      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs' || mind.currentNode.nodeObj.root)
         mind.selectFirstChild()
       else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs')
         mind.selectParent()
