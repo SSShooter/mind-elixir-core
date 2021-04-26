@@ -82,7 +82,7 @@ let options = {
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja] waiting for PRs
+  locale: 'en', // [zh_CN,zh_TW,en,ja,pt] waiting for PRs
   overflowHidden: false, // default false
   primaryLinkStyle: 2, // [1,2] default 1
   primaryNodeVerticalGap: 15, // default 25
