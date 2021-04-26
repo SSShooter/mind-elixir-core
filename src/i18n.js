@@ -73,4 +73,22 @@ export default {
     tagsSeparate: '複数タグはカンマ区切り',
     iconsSeparate: '複数アイコンはカンマ区切り',
   },
+  pt: {
+    addChild: 'Adicionar item filho',
+    addSibling: 'Adicionar item irmao',
+    removeNode: 'Remover item',
+    focus: 'Modo Foco',
+    cancelFocus: 'Cancelar Modo Foco',
+    moveUp: 'Mover para cima',
+    moveDown: 'Mover para baixo',
+    link: 'Link',
+    clickTips:'Favor clicar no item alvo',
+
+    font: 'Fonte',
+    background: 'Cor de fundo',
+    tag: 'Tag',
+    icon: 'Icone',
+    tagsSeparate: 'Separe tags por virgula',
+    iconsSeparate: 'Separe icones por virgula',
+  },
 }
