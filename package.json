@@ -49,8 +49,5 @@
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.5.1"
-  },
-  "dependencies": {
-    "rgb-hex": "^4.0.0"
   }
 }
