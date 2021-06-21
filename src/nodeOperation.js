@@ -1,3 +1,4 @@
+import rgbHex from "rgb-hex";
 import {
   moveNodeObj,
   removeNodeObj,
@@ -13,7 +14,6 @@ import {
 } from './utils/index'
 import { findEle, createExpander, createGroup } from './utils/dom'
 import { LEFT, RIGHT, SIDE } from './const'
-
 // todo copy node
 
 let $d = document
@@ -23,11 +23,22 @@ let $d = document
 export let updateNodeStyle = function (object) {
   if (!object.style) return
   let nodeEle = findEle(object.id, this)
+  const origin = {
+    color: nodeEle.style.color && `#${rgbHex(nodeEle.style.color)}`,
+    background: nodeEle.style.background && `#${rgbHex(nodeEle.style.background)}`,
+    fontSize: nodeEle.style.fontSize,
+    fontWeight: nodeEle.style.fontWeight,
+  }
   nodeEle.style.color = object.style.color
   nodeEle.style.background = object.style.background
   nodeEle.style.fontSize = object.style.fontSize + 'px'
   nodeEle.style.fontWeight = object.style.fontWeight || 'normal'
   this.linkDiv()
+  this.bus.fire('operation', {
+      name: 'editStyle',
+      obj: object,
+      origin
+    })
 }
 
 export let updateNodeTags = function (object) {
@@ -44,6 +55,11 @@ export let updateNodeTags = function (object) {
     nodeEle.appendChild(tagsContainer)
   }
   this.linkDiv()
+  this.bus.fire('operation', {
+      name: 'editTags',
+      obj: object,
+      origin
+    })
 }
 
 export let updateNodeIcons = function (object) {
