@@ -164,7 +164,7 @@ function MindElixir({
       return
     }
     if (
-      ['moveNode', 'removeNode', 'addChild', 'finishEdit'].includes(
+      ['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(
         operation.name
       )
     ) {

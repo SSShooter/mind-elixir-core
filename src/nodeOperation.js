@@ -46,7 +46,9 @@ export let updateNodeTags = function (object) {
   let nodeEle = findEle(object.id)
   let tags = object.tags
   let tagsEl = nodeEle.querySelector('.tags')
+  let originalTags = []
   if (tagsEl) {
+    tagsEl.childNodes.forEach(node => originalTags.push(node.innerHTML.trim()))
     tagsEl.innerHTML = tags.map(tag => `<span>${tag}</span>`).join('')
   } else {
     let tagsContainer = $d.createElement('div')
@@ -58,7 +60,7 @@ export let updateNodeTags = function (object) {
   this.bus.fire('operation', {
       name: 'editTags',
       obj: object,
-      origin
+      origin: originalTags
     })
 }
 
@@ -67,7 +69,9 @@ export let updateNodeIcons = function (object) {
   let nodeEle = findEle(object.id)
   let icons = object.icons
   let iconsEl = nodeEle.querySelector('.icons')
+  let originalIcons = []
   if (iconsEl) {
+    iconsEl.childNodes.forEach(node => originalIcons.push(node.innerHTML.trim()))
     iconsEl.innerHTML = icons.map(icon => `<span>${icon}</span>`).join('')
   } else {
     let iconsContainer = $d.createElement('span')
@@ -82,6 +86,11 @@ export let updateNodeIcons = function (object) {
       nodeEle.appendChild(iconsContainer)
     }
   }
+  this.bus.fire('operation', {
+    name: 'editIcons',
+    obj: object,
+    origin: originalIcons
+  })
   this.linkDiv()
 }
 
