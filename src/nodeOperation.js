@@ -23,10 +23,10 @@ let $d = document
 export let updateNodeStyle = function (object) {
   if (!object.style) return
   let nodeEle = findEle(object.id, this)
-  const origin = {
-    color: nodeEle.style.color && `#${rgbHex(nodeEle.style.color)}`,
-    background: nodeEle.style.background && `#${rgbHex(nodeEle.style.background)}`,
-    fontSize: nodeEle.style.fontSize,
+  let origin = {
+    color: nodeEle.style.color && '#' + rgbHex(nodeEle.style.color),
+    background: nodeEle.style.background && '#' + rgbHex(nodeEle.style.background),
+    fontSize: nodeEle.style.fontSize && nodeEle.style.fontSize + 'px',
     fontWeight: nodeEle.style.fontWeight,
   }
   nodeEle.style.color = object.style.color
