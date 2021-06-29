@@ -79,6 +79,7 @@ mind.bus.addListener('selectNode', node => {
   console.log(node)
 })
 window.m = mind
+window.m2 = mind2
 window.M = MindElixir
 window.exportSvg = exportSvg
 window.exportPng = exportPng

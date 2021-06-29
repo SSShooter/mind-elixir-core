@@ -1,13 +1,18 @@
 import Canvg from 'canvg'
+let IMG_PADDING = 40
 let $d = document
 // calculate distances to center from top,left,bottom,right
-let maxTop = 10000
-let maxBottom = 10000
-let maxLeft = 10000
-let maxRight = 10000
 
-let imgPadding = 40
-let svgHeight, svgWidth
+let maxTop, maxBottom, maxLeft, maxRight, svgHeight, svgWidth
+
+function initVar() {
+  maxTop = 10000
+  maxBottom = 10000
+  maxLeft = 10000
+  maxRight = 10000
+  svgHeight = 0
+  svgWidth = 0
+}
 
 let head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`
 function generateSvgDom() {
@@ -38,8 +43,8 @@ function generateSvgDom() {
   console.log(maxTop, maxBottom, maxLeft, maxRight)
   svgContent += RootToSvg()
   // 需要添加图片边缘padding
-  svgHeight = maxBottom - maxTop + imgPadding * 2
-  svgWidth = maxRight - maxLeft + imgPadding * 2
+  svgHeight = maxBottom - maxTop + IMG_PADDING * 2
+  svgWidth = maxRight - maxLeft + IMG_PADDING * 2
   // svgContent += customLinkTransform()
   let svgFile = createSvg(svgHeight, svgWidth)
   svgContent =
@@ -72,13 +77,13 @@ function RootToSvg() {
 
   let svg2ndEle = $d.querySelector('.svg2nd')
 
-  let svg2nd = `<g transform="translate(${imgPadding - maxLeft}, ${
-    imgPadding - maxTop
+  let svg2nd = `<g transform="translate(${IMG_PADDING - maxLeft}, ${
+    IMG_PADDING - maxTop
   })">${svg2ndEle.innerHTML}</g>`
   return (
     svg2nd +
-    `<g id="root" transform="translate(${rootOffsetX + imgPadding}, ${
-      rootOffsetY + imgPadding
+    `<g id="root" transform="translate(${rootOffsetX + IMG_PADDING}, ${
+      rootOffsetY + IMG_PADDING
     })">
       <rect x="${left}" y="${top}" rx="5px" ry="5px" width="${
       rect.width
@@ -99,8 +104,8 @@ function PrimaryToSvg(primaryNode) {
 
   let svg = ''
   let svg3rd = primaryNode.querySelector('.svg3rd')
-  svg += `<g transform="translate(${primaryNodeOffsetX + imgPadding}, ${
-    primaryNodeOffsetY + imgPadding
+  svg += `<g transform="translate(${primaryNodeOffsetX + IMG_PADDING}, ${
+    primaryNodeOffsetY + IMG_PADDING
   })">`
   svg += svg3rd ? svg3rd.innerHTML : ''
   for (let i = 0; i < topics.length; i++) {
@@ -233,8 +238,10 @@ function customLinkTransform() {
   return resLinks
 }
 
-export let exportSvg = function (fileName, instance) {
-  if (instance) $d = instance.container
+export let exportSvg = function (instance, fileName) {
+  if (!instance) throw new Error('Mind-elixir instance is not presented. ---> exportSvg(instance, fileName)') 
+  initVar()
+  $d = instance.container
   let svgFile = generateSvgDom()
   let dlUrl = URL.createObjectURL(
     new Blob([head + svgFile.outerHTML.replace(/&nbsp;/g, ' ')])
@@ -245,8 +252,10 @@ export let exportSvg = function (fileName, instance) {
   a.click()
 }
 
-export let exportPng = async function (fileName, instance) {
-  if (instance) $d = instance.container
+export let exportPng = async function (instance, fileName) {
+  if (!instance) throw new Error('Mind-elixir instance is not presented. ---> exportSvg(instance, fileName)') 
+  initVar()
+  $d = instance.container
   let svgFile = generateSvgDom()
   const canvas = document.createElement('canvas')
   canvas.style.display = 'none'
