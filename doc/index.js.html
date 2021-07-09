@@ -30,7 +30,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h2><a href="github" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#disableEdit">disableEdit</a></li><li data-type='method'><a href="MapInteraction.html#enableEdit">enableEdit</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataMd">getAllDataMd</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#refresh">refresh</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/ssshooter/mind-elixir-core" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#disableEdit">disableEdit</a></li><li data-type='method'><a href="MapInteraction.html#enableEdit">enableEdit</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataMd">getAllDataMd</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#refresh">refresh</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
 </nav>
 
 <div id="main">
@@ -47,7 +47,12 @@
         <article>
             <pre class="prettyprint source linenums"><code>import info from '../package.json'
 import vari from './var'
-import { isMobile, addParentLink, getObjById } from './utils/index'
+import {
+  isMobile,
+  addParentLink,
+  getObjById,
+  generateUUID,
+} from './utils/index'
 import { findEle, createInputDiv, layout } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
@@ -166,6 +171,7 @@ function MindElixir({
   overflowHidden,
   primaryNodeHorizontalGap,
   primaryNodeVerticalGap,
+  mobileMenu,
 }) {
   vari.newTopicName = newTopicName
   this.mindElixirBox = document.querySelector(el)
@@ -179,6 +185,7 @@ function MindElixir({
   this.toolBar = toolBar === undefined ? true : toolBar
   this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
   this.keypress = keypress === undefined ? true : keypress
+  this.mobileMenu = mobileMenu
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
@@ -282,8 +289,22 @@ MindElixir.prototype = {
       removeNode.apply(this, args)
     }
   },
-  moveUpNode,
-  moveDownNode,
+  moveUpNode: async function (...args) {
+    if (
+      !this.before.moveUpNode ||
+      (await this.before.moveUpNode.apply(this, args))
+    ) {
+      moveUpNode.apply(this, args)
+    }
+  },
+  moveDownNode: async function (...args) {
+    if (
+      !this.before.moveDownNode ||
+      (await this.before.moveDownNode.apply(this, args))
+    ) {
+      moveDownNode.apply(this, args)
+    }
+  },
   beginEdit: async function (...args) {
     if (
       !this.before.beginEdit ||
@@ -292,8 +313,22 @@ MindElixir.prototype = {
       beginEdit.apply(this, args)
     }
   },
-  moveNodeBefore,
-  moveNodeAfter,
+  moveNodeBefore: async function (...args) {
+    if (
+      !this.before.moveNodeBefore ||
+      (await this.before.moveNodeBefore.apply(this, args))
+    ) {
+      moveNodeBefore.apply(this, args)
+    }
+  },
+  moveNodeAfter: async function (...args) {
+    if (
+      !this.before.moveNodeAfter ||
+      (await this.before.moveNodeAfter.apply(this, args))
+    ) {
+      moveNodeAfter.apply(this, args)
+    }
+  },
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
@@ -391,8 +426,9 @@ MindElixir.prototype = {
     this.nodeMenu &amp;&amp; nodeMenu(this)
     this.keypress &amp;&amp; keypress(this)
 
-    if (isMobile) mobileMenu(this)
-    else {
+    if (isMobile &amp;&amp; this.mobileMenu) {
+      mobileMenu(this)
+    } else {
       this.contextMenu &amp;&amp; contextMenu(this, this.contextMenuOption)
     }
     vari.mevar_draggable &amp;&amp; nodeDraggable(this)
@@ -429,7 +465,7 @@ MindElixir.example2 = example2
  */
 MindElixir.new = topic => ({
   nodeData: {
-    id: 'root',
+    id: generateUUID(),
     topic: topic || 'new topic',
     root: true,
     children: [],
@@ -461,7 +497,7 @@ export default MindElixir
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Dec 17 2020 15:13:31 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Jul 09 2021 10:40:15 GMT+0530 (India Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
