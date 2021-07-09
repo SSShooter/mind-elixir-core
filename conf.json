@@ -22,7 +22,7 @@
     "meta": { "title": "mind-elixir" },
     "menu": {
       "github": {
-        "href": "github",
+        "href": "https://github.com/ssshooter/mind-elixir-core",
         "target": "_blank",
         "class": "menu-item"
       }

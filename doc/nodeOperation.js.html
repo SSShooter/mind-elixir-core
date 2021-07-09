@@ -30,7 +30,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h2><a href="github" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#disableEdit">disableEdit</a></li><li data-type='method'><a href="MapInteraction.html#enableEdit">enableEdit</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataMd">getAllDataMd</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#refresh">refresh</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/ssshooter/mind-elixir-core" target="_blank" class="menu-item" >github</a></h2><h3>Classes</h3><ul><li><a href="MindElixir.html">MindElixir</a><ul class='methods'><li data-type='method'><a href="MindElixir.html#.new">new</a></li></ul></li></ul><h3>Namespaces</h3><ul><li><a href="MapInteraction.html">MapInteraction</a><ul class='methods'><li data-type='method'><a href="MapInteraction.html#cancelFocus">cancelFocus</a></li><li data-type='method'><a href="MapInteraction.html#disableEdit">disableEdit</a></li><li data-type='method'><a href="MapInteraction.html#enableEdit">enableEdit</a></li><li data-type='method'><a href="MapInteraction.html#focusNode">focusNode</a></li><li data-type='method'><a href="MapInteraction.html#getAllData">getAllData</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataMd">getAllDataMd</a></li><li data-type='method'><a href="MapInteraction.html#getAllDataString">getAllDataString</a></li><li data-type='method'><a href="MapInteraction.html#initLeft">initLeft</a></li><li data-type='method'><a href="MapInteraction.html#initRight">initRight</a></li><li data-type='method'><a href="MapInteraction.html#initSide">initSide</a></li><li data-type='method'><a href="MapInteraction.html#refresh">refresh</a></li><li data-type='method'><a href="MapInteraction.html#scale">scale</a></li><li data-type='method'><a href="MapInteraction.html#selectNode">selectNode</a></li><li data-type='method'><a href="MapInteraction.html#setLocale">setLocale</a></li><li data-type='method'><a href="MapInteraction.html#toCenter">toCenter</a></li></ul></li><li><a href="NodeOperation.html">NodeOperation</a><ul class='methods'><li data-type='method'><a href="NodeOperation.html#addChild">addChild</a></li><li data-type='method'><a href="NodeOperation.html#beginEdit">beginEdit</a></li><li data-type='method'><a href="NodeOperation.html#insertSibling">insertSibling</a></li><li data-type='method'><a href="NodeOperation.html#moveDownNode">moveDownNode</a></li><li data-type='method'><a href="NodeOperation.html#moveNode">moveNode</a></li><li data-type='method'><a href="NodeOperation.html#moveUpNode">moveUpNode</a></li><li data-type='method'><a href="NodeOperation.html#removeNode">removeNode</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#E">E</a></li></ul>
 </nav>
 
 <div id="main">
@@ -69,7 +69,7 @@ let $d = document
  */
 export let updateNodeStyle = function (object) {
   if (!object.style) return
-  let nodeEle = findEle(object.id)
+  let nodeEle = findEle(object.id, this)
   nodeEle.style.color = object.style.color
   nodeEle.style.background = object.style.background
   nodeEle.style.fontSize = object.style.fontSize + 'px'
@@ -280,6 +280,10 @@ export let moveUpNode = function (el) {
   grp.parentNode.insertBefore(grp, grp.previousSibling)
   this.linkDiv()
   nodeEle.scrollIntoViewIfNeeded()
+  this.bus.fire('operation', {
+    name: 'moveUpNode',
+    obj,
+  })
 }
 
 /**
@@ -305,6 +309,10 @@ export let moveDownNode = function (el) {
   }
   this.linkDiv()
   nodeEle.scrollIntoViewIfNeeded()
+  this.bus.fire('operation', {
+    name: 'moveDownNode',
+    obj,
+  })
 }
 
 /**
@@ -350,7 +358,9 @@ export let removeNode = function (el) {
     let link = this.linkData[prop]
     if (link.from === t.firstChild || link.to === t.firstChild) {
       this.removeLink(
-        this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`)
+        this.mindElixirBox.querySelector(
+          `[data-linkid=${this.linkData[prop].id}]`
+        )
       )
     }
   }
@@ -431,6 +441,7 @@ export let moveNode = function (from, to) {
 export let moveNodeBefore = function (from, to) {
   let fromObj = from.nodeObj
   let toObj = to.nodeObj
+  let originParentId = fromObj.parent.id
   moveNodeBeforeObj(fromObj, toObj)
   addParentLink(this.nodeData)
   let fromTop = from.parentElement
@@ -440,11 +451,16 @@ export let moveNodeBefore = function (from, to) {
   let toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp)
   this.linkDiv()
+  this.bus.fire('operation', {
+    name: 'moveNodeBefore',
+    obj: { fromObj, toObj, originParentId },
+  })
 }
 
 export let moveNodeAfter = function (from, to) {
   let fromObj = from.nodeObj
   let toObj = to.nodeObj
+  let originParentId = fromObj.parent.id
   moveNodeAfterObj(fromObj, toObj)
   addParentLink(this.nodeData)
   let fromTop = from.parentElement
@@ -454,6 +470,10 @@ export let moveNodeAfter = function (from, to) {
   let toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp.nextSibling)
   this.linkDiv()
+  this.bus.fire('operation', {
+    name: 'moveNodeAfter',
+    obj: { fromObj, toObj, originParentId },
+  })
 }
 
 /**
@@ -510,7 +530,7 @@ export function processPrimaryNode(primaryNode, obj) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a> on Thu Dec 17 2020 15:13:31 GMT+0800 (China Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Jul 09 2021 10:40:15 GMT+0530 (India Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
