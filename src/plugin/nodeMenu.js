@@ -1,38 +1,40 @@
 import i18n from '../i18n'
 
+const createDiv = (id, name) => {
+  let div = document.createElement('div')
+  div.id = id
+  div.innerHTML = `<span>${name}</span>`
+  return div
+}
+
+const colorList = [
+  '#2c3e50',
+  '#34495e',
+  '#7f8c8d',
+  '#94a5a6',
+  '#bdc3c7',
+  '#ecf0f1',
+  '#8e44ad',
+  '#9b59b6',
+  '#2980b9',
+  '#3298db',
+  '#c0392c',
+  '#e74c3c',
+  '#d35400',
+  '#f39c11',
+  '#f1c40e',
+  '#17a085',
+  '#27ae61',
+  '#2ecc71',
+]
+
 export default function(mind) {
   let locale = i18n[mind.locale] ? mind.locale : 'en'
-  let createDiv = (id, name) => {
-    let div = document.createElement('div')
-    div.id = id
-    div.innerHTML = `<span>${name}</span>`
-    return div
-  }
   let bgOrFont
   let styleDiv = createDiv('nm-style', 'style')
   let tagDiv = createDiv('nm-tag', 'tag')
   let iconDiv = createDiv('nm-icon', 'icon')
 
-  let colorList = [
-    '#2c3e50',
-    '#34495e',
-    '#7f8c8d',
-    '#94a5a6',
-    '#bdc3c7',
-    '#ecf0f1',
-    '#8e44ad',
-    '#9b59b6',
-    '#2980b9',
-    '#3298db',
-    '#c0392c',
-    '#e74c3c',
-    '#d35400',
-    '#f39c11',
-    '#f1c40e',
-    '#17a085',
-    '#27ae61',
-    '#2ecc71',
-  ]
   styleDiv.innerHTML = `
       <div class="nm-fontsize-container">
         ${['15', '24', '32']
@@ -81,7 +83,7 @@ export default function(mind) {
   menuContainer.hidden = true
 
   function clearSelect(klass, remove) {
-    var elems = document.querySelectorAll(klass)
+    var elems = mind.container.querySelectorAll(klass)
     ;[].forEach.call(elems, function(el) {
       el.classList.remove(remove)
     })
@@ -92,8 +94,8 @@ export default function(mind) {
   let bold = menuContainer.querySelector('.bold')
   let buttonContainer = menuContainer.querySelector('.button-container')
   let fontBtn = menuContainer.querySelector('.font')
-  let tagInput = document.querySelector('.nm-tag')
-  let iconInput = document.querySelector('.nm-icon')
+  let tagInput = mind.container.querySelector('.nm-tag')
+  let iconInput = mind.container.querySelector('.nm-icon')
   menuContainer.onclick = e => {
     if (!mind.currentNode) return
     let nodeObj = mind.currentNode.nodeObj
