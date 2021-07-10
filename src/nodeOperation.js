@@ -35,10 +35,10 @@ export let updateNodeStyle = function (object) {
   nodeEle.style.fontWeight = object.style.fontWeight || 'normal'
   this.linkDiv()
   this.bus.fire('operation', {
-      name: 'editStyle',
-      obj: object,
-      origin
-    })
+    name: 'editStyle',
+    obj: object,
+    origin,
+  })
 }
 
 export let updateNodeTags = function (object) {
@@ -58,10 +58,10 @@ export let updateNodeTags = function (object) {
   }
   this.linkDiv()
   this.bus.fire('operation', {
-      name: 'editTags',
-      obj: object,
-      origin: originalTags
-    })
+    name: 'editTags',
+    obj: object,
+    origin: originalTags,
+  })
 }
 
 export let updateNodeIcons = function (object) {
@@ -71,7 +71,9 @@ export let updateNodeIcons = function (object) {
   let iconsEl = nodeEle.querySelector('.icons')
   let originalIcons = []
   if (iconsEl) {
-    iconsEl.childNodes.forEach(node => originalIcons.push(node.innerHTML.trim()))
+    iconsEl.childNodes.forEach(node =>
+      originalIcons.push(node.innerHTML.trim())
+    )
     iconsEl.innerHTML = icons.map(icon => `<span>${icon}</span>`).join('')
   } else {
     let iconsContainer = $d.createElement('span')
@@ -89,7 +91,7 @@ export let updateNodeIcons = function (object) {
   this.bus.fire('operation', {
     name: 'editIcons',
     obj: object,
-    origin: originalIcons
+    origin: originalIcons,
   })
   this.linkDiv()
 }
