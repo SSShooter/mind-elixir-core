@@ -12,8 +12,8 @@ import {
   moveNodeAfterObj,
 } from './utils/index'
 import { findEle, createExpander, createGroup } from './utils/dom'
+import { rgbHex } from './utils/rgbHex'
 import { LEFT, RIGHT, SIDE } from './const'
-
 // todo copy node
 
 let $d = document
@@ -23,11 +23,22 @@ let $d = document
 export let updateNodeStyle = function (object) {
   if (!object.style) return
   let nodeEle = findEle(object.id, this)
+  let origin = {
+    color: nodeEle.style.color && rgbHex(nodeEle.style.color),
+    background: nodeEle.style.background && rgbHex(nodeEle.style.background),
+    fontSize: nodeEle.style.fontSize && nodeEle.style.fontSize + 'px',
+    fontWeight: nodeEle.style.fontWeight,
+  }
   nodeEle.style.color = object.style.color
   nodeEle.style.background = object.style.background
   nodeEle.style.fontSize = object.style.fontSize + 'px'
   nodeEle.style.fontWeight = object.style.fontWeight || 'normal'
   this.linkDiv()
+  this.bus.fire('operation', {
+      name: 'editStyle',
+      obj: object,
+      origin
+    })
 }
 
 export let updateNodeTags = function (object) {
@@ -35,7 +46,9 @@ export let updateNodeTags = function (object) {
   let nodeEle = findEle(object.id)
   let tags = object.tags
   let tagsEl = nodeEle.querySelector('.tags')
+  let originalTags = []
   if (tagsEl) {
+    tagsEl.childNodes.forEach(node => originalTags.push(node.innerHTML.trim()))
     tagsEl.innerHTML = tags.map(tag => `<span>${tag}</span>`).join('')
   } else {
     let tagsContainer = $d.createElement('div')
@@ -44,6 +57,11 @@ export let updateNodeTags = function (object) {
     nodeEle.appendChild(tagsContainer)
   }
   this.linkDiv()
+  this.bus.fire('operation', {
+      name: 'editTags',
+      obj: object,
+      origin: originalTags
+    })
 }
 
 export let updateNodeIcons = function (object) {
@@ -51,7 +69,9 @@ export let updateNodeIcons = function (object) {
   let nodeEle = findEle(object.id)
   let icons = object.icons
   let iconsEl = nodeEle.querySelector('.icons')
+  let originalIcons = []
   if (iconsEl) {
+    iconsEl.childNodes.forEach(node => originalIcons.push(node.innerHTML.trim()))
     iconsEl.innerHTML = icons.map(icon => `<span>${icon}</span>`).join('')
   } else {
     let iconsContainer = $d.createElement('span')
@@ -66,6 +86,11 @@ export let updateNodeIcons = function (object) {
       nodeEle.appendChild(iconsContainer)
     }
   }
+  this.bus.fire('operation', {
+    name: 'editIcons',
+    obj: object,
+    origin: originalIcons
+  })
   this.linkDiv()
 }
 
