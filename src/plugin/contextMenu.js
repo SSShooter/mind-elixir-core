@@ -143,7 +143,7 @@ export default function (mind, option) {
     menuContainer.hidden = true
     let from = mind.currentNode
     let tips = createTips(i18n[locale].clickTips)
-    m.container.appendChild(tips)
+    mind.container.appendChild(tips)
     mind.map.addEventListener(
       'click',
       e => {
