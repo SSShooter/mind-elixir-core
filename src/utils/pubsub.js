@@ -2,9 +2,6 @@ export default function Bus() {
   this.handlers = {}
 }
 Bus.prototype = {
-  showHandler: function() {
-    console.log(this.handlers)
-  },
   addListener: function(type, handler) {
     if (typeof this.handlers[type] == 'undefined') this.handlers[type] = []
     this.handlers[type].push(handler)

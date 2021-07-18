@@ -50,7 +50,6 @@ function sleep() {
     setTimeout(() => res(), 100)
   })
 }
-console.log('test E function', E('bd4313fbac40284b'))
 let mind2 = new MindElixir({
   el: '#map2',
   direction: 2,
@@ -62,7 +61,6 @@ let mind2 = new MindElixir({
 mind2.init()
 window.currentOperation = null
 mind.bus.addListener('operation', operation => {
-  console.log(operation)
   if (operation.name !== 'finishEdit') window.currentOperation = operation
   // return {
   //   name: action name,
@@ -74,9 +72,6 @@ mind.bus.addListener('operation', operation => {
 
   // name: moveNode
   // obj: {from:target1,to:target2}
-})
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
 })
 window.m = mind
 window.m2 = mind2

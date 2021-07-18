@@ -65,7 +65,6 @@ export default function (mind) {
     },
   }
   mind.map.onkeydown = e => {
-    // console.log(e, e.target)
     if (e.target !== e.currentTarget) {
       // input
       return

@@ -60,7 +60,6 @@ export default function (mind, option) {
   let isRoot = true
   mind.container.oncontextmenu = function (e) {
     e.preventDefault()
-    // console.log(e.pageY, e.screenY, e.clientY)
     let target = e.target
     if (target.tagName === 'TPC') {
       if (target.parentElement.tagName === 'ROOT') {
@@ -154,8 +153,6 @@ export default function (mind, option) {
           e.target.parentElement.nodeName === 'ROOT'
         ) {
           mind.createLink(from, mind.currentNode)
-        } else {
-          console.log('取消连接')
         }
       },
       {

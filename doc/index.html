@@ -167,7 +167,6 @@ E('node-id')
 </code></pre>
 <h3>Event Handling</h3>
 <pre class="prettyprint source lang-javascript"><code>mind.bus.addListener('operation', operation => {
-  console.log(operation)
   // return {
   //   name: action name,
   //   obj: target object
@@ -178,9 +177,6 @@ E('node-id')
 
   // name: moveNode
   // obj: {from:target1,to:target2}
-})
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
 })
 </code></pre>
 <h3>Data Export</h3>
@@ -198,7 +194,6 @@ painter.exportPng()
   ...
   before: {
     insertSibling(el, obj) {
-      console.log(el, obj)
       if (this.currentNode.nodeObj.parent.root) {
         return false
       }

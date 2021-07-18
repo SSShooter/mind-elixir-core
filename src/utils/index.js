@@ -78,8 +78,6 @@ export function calcP1(fromData, p2x, p2y) {
       y = fromData.cy - fromData.h / 2
     }
   } else {
-    // console.log('斜率', k)
-    // console.log('fromData.cx-x', fromData.cx - p2x)
     if (fromData.cx - p2x < 0) {
       x = fromData.cx + fromData.w / 2
       y = fromData.cy - (fromData.w * k) / 2
@@ -106,8 +104,6 @@ export function calcP4(toData, p3x, p3y) {
       y = toData.cy - toData.h / 2
     }
   } else {
-    // console.log('斜率', k)
-    // console.log('toData.cx-x', toData.cx - p3x)
     if (toData.cx - p3x < 0) {
       x = toData.cx + toData.w / 2
       y = toData.cy - (toData.w * k) / 2

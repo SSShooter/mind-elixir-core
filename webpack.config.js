@@ -33,7 +33,6 @@ let config = {
 
 module.exports = (env, argv) => {
   if (argv.mode === 'development') {
-    console.log('development')
     config = {
       ...config,
       entry: './src/dev.js',
@@ -46,7 +45,6 @@ module.exports = (env, argv) => {
     }
   }
   if (argv.mode === 'production' && !env.lite) {
-    console.log('production')
     config = {
       ...config,
       entry: {
@@ -109,7 +107,6 @@ module.exports = (env, argv) => {
     }
   }
   if (argv.mode === 'production' && env.lite) {
-    console.log('lite')
     config = {
       ...config,
       entry: './src/core-lite.js',

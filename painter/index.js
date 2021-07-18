@@ -25,7 +25,6 @@ function generateSvgDom() {
     let bottom = top + rect.height
     let left = primaryNode.offsetLeft
     let right = left + rect.width
-    // console.log(top, bottom, left, right)
     if (top < maxTop) {
       maxTop = top
     }
@@ -40,7 +39,6 @@ function generateSvgDom() {
     }
     svgContent += PrimaryToSvg(primaryNode)
   }
-  console.log(maxTop, maxBottom, maxLeft, maxRight)
   svgContent += RootToSvg()
   // 需要添加图片边缘padding
   svgHeight = maxBottom - maxTop + IMG_PADDING * 2
@@ -216,7 +214,6 @@ function customLinkTransform() {
     let cnt = 0
     let data = customLink.replace(/\d+(\.\d+)? /g, function (match) {
       match = Number(match)
-      console.log(match, svgWidth, svgHeight)
       let res
       if (match < 256) {
         res = match
@@ -234,7 +231,6 @@ function customLinkTransform() {
     })
     resLinks += data
   }
-  console.log(resLinks)
   return resLinks
 }
 

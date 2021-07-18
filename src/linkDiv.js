@@ -202,7 +202,6 @@ export default function linkDiv(primaryNode) {
             x1 = parentOL + GAP
             xMiddle = parentOL
             x2 = parentOL - childT.offsetWidth
-            // console.log('x1,y1,x2,y2,child',x1,y1,x2,y2,child)
             if (
               childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
               childTOT + childTOH > parentOT + parentOH / 2 - 50

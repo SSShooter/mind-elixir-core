@@ -16,7 +16,6 @@ function generateSvgDom() {
     let bottom = top + rect.height
     let left = primaryNode.offsetLeft
     let right = left + rect.width
-    // console.log(top, bottom, left, right)
     if (top < maxTop) {
       maxTop = top
     }
@@ -31,7 +30,6 @@ function generateSvgDom() {
     }
     svgContent += PrimaryToSvg(primaryNode)
   }
-  console.log(maxTop, maxBottom, maxLeft, maxRight)
   svgContent += RootToSvg()
   // 需要添加图片边缘padding
   let svgHeight = maxBottom - maxTop + imgPadding * 2

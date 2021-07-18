@@ -169,7 +169,6 @@ function MindElixir({
       )
     ) {
       this.history.push(operation)
-      // console.log(operation, this.history)
     }
   })
 
@@ -331,8 +330,6 @@ MindElixir.prototype = {
      * E('bd4313fbac40284b')
      */
     addParentLink(this.nodeData)
-    console.log('ME_version ' + MindElixir.version)
-    console.log(this)
     this.mindElixirBox.className += ' mind-elixir'
     this.mindElixirBox.innerHTML = ''
 
