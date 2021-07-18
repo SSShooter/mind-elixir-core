@@ -1,6 +1,6 @@
 {
   "name": "@easy/mind-elixir",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Forked by Easy-software - Mind elixir is a free open source mind map core.",
   "main": "src/index.js",
   "scripts": {
