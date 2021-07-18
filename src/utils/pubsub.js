@@ -1,30 +1,30 @@
 export default function Bus() {
-  this.handlers = {}
+  this.handlers = {};
 }
 Bus.prototype = {
-  addListener: function(type, handler) {
-    if (typeof this.handlers[type] == 'undefined') this.handlers[type] = []
-    this.handlers[type].push(handler)
+  addListener: function (type, handler) {
+    if (typeof this.handlers[type] == "undefined") this.handlers[type] = [];
+    this.handlers[type].push(handler);
   },
-  fire: function(type, payload) {
+  fire: function (type, payload) {
     if (this.handlers[type] instanceof Array) {
-      var handlers = this.handlers[type]
+      var handlers = this.handlers[type];
       for (var i = 0; i < handlers.length; i++) {
-        handlers[i](payload)
+        handlers[i](payload);
       }
     }
   },
-  removeListener: function(type, handler) {
-    if (!this.handlers[type]) return
-    var handlers = this.handlers[type]
+  removeListener: function (type, handler) {
+    if (!this.handlers[type]) return;
+    var handlers = this.handlers[type];
     if (handler == undefined) {
-      handlers.length = 0
+      handlers.length = 0;
     } else if (handlers.length) {
       for (var i = 0; i < handlers.length; i++) {
         if (handlers[i] == handler) {
-          this.handlers[type].splice(i, 1)
+          this.handlers[type].splice(i, 1);
         }
       }
     }
   },
-}
+};

@@ -5,16 +5,19 @@
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   // font-family: "微软雅黑";
 }
+
 .map-container {
   user-select: none;
   height: 100%;
   width: 100%;
   overflow: scroll;
   font-size: 15px;
+
   &::-webkit-scrollbar {
     width: 0px;
     height: 0px;
   }
+
   .focus-mode {
     position: absolute;
     top: 0;
@@ -23,6 +26,7 @@
     width: 100%;
     background: #fff;
   }
+
   .map-canvas {
     height: 20000px;
     width: 20000px;
@@ -31,11 +35,14 @@
     transition: all 0.3s;
     transform: scale(1);
     background: #f6f6f6;
+
     .selected {
       outline: 2px solid #4dc4ff;
     }
+
     root {
       position: absolute;
+
       tpc {
         display: block;
         color: rgb(255, 255, 255);
@@ -44,6 +51,7 @@
         border-radius: 5px;
         font-size: 25px;
         white-space: pre-wrap;
+
         [contentEditable] {
           position: absolute;
           top: 0;
@@ -56,10 +64,12 @@
       }
     }
   }
+
   .box {
     & > grp {
       // for primary node
       position: absolute;
+
       & > t > tpc {
         background-color: rgb(255, 255, 255);
         border: 1px solid rgb(68, 68, 68);
@@ -67,6 +77,7 @@
         color: rgb(115, 92, 69);
         padding: 8px 10px;
         margin: 0;
+
         [contentEditable] {
           position: absolute;
           top: 0;
@@ -80,26 +91,32 @@
         }
       }
     }
+
     .lhs {
       direction: rtl;
+
       tpc {
         direction: ltr;
       }
     }
+
     grp {
       display: block;
       pointer-events: none;
     }
+
     children,
     t {
       display: inline-block;
       vertical-align: middle;
     }
+
     t {
       position: relative;
       cursor: pointer;
       padding: 0 @GAP;
       margin-top: 10px;
+
       tpc {
         position: relative;
         display: block;
@@ -109,6 +126,7 @@
         pointer-events: all;
         max-width: 800px;
         white-space: pre-wrap;
+
         [contentEditable] {
           position: absolute;
           top: 0;
@@ -120,8 +138,10 @@
           direction: ltr;
           -webkit-user-select: auto;
         }
+
         .tags {
           direction: ltr;
+
           span {
             display: inline-block;
             border-radius: 3px;
@@ -136,35 +156,42 @@
             margin-top: 2px;
           }
         }
+
         .icons {
           display: inline-block;
           direction: ltr;
           margin-right: 10px;
         }
+
         .insert-preview {
           position: absolute;
           width: 100%;
           left: 0px;
           z-index: 9;
         }
+
         .before {
           height: 14px;
           top: -14px;
         }
+
         .show {
           background: #7ad5ff;
-          pointer-events: none;  // 不加会识别为不可移动
+          pointer-events: none; // 不加会识别为不可移动
           opacity: .7
         }
+
         .in {
           height: 100%;
           top: 0px;
         }
+
         .after {
           height: 14px;
           bottom: -14px;
         }
       }
+
       epd {
         position: absolute;
         height: 12px;
@@ -176,9 +203,11 @@
         background-color: #fff;
         pointer-events: all;
         z-index: 9;
+
         &.minus {
           transition: all 0.3s;
           opacity: 0;
+
           &:hover {
             opacity: 1;
           }
@@ -186,6 +215,7 @@
       }
     }
   }
+
   // iconfont
   .icon {
     width: 1em;
@@ -194,6 +224,7 @@
     fill: currentColor;
     overflow: hidden;
   }
+
   .svg2nd,
   .svg3rd,
   .topiclinks,
@@ -204,13 +235,16 @@
     top: 0;
     left: 0;
   }
+
   .topiclinks,
   .linkcontroller {
     pointer-events: none;
+
     g {
       pointer-events: all;
     }
   }
+
   .svg2nd,
   .svg3rd {
     pointer-events: none;
@@ -223,6 +257,7 @@
       z-index: 100;
     }
   }
+
   .topiclinks {
     g {
       cursor: pointer;
@@ -236,6 +271,7 @@
   children {
     display: block !important;
   }
+
   grp {
     display: inline-block !important;
   }

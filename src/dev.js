@@ -1,14 +1,14 @@
-import MindElixir, { E } from './index'
-import { exportSvg, exportPng } from '../painter/index'
+import MindElixir from "./index";
+import { exportPng, exportSvg } from "../painter/index";
 
 let mind = new MindElixir({
-  el: '#map',
-  newTopicName: '子节点',
+  el: "#map",
+  newTopicName: "子节点",
   direction: MindElixir.LEFT,
   // direction: MindElixir.RIGHT,
-  data: MindElixir.new('new topic'),
+  data: MindElixir.new("new topic"),
   // data: MindElixir.example,
-  locale: 'en',
+  locale: "en",
   draggable: true,
   editable: true,
   contextMenu: true,
@@ -17,9 +17,9 @@ let mind = new MindElixir({
     link: true,
     extend: [
       {
-        name: 'Node edit',
+        name: "Node edit",
         onclick: () => {
-          alert('extend menu')
+          alert("extend menu");
         },
       },
     ],
@@ -29,39 +29,41 @@ let mind = new MindElixir({
   keypress: true,
   allowUndo: false,
   before: {
-    moveDownNode(){
-      return false
+    moveDownNode() {
+      return false;
     },
     insertSibling(el, obj) {
-      return true
+      return true;
     },
     async addChild(el, obj) {
-      await sleep()
-      return true
+      await sleep();
+      return true;
     },
   },
   primaryLinkStyle: 2,
   primaryNodeVerticalGap: 15, // 25
   primaryNodeHorizontalGap: 15, // 65
-})
-mind.init()
+});
+mind.init();
+
 function sleep() {
   return new Promise((res, rej) => {
-    setTimeout(() => res(), 100)
-  })
+    setTimeout(() => res(), 100);
+  });
 }
+
 let mind2 = new MindElixir({
-  el: '#map2',
+  el: "#map2",
   direction: 2,
   data: MindElixir.example2,
   draggable: false,
   // overflowHidden: true,
   nodeMenu: true,
-})
-mind2.init()
-window.currentOperation = null
-mind.bus.addListener('operation', operation => {
-  if (operation.name !== 'finishEdit') window.currentOperation = operation
+});
+mind2.init();
+window.currentOperation = null;
+mind.bus.addListener("operation", operation => {
+  if (operation.name !== "finishEdit") window.currentOperation = operation;
   // return {
   //   name: action name,
   //   obj: target object
@@ -72,9 +74,9 @@ mind.bus.addListener('operation', operation => {
 
   // name: moveNode
   // obj: {from:target1,to:target2}
-})
-window.m = mind
-window.m2 = mind2
-window.M = MindElixir
-window.exportSvg = exportSvg
-window.exportPng = exportPng
+});
+window.m = mind;
+window.m2 = mind2;
+window.M = MindElixir;
+window.exportSvg = exportSvg;
+window.exportPng = exportPng;

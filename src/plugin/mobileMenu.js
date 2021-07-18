@@ -1,53 +1,53 @@
 export default function (mind, option) {
   let createLi = (id, name) => {
-    let div = document.createElement('div')
-    div.id = id
-    div.innerHTML = `<svg class="icon" aria-hidden="true">
-    <use xlink:href="#icon-${name}"></use>
-  </svg>`
-    return div
-  }
+    let div = document.createElement("div");
+    div.id = id;
+    div.innerHTML = `<svg class='icon' aria-hidden='true'>
+    <use xlink:href='#icon-${name}'></use>
+  </svg>`;
+    return div;
+  };
 
-  let add_child = createLi('cm-add_child', 'zijiedian')
-  let add_sibling = createLi('cm-add_sibling', 'tongjijiedian-')
-  let remove_child = createLi('cm-remove_child', 'shanchu2')
+  let add_child = createLi("cm-add_child", "zijiedian");
+  let add_sibling = createLi("cm-add_sibling", "tongjijiedian-");
+  let remove_child = createLi("cm-remove_child", "shanchu2");
   // let focus = createLi('cm-fucus', i18n[locale].focus, '')
   // let unfocus = createLi('cm-unfucus', i18n[locale].cancelFocus, '')
-  let up = createLi('cm-up', 'rising')
-  let down = createLi('cm-down', 'falling')
-  let edit = createLi('cm-edit', 'edit')
+  let up = createLi("cm-up", "rising");
+  let down = createLi("cm-down", "falling");
+  let edit = createLi("cm-edit", "edit");
   // let link = createLi('cm-down', i18n[locale].link, '')
 
-  let menuUl = document.createElement('ul')
-  menuUl.className = 'menu-list'
+  let menuUl = document.createElement("ul");
+  menuUl.className = "menu-list";
   // if (!option || option.link) {
   //   menuUl.appendChild(link)
   // }
   if (option && option.extend) {
     for (let i = 0; i < option.extend.length; i++) {
-      let item = option.extend[i]
-      let dom = createLi(item.name, item.name)
-      menuUl.appendChild(dom)
+      let item = option.extend[i];
+      let dom = createLi(item.name, item.name);
+      menuUl.appendChild(dom);
       dom.onclick = e => {
-        item.onclick(e)
-      }
+        item.onclick(e);
+      };
     }
   }
-  let menuContainer = document.createElement('mmenu')
-  menuContainer.appendChild(add_child)
-  menuContainer.appendChild(add_sibling)
-  menuContainer.appendChild(remove_child)
+  let menuContainer = document.createElement("mmenu");
+  menuContainer.appendChild(add_child);
+  menuContainer.appendChild(add_sibling);
+  menuContainer.appendChild(remove_child);
   // if (!option || option.focus) {
   //   menuContainer.appendChild(focus)
   //   menuContainer.appendChild(unfocus)
   // }
-  menuContainer.appendChild(up)
-  menuContainer.appendChild(down)
-  menuContainer.appendChild(edit)
-  menuContainer.hidden = true
+  menuContainer.appendChild(up);
+  menuContainer.appendChild(down);
+  menuContainer.appendChild(edit);
+  menuContainer.hidden = true;
 
-  mind.container.append(menuContainer)
-  let isRoot = true
+  mind.container.append(menuContainer);
+  let isRoot = true;
   // mind.container.onclick = function (e) {
   //   e.preventDefault()
   //   let target = e.target
@@ -81,32 +81,32 @@ export default function (mind, option) {
   //   }
   // }
 
-  mind.bus.addListener('unselectNode', function () {
-    menuContainer.hidden = true
-  })
-  mind.bus.addListener('selectNode', function (nodeObj) {
-    menuContainer.hidden = false
+  mind.bus.addListener("unselectNode", function () {
+    menuContainer.hidden = true;
+  });
+  mind.bus.addListener("selectNode", function (nodeObj) {
+    menuContainer.hidden = false;
     if (nodeObj.root) {
-      isRoot = true
+      isRoot = true;
     } else {
-      isRoot = false
+      isRoot = false;
     }
-  })
+  });
   menuContainer.onclick = e => {
-    if (e.target === menuContainer) menuContainer.hidden = true
-  }
+    if (e.target === menuContainer) menuContainer.hidden = true;
+  };
 
   add_child.onclick = e => {
-    mind.addChild()
-  }
+    mind.addChild();
+  };
   add_sibling.onclick = e => {
-    if (isRoot) return
-    mind.insertSibling()
-  }
+    if (isRoot) return;
+    mind.insertSibling();
+  };
   remove_child.onclick = e => {
-    if (isRoot) return
-    mind.removeNode()
-  }
+    if (isRoot) return;
+    mind.removeNode();
+  };
   // focus.onclick = e => {
   //   if (isRoot) return
   //   mind.focusNode(mind.currentNode)
@@ -117,16 +117,16 @@ export default function (mind, option) {
   //   menuContainer.hidden = true
   // }
   up.onclick = e => {
-    if (isRoot) return
-    mind.moveUpNode()
-  }
+    if (isRoot) return;
+    mind.moveUpNode();
+  };
   down.onclick = e => {
-    if (isRoot) return
-    mind.moveDownNode()
-  }
+    if (isRoot) return;
+    mind.moveDownNode();
+  };
   edit.onclick = e => {
-    mind.beginEdit()
-  }
+    mind.beginEdit();
+  };
   // link.onclick = e => {
   //   let from = mind.currentNode
   //   mind.map.addEventListener(

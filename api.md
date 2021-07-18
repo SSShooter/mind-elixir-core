@@ -1,7 +1,8 @@
 <a name="Mind"></a>
 
 ## Mind
-**Kind**: global class  
+
+**Kind**: global class
 
 * [Mind](#Mind)
     * _instance_
@@ -18,9 +19,10 @@
 <a name="Mind+insertSibling"></a>
 
 ### mind.#insertSibling(el)
+
 Create a sibling node.
 
-**Kind**: instance method of [<code>Mind</code>](#Mind)  
+**Kind**: instance method of [<code>Mind</code>](#Mind)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -29,9 +31,10 @@ Create a sibling node.
 <a name="Mind+addChild"></a>
 
 ### mind.#addChild(el)
+
 Create a child node.
 
-**Kind**: instance method of [<code>Mind</code>](#Mind)  
+**Kind**: instance method of [<code>Mind</code>](#Mind)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -40,9 +43,10 @@ Create a child node.
 <a name="Mind+moveUpNode"></a>
 
 ### mind.#moveUpNode(el)
+
 Move the target node up.
 
-**Kind**: instance method of [<code>Mind</code>](#Mind)  
+**Kind**: instance method of [<code>Mind</code>](#Mind)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -51,9 +55,10 @@ Move the target node up.
 <a name="Mind+moveDownNode"></a>
 
 ### mind.#moveDownNode(el)
+
 Move the target node down.
 
-**Kind**: instance method of [<code>Mind</code>](#Mind)  
+**Kind**: instance method of [<code>Mind</code>](#Mind)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -62,9 +67,10 @@ Move the target node down.
 <a name="Mind+removeNode"></a>
 
 ### mind.#removeNode(el)
+
 Remove the target node.
 
-**Kind**: instance method of [<code>Mind</code>](#Mind)  
+**Kind**: instance method of [<code>Mind</code>](#Mind)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -73,9 +79,10 @@ Remove the target node.
 <a name="Mind+moveNode"></a>
 
 ### mind.#moveNode(from, to)
+
 Move the target node to another node (as child node).
 
-**Kind**: instance method of [<code>Mind</code>](#Mind)  
+**Kind**: instance method of [<code>Mind</code>](#Mind)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -85,9 +92,10 @@ Move the target node to another node (as child node).
 <a name="Mind+beginEdit"></a>
 
 ### mind.#beginEdit(el)
+
 Begin to edit the target node.
 
-**Kind**: instance method of [<code>Mind</code>](#Mind)  
+**Kind**: instance method of [<code>Mind</code>](#Mind)
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -96,8 +104,9 @@ Begin to edit the target node.
 <a name="Mind.E"></a>
 
 ### Mind..E(id) ⇒ <code>element</code>
+
 **Kind**: static method of [<code>Mind</code>](#Mind)  
-**Returns**: <code>element</code> - Target element.  
+**Returns**: <code>element</code> - Target element.
 
 | Param | Type | Description |
 | --- | --- | --- |

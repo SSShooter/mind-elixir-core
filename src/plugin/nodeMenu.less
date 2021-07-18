@@ -10,22 +10,27 @@ nmenu {
   box-sizing: border-box;
   padding: 0 15px 15px;
   transition: 0.3s all;
+
   &.close {
     height: 30px;
     width: 50px;
     overflow: hidden;
   }
+
   .button-container {
     padding: 3px 0;
     direction: rtl;
   }
+
   #nm-tag {
     margin-top: 20px;
   }
+
   .nm-fontsize-container {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
+
     div {
       height: 36px;
       width: 36px;
@@ -38,9 +43,11 @@ nmenu {
       border-radius: 100%;
     }
   }
+
   .nm-fontcolor-container {
     margin-bottom: 10px;
   }
+
   input {
     background: #f7f9fa;
     border: 1px solid #dce2e6;
@@ -50,11 +57,13 @@ nmenu {
     width: 100%;
     box-sizing: border-box;
   }
+
   .split6 {
     display: inline-block;
     width: 16.66%;
     margin-bottom: 5px;
   }
+
   .palette {
     border-radius: 100%;
     width: 21px;
@@ -62,28 +71,34 @@ nmenu {
     border: 1px solid #edf1f2;
     margin: auto;
   }
+
   .nmenu-selected,
   .palette:hover {
     box-shadow: tomato 0 0 0 2px;
     background-color: #c7e9fa;
   }
+
   .size-selected {
     background-color: tomato !important;
     border-color: tomato;
     fill: white;
     color: white;
+
     svg {
       color: #fff;
     }
   }
+
   .bof {
     text-align: center;
+
     span {
       display: inline-block;
       font-size: 14px;
       border-radius: 4px;
       padding: 2px 5px;
     }
+
     .selected {
       background-color: tomato;
       color: white;

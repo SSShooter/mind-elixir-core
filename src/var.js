@@ -1,4 +1,4 @@
 export default {
-  newTopicName: '',
+  newTopicName: "",
   draggable: false,
-}
+};

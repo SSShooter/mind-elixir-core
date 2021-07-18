@@ -19,7 +19,9 @@
     "destination": "./doc/"
   },
   "docdash": {
-    "meta": { "title": "mind-elixir" },
+    "meta": {
+      "title": "mind-elixir"
+    },
     "menu": {
       "github": {
         "href": "https://github.com/ssshooter/mind-elixir-core",

@@ -10,9 +10,11 @@ mmenu {
   border-radius: 5px;
   box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.2);
   overflow: hidden;
+
   * {
     transition: color 0.4s, background-color 0.4s;
   }
+
   div {
     float: left;
     text-align: center;
@@ -22,18 +24,22 @@ mmenu {
     padding: 8px;
     background-color: #fff;
     border-bottom: 1px solid #ecf0f1;
+
     a {
       color: #333;
       text-decoration: none;
     }
+
     &.disabled {
       color: rgb(94, 94, 94);
       background-color: rgb(247, 247, 247);
+
       &:hover {
         cursor: default;
         background-color: rgb(247, 247, 247);
       }
     }
+
     &:hover {
       cursor: pointer;
       background-color: #ecf0f1;

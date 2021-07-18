@@ -1,26 +1,25 @@
-const path = require('path')
-const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin
+const path = require("path");
+const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 let config = {
   module: {
     rules: [
       {
         test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader'],
+        use: ["style-loader", "css-loader", "less-loader"],
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader'],
+        use: ["style-loader", "css-loader"],
       },
       {
         test: /\.(ttf|woff|woff2|eot|svg)$/i,
         use: [
           {
-            loader: 'url-loader',
+            loader: "url-loader",
             options: {
               limit: 8192,
             },
@@ -29,34 +28,34 @@ let config = {
       },
     ],
   },
-}
+};
 
 module.exports = (env, argv) => {
-  if (argv.mode === 'development') {
+  if (argv.mode === "development") {
     config = {
       ...config,
-      entry: './src/dev.js',
+      entry: "./src/dev.js",
       plugins: [
         new HtmlWebpackPlugin({
-          title: 'MindElixir',
-          template: 'src/index.html',
+          title: "MindElixir",
+          template: "src/index.html",
         }),
       ],
-    }
+    };
   }
-  if (argv.mode === 'production' && !env.lite) {
+  if (argv.mode === "production" && !env.lite) {
     config = {
       ...config,
       entry: {
-        MindElixir: './src/index.js',
-        painter: './painter/index.js'
+        MindElixir: "./src/index.js",
+        painter: "./painter/index.js",
       },
       output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: '[name].js',
-        library: '[name]',
-        libraryTarget: 'umd',
-        libraryExport: 'default'
+        path: path.resolve(__dirname, "dist"),
+        filename: "[name].js",
+        library: "[name]",
+        libraryTarget: "umd",
+        libraryExport: "default",
         // libraryTarget: 'window'
       },
       module: {
@@ -65,61 +64,62 @@ module.exports = (env, argv) => {
             test: /\.js$/,
             exclude: /(node_modules|bower_components)/,
             use: {
-              loader: 'babel-loader',
+              loader: "babel-loader",
               options: {
-                presets: ['@babel/preset-env']
-              }
-            }
+                presets: ["@babel/preset-env"],
+              },
+            },
           },
           {
             test: /\.less$/,
-            use: ['style-loader', 'css-loader', 'less-loader'],
+            use: ["style-loader", "css-loader", "less-loader"],
           },
           {
             test: /\.css$/,
-            use: ['style-loader', 'css-loader'],
+            use: ["style-loader", "css-loader"],
           },
           {
             test: /\.(ttf|woff|woff2|eot|svg)$/i,
             use: [
               {
-                loader: 'url-loader',
+                loader: "url-loader",
                 options: {
                   limit: 8192,
                 },
               },
             ],
           },
-        ]
+        ],
       },
       // plugins: [
       //   new BundleAnalyzerPlugin()
       // ],
       optimization: {
-        minimizer: [new UglifyJsPlugin({
-          uglifyOptions: {
-            compress: {
-              drop_console: true,
-            }
-          },
-        })],
+        minimizer: [
+          new UglifyJsPlugin({
+            uglifyOptions: {
+              compress: {
+                drop_console: true,
+              },
+            },
+          }),
+        ],
       },
-    }
+    };
   }
-  if (argv.mode === 'production' && env.lite) {
+  if (argv.mode === "production" && env.lite) {
     config = {
       ...config,
-      entry: './src/core-lite.js',
+      entry: "./src/core-lite.js",
       output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'mind-elixir-lite.js',
-        library: 'MindElixir',
-        libraryTarget: 'umd',
+        path: path.resolve(__dirname, "dist"),
+        filename: "mind-elixir-lite.js",
+        library: "MindElixir",
+        libraryTarget: "umd",
       },
-      plugins: [new webpack.optimize.ModuleConcatenationPlugin()],// scope hoist
-    }
+      plugins: [new webpack.optimize.ModuleConcatenationPlugin()], // scope hoist
+    };
   }
 
-
-  return config
-}
+  return config;
+};
