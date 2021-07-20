@@ -158,6 +158,9 @@ function MindElixir({
       )
     ) {
       this.history.push(operation);
+
+      const event = new CustomEvent("mindmap:modified", { operation });
+      this.mindElixirBox.dispatchEvent(event);
     }
   });
 
