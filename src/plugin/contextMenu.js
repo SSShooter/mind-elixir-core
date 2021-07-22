@@ -45,6 +45,7 @@ export default function (mind, option) {
       menuUl.appendChild(dom);
       dom.onclick = e => {
         item.onclick(e);
+        menuContainer.hidden = true;
       };
     }
   }
