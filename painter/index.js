@@ -18,7 +18,7 @@ function initVar() {
 let head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`;
 
 function generateSvgDom() {
-  let primaryNodes = $d.querySelectorAll(".box > grp, root");
+  let primaryNodes = $d.querySelectorAll(".map-box > grp, root");
   let svgContent = "";
   for (let i = 0; i < primaryNodes.length; i++) {
     let primaryNode = primaryNodes[i];
