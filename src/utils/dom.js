@@ -64,9 +64,14 @@ export let createTopic = function (nodeObj) {
 function getNodeInnerHtml(nodeObj) {
   const nodeText = nodeObj.topic;
   const nodeLink = nodeObj.link;
-  const nodeLinkHtml = nodeLink ? `<a class="icon-link not-prevent"  href="${nodeLink}" target="_blank" title="${nodeLink}" />` : null;
+  const nodeDescription = nodeObj.description;
+  const nodeLinkHtml = nodeLink ? `<a class="icon-link not-prevent"  href="${nodeLink}" target="_blank" title="${nodeLink}"></a>` : null;
+  const nodeDescriptionHtml = nodeDescription ? `<span class="icon-file-document"  title="${nodeDescription}"></span>` : null;
+
   let nodeInnerHtml = nodeText;
   if (nodeLinkHtml) nodeInnerHtml = `${nodeInnerHtml} ${nodeLinkHtml}`;
+  if (nodeDescriptionHtml) nodeInnerHtml = `${nodeInnerHtml} ${nodeDescriptionHtml}`;
+
   return nodeInnerHtml;
 }
 
