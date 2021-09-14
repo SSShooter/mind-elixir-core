@@ -1,8 +1,8 @@
 import Canvg from 'canvg'
+
+let head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`
 let IMG_PADDING = 40
 let $d = document
-// calculate distances to center from top,left,bottom,right
-
 let maxTop, maxBottom, maxLeft, maxRight, svgHeight, svgWidth
 
 function initVar() {
@@ -14,10 +14,10 @@ function initVar() {
   svgWidth = 0
 }
 
-let head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`
 function generateSvgDom() {
   let primaryNodes = $d.querySelectorAll('.box > grp, root')
   let svgContent = ''
+  // calculate distance to center from top, left, bottom, right
   for (let i = 0; i < primaryNodes.length; i++) {
     let primaryNode = primaryNodes[i]
     let rect = primaryNode.getBoundingClientRect()
@@ -25,7 +25,7 @@ function generateSvgDom() {
     let bottom = top + rect.height
     let left = primaryNode.offsetLeft
     let right = left + rect.width
-    // console.log(top, bottom, left, right)
+    
     if (top < maxTop) {
       maxTop = top
     }
@@ -38,11 +38,16 @@ function generateSvgDom() {
     if (right > maxRight) {
       maxRight = right
     }
+  } 
+  
+  for (let i = 0; i < primaryNodes.length; i++) {
+    let primaryNode = primaryNodes[i]
+    if(primaryNode.tagName === 'ROOT') continue
     svgContent += PrimaryToSvg(primaryNode)
   }
   console.log(maxTop, maxBottom, maxLeft, maxRight)
   svgContent += RootToSvg()
-  // 需要添加图片边缘padding
+  // image margin
   svgHeight = maxBottom - maxTop + IMG_PADDING * 2
   svgWidth = maxRight - maxLeft + IMG_PADDING * 2
   // svgContent += customLinkTransform()

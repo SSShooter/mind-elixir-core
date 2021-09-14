@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "0.16.1",
+  "version": "0.16.2",
   "description": "Mind elixir is a free open source mind map core.",
   "main": "dist/MindElixir.js",
   "scripts": {
@@ -49,5 +49,8 @@
     "webpack-bundle-analyzer": "^3.3.2",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.5.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.15.4"
   }
 }
