@@ -142,7 +142,7 @@ function MindElixir({
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
-  vari.mevar_draggable = draggable === undefined ? true : draggable
+  vari.draggable  = draggable === undefined ? true : draggable
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? true : allowUndo
   this.parentMap = {} // deprecate?
@@ -384,7 +384,7 @@ MindElixir.prototype = {
     } else {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
     }
-    vari.mevar_draggable && nodeDraggable(this)
+    vari.draggable  && nodeDraggable(this)
 
     this.toCenter()
     this.layout()

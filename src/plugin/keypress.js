@@ -65,12 +65,13 @@ export default function (mind) {
     },
   }
   mind.map.onkeydown = e => {
+    e.preventDefault()
+    if (!mind.editable) return
     // console.log(e, e.target)
     if (e.target !== e.currentTarget) {
       // input
       return
     }
-    e.preventDefault()
     if (e.keyCode === 8 || e.keyCode === 46) {
       // del,backspace
       if (mind.currentLink) mind.removeLink()

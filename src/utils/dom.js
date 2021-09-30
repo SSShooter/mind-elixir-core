@@ -61,7 +61,7 @@ export let createTopic = function (nodeObj) {
   topic.nodeObj = nodeObj
   topic.innerHTML = nodeObj.topic
   topic.dataset.nodeid = 'me' + nodeObj.id
-  topic.draggable = vari.mevar_draggable
+  topic.draggable = vari.draggable 
   return topic
 }
 
