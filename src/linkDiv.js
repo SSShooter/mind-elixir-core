@@ -9,7 +9,10 @@ import {
 } from './const'
 
 /**
- * functionality:
+ * Link nodes with svg,
+ * only link specific node if `primaryNode` is present
+ * 
+ * process:
  * 1. calculate position of primary nodes
  * 2. layout primary node, generate primary link
  * 3. generate link inside primary node

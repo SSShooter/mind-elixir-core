@@ -315,6 +315,7 @@ export let expandNode = function (el, isExpand) {
   }
   // TODO 在此函数构造 html 结构，而非调用 layout
   this.layout()
+  // linkDiv 已实现只更新特定主节点
   this.linkDiv()
 }
 

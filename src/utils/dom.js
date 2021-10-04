@@ -61,7 +61,7 @@ export let createTopic = function (nodeObj) {
   topic.nodeObj = nodeObj
   topic.innerHTML = nodeObj.topic
   topic.dataset.nodeid = 'me' + nodeObj.id
-  topic.draggable = vari.draggable 
+  topic.draggable = vari.draggable
   return topic
 }
 
@@ -100,10 +100,12 @@ export function createInputDiv(tpc) {
   })
 
   div.addEventListener('keydown', e => {
+    e.stopPropagation()
     let key = e.keyCode
+    console.log(e,key)
     if (key === 8) {
-      // 不停止冒泡冒到document就把节点删了
-      e.stopPropagation()
+      // 不停止冒泡冒到 document 就把节点删了
+      // e.stopPropagation()
     } else if (key === 13 || key === 9) {
       // enter & tab
       // keep wrap for shift enter
@@ -147,19 +149,21 @@ export let createExpander = function (expanded) {
  * traversal data and generate dom structure of mind map
  * @ignore
  * @param {object} data node data object
- * @param {object} first 'the box'
+ * @param {object} container node container(mostly primary node)
  * @param {number} direction primary node direction
  * @return {ChildrenElement} children element.
  */
-export function createChildren(data, first, direction) {
-  let chldr = $d.createElement('children')
-  if (first) {
-    chldr = first
+export function createChildren(data, container, direction) {
+  let chldr
+  if (container) {
+    chldr = container
+  } else {
+    chldr = $d.createElement('children')
   }
   for (let i = 0; i < data.length; i++) {
     let nodeObj = data[i]
     let grp = $d.createElement('GRP')
-    if (first) {
+    if (direction) {
       if (direction === LEFT) {
         grp.className = 'lhs'
       } else if (direction === RIGHT) {
@@ -201,7 +205,7 @@ export function layout() {
   let primaryNodes = this.nodeData.children
   if (!primaryNodes || primaryNodes.length === 0) return
   if (this.direction === SIDE) {
-    // init direction of primary node
+    // initiate direction of primary nodes
     let lcount = 0
     let rcount = 0
     primaryNodes.map(node => {

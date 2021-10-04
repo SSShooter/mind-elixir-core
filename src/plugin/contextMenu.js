@@ -60,6 +60,7 @@ export default function (mind, option) {
   let isRoot = true
   mind.container.oncontextmenu = function (e) {
     e.preventDefault()
+    if (!mind.editable) return
     // console.log(e.pageY, e.screenY, e.clientY)
     let target = e.target
     if (target.tagName === 'TPC') {
