@@ -24,6 +24,7 @@ export let createGroup = function (node) {
 
 let shapeTpc = function (tpc, nodeObj) {
   // TODO allow to add online image
+  // TODO allow hyper link
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color
     tpc.style.background = nodeObj.style.background
