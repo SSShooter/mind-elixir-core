@@ -103,7 +103,7 @@ export function createInputDiv(tpc) {
   div.addEventListener('keydown', e => {
     e.stopPropagation()
     let key = e.keyCode
-    console.log(e,key)
+    console.log(e, key)
     if (key === 8) {
       // 不停止冒泡冒到 document 就把节点删了
       // e.stopPropagation()
@@ -164,17 +164,15 @@ export function createChildren(data, container, direction) {
   for (let i = 0; i < data.length; i++) {
     let nodeObj = data[i]
     let grp = $d.createElement('GRP')
-    if (direction) {
-      if (direction === LEFT) {
+    if (direction === LEFT) {
+      grp.className = 'lhs'
+    } else if (direction === RIGHT) {
+      grp.className = 'rhs'
+    } else if (direction === SIDE) {
+      if (nodeObj.direction === LEFT) {
         grp.className = 'lhs'
-      } else if (direction === RIGHT) {
+      } else if (nodeObj.direction === RIGHT) {
         grp.className = 'rhs'
-      } else if (direction === SIDE) {
-        if (nodeObj.direction === LEFT) {
-          grp.className = 'lhs'
-        } else if (nodeObj.direction === RIGHT) {
-          grp.className = 'rhs'
-        }
       }
     }
     let top = createTop(nodeObj)
