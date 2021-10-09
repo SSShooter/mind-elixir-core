@@ -28,7 +28,7 @@ const colorList = [
   '#2ecc71',
 ]
 
-export default function(mind) {
+export default function (mind) {
   let locale = i18n[mind.locale] ? mind.locale : 'en'
   let bgOrFont
   let styleDiv = createDiv('nm-style', 'style')
@@ -61,14 +61,10 @@ export default function(mind) {
       </div>
   `
   tagDiv.innerHTML = `
-      ${i18n[locale].tag}<input class="nm-tag" tabindex="-1" placeholder="${
-    i18n[locale].tagsSeparate
-  }" /><br>
+      ${i18n[locale].tag}<input class="nm-tag" tabindex="-1" placeholder="${i18n[locale].tagsSeparate}" /><br>
   `
   iconDiv.innerHTML = `
-      ${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${
-    i18n[locale].iconsSeparate
-  }" /><br>
+      ${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${i18n[locale].iconsSeparate}" /><br>
   `
 
   let menuContainer = document.createElement('nmenu')
@@ -84,7 +80,7 @@ export default function(mind) {
 
   function clearSelect(klass, remove) {
     var elems = mind.container.querySelectorAll(klass)
-    ;[].forEach.call(elems, function(el) {
+    ;[].forEach.call(elems, function (el) {
       el.classList.remove(remove)
     })
   }
@@ -154,17 +150,17 @@ export default function(mind) {
   }
   tagInput.onchange = e => {
     if (!mind.currentNode) return
-    if (!e.target.value) {
-      mind.currentNode.nodeObj.tags = []
-    } else {
-      mind.currentNode.nodeObj.tags = e.target.value.split(',')
+    if (e.target.value) {
+      let newTags = e.target.value.split(',')
+      mind.updateNodeTags(mind.currentNode.nodeObj, newTags)
     }
-    mind.updateNodeTags(mind.currentNode.nodeObj)
   }
   iconInput.onchange = e => {
     if (!mind.currentNode) return
-    mind.currentNode.nodeObj.icons = e.target.value.split(',')
-    mind.updateNodeIcons(mind.currentNode.nodeObj)
+    if (e.target.value) {
+      let newIcons = e.target.value.split(',')
+      mind.updateNodeIcons(mind.currentNode.nodeObj, newIcons)
+    }
   }
   let state = 'open'
   buttonContainer.onclick = e => {
@@ -182,10 +178,10 @@ export default function(mind) {
     </svg>`
     }
   }
-  mind.bus.addListener('unselectNode', function() {
+  mind.bus.addListener('unselectNode', function () {
     menuContainer.hidden = true
   })
-  mind.bus.addListener('selectNode', function(nodeObj) {
+  mind.bus.addListener('selectNode', function (nodeObj) {
     menuContainer.hidden = false
     clearSelect('.palette', 'nmenu-selected')
     clearSelect('.size', 'size-selected')

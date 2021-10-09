@@ -11,7 +11,7 @@ import {
   moveNodeBeforeObj,
   moveNodeAfterObj,
 } from './utils/index'
-import { findEle, createExpander, createGroup } from './utils/dom'
+import { findEle, createExpander, createGroup, shapeTpc } from './utils/dom'
 import { rgbHex } from './utils/rgbHex'
 import { LEFT, RIGHT, SIDE } from './const'
 // TODO copy node
@@ -41,59 +41,46 @@ export let updateNodeStyle = function (object) {
   })
 }
 
-export let updateNodeTags = function (object) {
-  if (!object.tags) return
-  let nodeEle = findEle(object.id)
-  let tags = object.tags
-  let tagsEl = nodeEle.querySelector('.tags')
-  let originalTags = []
-  if (tagsEl) {
-    tagsEl.childNodes.forEach(node => originalTags.push(node.innerHTML.trim()))
-    tagsEl.innerHTML = tags.map(tag => `<span>${tag}</span>`).join('')
-  } else {
-    let tagsContainer = $d.createElement('div')
-    tagsContainer.className = 'tags'
-    tagsContainer.innerHTML = tags.map(tag => `<span>${tag}</span>`).join('')
-    nodeEle.appendChild(tagsContainer)
-  }
+export let updateNodeTags = function (object, tags) {
+  if (!tags) return
+  const oldVal = object.tags
+  object.tags = tags
+  const nodeEle = findEle(object.id)
+  shapeTpc(nodeEle, object)
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'editTags',
     obj: object,
-    origin: originalTags,
+    origin: oldVal,
   })
 }
 
-export let updateNodeIcons = function (object) {
-  if (!object.icons) return
-  let nodeEle = findEle(object.id)
-  let icons = object.icons
-  let iconsEl = nodeEle.querySelector('.icons')
-  let originalIcons = []
-  if (iconsEl) {
-    iconsEl.childNodes.forEach(node =>
-      originalIcons.push(node.innerHTML.trim())
-    )
-    iconsEl.innerHTML = icons.map(icon => `<span>${icon}</span>`).join('')
-  } else {
-    let iconsContainer = $d.createElement('span')
-    iconsContainer.className = 'icons'
-    iconsContainer.innerHTML = icons
-      .map(icon => `<span>${icon}</span>`)
-      .join('')
-    // fixed sequence: text -> icons -> tags
-    if (nodeEle.lastChild.className === 'tags') {
-      nodeEle.insertBefore(iconsContainer, nodeEle.lastChild)
-    } else {
-      nodeEle.appendChild(iconsContainer)
-    }
-  }
+export let updateNodeIcons = function (object, icons) {
+  if (!icons) return
+  const oldVal = object.icons
+  object.icons = icons
+  const nodeEle = findEle(object.id)
+  shapeTpc(nodeEle, object)
+  this.linkDiv()
   this.bus.fire('operation', {
     name: 'editIcons',
     obj: object,
-    origin: originalIcons,
+    origin: oldVal,
   })
+}
+
+export let updateNodeHyperLink = function (object, hyperLink) {
+  if (!hyperLink) return
+  const oldVal = object.hyperLink
+  object.hyperLink = hyperLink
+  const nodeEle = findEle(object.id)
+  shapeTpc(nodeEle, object)
   this.linkDiv()
+  this.bus.fire('operation', {
+    name: 'editHyperLink',
+    obj: object,
+    origin: oldVal,
+  })
 }
 
 export let updateNodeSvgChart = function () {

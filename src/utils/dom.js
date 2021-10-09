@@ -22,13 +22,22 @@ export let createGroup = function (node) {
   return { grp, top }
 }
 
-let shapeTpc = function (tpc, nodeObj) {
-  // TODO allow to add online image
+export let shapeTpc = function (tpc, nodeObj) {
+  tpc.innerHTML = nodeObj.topic
+
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color
     tpc.style.background = nodeObj.style.background
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
+  }
+  
+  // TODO allow to add online image
+  if (nodeObj.image) {
+    const imgContainer = $d.createElement('img')
+    imgContainer.src = nodeObj.image.url
+    imgContainer.style.width = nodeObj.image.width + 'px'
+    tpc.appendChild(imgContainer)
   }
   if (nodeObj.hyperLink) {
     const linkContainer = $d.createElement('a')
@@ -67,7 +76,6 @@ export let createTop = function (nodeObj) {
 export let createTopic = function (nodeObj) {
   let topic = $d.createElement('tpc')
   topic.nodeObj = nodeObj
-  topic.innerHTML = nodeObj.topic
   topic.dataset.nodeid = 'me' + nodeObj.id
   topic.draggable = vari.draggable
   return topic

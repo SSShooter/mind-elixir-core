@@ -152,6 +152,14 @@ export default {
             id: 'bd41fd4ca32322a5',
             hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
           },
+          // {
+          //   topic: 'Image URL',
+          //   id: 'bd41fd4ca32322a6',
+          //   image: {
+          //     url: 'https://cdn.jsdelivr.net/gh/ssshooter/mind-elixir-core/logo.png',
+          //     width: 200,
+          //   },
+          // },
         ],
       },
       {

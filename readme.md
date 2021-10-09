@@ -130,6 +130,7 @@ E('node-id')
   parent: null,
   tags: ['Tag'],
   icons: ['😀'],
+  hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
 }
 ```
 
