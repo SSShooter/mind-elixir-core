@@ -1,5 +1,6 @@
 import info from '../package.json'
 import vari from './var'
+import { LEFT, RIGHT, SIDE } from './const'
 import {
   isMobile,
   addParentLink,
@@ -54,8 +55,7 @@ import {
   selectLink,
   hideLinkController,
   showLinkController,
-} from './linkOperation'
-import { LEFT, RIGHT, SIDE } from './const'
+} from './customLink'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import linkDiv from './linkDiv'
@@ -81,7 +81,6 @@ import './plugin/mobileMenu.less'
 import './iconfont/iconfont.js'
 
 // TODO MindElixirLite
-// TODO Link label
 // TODO show up animation
 
 window.E = findEle

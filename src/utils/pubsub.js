@@ -6,7 +6,7 @@ Bus.prototype = {
     console.log(this.handlers)
   },
   addListener: function(type, handler) {
-    if (typeof this.handlers[type] == 'undefined') this.handlers[type] = []
+    if (this.handlers[type] === undefined) this.handlers[type] = []
     this.handlers[type].push(handler)
   },
   fire: function(type, payload) {
@@ -20,7 +20,7 @@ Bus.prototype = {
   removeListener: function(type, handler) {
     if (!this.handlers[type]) return
     var handlers = this.handlers[type]
-    if (handler == undefined) {
+    if (!handler) {
       handlers.length = 0
     } else if (handlers.length) {
       for (var i = 0; i < handlers.length; i++) {

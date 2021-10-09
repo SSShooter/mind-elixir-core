@@ -24,15 +24,22 @@ export let createGroup = function (node) {
 
 let shapeTpc = function (tpc, nodeObj) {
   // TODO allow to add online image
-  // TODO allow hyper link
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color
     tpc.style.background = nodeObj.style.background
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
+  if (nodeObj.hyperLink) {
+    const linkContainer = $d.createElement('a')
+    linkContainer.className = 'hyper-link'
+    linkContainer.target = '_blank'
+    linkContainer.innerHTML = '🔗'
+    linkContainer.href = nodeObj.hyperLink
+    tpc.appendChild(linkContainer)
+  }
   if (nodeObj.icons) {
-    let iconsContainer = $d.createElement('span')
+    const iconsContainer = $d.createElement('span')
     iconsContainer.className = 'icons'
     iconsContainer.innerHTML = nodeObj.icons
       .map(icon => `<span>${icon}</span>`)
@@ -40,7 +47,7 @@ let shapeTpc = function (tpc, nodeObj) {
     tpc.appendChild(iconsContainer)
   }
   if (nodeObj.tags) {
-    let tagsContainer = $d.createElement('div')
+    const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
     tagsContainer.innerHTML = nodeObj.tags
       .map(tag => `<span>${tag}</span>`)
@@ -102,13 +109,9 @@ export function createInputDiv(tpc) {
 
   div.addEventListener('keydown', e => {
     e.stopPropagation()
-    let key = e.keyCode
+    let key = e.key
     console.log(e, key)
-    if (key === 8) {
-      // 不停止冒泡冒到 document 就把节点删了
-      // e.stopPropagation()
-    } else if (key === 13 || key === 9) {
-      // enter & tab
+    if (key === 'Enter' || key === 'Tab') {
       // keep wrap for shift enter
       if (e.shiftKey) return
 

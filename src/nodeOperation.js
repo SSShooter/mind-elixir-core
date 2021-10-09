@@ -14,9 +14,9 @@ import {
 import { findEle, createExpander, createGroup } from './utils/dom'
 import { rgbHex } from './utils/rgbHex'
 import { LEFT, RIGHT, SIDE } from './const'
-// todo copy node
+// TODO copy node
+const $d = document
 
-let $d = document
 /**
  * @namespace NodeOperation
  */

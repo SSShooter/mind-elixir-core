@@ -6,8 +6,8 @@ let mind = new MindElixir({
   newTopicName: '子节点',
   direction: MindElixir.LEFT,
   // direction: MindElixir.RIGHT,
-  data: MindElixir.new('new topic'),
-  // data: MindElixir.example,
+  // data: MindElixir.new('new topic'),
+  data: MindElixir.example,
   locale: 'en',
   draggable: true,
   editable: true,
@@ -51,15 +51,15 @@ function sleep() {
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
-let mind2 = new MindElixir({
-  el: '#map2',
-  direction: 2,
-  data: MindElixir.example2,
-  draggable: false,
-  // overflowHidden: true,
-  nodeMenu: true,
-})
-mind2.init()
+// let mind2 = new MindElixir({
+//   el: '#map2',
+//   direction: 2,
+//   data: MindElixir.example2,
+//   draggable: false,
+//   // overflowHidden: true,
+//   nodeMenu: true,
+// })
+// mind2.init()
 window.currentOperation = null
 mind.bus.addListener('operation', operation => {
   console.log(operation)
@@ -79,7 +79,7 @@ mind.bus.addListener('selectNode', node => {
   console.log(node)
 })
 window.m = mind
-window.m2 = mind2
+// window.m2 = mind2
 window.M = MindElixir
 window.exportSvg = exportSvg
 window.exportPng = exportPng

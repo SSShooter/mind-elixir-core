@@ -6,6 +6,7 @@ import {
   calcP4,
 } from './utils/index'
 import { createSvgGroup } from './utils/svg'
+// TODO Link label
 // custom link
 export let createLink = function (from, to, isInitPaint, obj) {
   let map = this.map.getBoundingClientRect()
