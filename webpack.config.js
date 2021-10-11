@@ -6,8 +6,19 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin
 
 let config = {
+  resolve: {
+    // Add `.ts` and `.tsx` as a resolvable extension.
+    extensions: [".ts", ".tsx", ".js"]
+  },
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'ts-loader',
+        }
+      },
       {
         test: /\.less$/,
         use: ['style-loader', 'css-loader', 'less-loader'],
@@ -50,7 +61,7 @@ module.exports = (env, argv) => {
     config = {
       ...config,
       entry: {
-        MindElixir: './src/index.js',
+        MindElixir: './src/index.ts',
         painter: './painter/index.js'
       },
       output: {
@@ -60,39 +71,6 @@ module.exports = (env, argv) => {
         libraryTarget: 'umd',
         libraryExport: 'default'
         // libraryTarget: 'window'
-      },
-      module: {
-        rules: [
-          {
-            test: /\.js$/,
-            exclude: /(node_modules|bower_components)/,
-            use: {
-              loader: 'babel-loader',
-              options: {
-                presets: ['@babel/preset-env']
-              }
-            }
-          },
-          {
-            test: /\.less$/,
-            use: ['style-loader', 'css-loader', 'less-loader'],
-          },
-          {
-            test: /\.css$/,
-            use: ['style-loader', 'css-loader'],
-          },
-          {
-            test: /\.(ttf|woff|woff2|eot|svg)$/i,
-            use: [
-              {
-                loader: 'url-loader',
-                options: {
-                  limit: 8192,
-                },
-              },
-            ],
-          },
-        ]
       },
       // plugins: [
       //   new BundleAnalyzerPlugin()

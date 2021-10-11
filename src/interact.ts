@@ -40,7 +40,7 @@ export let selectNextSibling = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   let sibling = this.currentNode.parentElement.parentElement.nextSibling
-  let target
+  let target: HTMLElement
   let grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
     let siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
@@ -56,7 +56,6 @@ export let selectNextSibling = function () {
     return false
   }
   this.selectNode(target)
-  target.scrollIntoViewIfNeeded()
   return true
 }
 export let selectPrevSibling = function () {
@@ -79,7 +78,6 @@ export let selectPrevSibling = function () {
     return false
   }
   this.selectNode(target)
-  target.scrollIntoViewIfNeeded()
   return true
 }
 export let selectFirstChild = function () {
@@ -88,7 +86,6 @@ export let selectFirstChild = function () {
   if (children && children.firstChild) {
     let target = children.firstChild.firstChild.firstChild
     this.selectNode(target)
-    target.scrollIntoViewIfNeeded()
   }
 }
 export let selectParent = function () {
@@ -99,7 +96,6 @@ export let selectParent = function () {
   if (parent) {
     let target = parent.firstChild
     this.selectNode(target)
-    target.scrollIntoViewIfNeeded()
   }
 }
 /**
@@ -130,7 +126,7 @@ export let getAllDataString = function () {
  * @memberof MapInteraction
  * @return {Object}
  */
-export let getAllData = function () {
+export let getAllData = function (): object {
   let data = {
     nodeData: getData(this),
     linkData: this.linkData,
@@ -151,9 +147,9 @@ export let getAllData = function () {
  * @name getAllDataMd
  * @description Get all node data as markdown.
  * @memberof MapInteraction
- * @return {Object}
+ * @return {String}
  */
-export let getAllDataMd = function () {
+export let getAllDataMd = function ():string {
   let data = getData(this)
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children, deep) {

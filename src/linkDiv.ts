@@ -1,5 +1,5 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
-import { findEle } from './utils/dom'
+import { findEle, Expander } from './utils/dom'
 import {
   SIDE,
   GAP,
@@ -24,21 +24,20 @@ export default function linkDiv(primaryNode) {
   var primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
   let root = this.root
-  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${
-    10000 - root.offsetWidth / 2
-  }px;`
+  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2
+    }px;`
   let primaryNodeList = this.box.children
   this.svg2nd.innerHTML = ''
 
   // 1. calculate position of primary nodes
   let totalHeight = 0
-  let shortSide // side with smaller height
+  let shortSide: string // l or r
   let shortSideGap = 0 // balance heigt of two side
   let currentOffsetL = 0 // left side total offset
   let currentOffsetR = 0 // right side total offset
   let totalHeightL = 0
   let totalHeightR = 0
-  let base
+  let base: number
 
   if (this.direction === SIDE) {
     let countL = 0
@@ -75,7 +74,7 @@ export default function linkDiv(primaryNode) {
   }
 
   // 2. layout primary node, generate primary link
-  let path = ''
+  let primaryPath = ''
   for (let i = 0; i < primaryNodeList.length; i++) {
     let x2, y2
     let el = primaryNodeList[i]
@@ -94,23 +93,22 @@ export default function linkDiv(primaryNode) {
 
       let LEFT = 10000
       if (this.primaryLinkStyle === 2) {
-        if(this.direction === SIDE){
+        if (this.direction === SIDE) {
           LEFT = 10000 - root.offsetWidth / 6
         }
         if (y2 < 10000)
-          path += `M ${LEFT} 10000
+          primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 + 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
           L ${x2} ${y2}`
         else
-          path += `M ${LEFT} 10000
+          primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 - 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
           L ${x2} ${y2}`
       } else {
-        path += `M ${10000} ${10000} C 10000 10000 ${
-          10000 + 2 * primaryNodeHorizontalGap * 0.03
-        } ${y2} ${x2} ${y2}`
+        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03
+          } ${y2} ${x2} ${y2}`
       }
 
       if (shortSide === 'l') {
@@ -127,23 +125,22 @@ export default function linkDiv(primaryNode) {
 
       let LEFT = 10000
       if (this.primaryLinkStyle === 2) {
-        if(this.direction === SIDE){
+        if (this.direction === SIDE) {
           LEFT = 10000 + root.offsetWidth / 6
         }
         if (y2 < 10000)
-          path += `M ${LEFT} 10000
+          primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 + 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
           L ${x2} ${y2}`
         else
-          path += `M ${LEFT} 10000
+          primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 - 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
           L ${x2} ${y2}`
       } else {
-        path += `M ${10000} ${10000} C 10000 10000 ${
-          10000 + 2 * primaryNodeHorizontalGap * 0.03
-        } ${y2} ${x2} ${y2}`
+        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03
+          } ${y2} ${x2} ${y2}`
       }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
@@ -163,7 +160,7 @@ export default function linkDiv(primaryNode) {
       }
     }
   }
-  this.svg2nd.appendChild(createMainPath(path))
+  this.svg2nd.appendChild(createMainPath(primaryPath))
 
   // 3. generate link inside primary node
   for (let i = 0; i < primaryNodeList.length; i++) {
@@ -178,106 +175,9 @@ export default function linkDiv(primaryNode) {
       el.appendChild(svg)
       let parent = el.children[0]
       let children = el.children[1].children
-      let path = ''
+      path = ''
       loopChildren(children, parent, true)
       svg.appendChild(createPath(path))
-      function loopChildren(children, parent, first) {
-        // parent node of the child dom
-        let parentOT = parent.offsetTop
-        let parentOL = parent.offsetLeft
-        let parentOW = parent.offsetWidth
-        let parentOH = parent.offsetHeight
-        for (let i = 0; i < children.length; i++) {
-          let child = children[i]
-          let childT = child.children[0] // t tag inside the child dom
-          let childTOT = childT.offsetTop
-          let childTOH = childT.offsetHeight
-          let y1
-          if (first) {
-            y1 = parentOT + parentOH / 2
-          } else {
-            y1 = parentOT + parentOH
-          }
-          let y2 = childTOT + childTOH
-          let x1, x2, xMiddle
-          let direction = child.offsetParent.className
-          if (direction === 'lhs') {
-            x1 = parentOL + GAP
-            xMiddle = parentOL
-            x2 = parentOL - childT.offsetWidth
-            // console.log('x1,y1,x2,y2,child',x1,y1,x2,y2,child)
-            if (
-              childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
-              childTOT + childTOH > parentOT + parentOH / 2 - 50
-            ) {
-              // 相差+-50内直接直线
-              path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
-            } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
-              // 子底部高于父中点
-              path += `M ${x1} ${y1} 
-            L ${xMiddle} ${y1} 
-            L ${xMiddle} ${y2 - TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 
-            ${xMiddle - TURNPOINT_R},${y2} 
-            L ${x2} ${y2}`
-            } else {
-              // 子底部低于父中点
-              path += `M ${x1} ${y1} 
-            L ${xMiddle} ${y1} 
-            L ${xMiddle} ${y2 + TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 
-            ${xMiddle - TURNPOINT_R},${y2} 
-            L ${x2} ${y2}`
-            }
-          } else if (direction === 'rhs') {
-            x1 = parentOL + parentOW - GAP
-            xMiddle = parentOL + parentOW
-            x2 = parentOL + parentOW + childT.offsetWidth
-
-            if (
-              childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
-              childTOT + childTOH > parentOT + parentOH / 2 - 50
-            ) {
-              path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
-            } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
-              path += `M ${x1} ${y1} 
-            L ${xMiddle} ${y1} 
-            L ${xMiddle} ${y2 - TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${
-                xMiddle + TURNPOINT_R
-              },${y2} 
-            L ${x2} ${y2}`
-            } else {
-              path += `M ${x1} ${y1} 
-            L ${xMiddle} ${y1} 
-            L ${xMiddle} ${y2 + TURNPOINT_R} 
-            A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${
-                xMiddle + TURNPOINT_R
-              },${y2} 
-            L ${x2} ${y2}`
-            }
-          }
-
-          let expander = childT.children[1]
-          if (expander) {
-            expander.style.top =
-              (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
-            if (direction === 'lhs') {
-              expander.style.left = -10 + 'px'
-            } else if (direction === 'rhs') {
-              expander.style.left = childT.offsetWidth - 10 + 'px'
-            }
-            // this property is added in the layout phase
-            if (!expander.expanded) continue
-          } else {
-            // expander not exist
-            continue
-          }
-          // traversal
-          let nextChildren = child.children[1].children
-          if (nextChildren.length > 0) loopChildren(nextChildren, childT)
-        }
-      }
     }
   }
 
@@ -296,4 +196,100 @@ export default function linkDiv(primaryNode) {
       )
   }
   console.timeEnd('linkDiv')
+}
+
+let path = ''
+function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean) {
+  let parentOT = parent.offsetTop
+  let parentOL = parent.offsetLeft
+  let parentOW = parent.offsetWidth
+  let parentOH = parent.offsetHeight
+  for (let i = 0; i < children.length; i++) {
+    let child: HTMLElement = children[i] as HTMLElement
+    let childT: HTMLElement = child.children[0] as HTMLElement // t tag inside the child dom
+    let childTOT = childT.offsetTop
+    let childTOH = childT.offsetHeight
+    let y1: number
+    if (first) {
+      y1 = parentOT + parentOH / 2
+    } else {
+      y1 = parentOT + parentOH
+    }
+    let y2 = childTOT + childTOH
+    let x1: number, x2: number, xMiddle: number
+    let direction = child.offsetParent.className
+    if (direction === 'lhs') {
+      x1 = parentOL + GAP
+      xMiddle = parentOL
+      x2 = parentOL - childT.offsetWidth
+      // console.log('x1,y1,x2,y2,child',x1,y1,x2,y2,child)
+      if (
+        childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
+        childTOT + childTOH > parentOT + parentOH / 2 - 50
+      ) {
+        // 相差+-50内直接直线
+        path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
+      } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
+        // 子底部高于父中点
+        path += `M ${x1} ${y1} 
+      L ${xMiddle} ${y1} 
+      L ${xMiddle} ${y2 - TURNPOINT_R} 
+      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 
+      ${xMiddle - TURNPOINT_R},${y2} 
+      L ${x2} ${y2}`
+      } else {
+        // 子底部低于父中点
+        path += `M ${x1} ${y1} 
+      L ${xMiddle} ${y1} 
+      L ${xMiddle} ${y2 + TURNPOINT_R} 
+      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 
+      ${xMiddle - TURNPOINT_R},${y2} 
+      L ${x2} ${y2}`
+      }
+    } else if (direction === 'rhs') {
+      x1 = parentOL + parentOW - GAP
+      xMiddle = parentOL + parentOW
+      x2 = parentOL + parentOW + childT.offsetWidth
+
+      if (
+        childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
+        childTOT + childTOH > parentOT + parentOH / 2 - 50
+      ) {
+        path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
+      } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
+        path += `M ${x1} ${y1} 
+      L ${xMiddle} ${y1} 
+      L ${xMiddle} ${y2 - TURNPOINT_R} 
+      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle + TURNPOINT_R
+          },${y2} 
+      L ${x2} ${y2}`
+      } else {
+        path += `M ${x1} ${y1} 
+      L ${xMiddle} ${y1} 
+      L ${xMiddle} ${y2 + TURNPOINT_R} 
+      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle + TURNPOINT_R
+          },${y2} 
+      L ${x2} ${y2}`
+      }
+    }
+
+    let expander = childT.children[1] as Expander
+    if (expander) {
+      expander.style.top =
+        (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
+      if (direction === 'lhs') {
+        expander.style.left = -10 + 'px'
+      } else if (direction === 'rhs') {
+        expander.style.left = childT.offsetWidth - 10 + 'px'
+      }
+      // this property is added in the layout phase
+      if (!expander.expanded) continue
+    } else {
+      // expander not exist
+      continue
+    }
+    // traversal
+    let nextChildren = child.children[1].children
+    if (nextChildren.length > 0) loopChildren(nextChildren, childT)
+  }
 }

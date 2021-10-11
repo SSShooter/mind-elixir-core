@@ -1,28 +1,37 @@
 import { LEFT, RIGHT, SIDE } from '../const'
 import vari from '../var'
+import { NodeObj } from '../index'
+
+export interface Topic extends HTMLElement {
+  nodeObj?: NodeObj
+}
+
+export interface Expander extends HTMLElement {
+  expanded?: boolean
+}
 
 // DOM manipulation
 let $d = document
-export let findEle = (id, me) => {
-  let scope = me ? me.mindElixirBox : $d
+export let findEle = (id: string, instance?) => {
+  let scope = instance ? instance.mindElixirBox : $d
   return scope.querySelector(`[data-nodeid=me${id}]`)
 }
 
-export let createGroup = function (node) {
+export let createGroup = function (nodeObj: NodeObj) {
   let grp = $d.createElement('GRP')
-  let top = createTop(node)
+  let top = createTop(nodeObj)
   grp.appendChild(top)
-  if (node.children && node.children.length > 0) {
-    top.appendChild(createExpander(node.expanded))
-    if (node.expanded !== false) {
-      let children = createChildren(node.children)
+  if (nodeObj.children && nodeObj.children.length > 0) {
+    top.appendChild(createExpander(nodeObj.expanded))
+    if (nodeObj.expanded !== false) {
+      let children = createChildren(nodeObj.children)
       grp.appendChild(children)
     }
   }
   return { grp, top }
 }
 
-export let shapeTpc = function (tpc, nodeObj) {
+export let shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = nodeObj.topic
 
   if (nodeObj.style) {
@@ -31,14 +40,14 @@ export let shapeTpc = function (tpc, nodeObj) {
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
-  
+
   // TODO allow to add online image
-  if (nodeObj.image) {
-    const imgContainer = $d.createElement('img')
-    imgContainer.src = nodeObj.image.url
-    imgContainer.style.width = nodeObj.image.width + 'px'
-    tpc.appendChild(imgContainer)
-  }
+  // if (nodeObj.image) {
+  //   const imgContainer = $d.createElement('img')
+  //   imgContainer.src = nodeObj.image.url
+  //   imgContainer.style.width = nodeObj.image.width + 'px'
+  //   tpc.appendChild(imgContainer)
+  // }
   if (nodeObj.hyperLink) {
     const linkContainer = $d.createElement('a')
     linkContainer.className = 'hyper-link'
@@ -65,7 +74,7 @@ export let shapeTpc = function (tpc, nodeObj) {
   }
 }
 
-export let createTop = function (nodeObj) {
+export let createTop = function (nodeObj: NodeObj) {
   let top = $d.createElement('t')
   let tpc = createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
@@ -73,8 +82,9 @@ export let createTop = function (nodeObj) {
   return top
 }
 
-export let createTopic = function (nodeObj) {
-  let topic = $d.createElement('tpc')
+
+export let createTopic = function (nodeObj: NodeObj): Topic {
+  let topic: Topic = $d.createElement('tpc')
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   topic.draggable = vari.draggable
@@ -82,29 +92,23 @@ export let createTopic = function (nodeObj) {
 }
 
 export function selectText(div) {
-  if ($d.selection) {
-    let range = $d.body.createTextRange()
-    range.moveToElementText(div)
-    range.select()
-  } else if (window.getSelection) {
-    let range = $d.createRange()
-    range.selectNodeContents(div)
-    window.getSelection().removeAllRanges()
-    window.getSelection().addRange(range)
-  }
+  let range = $d.createRange()
+  range.selectNodeContents(div)
+  window.getSelection().removeAllRanges()
+  window.getSelection().addRange(range)
 }
 
-export function createInputDiv(tpc) {
+export function createInputDiv(tpc: Topic) {
   console.time('createInputDiv')
   if (!tpc) return
   let div = $d.createElement('div')
   let origin = tpc.childNodes[0].textContent
   tpc.appendChild(div)
   div.innerHTML = origin
-  div.contentEditable = true
+  div.contentEditable = 'true'
   div.spellcheck = false
   div.style.cssText = `min-width:${tpc.offsetWidth - 8}px;`
-  if (this.direction === LEFT) div.style.right = 0
+  if (this.direction === LEFT) div.style.right = '0'
   div.focus()
 
   selectText(div)
@@ -148,8 +152,9 @@ export function createInputDiv(tpc) {
   console.timeEnd('createInputDiv')
 }
 
-export let createExpander = function (expanded) {
-  let expander = $d.createElement('epd')
+
+export let createExpander = function (expanded:boolean):Expander {
+  let expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
   expander.innerHTML = expanded !== false ? '-' : '+'
   expander.expanded = expanded !== false ? true : false
@@ -165,7 +170,7 @@ export let createExpander = function (expanded) {
  * @param {number} direction primary node direction
  * @return {ChildrenElement} children element.
  */
-export function createChildren(data, container, direction) {
+export function createChildren(data: NodeObj[], container?, direction?) {
   let chldr
   if (container) {
     chldr = container

@@ -1,4 +1,3 @@
-import info from '../package.json'
 import vari from './var'
 import { LEFT, RIGHT, SIDE } from './const'
 import {
@@ -83,8 +82,26 @@ import './iconfont/iconfont.js'
 // TODO MindElixirLite
 // TODO show up animation
 
-window.E = findEle
+// window.E = findEle
 export let E = findEle
+
+export interface NodeObj {
+  topic: string,
+  id: string,
+  style?: {
+    fontSize?: string,
+    color?: string,
+    background?: string,
+    fontWeight?: string
+  },
+  parent?: NodeObj,
+  children?: NodeObj[],
+  tags?: string[],
+  icons?: string[],
+  hyperLink?: string,
+  expanded?: boolean,
+  direction?: number,
+}
 
 let $d = document
 /** 
@@ -141,7 +158,7 @@ function MindElixir({
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
-  vari.draggable  = draggable === undefined ? true : draggable
+  vari.draggable = draggable === undefined ? true : draggable
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? true : allowUndo
   this.parentMap = {} // deprecate?
@@ -383,7 +400,7 @@ MindElixir.prototype = {
     } else {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
     }
-    vari.draggable  && nodeDraggable(this)
+    vari.draggable && nodeDraggable(this)
 
     this.toCenter()
     this.layout()
@@ -400,12 +417,12 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = info.version
+MindElixir.version = '0.17.0'
 MindElixir.E = findEle
 /**
  * @memberof MindElixir
  * @static
- * @description Example data help you try Mind-elxir quickly.
+ * @description Example data help you try Mind-elxir more quickly.
  */
 MindElixir.example = example
 MindElixir.example2 = example2

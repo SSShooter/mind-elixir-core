@@ -1,11 +1,11 @@
 import vari from '../var'
 
-export let isMobile = () =>
+export let isMobile = ():boolean =>
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   )
 
-export let getObjById = (id, data) => {
+export let getObjById = function (id: string, data) {
   data = data || this.nodeData
   if (data.id === id) {
     return data
@@ -19,7 +19,7 @@ export let getObjById = (id, data) => {
   }
 }
 
-export let addParentLink = (data, parent) => {
+export let addParentLink = (data, parent?) => {
   data.parent = parent
   if (data.children) {
     for (let i = 0; i < data.children.length; i++) {
@@ -41,7 +41,7 @@ export let throttle = (fn, wait) => {
   }
 }
 
-export function getArrowPoints(p3x, p3y, p4x, p4y) {
+export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: number) {
   let deltay = p4y - p3y
   let deltax = p3x - p4x
   let angle = (Math.atan(Math.abs(deltay) / Math.abs(deltax)) / 3.14) * 180
@@ -122,7 +122,7 @@ export function calcP4(toData, p3x, p3y) {
   }
 }
 
-export function generateUUID() {
+export function generateUUID():string {
   return (
     new Date().getTime().toString(16) + Math.random().toString(16).substr(2)
   ).substr(2, 16)
@@ -283,13 +283,13 @@ export let dragMoveHelper = {
   },
 }
 
-export function dmhelper(dom) {
+export function nodeDragMoveHelper(dom) {
   this.dom = dom
   this.mousedown = false
   this.lastX = null
   this.lastY = null
 }
-dmhelper.prototype.init = function (map, cb) {
+nodeDragMoveHelper.prototype.init = function (map, cb) {
   this.handleMouseMove = e => {
     e.stopPropagation()
     if (this.mousedown) {
@@ -319,14 +319,14 @@ dmhelper.prototype.init = function (map, cb) {
   this.dom.addEventListener('mousedown', this.handleMouseDown)
 }
 
-dmhelper.prototype.destory = function (map) {
+nodeDragMoveHelper.prototype.destory = function (map) {
   map.removeEventListener('mousemove', this.handleMouseMove)
   map.removeEventListener('mouseleave', this.handleClear)
   map.removeEventListener('mouseup', this.handleClear)
   this.dom.removeEventListener('mousedown', this.handleMouseDown)
 }
 
-dmhelper.prototype.clear = function () {
+nodeDragMoveHelper.prototype.clear = function () {
   this.mousedown = false
   this.lastX = null
   this.lastY = null

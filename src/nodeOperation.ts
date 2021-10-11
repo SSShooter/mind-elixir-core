@@ -126,7 +126,6 @@ export let insertSibling = function (el, node) {
     this.createInputDiv(top.children[0])
   }
   this.selectNode(top.children[0], true)
-  top.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
@@ -162,7 +161,6 @@ export let insertBefore = function (el, node) {
     this.createInputDiv(top.children[0])
   }
   this.selectNode(top.children[0], true)
-  top.scrollIntoViewIfNeeded()
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
@@ -188,7 +186,7 @@ export let addChild = function (el, node) {
   if (nodeObj.expanded === false) {
     this.expandNode(nodeEle, true)
     // dom reset thus
-    nodeEle = E(nodeObj.id)
+    nodeEle = findEle(nodeObj.id)
   }
   let newNodeObj = node || generateNewObj()
   nodeObj.expanded = true
@@ -218,7 +216,6 @@ export let addChild = function (el, node) {
     this.createInputDiv(newTop.children[0])
   }
   this.selectNode(newTop.children[0], true)
-  newTop.scrollIntoViewIfNeeded()
   console.timeEnd('addChild')
   this.bus.fire('operation', {
     name: 'addChild',
@@ -246,7 +243,6 @@ export let moveUpNode = function (el) {
   moveUpObj(obj)
   grp.parentNode.insertBefore(grp, grp.previousSibling)
   this.linkDiv()
-  nodeEle.scrollIntoViewIfNeeded()
   this.bus.fire('operation', {
     name: 'moveUpNode',
     obj,
@@ -275,7 +271,6 @@ export let moveDownNode = function (el) {
     grp.parentNode.prepend(grp)
   }
   this.linkDiv()
-  nodeEle.scrollIntoViewIfNeeded()
   this.bus.fire('operation', {
     name: 'moveDownNode',
     obj,
@@ -359,8 +354,8 @@ export let moveNode = function (from, to) {
   let originParentId = fromObj.parent.id
   if (toObj.expanded === false) {
     this.expandNode(to, true)
-    from = E(fromObj.id)
-    to = E(toObj.id)
+    from = findEle(fromObj.id)
+    to = findEle(toObj.id)
   }
   if (!checkMoveValid(fromObj, toObj)) {
     console.warn('Invalid move')
