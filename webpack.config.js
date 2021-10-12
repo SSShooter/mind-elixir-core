@@ -62,7 +62,9 @@ module.exports = (env, argv) => {
       ...config,
       entry: {
         MindElixir: './src/index.ts',
-        painter: './painter/index.js'
+        painter: './painter/index.js',
+        example1: './src/exampleData/1.js',
+        example2: './src/exampleData/2.js',
       },
       output: {
         path: path.resolve(__dirname, 'dist'),

@@ -1,4 +1,5 @@
 import { dragMoveHelper, throttle } from '../utils/index'
+import { findEle as E, Topic, Group } from '../utils/dom'
 let $d = document
 var meet
 export let insertPreview = function (el, insertLocation) {
@@ -40,57 +41,26 @@ export let canPreview = function (el, dragged) {
 }
 
 export default function (mind) {
-  var dragged
+  var dragged: Topic
   var insertLocation
   let threshold = 12
   /* events fired on the draggable target */
   mind.map.addEventListener(
     'drag',
-    throttle(function (event) {
-      clearPreview(meet)
-      let topMeet = $d.elementFromPoint(
-        event.clientX,
-        event.clientY - threshold
-      )
-      if (canPreview(topMeet, dragged)) {
-        meet = topMeet
-        let y = topMeet.getBoundingClientRect().y
-        if (event.clientY > y + topMeet.clientHeight) {
-          insertLocation = 'after'
-        } else if (event.clientY > y + topMeet.clientHeight / 2) {
-          insertLocation = 'in'
-        }
-      } else {
-        let bottomMeet = $d.elementFromPoint(
-          event.clientX,
-          event.clientY + threshold
-        )
-        if (canPreview(bottomMeet, dragged)) {
-          meet = bottomMeet
-          let y = bottomMeet.getBoundingClientRect().y
-          if (event.clientY < y) {
-            insertLocation = 'before'
-          } else if (event.clientY < y + bottomMeet.clientHeight / 2) {
-            insertLocation = 'in'
-          }
-        } else {
-          insertLocation = meet = null
-        }
-      }
-      if (meet) insertPreview(meet, insertLocation)
-    }, 100)
+    function () { }
   )
 
   mind.map.addEventListener('dragstart', function (event) {
     // store a ref. on the dragged elem
+    console.log(event)
     dragged = event.target
-    dragged.parentNode.parentNode.style.opacity = 0.5
+      ; (dragged.parentNode.parentNode as Group).style.opacity = '0.5'
     dragMoveHelper.clear()
   })
 
-  mind.map.addEventListener('dragend', async function (event) {
-    // reset the transparency
-    event.target.style.opacity = ''
+  mind.map.addEventListener('dragend', async function (event: DragEvent) {
+    // reset transparency
+    (event.target as HTMLElement).style.opacity = ''
     clearPreview(meet)
     let obj = dragged.nodeObj
     switch (insertLocation) {
@@ -106,26 +76,49 @@ export default function (mind) {
         mind.moveNode(dragged, meet)
         break
     }
-    dragged.parentNode.parentNode.style.opacity = 1
+    ; (dragged.parentNode.parentNode as Group).style.opacity = '1'
     dragged = null
   })
 
-  /* events fired on the drop targets */
-  mind.map.addEventListener('dragover', function (event) {
-    // prevent default to allow drop
-    event.preventDefault()
-  })
+  mind.map.addEventListener('dragover', throttle(function (event: DragEvent) {
+    console.log('drag', event)
+    clearPreview(meet)
+    let topMeet = $d.elementFromPoint(
+      event.clientX,
+      event.clientY - threshold
+    )
+    if (canPreview(topMeet, dragged)) {
+      meet = topMeet
+      let y = topMeet.getBoundingClientRect().y
+      if (event.clientY > y + topMeet.clientHeight) {
+        insertLocation = 'after'
+      } else if (event.clientY > y + topMeet.clientHeight / 2) {
+        insertLocation = 'in'
+      }
+    } else {
+      let bottomMeet = $d.elementFromPoint(
+        event.clientX,
+        event.clientY + threshold
+      )
+      if (canPreview(bottomMeet, dragged)) {
+        meet = bottomMeet
+        let y = bottomMeet.getBoundingClientRect().y
+        if (event.clientY < y) {
+          insertLocation = 'before'
+        } else if (event.clientY < y + bottomMeet.clientHeight / 2) {
+          insertLocation = 'in'
+        }
+      } else {
+        insertLocation = meet = null
+      }
+    }
+    if (meet) insertPreview(meet, insertLocation)
+  }, 100))
 
   mind.map.addEventListener('dragenter', function (event) {
-    // if (event.target.tagName == 'TPC' && event.target !== dragged) {
-    //   event.target.style.opacity = 0.5
-    // }
   })
 
   mind.map.addEventListener('dragleave', function (event) {
-    // if (event.target.tagName == 'TPC' && event.target !== dragged) {
-    //   event.target.style.opacity = 1
-    // }
   })
 
   mind.map.addEventListener('drop', event => {

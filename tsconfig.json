@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "strict": false,
+    "target": "es2016",
+    "allowJs": true,
     "sourceMap": true
   }
 }

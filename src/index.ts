@@ -6,7 +6,7 @@ import {
   getObjById,
   generateUUID,
 } from './utils/index'
-import { findEle, createInputDiv, layout } from './utils/dom'
+import { findEle, createInputDiv, layout, Topic } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -84,7 +84,10 @@ import './iconfont/iconfont.js'
 
 // window.E = findEle
 export let E = findEle
-
+type LinkObj = object
+type operation = {
+  name:string
+}
 export interface NodeObj {
   topic: string,
   id: string,
@@ -101,8 +104,68 @@ export interface NodeObj {
   hyperLink?: string,
   expanded?: boolean,
   direction?: number,
+  root?: boolean
 }
+export interface MindElixirData {
+  nodeData: NodeObj,
+  linkData?: LinkObj
+}
+export interface MindElixirInstance {
+  mindElixirBox: HTMLElement,
+  nodeData: NodeObj,
+  linkData: LinkObj,
+  currentNode: Topic | null,
+  currentLink: SVGElement | null,
+  inputDiv: HTMLElement | null,
+  scaleVal: number,
+  tempDirection: number | null,
+  bus: object, // wip
 
+  // wip
+  history: operation[],
+  isUndo: boolean,
+  undo: () => void,
+
+  direction: number,
+  locale: string,
+  draggable: boolean,
+  editable: boolean,
+  contextMenu: boolean,
+  contextMenuOption: object,
+  toolBar: boolean,
+  nodeMenu: boolean,
+  keypress: boolean,
+  before: object,
+  newTopicName: string,
+  allowUndo: boolean,
+  overflowHidden: boolean,
+  primaryLinkStyle: number,
+  primaryNodeHorizontalGap: number,
+  primaryNodeVerticalGap: number,
+  mobileMenu: boolean,
+
+}
+export interface Options {
+  el: string,
+  data: MindElixirData,
+  direction: number,
+  locale: string,
+  draggable: boolean,
+  editable: boolean,
+  contextMenu: boolean,
+  contextMenuOption: object,
+  toolBar: boolean,
+  nodeMenu: boolean,
+  keypress: boolean,
+  before: object,
+  newTopicName: string,
+  allowUndo: boolean,
+  overflowHidden: boolean,
+  primaryLinkStyle: number,
+  primaryNodeHorizontalGap: number,
+  primaryNodeVerticalGap: number,
+  mobileMenu: boolean,
+}
 let $d = document
 /** 
  * @class MindElixir 
@@ -121,7 +184,7 @@ let $d = document
 mind.init()
  *
  */
-function MindElixir({
+function MindElixir(this: MindElixirInstance, {
   el,
   data,
   direction,
@@ -141,12 +204,12 @@ function MindElixir({
   primaryNodeHorizontalGap,
   primaryNodeVerticalGap,
   mobileMenu,
-}) {
-  vari.newTopicName = newTopicName
-  this.mindElixirBox = document.querySelector(el)
-  this.history = [] // TODO
+}: Options) {
+  let box = document.querySelector(el) as HTMLElement
+  if (!box) return
+  this.mindElixirBox = box
   this.before = before || {}
-  this.nodeData = data.nodeData || {}
+  this.nodeData = data.nodeData 
   this.linkData = data.linkData || {}
   this.locale = locale
   this.contextMenuOption = contextMenuOption
@@ -159,22 +222,22 @@ function MindElixir({
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
   vari.draggable = draggable === undefined ? true : draggable
+  vari.newTopicName = newTopicName
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? true : allowUndo
-  this.parentMap = {} // deprecate?
+  // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
   this.currentLink = null // the selected link svg element
   this.inputDiv = null // editor
-  this.bus = new Bus()
   this.scaleVal = 1
-  this.tempDir = null
+  this.tempDirection = null
   this.primaryLinkStyle = primaryLinkStyle || 0
   this.overflowHidden = overflowHidden
   this.primaryNodeHorizontalGap = primaryNodeHorizontalGap
   this.primaryNodeVerticalGap = primaryNodeVerticalGap
 
-  this.isUndo = false
-  this.bus.addListener('operation', operation => {
+  this.bus = new Bus()
+  this.bus.addListener('operation', (operation: operation) => {
     if (this.isUndo) {
       this.isUndo = false
       return
@@ -189,6 +252,8 @@ function MindElixir({
     }
   })
 
+  this.history = [] // TODO
+  this.isUndo = false
   this.undo = function () {
     let operation = this.history.pop()
     if (!operation) return
@@ -214,90 +279,31 @@ function MindElixir({
   }
 }
 
+function beforeHook(fn) {
+  return async function (...args) {
+    if (
+      !this.before[fn.name] ||
+      (await this.before[fn.name].apply(this, args))
+    ) {
+      fn.apply(this, args)
+    }
+  }
+}
+
 MindElixir.prototype = {
   addParentLink,
   getObjById,
   // node operation
-  insertSibling: async function (...args) {
-    if (
-      !this.before.insertSibling ||
-      (await this.before.insertSibling.apply(this, args))
-    ) {
-      insertSibling.apply(this, args)
-    }
-  },
-  insertBefore: async function (...args) {
-    if (
-      !this.before.insertBefore ||
-      (await this.before.insertBefore.apply(this, args))
-    ) {
-      insertBefore.apply(this, args)
-    }
-  },
-  addChild: async function (...args) {
-    if (
-      !this.before.addChild ||
-      (await this.before.addChild.apply(this, args))
-    ) {
-      addChild.apply(this, args)
-    }
-  },
-  moveNode: async function (...args) {
-    if (
-      !this.before.moveNode ||
-      (await this.before.moveNode.apply(this, args))
-    ) {
-      moveNode.apply(this, args)
-    }
-  },
-  removeNode: async function (...args) {
-    if (
-      !this.before.removeNode ||
-      (await this.before.removeNode.apply(this, args))
-    ) {
-      removeNode.apply(this, args)
-    }
-  },
-  moveUpNode: async function (...args) {
-    if (
-      !this.before.moveUpNode ||
-      (await this.before.moveUpNode.apply(this, args))
-    ) {
-      moveUpNode.apply(this, args)
-    }
-  },
-  moveDownNode: async function (...args) {
-    if (
-      !this.before.moveDownNode ||
-      (await this.before.moveDownNode.apply(this, args))
-    ) {
-      moveDownNode.apply(this, args)
-    }
-  },
-  beginEdit: async function (...args) {
-    if (
-      !this.before.beginEdit ||
-      (await this.before.beginEdit.apply(this, args))
-    ) {
-      beginEdit.apply(this, args)
-    }
-  },
-  moveNodeBefore: async function (...args) {
-    if (
-      !this.before.moveNodeBefore ||
-      (await this.before.moveNodeBefore.apply(this, args))
-    ) {
-      moveNodeBefore.apply(this, args)
-    }
-  },
-  moveNodeAfter: async function (...args) {
-    if (
-      !this.before.moveNodeAfter ||
-      (await this.before.moveNodeAfter.apply(this, args))
-    ) {
-      moveNodeAfter.apply(this, args)
-    }
-  },
+  insertSibling: beforeHook(insertSibling),
+  insertBefore: beforeHook(insertBefore),
+  addChild: beforeHook(addChild),
+  moveNode: beforeHook(moveNode),
+  removeNode: beforeHook(removeNode),
+  moveUpNode: beforeHook(moveUpNode),
+  moveDownNode: beforeHook(moveDownNode),
+  beginEdit: beforeHook(beginEdit),
+  moveNodeBefore: beforeHook(moveNodeBefore),
+  moveNodeAfter: beforeHook(moveNodeAfter),
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
@@ -395,7 +401,7 @@ MindElixir.prototype = {
     this.nodeMenu && nodeMenu(this)
     this.keypress && keypress(this)
 
-    if (isMobile && this.mobileMenu) {
+    if (isMobile() && this.mobileMenu) {
       mobileMenu(this)
     } else {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
@@ -419,20 +425,14 @@ MindElixir.SIDE = SIDE
  */
 MindElixir.version = '0.17.0'
 MindElixir.E = findEle
-/**
- * @memberof MindElixir
- * @static
- * @description Example data help you try Mind-elxir more quickly.
- */
-MindElixir.example = example
-MindElixir.example2 = example2
+
 /**
  * @function new
  * @memberof MindElixir
  * @static
  * @param {String} topic root topic
  */
-MindElixir.new = topic => ({
+MindElixir.new = (topic: string): MindElixirData => ({
   nodeData: {
     id: generateUUID(),
     topic: topic || 'new topic',
@@ -441,14 +441,5 @@ MindElixir.new = topic => ({
   },
   linkData: {},
 })
-MindElixir.newNode = ({ topic }) => {
-  let id = generateUUID()
-  return {
-    id,
-    topic,
-    // selected: true,
-    // new: true,
-  }
-}
 
 export default MindElixir

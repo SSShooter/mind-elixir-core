@@ -1,6 +1,7 @@
 let $d = document
-export let createMainPath = function (d) {
-  let path = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
+const svgNS = 'http://www.w3.org/2000/svg'
+export let createMainPath = function (d: string) {
+  let path = $d.createElementNS(svgNS, 'path')
   path.setAttribute('d', d)
   path.setAttribute('stroke', '#666')
   path.setAttribute('fill', 'none')
@@ -8,14 +9,14 @@ export let createMainPath = function (d) {
   return path
 }
 
-export let createLinkSvg = function (klass) {
-  let svg = $d.createElementNS('http://www.w3.org/2000/svg', 'svg')
+export let createLinkSvg = function (klass: string) {
+  let svg = $d.createElementNS(svgNS, 'svg')
   svg.setAttribute('class', klass)
   return svg
 }
 
-export let createLine = function (x1, y1, x2, y2) {
-  let line = $d.createElementNS('http://www.w3.org/2000/svg', 'line')
+export let createLine = function (x1: number, y1: number, x2: number, y2: number) {
+  let line = $d.createElementNS(svgNS, 'line')
   line.setAttribute('x1', x1)
   line.setAttribute('y1', y1)
   line.setAttribute('x2', x2)
@@ -26,8 +27,8 @@ export let createLine = function (x1, y1, x2, y2) {
   return line
 }
 
-export let createPath = function (d) {
-  let path = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
+export let createPath = function (d: string) {
+  let path = $d.createElementNS(svgNS, 'path')
   path.setAttribute('d', d)
   path.setAttribute('stroke', '#555')
   path.setAttribute('fill', 'none')
@@ -38,10 +39,10 @@ export let createPath = function (d) {
   return path
 }
 
-export let createSvgGroup = function (d, arrowd) {
-  let g = $d.createElementNS('http://www.w3.org/2000/svg', 'g')
-  let path = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
-  let arrow = $d.createElementNS('http://www.w3.org/2000/svg', 'path')
+export let createSvgGroup = function (d: string, arrowd: string) {
+  let g = $d.createElementNS(svgNS, 'g')
+  let path = $d.createElementNS(svgNS, 'path')
+  let arrow = $d.createElementNS(svgNS, 'path')
   arrow.setAttribute('d', arrowd)
   arrow.setAttribute('stroke', 'rgb(235, 95, 82)')
   arrow.setAttribute('fill', 'none')

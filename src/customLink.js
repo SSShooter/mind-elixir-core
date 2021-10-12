@@ -1,5 +1,5 @@
 import {
-  nodeDragMoveHelper,
+  linkDragMoveHelper,
   generateUUID,
   getArrowPoints,
   calcP1,
@@ -211,8 +211,8 @@ export let showLinkController = function (
     this.helper2.destory(this.map)
   }
 
-  this.helper1 = new nodeDragMoveHelper(this.P2)
-  this.helper2 = new nodeDragMoveHelper(this.P3)
+  this.helper1 = new linkDragMoveHelper(this.P2)
+  this.helper2 = new linkDragMoveHelper(this.P3)
 
   this.helper1.init(this.map, (deltaX, deltaY) => {
     /**

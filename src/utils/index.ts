@@ -1,11 +1,12 @@
 import vari from '../var'
+import { NodeObj } from '../index'
 
-export let isMobile = ():boolean =>
+export let isMobile = (): boolean =>
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
     navigator.userAgent
   )
 
-export let getObjById = function (id: string, data) {
+export let getObjById = function (id: string, data: NodeObj) {
   data = data || this.nodeData
   if (data.id === id) {
     return data
@@ -19,7 +20,7 @@ export let getObjById = function (id: string, data) {
   }
 }
 
-export let addParentLink = (data, parent?) => {
+export let addParentLink = (data: NodeObj, parent?: NodeObj) => {
   data.parent = parent
   if (data.children) {
     for (let i = 0; i < data.children.length; i++) {
@@ -28,7 +29,7 @@ export let addParentLink = (data, parent?) => {
   }
 }
 
-export let throttle = (fn, wait) => {
+export let throttle = (fn: (any) => void, wait: number) => {
   var pre = Date.now()
   return function () {
     var context = this
@@ -122,19 +123,17 @@ export function calcP4(toData, p3x, p3y) {
   }
 }
 
-export function generateUUID():string {
+export function generateUUID(): string {
   return (
     new Date().getTime().toString(16) + Math.random().toString(16).substr(2)
   ).substr(2, 16)
 }
 
-export function generateNewObj() {
+export function generateNewObj(): NodeObj {
   let id = generateUUID()
   return {
     topic: vari.newTopicName || 'new node',
     id,
-    // selected: true,
-    // new: true,
   }
 }
 
@@ -150,7 +149,7 @@ export function generateNewLink(from, to) {
   }
 }
 
-export function checkMoveValid(from, to) {
+export function checkMoveValid(from: NodeObj, to: NodeObj) {
   let valid = true
   while (to.parent) {
     if (to.parent === from) {
@@ -162,7 +161,7 @@ export function checkMoveValid(from, to) {
   return valid
 }
 
-export function getObjSibling(obj) {
+export function getObjSibling(obj: NodeObj): NodeObj {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   if (index + 1 >= childrenList.length) {
@@ -173,7 +172,7 @@ export function getObjSibling(obj) {
   }
 }
 
-export function moveUpObj(obj) {
+export function moveUpObj(obj: NodeObj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   let t = childrenList[index]
@@ -187,7 +186,7 @@ export function moveUpObj(obj) {
   t = null
 }
 
-export function moveDownObj(obj) {
+export function moveDownObj(obj: NodeObj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   let t = childrenList[index]
@@ -201,32 +200,32 @@ export function moveDownObj(obj) {
   t = null
 }
 
-export function removeNodeObj(obj) {
+export function removeNodeObj(obj: NodeObj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   childrenList.splice(index, 1)
   return childrenList.length
 }
 
-export function insertNodeObj(obj, newObj) {
+export function insertNodeObj(obj: NodeObj, newObj: NodeObj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   childrenList.splice(index + 1, 0, newObj)
 }
 
-export function insertBeforeNodeObj(obj, newObj) {
+export function insertBeforeNodeObj(obj: NodeObj, newObj: NodeObj) {
   let childrenList = obj.parent.children
   let index = childrenList.indexOf(obj)
   childrenList.splice(index, 0, newObj)
 }
 
-export function moveNodeObj(from, to) {
+export function moveNodeObj(from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
   if (to.children) to.children.push(from)
   else to.children = [from]
 }
 
-export function moveNodeBeforeObj(from, to) {
+export function moveNodeBeforeObj(from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
   let childrenList = to.parent.children
   let toIndex = 0
@@ -239,7 +238,7 @@ export function moveNodeBeforeObj(from, to) {
   childrenList.splice(toIndex, 0, from)
 }
 
-export function moveNodeAfterObj(from, to) {
+export function moveNodeAfterObj(from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
   let childrenList = to.parent.children
   let toIndex = 0
@@ -283,13 +282,13 @@ export let dragMoveHelper = {
   },
 }
 
-export function nodeDragMoveHelper(dom) {
+export function linkDragMoveHelper(dom) {
   this.dom = dom
   this.mousedown = false
   this.lastX = null
   this.lastY = null
 }
-nodeDragMoveHelper.prototype.init = function (map, cb) {
+linkDragMoveHelper.prototype.init = function (map, cb) {
   this.handleMouseMove = e => {
     e.stopPropagation()
     if (this.mousedown) {
@@ -319,14 +318,14 @@ nodeDragMoveHelper.prototype.init = function (map, cb) {
   this.dom.addEventListener('mousedown', this.handleMouseDown)
 }
 
-nodeDragMoveHelper.prototype.destory = function (map) {
+linkDragMoveHelper.prototype.destory = function (map) {
   map.removeEventListener('mousemove', this.handleMouseMove)
   map.removeEventListener('mouseleave', this.handleClear)
   map.removeEventListener('mouseup', this.handleClear)
   this.dom.removeEventListener('mousedown', this.handleMouseDown)
 }
 
-nodeDragMoveHelper.prototype.clear = function () {
+linkDragMoveHelper.prototype.clear = function () {
   this.mousedown = false
   this.lastX = null
   this.lastY = null

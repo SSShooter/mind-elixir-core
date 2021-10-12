@@ -1,7 +1,7 @@
-import MindElixir, { E } from './index'
-import { exportSvg, exportPng } from '../painter/index'
-import example from './exampleData/1'
-import example2 from './exampleData/2'
+import MindElixir, { E } from '../dist/MindElixir'
+import { exportSvg, exportPng } from '../dist/painter'
+import example from '../dist/example1'
+import example2 from '../dist/example2'
 
 let mind = new MindElixir({
   el: '#map',

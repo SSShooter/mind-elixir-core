@@ -2,6 +2,10 @@ import { LEFT, RIGHT, SIDE } from '../const'
 import vari from '../var'
 import { NodeObj } from '../index'
 
+export type Top = HTMLElement
+
+export type Group = HTMLElement
+
 export interface Topic extends HTMLElement {
   nodeObj?: NodeObj
 }
@@ -18,8 +22,8 @@ export let findEle = (id: string, instance?) => {
 }
 
 export let createGroup = function (nodeObj: NodeObj) {
-  let grp = $d.createElement('GRP')
-  let top = createTop(nodeObj)
+  let grp: Group = $d.createElement('GRP')
+  let top: Top = createTop(nodeObj)
   grp.appendChild(top)
   if (nodeObj.children && nodeObj.children.length > 0) {
     top.appendChild(createExpander(nodeObj.expanded))
@@ -35,8 +39,8 @@ export let shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = nodeObj.topic
 
   if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color
-    tpc.style.background = nodeObj.style.background
+    tpc.style.color = nodeObj.style.color || 'inherit'
+    tpc.style.background = nodeObj.style.background || 'inherit'
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
@@ -74,7 +78,7 @@ export let shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
-export let createTop = function (nodeObj: NodeObj) {
+export let createTop = function (nodeObj: NodeObj): Top {
   let top = $d.createElement('t')
   let tpc = createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
@@ -91,18 +95,21 @@ export let createTopic = function (nodeObj: NodeObj): Topic {
   return topic
 }
 
-export function selectText(div) {
+export function selectText(div: HTMLElement) {
   let range = $d.createRange()
   range.selectNodeContents(div)
-  window.getSelection().removeAllRanges()
-  window.getSelection().addRange(range)
+  const getSelection= window.getSelection()
+  if(getSelection){
+    getSelection.removeAllRanges()
+    getSelection.addRange(range)
+  }
 }
 
 export function createInputDiv(tpc: Topic) {
   console.time('createInputDiv')
   if (!tpc) return
   let div = $d.createElement('div')
-  let origin = tpc.childNodes[0].textContent
+  let origin = tpc.childNodes[0].textContent as string
   tpc.appendChild(div)
   div.innerHTML = origin
   div.contentEditable = 'true'
@@ -135,7 +142,7 @@ export function createInputDiv(tpc: Topic) {
   div.addEventListener('blur', () => {
     if (!div) return // 防止重复blur
     let node = tpc.nodeObj
-    let topic = div.textContent.trim()
+    let topic = div.textContent!.trim()
     if (topic === '') node.topic = origin
     else node.topic = topic
     div.remove()
@@ -153,7 +160,7 @@ export function createInputDiv(tpc: Topic) {
 }
 
 
-export let createExpander = function (expanded:boolean):Expander {
+export let createExpander = function (expanded: boolean | undefined): Expander {
   let expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
   expander.innerHTML = expanded !== false ? '-' : '+'
@@ -170,8 +177,8 @@ export let createExpander = function (expanded:boolean):Expander {
  * @param {number} direction primary node direction
  * @return {ChildrenElement} children element.
  */
-export function createChildren(data: NodeObj[], container?, direction?) {
-  let chldr
+export function createChildren(data: NodeObj[], container?: HTMLElement, direction?) {
+  let chldr: HTMLElement
   if (container) {
     chldr = container
   } else {
@@ -217,7 +224,7 @@ export function layout() {
   tpc.draggable = false
   this.root.appendChild(tpc)
 
-  let primaryNodes = this.nodeData.children
+  let primaryNodes: NodeObj[] = this.nodeData.children
   if (!primaryNodes || primaryNodes.length === 0) return
   if (this.direction === SIDE) {
     // initiate direction of primary nodes
