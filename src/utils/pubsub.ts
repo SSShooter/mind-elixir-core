@@ -24,7 +24,7 @@ Bus.prototype = {
       handlers.length = 0
     } else if (handlers.length) {
       for (var i = 0; i < handlers.length; i++) {
-        if (handlers[i] == handler) {
+        if (handlers[i] === handler) {
           this.handlers[type].splice(i, 1)
         }
       }

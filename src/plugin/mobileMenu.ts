@@ -1,6 +1,6 @@
-export default function (mind, option) {
-  let createLi = (id, name) => {
-    let div = document.createElement('div')
+export default function(mind, option?) {
+  const createLi = (id, name) => {
+    const div = document.createElement('div')
     div.id = id
     div.innerHTML = `<svg class="icon" aria-hidden="true">
     <use xlink:href="#icon-${name}"></use>
@@ -8,32 +8,32 @@ export default function (mind, option) {
     return div
   }
 
-  let add_child = createLi('cm-add_child', 'zijiedian')
-  let add_sibling = createLi('cm-add_sibling', 'tongjijiedian-')
-  let remove_child = createLi('cm-remove_child', 'shanchu2')
+  const add_child = createLi('cm-add_child', 'zijiedian')
+  const add_sibling = createLi('cm-add_sibling', 'tongjijiedian-')
+  const remove_child = createLi('cm-remove_child', 'shanchu2')
   // let focus = createLi('cm-fucus', i18n[locale].focus, '')
   // let unfocus = createLi('cm-unfucus', i18n[locale].cancelFocus, '')
-  let up = createLi('cm-up', 'rising')
-  let down = createLi('cm-down', 'falling')
-  let edit = createLi('cm-edit', 'edit')
+  const up = createLi('cm-up', 'rising')
+  const down = createLi('cm-down', 'falling')
+  const edit = createLi('cm-edit', 'edit')
   // let link = createLi('cm-down', i18n[locale].link, '')
 
-  let menuUl = document.createElement('ul')
+  const menuUl = document.createElement('ul')
   menuUl.className = 'menu-list'
   // if (!option || option.link) {
   //   menuUl.appendChild(link)
   // }
   if (option && option.extend) {
     for (let i = 0; i < option.extend.length; i++) {
-      let item = option.extend[i]
-      let dom = createLi(item.name, item.name)
+      const item = option.extend[i]
+      const dom = createLi(item.name, item.name)
       menuUl.appendChild(dom)
       dom.onclick = e => {
         item.onclick(e)
       }
     }
   }
-  let menuContainer = document.createElement('mmenu')
+  const menuContainer = document.createElement('mmenu')
   menuContainer.appendChild(add_child)
   menuContainer.appendChild(add_sibling)
   menuContainer.appendChild(remove_child)
@@ -82,10 +82,10 @@ export default function (mind, option) {
   //   }
   // }
 
-  mind.bus.addListener('unselectNode', function () {
+  mind.bus.addListener('unselectNode', function() {
     menuContainer.hidden = true
   })
-  mind.bus.addListener('selectNode', function (nodeObj) {
+  mind.bus.addListener('selectNode', function(nodeObj) {
     menuContainer.hidden = false
     if (nodeObj.root) {
       isRoot = true

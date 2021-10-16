@@ -5,7 +5,7 @@ const pti = require('puppeteer-to-istanbul')
 let browser = null
 let page = null
 // https://github.com/istanbuljs/puppeteer-to-istanbul
-beforeAll(async () => {
+beforeAll(async() => {
   browser = await puppeteer.launch({
     // headless: false,
     // devtools: true
@@ -21,16 +21,16 @@ beforeAll(async () => {
 })
 
 describe('interact', () => {
-  it('selectNode"', async () => {
+  it('selectNode"', async() => {
     await page.evaluate(`m.selectNode(E('bd1f07c598e729dc'))`)
-    let selected = await page.evaluate(() => {
+    const selected = await page.evaluate(() => {
       return E('bd1f07c598e729dc').classList.contains('selected')
     })
     expect(selected).toBeTruthy()
   })
 })
 
-afterAll(async () => {
+afterAll(async() => {
   // const [jsCoverage, cssCoverage] = await Promise.all([
   //   page.coverage.stopJSCoverage(),
   //   page.coverage.stopCSSCoverage(),

@@ -1,5 +1,5 @@
 import { dragMoveHelper } from './utils/index'
-export default function (mind) {
+export default function(mind) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return
     // e.preventDefault() // can cause a tag don't work

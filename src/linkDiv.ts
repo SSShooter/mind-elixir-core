@@ -11,7 +11,7 @@ import {
 /**
  * Link nodes with svg,
  * only link specific node if `primaryNode` is present
- * 
+ *
  * process:
  * 1. calculate position of primary nodes
  * 2. layout primary node, generate primary link
@@ -23,10 +23,10 @@ export default function linkDiv(primaryNode) {
   var primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
   var primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
-  let root = this.root
+  const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2
-    }px;`
-  let primaryNodeList = this.box.children
+  }px;`
+  const primaryNodeList = this.box.children
   this.svg2nd.innerHTML = ''
 
   // 1. calculate position of primary nodes
@@ -45,7 +45,7 @@ export default function linkDiv(primaryNode) {
     let totalHeightLWithoutGap = 0
     let totalHeightRWithoutGap = 0
     for (let i = 0; i < primaryNodeList.length; i++) {
-      let el = primaryNodeList[i]
+      const el = primaryNodeList[i]
       if (el.className === 'lhs') {
         totalHeightL += el.offsetHeight + primaryNodeVerticalGap
         totalHeightLWithoutGap += el.offsetHeight
@@ -67,7 +67,7 @@ export default function linkDiv(primaryNode) {
     }
   } else {
     for (let i = 0; i < primaryNodeList.length; i++) {
-      let el = primaryNodeList[i]
+      const el = primaryNodeList[i]
       totalHeight += el.offsetHeight + primaryNodeVerticalGap
     }
     base = 10000 - totalHeight / 2
@@ -77,9 +77,9 @@ export default function linkDiv(primaryNode) {
   let primaryPath = ''
   for (let i = 0; i < primaryNodeList.length; i++) {
     let x2, y2
-    let el = primaryNodeList[i]
-    let elOffsetH = el.offsetHeight
-    let Cy
+    const el = primaryNodeList[i]
+    const elOffsetH = el.offsetHeight
+    // let Cy
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
       el.style.left =
@@ -96,19 +96,20 @@ export default function linkDiv(primaryNode) {
         if (this.direction === SIDE) {
           LEFT = 10000 - root.offsetWidth / 6
         }
-        if (y2 < 10000)
+        if (y2 < 10000) {
           primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 + 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
           L ${x2} ${y2}`
-        else
+        } else {
           primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 - 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
           L ${x2} ${y2}`
+        }
       } else {
         primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03
-          } ${y2} ${x2} ${y2}`
+        } ${y2} ${x2} ${y2}`
       }
 
       if (shortSide === 'l') {
@@ -128,19 +129,20 @@ export default function linkDiv(primaryNode) {
         if (this.direction === SIDE) {
           LEFT = 10000 + root.offsetWidth / 6
         }
-        if (y2 < 10000)
+        if (y2 < 10000) {
           primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 + 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
           L ${x2} ${y2}`
-        else
+        } else {
           primaryPath += `M ${LEFT} 10000
          L ${LEFT} ${y2 - 20} 
         C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
           L ${x2} ${y2}`
+        }
       } else {
         primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03
-          } ${y2} ${x2} ${y2}`
+        } ${y2} ${x2} ${y2}`
       }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
@@ -149,7 +151,7 @@ export default function linkDiv(primaryNode) {
       }
     }
     // set position of expander
-    let expander = el.children[0].children[1]
+    const expander = el.children[0].children[1]
     if (expander) {
       expander.style.top =
         (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
@@ -164,17 +166,17 @@ export default function linkDiv(primaryNode) {
 
   // 3. generate link inside primary node
   for (let i = 0; i < primaryNodeList.length; i++) {
-    let el = primaryNodeList[i]
+    const el = primaryNodeList[i]
     if (primaryNode && primaryNode !== primaryNodeList[i]) {
       continue
     }
     if (el.childElementCount) {
-      let svg = createLinkSvg('svg3rd')
+      const svg = createLinkSvg('svg3rd')
       // svg tag name is lower case
       if (el.lastChild.tagName === 'svg') el.lastChild.remove()
       el.appendChild(svg)
-      let parent = el.children[0]
-      let children = el.children[1].children
+      const parent = el.children[0]
+      const children = el.children[1].children
       path = ''
       loopChildren(children, parent, true)
       svg.appendChild(createPath(path))
@@ -183,41 +185,42 @@ export default function linkDiv(primaryNode) {
 
   // 4. generate custom link
   this.linkSvgGroup.innerHTML = ''
-  for (let prop in this.linkData) {
-    let link = this.linkData[prop]
-    if (typeof link.from === 'string')
+  for (const prop in this.linkData) {
+    const link = this.linkData[prop]
+    if (typeof link.from === 'string') {
       this.createLink(findEle(link.from), findEle(link.to), true, link)
-    else
+    } else {
       this.createLink(
         findEle(link.from.nodeObj.id),
         findEle(link.to.nodeObj.id),
         true,
         link
       )
+    }
   }
   console.timeEnd('linkDiv')
 }
 
 let path = ''
 function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean) {
-  let parentOT = parent.offsetTop
-  let parentOL = parent.offsetLeft
-  let parentOW = parent.offsetWidth
-  let parentOH = parent.offsetHeight
+  const parentOT = parent.offsetTop
+  const parentOL = parent.offsetLeft
+  const parentOW = parent.offsetWidth
+  const parentOH = parent.offsetHeight
   for (let i = 0; i < children.length; i++) {
-    let child: HTMLElement = children[i] as HTMLElement
-    let childT: HTMLElement = child.children[0] as HTMLElement // t tag inside the child dom
-    let childTOT = childT.offsetTop
-    let childTOH = childT.offsetHeight
+    const child: HTMLElement = children[i] as HTMLElement
+    const childT: HTMLElement = child.children[0] as HTMLElement // t tag inside the child dom
+    const childTOT = childT.offsetTop
+    const childTOH = childT.offsetHeight
     let y1: number
     if (first) {
       y1 = parentOT + parentOH / 2
     } else {
       y1 = parentOT + parentOH
     }
-    let y2 = childTOT + childTOH
+    const y2 = childTOT + childTOH
     let x1: number, x2: number, xMiddle: number
-    let direction = child.offsetParent.className
+    const direction = child.offsetParent.className
     if (direction === 'lhs') {
       x1 = parentOL + GAP
       xMiddle = parentOL
@@ -260,20 +263,18 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
         path += `M ${x1} ${y1} 
       L ${xMiddle} ${y1} 
       L ${xMiddle} ${y2 - TURNPOINT_R} 
-      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle + TURNPOINT_R
-          },${y2} 
+      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle + TURNPOINT_R},${y2} 
       L ${x2} ${y2}`
       } else {
         path += `M ${x1} ${y1} 
       L ${xMiddle} ${y1} 
       L ${xMiddle} ${y2 + TURNPOINT_R} 
-      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle + TURNPOINT_R
-          },${y2} 
+      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle + TURNPOINT_R},${y2} 
       L ${x2} ${y2}`
       }
     }
 
-    let expander = childT.children[1] as Expander
+    const expander = childT.children[1] as Expander
     if (expander) {
       expander.style.top =
         (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
@@ -289,7 +290,7 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
       continue
     }
     // traversal
-    let nextChildren = child.children[1].children
+    const nextChildren = child.children[1].children
     if (nextChildren.length > 0) loopChildren(nextChildren, childT)
   }
 }

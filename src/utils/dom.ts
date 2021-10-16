@@ -15,27 +15,27 @@ export interface Expander extends HTMLElement {
 }
 
 // DOM manipulation
-let $d = document
-export let findEle = (id: string, instance?) => {
-  let scope = instance ? instance.mindElixirBox : $d
+const $d = document
+export const findEle = (id: string, instance?) => {
+  const scope = instance ? instance.mindElixirBox : $d
   return scope.querySelector(`[data-nodeid=me${id}]`)
 }
 
-export let createGroup = function (nodeObj: NodeObj) {
-  let grp: Group = $d.createElement('GRP')
-  let top: Top = createTop(nodeObj)
+export const createGroup = function(nodeObj: NodeObj) {
+  const grp: Group = $d.createElement('GRP')
+  const top: Top = createTop(nodeObj)
   grp.appendChild(top)
   if (nodeObj.children && nodeObj.children.length > 0) {
     top.appendChild(createExpander(nodeObj.expanded))
     if (nodeObj.expanded !== false) {
-      let children = createChildren(nodeObj.children)
+      const children = createChildren(nodeObj.children)
       grp.appendChild(children)
     }
   }
   return { grp, top }
 }
 
-export let shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
+export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = nodeObj.topic
 
   if (nodeObj.style) {
@@ -78,17 +78,16 @@ export let shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
-export let createTop = function (nodeObj: NodeObj): Top {
-  let top = $d.createElement('t')
-  let tpc = createTopic(nodeObj)
+export const createTop = function(nodeObj: NodeObj): Top {
+  const top = $d.createElement('t')
+  const tpc = createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
   top.appendChild(tpc)
   return top
 }
 
-
-export let createTopic = function (nodeObj: NodeObj): Topic {
-  let topic: Topic = $d.createElement('tpc')
+export const createTopic = function(nodeObj: NodeObj): Topic {
+  const topic: Topic = $d.createElement('tpc')
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   topic.draggable = vari.draggable
@@ -96,10 +95,10 @@ export let createTopic = function (nodeObj: NodeObj): Topic {
 }
 
 export function selectText(div: HTMLElement) {
-  let range = $d.createRange()
+  const range = $d.createRange()
   range.selectNodeContents(div)
-  const getSelection= window.getSelection()
-  if(getSelection){
+  const getSelection = window.getSelection()
+  if (getSelection) {
     getSelection.removeAllRanges()
     getSelection.addRange(range)
   }
@@ -109,7 +108,7 @@ export function createInputDiv(tpc: Topic) {
   console.time('createInputDiv')
   if (!tpc) return
   let div = $d.createElement('div')
-  let origin = tpc.childNodes[0].textContent as string
+  const origin = tpc.childNodes[0].textContent as string
   tpc.appendChild(div)
   div.innerHTML = origin
   div.contentEditable = 'true'
@@ -128,7 +127,7 @@ export function createInputDiv(tpc: Topic) {
 
   div.addEventListener('keydown', e => {
     e.stopPropagation()
-    let key = e.key
+    const key = e.key
     console.log(e, key)
     if (key === 'Enter' || key === 'Tab') {
       // keep wrap for shift enter
@@ -141,8 +140,8 @@ export function createInputDiv(tpc: Topic) {
   })
   div.addEventListener('blur', () => {
     if (!div) return // 防止重复blur
-    let node = tpc.nodeObj
-    let topic = div.textContent!.trim()
+    const node = tpc.nodeObj
+    const topic = div.textContent!.trim()
     if (topic === '') node.topic = origin
     else node.topic = topic
     div.remove()
@@ -159,12 +158,11 @@ export function createInputDiv(tpc: Topic) {
   console.timeEnd('createInputDiv')
 }
 
-
-export let createExpander = function (expanded: boolean | undefined): Expander {
-  let expander: Expander = $d.createElement('epd')
+export const createExpander = function(expanded: boolean | undefined): Expander {
+  const expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
   expander.innerHTML = expanded !== false ? '-' : '+'
-  expander.expanded = expanded !== false ? true : false
+  expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''
   return expander
 }
@@ -185,8 +183,8 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
     chldr = $d.createElement('children')
   }
   for (let i = 0; i < data.length; i++) {
-    let nodeObj = data[i]
-    let grp = $d.createElement('GRP')
+    const nodeObj = data[i]
+    const grp = $d.createElement('GRP')
     if (direction === LEFT) {
       grp.className = 'lhs'
     } else if (direction === RIGHT) {
@@ -198,12 +196,12 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
         grp.className = 'rhs'
       }
     }
-    let top = createTop(nodeObj)
+    const top = createTop(nodeObj)
     if (nodeObj.children && nodeObj.children.length > 0) {
       top.appendChild(createExpander(nodeObj.expanded))
       grp.appendChild(top)
       if (nodeObj.expanded !== false) {
-        let children = createChildren(nodeObj.children)
+        const children = createChildren(nodeObj.children)
         grp.appendChild(children)
       }
     } else {
@@ -219,12 +217,12 @@ export function layout() {
   console.time('layout')
   this.root.innerHTML = ''
   this.box.innerHTML = ''
-  let tpc = createTopic(this.nodeData)
+  const tpc = createTopic(this.nodeData)
   shapeTpc(tpc, this.nodeData) // shape root tpc
   tpc.draggable = false
   this.root.appendChild(tpc)
 
-  let primaryNodes: NodeObj[] = this.nodeData.children
+  const primaryNodes: NodeObj[] = this.nodeData.children
   if (!primaryNodes || primaryNodes.length === 0) return
   if (this.direction === SIDE) {
     // initiate direction of primary nodes

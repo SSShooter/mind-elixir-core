@@ -2,13 +2,13 @@ const path = require('path')
 const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+//   .BundleAnalyzerPlugin
 
 let config = {
   resolve: {
     // Add `.ts` and `.tsx` as a resolvable extension.
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: ['.ts', '.tsx', '.js'],
   },
   module: {
     rules: [
@@ -17,7 +17,7 @@ let config = {
         exclude: /(node_modules|bower_components)/,
         use: {
           loader: 'ts-loader',
-        }
+        },
       },
       {
         test: /\.less$/,
@@ -47,7 +47,7 @@ module.exports = (env, argv) => {
     console.log('development')
     config = {
       ...config,
-      entry: './src/dev.js',
+      entry: './src/dev.ts',
       plugins: [
         new HtmlWebpackPlugin({
           title: 'MindElixir',
@@ -62,6 +62,7 @@ module.exports = (env, argv) => {
       ...config,
       entry: {
         MindElixir: './src/index.ts',
+        MindElixirLite: './src/index.lite.ts',
         painter: './painter/index.js',
         example1: './src/exampleData/1.js',
         example2: './src/exampleData/2.js',
@@ -71,8 +72,7 @@ module.exports = (env, argv) => {
         filename: '[name].js',
         library: '[name]',
         libraryTarget: 'umd',
-        libraryExport: 'default'
-        // libraryTarget: 'window'
+        libraryExport: 'default',
       },
       // plugins: [
       //   new BundleAnalyzerPlugin()
@@ -82,7 +82,7 @@ module.exports = (env, argv) => {
           uglifyOptions: {
             compress: {
               drop_console: true,
-            }
+            },
           },
         })],
       },
@@ -99,10 +99,9 @@ module.exports = (env, argv) => {
         library: 'MindElixir',
         libraryTarget: 'umd',
       },
-      plugins: [new webpack.optimize.ModuleConcatenationPlugin()],// scope hoist
+      plugins: [new webpack.optimize.ModuleConcatenationPlugin()], // scope hoist
     }
   }
-
 
   return config
 }

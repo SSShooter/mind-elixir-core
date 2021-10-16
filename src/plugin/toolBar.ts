@@ -1,5 +1,5 @@
-let createButton = (id, name) => {
-  let button = document.createElement('span')
+const createButton = (id, name) => {
+  const button = document.createElement('span')
   button.id = id
   button.innerHTML = `<svg class="icon" aria-hidden="true">
     <use xlink:href="#icon-${name}"></use>
@@ -8,12 +8,12 @@ let createButton = (id, name) => {
 }
 
 function createToolBarRBContainer(mind) {
-  let toolBarRBContainer = document.createElement('toolbar')
-  let fc = createButton('fullscreen', 'full')
-  let gc = createButton('toCenter', 'living')
-  let zo = createButton('zoomout', 'move')
-  let zi = createButton('zoomin', 'add')
-  let percentage = document.createElement('span')
+  const toolBarRBContainer = document.createElement('toolbar')
+  const fc = createButton('fullscreen', 'full')
+  const gc = createButton('toCenter', 'living')
+  const zo = createButton('zoomout', 'move')
+  const zi = createButton('zoomin', 'add')
+  const percentage = document.createElement('span')
   percentage.innerHTML = '100%'
   toolBarRBContainer.appendChild(fc)
   toolBarRBContainer.appendChild(gc)
@@ -38,11 +38,11 @@ function createToolBarRBContainer(mind) {
   return toolBarRBContainer
 }
 function createToolBarLTContainer(mind) {
-  let toolBarLTContainer = document.createElement('toolbar')
-  let l = createButton('tbltl', 'left')
-  let r = createButton('tbltr', 'right')
-  let s = createButton('tblts', 'side')
-  
+  const toolBarLTContainer = document.createElement('toolbar')
+  const l = createButton('tbltl', 'left')
+  const r = createButton('tbltr', 'right')
+  const s = createButton('tblts', 'side')
+
   toolBarLTContainer.appendChild(l)
   toolBarLTContainer.appendChild(r)
   toolBarLTContainer.appendChild(s)
@@ -59,7 +59,7 @@ function createToolBarLTContainer(mind) {
   return toolBarLTContainer
 }
 
-export default function (mind) {
+export default function(mind) {
   mind.container.append(createToolBarRBContainer(mind))
   mind.container.append(createToolBarLTContainer(mind))
 }

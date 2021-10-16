@@ -4,9 +4,8 @@ import {
   isMobile,
   addParentLink,
   getObjById,
-  generateUUID,
 } from './utils/index'
-import { findEle, createInputDiv, layout, Topic } from './utils/dom'
+import { findEle, layout, Topic } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -26,41 +25,20 @@ import {
   initRight,
   initSide,
   setLocale,
-  enableEdit,
-  disableEdit,
   expandNode,
-  refresh,
 } from './interact'
 import {
-  insertSibling,
-  insertBefore,
-  addChild,
-  moveNode,
-  removeNode,
-  moveUpNode,
-  moveDownNode,
-  beginEdit,
-  updateNodeStyle,
-  updateNodeTags,
-  updateNodeIcons,
   processPrimaryNode,
   setNodeTopic,
-  moveNodeBefore,
-  moveNodeAfter,
 } from './nodeOperation'
 import {
   createLink,
-  removeLink,
-  selectLink,
-  hideLinkController,
-  showLinkController,
 } from './customLink'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
 
 import contextMenu from './plugin/contextMenu'
 import toolBar from './plugin/toolBar'
-import nodeMenu from './plugin/nodeMenu'
 import nodeDraggable from './plugin/nodeDraggable'
 import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
@@ -68,16 +46,12 @@ import mobileMenu from './plugin/mobileMenu'
 import Bus from './utils/pubsub'
 
 import './index.less'
-import './plugin/contextMenu.less'
 import './plugin/toolBar.less'
-import './plugin/nodeMenu.less'
 import './plugin/mobileMenu.less'
 
-// import { exportSvg, exportPng } from '../painter'
-
 import './iconfont/iconfont.js'
-
 // TODO show up animation
+
 export const E = findEle
 type LinkObj = object
 type operation = {
@@ -138,6 +112,7 @@ export interface MindElixirInstance {
   primaryNodeHorizontalGap: number,
   primaryNodeVerticalGap: number,
   mobileMenu: boolean,
+
 }
 export interface Options {
   el: string,
@@ -202,14 +177,10 @@ function MindElixir(this: MindElixirInstance, {
   const box = document.querySelector(el) as HTMLElement
   if (!box) return
   this.mindElixirBox = box
-  this.before = before || {}
   this.nodeData = data.nodeData
   this.linkData = data.linkData || {}
   this.locale = locale
-  this.contextMenuOption = contextMenuOption
-  this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
-  this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
   this.keypress = keypress === undefined ? true : keypress
   this.mobileMenu = mobileMenu
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
@@ -217,8 +188,7 @@ function MindElixir(this: MindElixirInstance, {
   this.direction = typeof direction === 'number' ? direction : 1
   vari.draggable = draggable === undefined ? true : draggable
   vari.newTopicName = newTopicName
-  this.editable = editable === undefined ? true : editable
-  this.allowUndo = allowUndo === undefined ? true : allowUndo
+  this.editable = false
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
   this.currentLink = null // the selected link svg element
@@ -236,81 +206,26 @@ function MindElixir(this: MindElixirInstance, {
       this.isUndo = false
       return
     }
-    if (['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(
-      operation.name
-    )) {
+    if (
+      ['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(
+        operation.name
+      )
+    ) {
       this.history.push(operation)
       // console.log(operation, this.history)
     }
   })
-
-  this.history = [] // TODO
-  this.isUndo = false
-  this.undo = function() {
-    const operation = this.history.pop()
-    if (!operation) return
-    this.isUndo = true
-    if (operation.name === 'moveNode') {
-      this.moveNode(
-        E(operation.obj.fromObj.id),
-        E(operation.obj.originParentId)
-      )
-    } else if (operation.name === 'removeNode') {
-      if (operation.originSiblingId) {
-        this.insertBefore(E(operation.originSiblingId), operation.obj)
-      } else {
-        this.addChild(E(operation.originParentId), operation.obj)
-      }
-    } else if (operation.name === 'addChild') {
-      this.removeNode(E(operation.obj.id))
-    } else if (operation.name === 'finishEdit') {
-      this.setNodeTopic(E(operation.obj.id), operation.origin)
-    } else {
-      this.isUndo = false
-    }
-  }
-}
-
-function beforeHook(fn:(el:any, node?:any)=>void) {
-  return async function(...args:unknown[]) {
-    if (
-      !this.before[fn.name] ||
-      (await this.before[fn.name].apply(this, args))
-    ) {
-      fn.apply(this, args)
-    }
-  }
 }
 
 MindElixir.prototype = {
   addParentLink,
   getObjById,
   // node operation
-  insertSibling: beforeHook(insertSibling),
-  insertBefore: beforeHook(insertBefore),
-  addChild: beforeHook(addChild),
-  moveNode: beforeHook(moveNode),
-  removeNode: beforeHook(removeNode),
-  moveUpNode: beforeHook(moveUpNode),
-  moveDownNode: beforeHook(moveDownNode),
-  beginEdit: beforeHook(beginEdit),
-  moveNodeBefore: beforeHook(moveNodeBefore),
-  moveNodeAfter: beforeHook(moveNodeAfter),
-  updateNodeStyle,
-  updateNodeTags,
-  updateNodeIcons,
   processPrimaryNode,
   setNodeTopic,
-
   createLink,
-  removeLink,
-  selectLink,
-  hideLinkController,
-  showLinkController,
-
   layout,
   linkDiv,
-  createInputDiv,
 
   selectNode,
   unselectNode,
@@ -329,10 +244,7 @@ MindElixir.prototype = {
   initRight,
   initSide,
   setLocale,
-  enableEdit,
-  disableEdit,
   expandNode,
-  refresh,
 
   init: function() {
     /**
@@ -346,7 +258,6 @@ MindElixir.prototype = {
      */
     addParentLink(this.nodeData)
     console.log('ME_version ' + MindElixir.version)
-    console.log(this)
     this.mindElixirBox.className += ' mind-elixir'
     this.mindElixirBox.innerHTML = ''
 
@@ -390,7 +301,7 @@ MindElixir.prototype = {
 
     // plugin
     this.toolBar && toolBar(this)
-    this.nodeMenu && nodeMenu(this)
+
     this.keypress && keypress(this)
 
     if (isMobile() && this.mobileMenu) {
@@ -416,21 +327,5 @@ MindElixir.SIDE = SIDE
  */
 MindElixir.version = '0.17.0'
 MindElixir.E = findEle
-
-/**
- * @function new
- * @memberof MindElixir
- * @static
- * @param {String} topic root topic
- */
-MindElixir.new = (topic: string): MindElixirData => ({
-  nodeData: {
-    id: generateUUID(),
-    topic: topic || 'new topic',
-    root: true,
-    children: [],
-  },
-  linkData: {},
-})
 
 export default MindElixir

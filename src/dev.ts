@@ -1,9 +1,10 @@
 import MindElixir, { E } from './index'
+import MindElixirLite from './index.lite'
 import { exportSvg, exportPng } from '../painter/index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 
-let mind = new MindElixir({
+const mind = new MindElixir({
   el: '#map',
   newTopicName: '子节点',
   // direction: MindElixir.LEFT,
@@ -31,7 +32,7 @@ let mind = new MindElixir({
   keypress: true,
   allowUndo: false,
   before: {
-    moveDownNode(){
+    moveDownNode() {
       return false
     },
     insertSibling(el, obj) {
@@ -48,20 +49,20 @@ let mind = new MindElixir({
 })
 mind.init()
 function sleep() {
-  return new Promise((res, rej) => {
+  return new Promise<void>((res, rej) => {
     setTimeout(() => res(), 1000)
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
-// let mind2 = new MindElixir({
-//   el: '#map2',
-//   direction: 2,
-//   data: MindElixir.example2,
-//   draggable: false,
-//   // overflowHidden: true,
-//   nodeMenu: true,
-// })
-// mind2.init()
+const mind2 = new MindElixirLite({
+  el: '#map2',
+  direction: 2,
+  data: example2,
+  draggable: false,
+  // overflowHidden: true,
+  nodeMenu: true,
+})
+mind2.init()
 window.currentOperation = null
 mind.bus.addListener('operation', operation => {
   console.log(operation)

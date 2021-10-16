@@ -13,7 +13,7 @@ function getData(instance) {
  * @description Select a node and add solid border to it.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export let selectNode = function (targetElement, isNewNode) {
+export const selectNode = function(targetElement, isNewNode) {
   if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
@@ -29,22 +29,22 @@ export let selectNode = function (targetElement, isNewNode) {
   }
   console.timeEnd('selectNode')
 }
-export let unselectNode = function () {
+export const unselectNode = function() {
   if (this.currentNode) {
     this.currentNode.className = ''
   }
   this.currentNode = null
   this.bus.fire('unselectNode')
 }
-export let selectNextSibling = function () {
+export const selectNextSibling = function() {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
-  let sibling = this.currentNode.parentElement.parentElement.nextSibling
+  const sibling = this.currentNode.parentElement.parentElement.nextSibling
   let target: HTMLElement
-  let grp = this.currentNode.parentElement.parentElement
+  const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
-    let siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
-    let i = Array.from(siblingList).indexOf(grp)
+    const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
+    const i = Array.from(siblingList).indexOf(grp)
     if (i + 1 < siblingList.length) {
       target = siblingList[i + 1].firstChild.firstChild
     } else {
@@ -58,15 +58,15 @@ export let selectNextSibling = function () {
   this.selectNode(target)
   return true
 }
-export let selectPrevSibling = function () {
+export const selectPrevSibling = function() {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
-  let sibling = this.currentNode.parentElement.parentElement.previousSibling
+  const sibling = this.currentNode.parentElement.parentElement.previousSibling
   let target
-  let grp = this.currentNode.parentElement.parentElement
+  const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
-    let siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
-    let i = Array.from(siblingList).indexOf(grp)
+    const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
+    const i = Array.from(siblingList).indexOf(grp)
     if (i - 1 >= 0) {
       target = siblingList[i - 1].firstChild.firstChild
     } else {
@@ -80,21 +80,21 @@ export let selectPrevSibling = function () {
   this.selectNode(target)
   return true
 }
-export let selectFirstChild = function () {
+export const selectFirstChild = function() {
   if (!this.currentNode) return
-  let children = this.currentNode.parentElement.nextSibling
+  const children = this.currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
-    let target = children.firstChild.firstChild.firstChild
+    const target = children.firstChild.firstChild.firstChild
     this.selectNode(target)
   }
 }
-export let selectParent = function () {
+export const selectParent = function() {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
-  let parent = this.currentNode.parentElement.parentElement.parentElement
+  const parent = this.currentNode.parentElement.parentElement.parentElement
     .previousSibling
   if (parent) {
-    let target = parent.firstChild
+    const target = parent.firstChild
     this.selectNode(target)
   }
 }
@@ -106,8 +106,8 @@ export let selectParent = function () {
  * @memberof MapInteraction
  * @return {string}
  */
-export let getAllDataString = function () {
-  let data = {
+export const getAllDataString = function() {
+  const data = {
     nodeData: getData(this),
     linkData: this.linkData,
   }
@@ -126,8 +126,8 @@ export let getAllDataString = function () {
  * @memberof MapInteraction
  * @return {Object}
  */
-export let getAllData = function (): object {
-  let data = {
+export const getAllData = function(): object {
+  const data = {
     nodeData: getData(this),
     linkData: this.linkData,
   }
@@ -149,8 +149,8 @@ export let getAllData = function (): object {
  * @memberof MapInteraction
  * @return {String}
  */
-export let getAllDataMd = function ():string {
-  let data = getData(this)
+export const getAllDataMd = function():string {
+  const data = getData(this)
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children, deep) {
     for (let i = 0; i < children.length; i++) {
@@ -175,7 +175,7 @@ export let getAllDataMd = function ():string {
  * @name enableEdit
  * @memberof MapInteraction
  */
-export let enableEdit = function () {
+export const enableEdit = function() {
   this.editable = true
 }
 
@@ -185,7 +185,7 @@ export let enableEdit = function () {
  * @name disableEdit
  * @memberof MapInteraction
  */
-export let disableEdit = function () {
+export const disableEdit = function() {
   this.editable = false
 }
 
@@ -197,7 +197,7 @@ export let disableEdit = function () {
  * @memberof MapInteraction
  * @param {number}
  */
-export let scale = function (scaleVal) {
+export const scale = function(scaleVal) {
   this.scaleVal = scaleVal
   this.map.style.transform = 'scale(' + scaleVal + ')'
 }
@@ -208,13 +208,13 @@ export let scale = function (scaleVal) {
  * @description Reset position of the map to center.
  * @memberof MapInteraction
  */
-export let toCenter = function () {
+export const toCenter = function() {
   this.container.scrollTo(
     10000 - this.container.offsetWidth / 2,
     10000 - this.container.offsetHeight / 2
   )
 }
-export let install = function (plugin) {
+export const install = function(plugin) {
   plugin(this)
 }
 /**
@@ -225,7 +225,7 @@ export let install = function (plugin) {
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export let focusNode = function (tpcEl) {
+export const focusNode = function(tpcEl) {
   if (tpcEl.nodeObj.root) return
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
@@ -245,7 +245,7 @@ export let focusNode = function (tpcEl) {
  * @description Exit focus mode.
  * @memberof MapInteraction
  */
-export let cancelFocus = function () {
+export const cancelFocus = function() {
   this.isFocusMode = false
   if (this.tempDirection !== null) {
     delete this.nodeData.root
@@ -262,7 +262,7 @@ export let cancelFocus = function () {
  * @description Child nodes will distribute on the left side of the root node.
  * @memberof MapInteraction
  */
-export let initLeft = function () {
+export const initLeft = function() {
   this.direction = 0
   this.init()
 }
@@ -273,7 +273,7 @@ export let initLeft = function () {
  * @description Child nodes will distribute on the right side of the root node.
  * @memberof MapInteraction
  */
-export let initRight = function () {
+export const initRight = function() {
   this.direction = 1
   this.init()
 }
@@ -284,7 +284,7 @@ export let initRight = function () {
  * @description Child nodes will distribute on both left and right side of the root node.
  * @memberof MapInteraction
  */
-export let initSide = function () {
+export const initSide = function() {
   this.direction = 2
   this.init()
 }
@@ -295,13 +295,13 @@ export let initSide = function () {
  * @name setLocale
  * @memberof MapInteraction
  */
-export let setLocale = function (locale) {
+export const setLocale = function(locale) {
   this.locale = locale
   this.init()
 }
 
-export let expandNode = function (el, isExpand) {
-  let node = el.nodeObj
+export const expandNode = function(el, isExpand) {
+  const node = el.nodeObj
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand
   } else if (node.expanded !== false) {
@@ -322,7 +322,7 @@ export let expandNode = function (el, isExpand) {
  * @description Refresh mind map, you can use it after modified `this.nodeData`
  * @memberof MapInteraction
  */
-export let refresh = function () {
+export const refresh = function() {
   // create dom element for every nodes
   this.layout()
   // generate links between nodes

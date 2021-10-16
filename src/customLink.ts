@@ -1,24 +1,24 @@
 import {
-  linkDragMoveHelper,
+  LinkDragMoveHelper,
   generateUUID,
   getArrowPoints,
   calcP1,
   calcP4,
 } from './utils/index'
 import { createSvgGroup } from './utils/svg'
+
 // TODO Link label
-// custom link
-export let createLink = function (from, to, isInitPaint, obj) {
-  let map = this.map.getBoundingClientRect()
+export const createLink = function(from, to, isInitPaint, obj) {
+  const map = this.map.getBoundingClientRect()
   if (!from || !to) {
     return // not expand
   }
-  let pfrom = from.getBoundingClientRect()
-  let pto = to.getBoundingClientRect()
-  let fromCenterX = (pfrom.x + pfrom.width / 2 - map.x) / this.scaleVal
-  let fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
-  let toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
-  let toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
+  const pfrom = from.getBoundingClientRect()
+  const pto = to.getBoundingClientRect()
+  const fromCenterX = (pfrom.x + pfrom.width / 2 - map.x) / this.scaleVal
+  const fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
+  const toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
+  const toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
 
   let p2x, p2y, p3x, p3y
   if (isInitPaint) {
@@ -41,34 +41,34 @@ export let createLink = function (from, to, isInitPaint, obj) {
     }
   }
 
-  let fromData = {
+  const fromData = {
     cx: fromCenterX,
     cy: fromCenterY,
     w: pfrom.width,
     h: pfrom.height,
   }
-  let toData = {
+  const toData = {
     cx: toCenterX,
     cy: toCenterY,
     w: pto.width,
     h: pto.height,
   }
 
-  let p1 = calcP1(fromData, p2x, p2y)
-  let p1x = p1.x
-  let p1y = p1.y
+  const p1 = calcP1(fromData, p2x, p2y)
+  const p1x = p1.x
+  const p1y = p1.y
 
-  let p4 = calcP4(toData, p3x, p3y)
-  let p4x = p4.x
-  let p4y = p4.y
+  const p4 = calcP4(toData, p3x, p3y)
+  const p4x = p4.x
+  const p4y = p4.y
 
-  let arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
+  const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
 
   // TODO link lable
-  let halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
-  let halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
+  // const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
+  // const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
 
-  let newSvgGroup = createSvgGroup(
+  const newSvgGroup = createSvgGroup(
     `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`,
     `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
   )
@@ -115,11 +115,10 @@ export let createLink = function (from, to, isInitPaint, obj) {
     this.currentLink = newSvgGroup
   }
   this.linkSvgGroup.appendChild(newSvgGroup)
-  if (!isInitPaint)
-    this.showLinkController(p2x, p2y, p3x, p3y, newLinkObj, fromData, toData)
+  if (!isInitPaint) { this.showLinkController(p2x, p2y, p3x, p3y, newLinkObj, fromData, toData) }
 }
 
-export let removeLink = function (linkSvg) {
+export const removeLink = function(linkSvg) {
   let link
   if (linkSvg) {
     link = linkSvg
@@ -129,52 +128,52 @@ export let removeLink = function (linkSvg) {
   if (!link) return
   console.log(link)
   this.hideLinkController()
-  let id = link.linkObj.id
+  const id = link.linkObj.id
   console.log(id)
   delete this.linkData[id]
   link.remove()
   link = null
 }
-export let selectLink = function (targetElement) {
+export const selectLink = function(targetElement) {
   this.currentLink = targetElement
-  let obj = targetElement.linkObj
-  let from = obj.from
-  let to = obj.to
+  const obj = targetElement.linkObj
+  const from = obj.from
+  const to = obj.to
 
-  let map = this.map.getBoundingClientRect()
-  let pfrom = from.getBoundingClientRect()
-  let pto = to.getBoundingClientRect()
-  let fromCenterX = (pfrom.x + pfrom.width / 2 - map.x) / this.scaleVal
-  let fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
-  let toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
-  let toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
+  const map = this.map.getBoundingClientRect()
+  const pfrom = from.getBoundingClientRect()
+  const pto = to.getBoundingClientRect()
+  const fromCenterX = (pfrom.x + pfrom.width / 2 - map.x) / this.scaleVal
+  const fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
+  const toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
+  const toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
 
-  let fromData = {
+  const fromData = {
     cx: fromCenterX,
     cy: fromCenterY,
     w: pfrom.width,
     h: pfrom.height,
   }
-  let toData = {
+  const toData = {
     cx: toCenterX,
     cy: toCenterY,
     w: pto.width,
     h: pto.height,
   }
 
-  let p2x = fromCenterX + obj.delta1.x
-  let p2y = fromCenterY + obj.delta1.y
-  let p3x = toCenterX + obj.delta2.x
-  let p3y = toCenterY + obj.delta2.y
+  const p2x = fromCenterX + obj.delta1.x
+  const p2y = fromCenterY + obj.delta1.y
+  const p3x = toCenterX + obj.delta2.x
+  const p3y = toCenterY + obj.delta2.y
 
   this.showLinkController(p2x, p2y, p3x, p3y, obj, fromData, toData)
 }
-export let hideLinkController = function () {
+export const hideLinkController = function() {
   this.linkController.style.display = 'none'
   this.P2.style.display = 'none'
   this.P3.style.display = 'none'
 }
-export let showLinkController = function (
+export const showLinkController = function(
   p2x,
   p2y,
   p3x,
@@ -187,11 +186,11 @@ export let showLinkController = function (
   this.P2.style.display = 'initial'
   this.P3.style.display = 'initial'
 
-  let p1 = calcP1(fromData, p2x, p2y)
+  const p1 = calcP1(fromData, p2x, p2y)
   let p1x = p1.x
   let p1y = p1.y
 
-  let p4 = calcP4(toData, p3x, p3y)
+  const p4 = calcP4(toData, p3x, p3y)
   let p4x = p4.x
   let p4y = p4.y
 
@@ -211,8 +210,8 @@ export let showLinkController = function (
     this.helper2.destory(this.map)
   }
 
-  this.helper1 = new linkDragMoveHelper(this.P2)
-  this.helper2 = new linkDragMoveHelper(this.P3)
+  this.helper1 = new LinkDragMoveHelper(this.P2)
+  this.helper2 = new LinkDragMoveHelper(this.P3)
 
   this.helper1.init(this.map, (deltaX, deltaY) => {
     /**
@@ -222,7 +221,7 @@ export let showLinkController = function (
     p2x = p2x - deltaX / this.scaleVal
     p2y = p2y - deltaY / this.scaleVal
 
-    let p1 = calcP1(fromData, p2x, p2y)
+    const p1 = calcP1(fromData, p2x, p2y)
     p1x = p1.x
     p1y = p1.y
 
@@ -244,10 +243,10 @@ export let showLinkController = function (
     p3x = p3x - deltaX / this.scaleVal
     p3y = p3y - deltaY / this.scaleVal
 
-    let p4 = calcP4(toData, p3x, p3y)
+    const p4 = calcP4(toData, p3x, p3y)
     p4x = p4.x
     p4y = p4.y
-    let arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
+    const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
 
     this.P3.style.top = p3y + 'px'
     this.P3.style.left = p3x + 'px'

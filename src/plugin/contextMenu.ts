@@ -1,34 +1,34 @@
 import i18n from '../i18n'
 
-export default function (mind, option) {
-  let createTips = words => {
-    let div = document.createElement('div')
+export default function(mind, option) {
+  const createTips = words => {
+    const div = document.createElement('div')
     div.innerHTML = words
-    div.style.cssText= 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);'
+    div.style.cssText = 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);'
     return div
   }
-  let createLi = (id, name, keyname) => {
-    let li = document.createElement('li')
+  const createLi = (id, name, keyname) => {
+    const li = document.createElement('li')
     li.id = id
     li.innerHTML = `<span>${name}</span><span>${keyname}</span>`
     return li
   }
-  let locale = i18n[mind.locale] ? mind.locale : 'en'
+  const locale = i18n[mind.locale] ? mind.locale : 'en'
 
-  let add_child = createLi('cm-add_child', i18n[locale].addChild, 'tab')
-  let add_sibling = createLi('cm-add_sibling', i18n[locale].addSibling, 'enter')
-  let remove_child = createLi(
+  const add_child = createLi('cm-add_child', i18n[locale].addChild, 'tab')
+  const add_sibling = createLi('cm-add_sibling', i18n[locale].addSibling, 'enter')
+  const remove_child = createLi(
     'cm-remove_child',
     i18n[locale].removeNode,
     'delete'
   )
-  let focus = createLi('cm-fucus', i18n[locale].focus, '')
-  let unfocus = createLi('cm-unfucus', i18n[locale].cancelFocus, '')
-  let up = createLi('cm-up', i18n[locale].moveUp, 'PgUp')
-  let down = createLi('cm-down', i18n[locale].moveDown, 'Pgdn')
-  let link = createLi('cm-down', i18n[locale].link, '')
+  const focus = createLi('cm-fucus', i18n[locale].focus, '')
+  const unfocus = createLi('cm-unfucus', i18n[locale].cancelFocus, '')
+  const up = createLi('cm-up', i18n[locale].moveUp, 'PgUp')
+  const down = createLi('cm-down', i18n[locale].moveDown, 'Pgdn')
+  const link = createLi('cm-down', i18n[locale].link, '')
 
-  let menuUl = document.createElement('ul')
+  const menuUl = document.createElement('ul')
   menuUl.className = 'menu-list'
   menuUl.appendChild(add_child)
   menuUl.appendChild(add_sibling)
@@ -44,25 +44,25 @@ export default function (mind, option) {
   }
   if (option && option.extend) {
     for (let i = 0; i < option.extend.length; i++) {
-      let item = option.extend[i]
-      let dom = createLi(item.name, item.name, item.key || '')
+      const item = option.extend[i]
+      const dom = createLi(item.name, item.name, item.key || '')
       menuUl.appendChild(dom)
       dom.onclick = e => {
         item.onclick(e)
       }
     }
   }
-  let menuContainer = document.createElement('cmenu')
+  const menuContainer = document.createElement('cmenu')
   menuContainer.appendChild(menuUl)
   menuContainer.hidden = true
 
   mind.container.append(menuContainer)
   let isRoot = true
-  mind.container.oncontextmenu = function (e) {
+  mind.container.oncontextmenu = function(e) {
     e.preventDefault()
     if (!mind.editable) return
     // console.log(e.pageY, e.screenY, e.clientY)
-    let target = e.target
+    const target = e.target
     if (target.tagName === 'TPC') {
       if (target.parentElement.tagName === 'ROOT') {
         isRoot = true
@@ -84,8 +84,8 @@ export default function (mind, option) {
       }
       mind.selectNode(target)
       menuContainer.hidden = false
-      let height = menuUl.offsetHeight
-      let width = menuUl.offsetWidth
+      const height = menuUl.offsetHeight
+      const width = menuUl.offsetWidth
       if (height + e.clientY > window.innerHeight) {
         menuUl.style.top = ''
         menuUl.style.bottom = '0px'
@@ -142,8 +142,8 @@ export default function (mind, option) {
   }
   link.onclick = e => {
     menuContainer.hidden = true
-    let from = mind.currentNode
-    let tips = createTips(i18n[locale].clickTips)
+    const from = mind.currentNode
+    const tips = createTips(i18n[locale].clickTips)
     mind.container.appendChild(tips)
     mind.map.addEventListener(
       'click',

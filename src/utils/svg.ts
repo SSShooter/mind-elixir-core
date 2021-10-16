@@ -1,7 +1,7 @@
-let $d = document
+const $d = document
 const svgNS = 'http://www.w3.org/2000/svg'
-export let createMainPath = function (d: string) {
-  let path = $d.createElementNS(svgNS, 'path')
+export const createMainPath = function(d: string) {
+  const path = $d.createElementNS(svgNS, 'path')
   path.setAttribute('d', d)
   path.setAttribute('stroke', '#666')
   path.setAttribute('fill', 'none')
@@ -9,14 +9,14 @@ export let createMainPath = function (d: string) {
   return path
 }
 
-export let createLinkSvg = function (klass: string) {
-  let svg = $d.createElementNS(svgNS, 'svg')
+export const createLinkSvg = function(klass: string) {
+  const svg = $d.createElementNS(svgNS, 'svg')
   svg.setAttribute('class', klass)
   return svg
 }
 
-export let createLine = function (x1: number, y1: number, x2: number, y2: number) {
-  let line = $d.createElementNS(svgNS, 'line')
+export const createLine = function(x1: number, y1: number, x2: number, y2: number) {
+  const line = $d.createElementNS(svgNS, 'line')
   line.setAttribute('x1', x1)
   line.setAttribute('y1', y1)
   line.setAttribute('x2', x2)
@@ -27,8 +27,8 @@ export let createLine = function (x1: number, y1: number, x2: number, y2: number
   return line
 }
 
-export let createPath = function (d: string) {
-  let path = $d.createElementNS(svgNS, 'path')
+export const createPath = function(d: string) {
+  const path = $d.createElementNS(svgNS, 'path')
   path.setAttribute('d', d)
   path.setAttribute('stroke', '#555')
   path.setAttribute('fill', 'none')
@@ -39,10 +39,13 @@ export let createPath = function (d: string) {
   return path
 }
 
-export let createSvgGroup = function (d: string, arrowd: string) {
-  let g = $d.createElementNS(svgNS, 'g')
-  let path = $d.createElementNS(svgNS, 'path')
-  let arrow = $d.createElementNS(svgNS, 'path')
+interface CustomSvg extends SVGElement{
+  linkObj?:object
+}
+export const createSvgGroup = function(d: string, arrowd: string):CustomSvg {
+  const g = $d.createElementNS(svgNS, 'g')
+  const path = $d.createElementNS(svgNS, 'path')
+  const arrow = $d.createElementNS(svgNS, 'path')
   arrow.setAttribute('d', arrowd)
   arrow.setAttribute('stroke', 'rgb(235, 95, 82)')
   arrow.setAttribute('fill', 'none')

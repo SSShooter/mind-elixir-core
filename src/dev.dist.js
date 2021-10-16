@@ -1,9 +1,9 @@
 import MindElixir, { E } from '../dist/MindElixir'
 import { exportSvg, exportPng } from '../dist/painter'
 import example from '../dist/example1'
-import example2 from '../dist/example2'
+// import example2 from '../dist/example2'
 
-let mind = new MindElixir({
+const mind = new MindElixir({
   el: '#map',
   newTopicName: '子节点',
   // direction: MindElixir.LEFT,
@@ -31,7 +31,7 @@ let mind = new MindElixir({
   keypress: true,
   allowUndo: false,
   before: {
-    moveDownNode(){
+    moveDownNode() {
       return false
     },
     insertSibling(el, obj) {

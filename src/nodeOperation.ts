@@ -12,7 +12,7 @@ import {
   moveNodeAfterObj,
 } from './utils/index'
 import { findEle, createExpander, createGroup, shapeTpc } from './utils/dom'
-import { rgbHex } from './utils/rgbHex'
+import { rgbHex } from './utils/index'
 import { LEFT, RIGHT, SIDE } from './const'
 // TODO copy node
 const $d = document
@@ -20,10 +20,10 @@ const $d = document
 /**
  * @namespace NodeOperation
  */
-export let updateNodeStyle = function (object) {
+export const updateNodeStyle = function(object) {
   if (!object.style) return
-  let nodeEle = findEle(object.id, this)
-  let origin = {
+  const nodeEle = findEle(object.id, this)
+  const origin = {
     color: nodeEle.style.color && rgbHex(nodeEle.style.color),
     background: nodeEle.style.background && rgbHex(nodeEle.style.background),
     fontSize: nodeEle.style.fontSize && nodeEle.style.fontSize + 'px',
@@ -41,7 +41,7 @@ export let updateNodeStyle = function (object) {
   })
 }
 
-export let updateNodeTags = function (object, tags) {
+export const updateNodeTags = function(object, tags) {
   if (!tags) return
   const oldVal = object.tags
   object.tags = tags
@@ -55,7 +55,7 @@ export let updateNodeTags = function (object, tags) {
   })
 }
 
-export let updateNodeIcons = function (object, icons) {
+export const updateNodeIcons = function(object, icons) {
   if (!icons) return
   const oldVal = object.icons
   object.icons = icons
@@ -69,7 +69,7 @@ export let updateNodeIcons = function (object, icons) {
   })
 }
 
-export let updateNodeHyperLink = function (object, hyperLink) {
+export const updateNodeHyperLink = function(object, hyperLink) {
   if (!hyperLink) return
   const oldVal = object.hyperLink
   object.hyperLink = hyperLink
@@ -83,7 +83,7 @@ export let updateNodeHyperLink = function (object, hyperLink) {
   })
 }
 
-export let updateNodeSvgChart = function () {
+export const updateNodeSvgChart = function() {
   // TODO
 }
 
@@ -98,23 +98,23 @@ export let updateNodeSvgChart = function () {
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export let insertSibling = function (el, node) {
-  let nodeEle = el || this.currentNode
+export const insertSibling = function(el, node) {
+  const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let nodeObj = nodeEle.nodeObj
+  const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     this.addChild()
     return
   }
-  let newNodeObj = node || generateNewObj()
+  const newNodeObj = node || generateNewObj()
   insertNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
-  let t = nodeEle.parentElement
+  const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
-  let { grp, top } = createGroup(newNodeObj)
+  const { grp, top } = createGroup(newNodeObj)
 
-  let children = t.parentNode.parentNode
+  const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode.nextSibling)
   if (children.className === 'box') {
     this.processPrimaryNode(grp, newNodeObj)
@@ -133,23 +133,23 @@ export let insertSibling = function (el, node) {
   })
 }
 
-export let insertBefore = function (el, node) {
-  let nodeEle = el || this.currentNode
+export const insertBefore = function(el, node) {
+  const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let nodeObj = nodeEle.nodeObj
+  const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     this.addChild()
     return
   }
-  let newNodeObj = node || generateNewObj()
+  const newNodeObj = node || generateNewObj()
   insertBeforeNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
-  let t = nodeEle.parentElement
+  const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
-  let { grp, top } = createGroup(newNodeObj)
+  const { grp, top } = createGroup(newNodeObj)
 
-  let children = t.parentNode.parentNode
+  const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode)
   if (children.className === 'box') {
     this.processPrimaryNode(grp, newNodeObj)
@@ -178,30 +178,30 @@ export let insertBefore = function (el, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export let addChild = function (el, node) {
+export const addChild = function(el, node) {
   console.time('addChild')
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let nodeObj = nodeEle.nodeObj
+  const nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
     this.expandNode(nodeEle, true)
     // dom reset thus
     nodeEle = findEle(nodeObj.id)
   }
-  let newNodeObj = node || generateNewObj()
+  const newNodeObj = node || generateNewObj()
   nodeObj.expanded = true
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
   addParentLink(this.nodeData)
-  let top = nodeEle.parentElement
+  const top = nodeEle.parentElement
 
-  let { grp, top: newTop } = createGroup(newNodeObj)
+  const { grp, top: newTop } = createGroup(newNodeObj)
 
   if (top.tagName === 'T') {
     if (top.children[1]) {
       top.nextSibling.appendChild(grp)
     } else {
-      let c = $d.createElement('children')
+      const c = $d.createElement('children')
       c.appendChild(grp)
       top.appendChild(createExpander(true))
       top.parentElement.insertBefore(c, top.nextSibling)
@@ -235,11 +235,11 @@ export let addChild = function (el, node) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export let moveUpNode = function (el) {
-  let nodeEle = el || this.currentNode
+export const moveUpNode = function(el) {
+  const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let grp = nodeEle.parentNode.parentNode
-  let obj = nodeEle.nodeObj
+  const grp = nodeEle.parentNode.parentNode
+  const obj = nodeEle.nodeObj
   moveUpObj(obj)
   grp.parentNode.insertBefore(grp, grp.previousSibling)
   this.linkDiv()
@@ -259,11 +259,11 @@ export let moveUpNode = function (el) {
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export let moveDownNode = function (el) {
-  let nodeEle = el || this.currentNode
+export const moveDownNode = function(el) {
+  const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let grp = nodeEle.parentNode.parentNode
-  let obj = nodeEle.nodeObj
+  const grp = nodeEle.parentNode.parentNode
+  const obj = nodeEle.nodeObj
   moveDownObj(obj)
   if (grp.nextSibling) {
     grp.parentNode.insertBefore(grp, grp.nextSibling.nextSibling)
@@ -287,37 +287,36 @@ export let moveDownNode = function (el) {
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export let removeNode = function (el) {
-  let nodeEle = el || this.currentNode
+export const removeNode = function(el) {
+  const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  let nodeObj = nodeEle.nodeObj
+  const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     throw new Error('Can not remove root node')
   }
-  let index = nodeObj.parent.children.findIndex(node => node === nodeObj)
-  let next = nodeObj.parent.children[index + 1]
-  let originSiblingId = next && next.id
+  const index = nodeObj.parent.children.findIndex(node => node === nodeObj)
+  const next = nodeObj.parent.children[index + 1]
+  const originSiblingId = next && next.id
 
-  let childrenLength = removeNodeObj(nodeObj)
-  let t = nodeEle.parentNode // T
+  const childrenLength = removeNodeObj(nodeObj)
+  const t = nodeEle.parentNode // T
   if (t.tagName === 'ROOT') {
     return
   }
   if (childrenLength === 0) {
     // remove epd when children length === 0
-    let parentT = t.parentNode.parentNode.previousSibling
-    if (parentT.tagName !== 'ROOT')
-      // root doesn't have epd
-      parentT.children[1].remove()
+    const parentT = t.parentNode.parentNode.previousSibling
+    // root doesn't have epd
+    if (parentT.tagName !== 'ROOT') { parentT.children[1].remove() }
     this.selectParent()
   } else {
     // select sibling automatically
-    let success = this.selectPrevSibling()
+    const success = this.selectPrevSibling()
     if (!success) this.selectNextSibling()
   }
-  for (let prop in this.linkData) {
+  for (const prop in this.linkData) {
     // MAYBEBUG should traversal all children node
-    let link = this.linkData[prop]
+    const link = this.linkData[prop]
     if (link.from === t.firstChild || link.to === t.firstChild) {
       this.removeLink(
         this.mindElixirBox.querySelector(
@@ -348,10 +347,10 @@ export let removeNode = function (el) {
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export let moveNode = function (from, to) {
-  let fromObj = from.nodeObj
-  let toObj = to.nodeObj
-  let originParentId = fromObj.parent.id
+export const moveNode = function(from, to) {
+  const fromObj = from.nodeObj
+  const toObj = to.nodeObj
+  const originParentId = fromObj.parent.id
   if (toObj.expanded === false) {
     this.expandNode(to, true)
     from = findEle(fromObj.id)
@@ -364,9 +363,9 @@ export let moveNode = function (from, to) {
   console.time('moveNode')
   moveNodeObj(fromObj, toObj)
   addParentLink(this.nodeData) // update parent property
-  let fromTop = from.parentElement
-  let fromChilren = fromTop.parentNode.parentNode
-  let toTop = to.parentElement
+  const fromTop = from.parentElement
+  const fromChilren = fromTop.parentNode.parentNode
+  const toTop = to.parentElement
   if (fromChilren.className === 'box') {
     // clear svg group of primary node
     fromTop.parentNode.lastChild.remove()
@@ -383,7 +382,7 @@ export let moveNode = function (from, to) {
       toTop.nextSibling.appendChild(fromTop.parentNode)
     } else {
       // expander not exist, no child
-      let c = $d.createElement('children')
+      const c = $d.createElement('children')
       c.appendChild(fromTop.parentNode)
       toTop.appendChild(createExpander(true))
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
@@ -400,17 +399,17 @@ export let moveNode = function (from, to) {
   console.timeEnd('moveNode')
 }
 
-export let moveNodeBefore = function (from, to) {
-  let fromObj = from.nodeObj
-  let toObj = to.nodeObj
-  let originParentId = fromObj.parent.id
+export const moveNodeBefore = function(from, to) {
+  const fromObj = from.nodeObj
+  const toObj = to.nodeObj
+  const originParentId = fromObj.parent.id
   moveNodeBeforeObj(fromObj, toObj)
   addParentLink(this.nodeData)
-  let fromTop = from.parentElement
-  let fromGrp = fromTop.parentNode
-  let toTop = to.parentElement
-  let toGrp = toTop.parentNode
-  let toChilren = toTop.parentNode.parentNode
+  const fromTop = from.parentElement
+  const fromGrp = fromTop.parentNode
+  const toTop = to.parentElement
+  const toGrp = toTop.parentNode
+  const toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp)
   this.linkDiv()
   this.bus.fire('operation', {
@@ -419,17 +418,17 @@ export let moveNodeBefore = function (from, to) {
   })
 }
 
-export let moveNodeAfter = function (from, to) {
-  let fromObj = from.nodeObj
-  let toObj = to.nodeObj
-  let originParentId = fromObj.parent.id
+export const moveNodeAfter = function(from, to) {
+  const fromObj = from.nodeObj
+  const toObj = to.nodeObj
+  const originParentId = fromObj.parent.id
   moveNodeAfterObj(fromObj, toObj)
   addParentLink(this.nodeData)
-  let fromTop = from.parentElement
-  let fromGrp = fromTop.parentNode
-  let toTop = to.parentElement
-  let toGrp = toTop.parentNode
-  let toChilren = toTop.parentNode.parentNode
+  const fromTop = from.parentElement
+  const fromGrp = fromTop.parentNode
+  const toTop = to.parentElement
+  const toGrp = toTop.parentNode
+  const toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp.nextSibling)
   this.linkDiv()
   this.bus.fire('operation', {
@@ -448,13 +447,13 @@ export let moveNodeAfter = function (from, to) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-export let beginEdit = function (el) {
-  let nodeEle = el || this.currentNode
+export const beginEdit = function(el) {
+  const nodeEle = el || this.currentNode
   if (!nodeEle) return
   this.createInputDiv(nodeEle)
 }
 
-export let setNodeTopic = function (tpc, topic) {
+export const setNodeTopic = function(tpc, topic) {
   tpc.childNodes[0].textContent = topic
   tpc.nodeObj.topic = topic
   this.linkDiv()
@@ -467,8 +466,8 @@ export function processPrimaryNode(primaryNode, obj) {
   } else if (this.direction === RIGHT) {
     primaryNode.className = 'rhs'
   } else if (this.direction === SIDE) {
-    let l = $d.querySelectorAll('.lhs').length
-    let r = $d.querySelectorAll('.rhs').length
+    const l = $d.querySelectorAll('.lhs').length
+    const r = $d.querySelectorAll('.rhs').length
     if (l <= r) {
       primaryNode.className = 'lhs'
       obj.direction = LEFT

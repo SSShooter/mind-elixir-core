@@ -1,12 +1,12 @@
 // WIP
 export function pieChart(data) {
-  let cx = 45 // circle center
-  let cy = 45
-  let r = 35 // radius
-  let lx = 105 // description position
-  let ly = 15
-  let svgns = 'http://www.w3.org/2000/svg'
-  let colors = [
+  const cx = 45 // circle center
+  const cy = 45
+  const r = 35 // radius
+  const lx = 105 // description position
+  const ly = 15
+  const svgns = 'http://www.w3.org/2000/svg'
+  const colors = [
     '#004c6d',
     '#346888',
     '#5886a5',
@@ -15,7 +15,7 @@ export function pieChart(data) {
     '#c1e7ff',
   ]
   // create <svg /> with specific width and height
-  let chart = document.createElementNS(svgns, 'svg:svg')
+  const chart = document.createElementNS(svgns, 'svg:svg')
   chart.setAttribute('width', 160)
   chart.setAttribute('height', 90)
   // chart.setAttribute("viewBox", "0 0 " + width + " " + height);
@@ -26,22 +26,23 @@ export function pieChart(data) {
     total += data[i].value
   }
 
-  let angles = []
-  for (let i = 0; i < data.length; i++)
+  const angles = []
+  for (let i = 0; i < data.length; i++) {
     angles[i] = (data[i].value / total) * Math.PI * 2
+  }
 
   let starttangle = 0
   for (let i = 0; i < data.length; i++) {
-    let endangle = starttangle + angles[i]
+    const endangle = starttangle + angles[i]
 
-    let x1 = cx + r * Math.sin(starttangle)
-    let y1 = cy - r * Math.cos(starttangle)
-    let x2 = cx + r * Math.sin(endangle)
-    let y2 = cy - r * Math.cos(endangle)
+    const x1 = cx + r * Math.sin(starttangle)
+    const y1 = cy - r * Math.cos(starttangle)
+    const x2 = cx + r * Math.sin(endangle)
+    const y2 = cy - r * Math.cos(endangle)
 
-    let path = document.createElementNS(svgns, 'path')
+    const path = document.createElementNS(svgns, 'path')
 
-    let d = `M ${cx},${cy} L ${x1},${y1} A ${r},${r} 0 0 1 ${x2},${y2} Z`
+    const d = `M ${cx},${cy} L ${x1},${y1} A ${r},${r} 0 0 1 ${x2},${y2} Z`
 
     path.setAttribute('d', d)
     path.setAttribute('fill', colors[i])
@@ -50,7 +51,7 @@ export function pieChart(data) {
     starttangle = endangle
 
     // description
-    let icon = document.createElementNS(svgns, 'rect')
+    const icon = document.createElementNS(svgns, 'rect')
     icon.setAttribute('x', lx)
     icon.setAttribute('y', ly + 15 * i)
     icon.setAttribute('width', 10)
@@ -58,7 +59,7 @@ export function pieChart(data) {
     icon.setAttribute('fill', colors[i])
     chart.appendChild(icon)
 
-    let label = document.createElementNS(svgns, 'text')
+    const label = document.createElementNS(svgns, 'text')
     label.setAttribute('x', lx + 50)
     label.setAttribute('y', ly + 15 * i + 10)
     label.setAttribute('font-family', 'sans-serif')
@@ -77,9 +78,9 @@ export function pieChart(data) {
 
 // example
 if (nodeObj.pie) {
-  let pieContainer = $d.createElement('div')
+  const pieContainer = $d.createElement('div')
   pieContainer.className = 'pie'
-  let pieData = [
+  const pieData = [
     {
       value: 12,
       label: 'a',

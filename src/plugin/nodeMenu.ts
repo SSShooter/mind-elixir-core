@@ -1,7 +1,7 @@
 import i18n from '../i18n'
 
 const createDiv = (id, name) => {
-  let div = document.createElement('div')
+  const div = document.createElement('div')
   div.id = id
   div.innerHTML = `<span>${name}</span>`
   return div
@@ -28,32 +28,32 @@ const colorList = [
   '#2ecc71',
 ]
 
-export default function (mind) {
-  let locale = i18n[mind.locale] ? mind.locale : 'en'
+export default function(mind) {
+  const locale = i18n[mind.locale] ? mind.locale : 'en'
   let bgOrFont
-  let styleDiv = createDiv('nm-style', 'style')
-  let tagDiv = createDiv('nm-tag', 'tag')
-  let iconDiv = createDiv('nm-icon', 'icon')
+  const styleDiv = createDiv('nm-style', 'style')
+  const tagDiv = createDiv('nm-tag', 'tag')
+  const iconDiv = createDiv('nm-icon', 'icon')
 
   styleDiv.innerHTML = `
       <div class="nm-fontsize-container">
         ${['15', '24', '32']
-          .map(size => {
-            return `<div class="size"  data-size="${size}">
+    .map(size => {
+      return `<div class="size"  data-size="${size}">
         <svg class="icon" style="width: ${size}px;height: ${size}px" aria-hidden="true">
           <use xlink:href="#icon-a"></use>
         </svg></div>`
-          })
-          .join('')}<div class="bold"><svg class="icon" aria-hidden="true">
+    })
+    .join('')}<div class="bold"><svg class="icon" aria-hidden="true">
   <use xlink:href="#icon-B"></use>
   </svg></div>
       </div>
       <div class="nm-fontcolor-container">
         ${colorList
-          .map(color => {
-            return `<div class="split6"><div class="palette" data-color="${color}" style="background-color: ${color};"></div></div>`
-          })
-          .join('')}
+    .map(color => {
+      return `<div class="split6"><div class="palette" data-color="${color}" style="background-color: ${color};"></div></div>`
+    })
+    .join('')}
       </div>
       <div class="bof">
       <span class="font">${i18n[locale].font}</span>
@@ -67,7 +67,7 @@ export default function (mind) {
       ${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${i18n[locale].iconsSeparate}" /><br>
   `
 
-  let menuContainer = document.createElement('nmenu')
+  const menuContainer = document.createElement('nmenu')
   menuContainer.innerHTML = `
   <div class="button-container"><svg class="icon" aria-hidden="true">
   <use xlink:href="#icon-close"></use>
@@ -80,63 +80,67 @@ export default function (mind) {
 
   function clearSelect(klass, remove) {
     var elems = mind.container.querySelectorAll(klass)
-    ;[].forEach.call(elems, function (el) {
+    ;[].forEach.call(elems, function(el) {
       el.classList.remove(remove)
     })
   }
 
   mind.container.append(menuContainer)
-  let sizeSelector = menuContainer.querySelectorAll('.size')
-  let bold = menuContainer.querySelector('.bold')
-  let buttonContainer = menuContainer.querySelector('.button-container')
-  let fontBtn = menuContainer.querySelector('.font')
-  let tagInput = mind.container.querySelector('.nm-tag')
-  let iconInput = mind.container.querySelector('.nm-icon')
+  const sizeSelector = menuContainer.querySelectorAll('.size')
+  const bold:HTMLElement = menuContainer.querySelector('.bold')
+  const buttonContainer:HTMLElement = menuContainer.querySelector('.button-container')
+  const fontBtn:HTMLElement = menuContainer.querySelector('.font')
+  const tagInput:HTMLInputElement = mind.container.querySelector('.nm-tag')
+  const iconInput:HTMLInputElement = mind.container.querySelector('.nm-icon')
   menuContainer.onclick = e => {
     if (!mind.currentNode) return
-    let nodeObj = mind.currentNode.nodeObj
-    if (e.target.className === 'palette') {
+    const nodeObj = mind.currentNode.nodeObj
+    const target = e.target as HTMLElement
+    if (target.className === 'palette') {
       if (!nodeObj.style) nodeObj.style = {}
       clearSelect('.palette', 'nmenu-selected')
-      e.target.className = 'palette nmenu-selected'
+      target.className = 'palette nmenu-selected'
       if (bgOrFont === 'font') {
-        nodeObj.style.color = e.target.dataset.color
+        nodeObj.style.color = target.dataset.color
       } else if (bgOrFont === 'background') {
-        nodeObj.style.background = e.target.dataset.color
+        nodeObj.style.background = target.dataset.color
       }
       mind.updateNodeStyle(nodeObj)
-    } else if (e.target.className === 'background') {
+    } else if (target.className === 'background') {
       clearSelect('.palette', 'nmenu-selected')
       bgOrFont = 'background'
-      e.target.className = 'background selected'
-      e.target.previousElementSibling.className = 'font'
-      if (nodeObj.style && nodeObj.style.background)
+      target.className = 'background selected'
+      target.previousElementSibling.className = 'font'
+      if (nodeObj.style && nodeObj.style.background) {
         menuContainer.querySelector(
           '.palette[data-color="' + nodeObj.style.background + '"]'
         ).className = 'palette nmenu-selected'
-    } else if (e.target.className === 'font') {
+      }
+    } else if (target.className === 'font') {
       clearSelect('.palette', 'nmenu-selected')
       bgOrFont = 'font'
-      e.target.className = 'font selected'
-      e.target.nextElementSibling.className = 'background'
-      if (nodeObj.style && nodeObj.style.color)
+      target.className = 'font selected'
+      target.nextElementSibling.className = 'background'
+      if (nodeObj.style && nodeObj.style.color) {
         menuContainer.querySelector(
           '.palette[data-color="' + nodeObj.style.color + '"]'
         ).className = 'palette nmenu-selected'
+      }
     }
   }
   Array.from(sizeSelector).map(
-    dom =>
-      (dom.onclick = e => {
+    dom => {
+      (dom as HTMLElement).onclick = e => {
         if (!mind.currentNode.nodeObj.style) mind.currentNode.nodeObj.style = {}
         clearSelect('.size', 'size-selected')
-        let size = e.currentTarget
+        const size = e.currentTarget as HTMLElement
         mind.currentNode.nodeObj.style.fontSize = size.dataset.size
         size.className = 'size size-selected'
         mind.updateNodeStyle(mind.currentNode.nodeObj)
-      })
+      }
+    }
   )
-  bold.onclick = e => {
+  bold.onclick = (e:MouseEvent & { currentTarget: Element}) => {
     if (!mind.currentNode.nodeObj.style) mind.currentNode.nodeObj.style = {}
     if (mind.currentNode.nodeObj.style.fontWeight === 'bold') {
       delete mind.currentNode.nodeObj.style.fontWeight
@@ -148,17 +152,17 @@ export default function (mind) {
       mind.updateNodeStyle(mind.currentNode.nodeObj)
     }
   }
-  tagInput.onchange = e => {
+  tagInput.onchange = (e:InputEvent & { target: HTMLInputElement}) => {
     if (!mind.currentNode) return
     if (e.target.value) {
-      let newTags = e.target.value.split(',')
+      const newTags = e.target.value.split(',')
       mind.updateNodeTags(mind.currentNode.nodeObj, newTags)
     }
   }
-  iconInput.onchange = e => {
+  iconInput.onchange = (e:InputEvent & { target: HTMLInputElement}) => {
     if (!mind.currentNode) return
     if (e.target.value) {
-      let newIcons = e.target.value.split(',')
+      const newIcons = e.target.value.split(',')
       mind.updateNodeIcons(mind.currentNode.nodeObj, newIcons)
     }
   }
@@ -167,21 +171,17 @@ export default function (mind) {
     if (state === 'open') {
       state = 'close'
       menuContainer.className = 'close'
-      buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true">
-    <use xlink:href="#icon-menu"></use>
-    </svg>`
+      buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true"><use xlink:href="#icon-menu"></use></svg>`
     } else {
       state = 'open'
       menuContainer.className = ''
-      buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true">
-    <use xlink:href="#icon-close"></use>
-    </svg>`
+      buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true"><use xlink:href="#icon-close"></use></svg>`
     }
   }
-  mind.bus.addListener('unselectNode', function () {
+  mind.bus.addListener('unselectNode', function() {
     menuContainer.hidden = true
   })
-  mind.bus.addListener('selectNode', function (nodeObj) {
+  mind.bus.addListener('selectNode', function(nodeObj) {
     menuContainer.hidden = false
     clearSelect('.palette', 'nmenu-selected')
     clearSelect('.size', 'size-selected')
@@ -190,16 +190,17 @@ export default function (mind) {
     fontBtn.className = 'font selected'
     fontBtn.nextElementSibling.className = 'background'
     if (nodeObj.style) {
-      if (nodeObj.style.fontSize)
+      if (nodeObj.style.fontSize) {
         menuContainer.querySelector(
           '.size[data-size="' + nodeObj.style.fontSize + '"]'
         ).className = 'size size-selected'
-      if (nodeObj.style.fontWeight)
-        menuContainer.querySelector('.bold').className = 'bold size-selected'
-      if (nodeObj.style.color)
+      }
+      if (nodeObj.style.fontWeight) { menuContainer.querySelector('.bold').className = 'bold size-selected' }
+      if (nodeObj.style.color) {
         menuContainer.querySelector(
           '.palette[data-color="' + nodeObj.style.color + '"]'
         ).className = 'palette nmenu-selected'
+      }
     }
     if (nodeObj.tags) {
       tagInput.value = nodeObj.tags.join(',')
