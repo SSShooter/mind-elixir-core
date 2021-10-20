@@ -70,13 +70,16 @@ import MindElixir, { E } from 'mind-elixir'
 ### Init
 
 ```javascript
+import MindElixir, { E } from 'mind-elixir'
+import { exportSvg, exportPng } from '../dist/painter'
+import example from '../dist/example1'
+
 let options = {
   el: '#map',
   direction: MindElixir.LEFT,
   // create new map data
-  data: MindElixir.new('new topic'),
+  data: MindElixir.new('new topic') or example,
   // the data return from `.getAllData()`
-  data: {...},
   draggable: true, // default true
   contextMenu: true, // default true
   toolBar: true, // default true

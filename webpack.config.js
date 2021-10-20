@@ -1,5 +1,5 @@
 const path = require('path')
-const webpack = require('webpack')
+// const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
@@ -47,7 +47,7 @@ module.exports = (env, argv) => {
     console.log('development')
     config = {
       ...config,
-      entry: './src/dev.ts',
+      entry: env.dist ? './src/dev.dist.js' : './src/dev.ts',
       plugins: [
         new HtmlWebpackPlugin({
           title: 'MindElixir',
@@ -56,7 +56,7 @@ module.exports = (env, argv) => {
       ],
     }
   }
-  if (argv.mode === 'production' && !env.lite) {
+  if (argv.mode === 'production') {
     console.log('production')
     config = {
       ...config,
@@ -88,20 +88,8 @@ module.exports = (env, argv) => {
       },
     }
   }
-  if (argv.mode === 'production' && env.lite) {
-    console.log('lite')
-    config = {
-      ...config,
-      entry: './src/core-lite.js',
-      output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'mind-elixir-lite.js',
-        library: 'MindElixir',
-        libraryTarget: 'umd',
-      },
-      plugins: [new webpack.optimize.ModuleConcatenationPlugin()], // scope hoist
-    }
-  }
+
+  // plugins: [new webpack.optimize.ModuleConcatenationPlugin()], // scope hoist
 
   return config
 }

@@ -1,13 +1,13 @@
 {
   "name": "mind-elixir",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "description": "Mind elixir is a free open source mind map core.",
   "main": "dist/MindElixir.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development",
-    "lite": "webpack --mode production --env.lite=1",
+    "start": "webpack-dev-server --mode development --env.dist=0",
+    "startd": "webpack-dev-server --mode development --env.dist=1",
     "test": "jest --runInBand",
-    "build": "webpack --mode production --env.lite=0",
+    "build": "webpack --mode production",
     "doc": "./node_modules/.bin/jsdoc src/ -R readme.md -c conf.json",
     "md": "./node_modules/.bin/jsdoc2md 'src/*.js' > api.md",
     "publish2": "npm run build && npm version patch -m \"build: release %s\" && npm publish",
@@ -22,7 +22,7 @@
     "url": "https://github.com/ssshooter/mind-elixir-core"
   },
   "homepage": "https://mindelixir.ink/",
-  "author": "",
+  "author": "ssshooter",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.4.5",
