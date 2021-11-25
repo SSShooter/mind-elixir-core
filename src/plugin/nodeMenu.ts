@@ -1,9 +1,8 @@
 import i18n from '../i18n'
 
-const createDiv = (id, name) => {
+const createDiv = (id) => {
   const div = document.createElement('div')
   div.id = id
-  div.innerHTML = `<span>${name}</span>`
   return div
 }
 
@@ -31,9 +30,9 @@ const colorList = [
 export default function(mind) {
   const locale = i18n[mind.locale] ? mind.locale : 'en'
   let bgOrFont
-  const styleDiv = createDiv('nm-style', 'style')
-  const tagDiv = createDiv('nm-tag', 'tag')
-  const iconDiv = createDiv('nm-icon', 'icon')
+  const styleDiv = createDiv('nm-style')
+  const tagDiv = createDiv('nm-tag')
+  const iconDiv = createDiv('nm-icon')
 
   styleDiv.innerHTML = `
       <div class="nm-fontsize-container">
@@ -60,12 +59,8 @@ export default function(mind) {
       <span class="background">${i18n[locale].background}</span>
       </div>
   `
-  tagDiv.innerHTML = `
-      ${i18n[locale].tag}<input class="nm-tag" tabindex="-1" placeholder="${i18n[locale].tagsSeparate}" /><br>
-  `
-  iconDiv.innerHTML = `
-      ${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${i18n[locale].iconsSeparate}" /><br>
-  `
+  tagDiv.innerHTML = `${i18n[locale].tag}<input class="nm-tag" tabindex="-1" placeholder="${i18n[locale].tagsSeparate}" /><br>`
+  iconDiv.innerHTML = `${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${i18n[locale].iconsSeparate}" /><br>`
 
   const menuContainer = document.createElement('nmenu')
   menuContainer.innerHTML = `

@@ -1,7 +1,7 @@
 import { LEFT, RIGHT, SIDE } from '../const'
 import vari from '../var'
 import { NodeObj } from '../index'
-
+import { encodeHTML } from '../utils/index'
 export type Top = HTMLElement
 
 export type Group = HTMLElement
@@ -36,7 +36,7 @@ export const createGroup = function(nodeObj: NodeObj) {
 }
 
 export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
-  tpc.innerHTML = nodeObj.topic
+  tpc.innerText = nodeObj.topic
 
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color || 'inherit'
@@ -56,7 +56,7 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
     const linkContainer = $d.createElement('a')
     linkContainer.className = 'hyper-link'
     linkContainer.target = '_blank'
-    linkContainer.innerHTML = '🔗'
+    linkContainer.innerText = '🔗'
     linkContainer.href = nodeObj.hyperLink
     tpc.appendChild(linkContainer)
   }
@@ -64,7 +64,7 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
     const iconsContainer = $d.createElement('span')
     iconsContainer.className = 'icons'
     iconsContainer.innerHTML = nodeObj.icons
-      .map(icon => `<span>${icon}</span>`)
+      .map(icon => `<span>${encodeHTML(icon)}</span>`)
       .join('')
     tpc.appendChild(iconsContainer)
   }
@@ -72,7 +72,7 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
     const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
     tagsContainer.innerHTML = nodeObj.tags
-      .map(tag => `<span>${tag}</span>`)
+      .map(tag => `<span>${encodeHTML(tag)}</span>`)
       .join('')
     tpc.appendChild(tagsContainer)
   }
@@ -110,7 +110,7 @@ export function createInputDiv(tpc: Topic) {
   let div = $d.createElement('div')
   const origin = tpc.childNodes[0].textContent as string
   tpc.appendChild(div)
-  div.innerHTML = origin
+  div.innerText = origin
   div.contentEditable = 'true'
   div.spellcheck = false
   div.style.cssText = `min-width:${tpc.offsetWidth - 8}px;`
@@ -161,7 +161,7 @@ export function createInputDiv(tpc: Topic) {
 export const createExpander = function(expanded: boolean | undefined): Expander {
   const expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
-  expander.innerHTML = expanded !== false ? '-' : '+'
+  expander.innerText = expanded !== false ? '-' : '+'
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''
   return expander

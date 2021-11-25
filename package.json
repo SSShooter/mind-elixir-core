@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "description": "Mind elixir is a free open source mind map core.",
   "main": "dist/MindElixir.js",
   "scripts": {

@@ -1,16 +1,17 @@
 import i18n from '../i18n'
+import { encodeHTML } from '../utils/index'
 
 export default function(mind, option) {
   const createTips = words => {
     const div = document.createElement('div')
-    div.innerHTML = words
+    div.innerText = words
     div.style.cssText = 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);'
     return div
   }
   const createLi = (id, name, keyname) => {
     const li = document.createElement('li')
     li.id = id
-    li.innerHTML = `<span>${name}</span><span>${keyname}</span>`
+    li.innerHTML = `<span>${encodeHTML(name)}</span><span>${encodeHTML(keyname)}</span>`
     return li
   }
   const locale = i18n[mind.locale] ? mind.locale : 'en'

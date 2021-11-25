@@ -14,7 +14,7 @@ function createToolBarRBContainer(mind) {
   const zo = createButton('zoomout', 'move')
   const zi = createButton('zoomin', 'add')
   const percentage = document.createElement('span')
-  percentage.innerHTML = '100%'
+  percentage.innerText = '100%'
   toolBarRBContainer.appendChild(fc)
   toolBarRBContainer.appendChild(gc)
   toolBarRBContainer.appendChild(zo)

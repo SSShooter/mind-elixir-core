@@ -51,7 +51,6 @@ import MindElixir, { E } from 'mind-elixir'
 #### Script tag
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/regenerator-runtime"></script>
 <script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/mind-elixir.js"></script>
 ```
 
