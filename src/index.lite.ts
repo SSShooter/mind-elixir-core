@@ -39,8 +39,6 @@ import initMouseEvent from './mouse'
 
 import contextMenu from './plugin/contextMenu'
 import toolBar from './plugin/toolBar'
-import nodeDraggable from './plugin/nodeDraggable'
-import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
 
 import Bus from './utils/pubsub'
@@ -50,7 +48,6 @@ import './plugin/toolBar.less'
 import './plugin/mobileMenu.less'
 
 import './iconfont/iconfont.js'
-// TODO show up animation
 
 export const E = findEle
 type LinkObj = object
@@ -159,15 +156,9 @@ function MindElixir(this: MindElixirInstance, {
   direction,
   locale,
   draggable,
-  editable,
-  contextMenu,
-  contextMenuOption,
   toolBar,
-  nodeMenu,
   keypress,
-  before,
   newTopicName,
-  allowUndo,
   primaryLinkStyle,
   overflowHidden,
   primaryNodeHorizontalGap,
@@ -302,14 +293,11 @@ MindElixir.prototype = {
     // plugin
     this.toolBar && toolBar(this)
 
-    this.keypress && keypress(this)
-
     if (isMobile() && this.mobileMenu) {
       mobileMenu(this)
     } else {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
     }
-    vari.draggable && nodeDraggable(this)
 
     this.toCenter()
     this.layout()
