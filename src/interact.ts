@@ -323,7 +323,9 @@ export const expandNode = function(el, isExpand) {
  * @memberof MapInteraction
  */
 export const refresh = function() {
-  // create dom element for every nodes
+  // add parent property to every node
+  this.addParentLink(this.nodeData)
+  // create dom element for every node
   this.layout()
   // generate links between nodes
   this.linkDiv()
