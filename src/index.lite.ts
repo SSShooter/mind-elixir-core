@@ -1,11 +1,10 @@
-import vari from './var'
 import { LEFT, RIGHT, SIDE } from './const'
 import {
   isMobile,
   addParentLink,
   getObjById,
 } from './utils/index'
-import { findEle, layout, Topic } from './utils/dom'
+import { findEle, layout, Topic, createChildren, createGroup, createTop, createTopic } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -177,8 +176,8 @@ function MindElixir(this: MindElixirInstance, {
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
-  vari.draggable = draggable === undefined ? true : draggable
-  vari.newTopicName = newTopicName
+  this.draggable = draggable === undefined ? true : draggable
+  this.newTopicName = newTopicName
   this.editable = false
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
@@ -217,6 +216,8 @@ MindElixir.prototype = {
   createLink,
   layout,
   linkDiv,
+
+  createChildren, createGroup, createTop, createTopic,
 
   selectNode,
   unselectNode,

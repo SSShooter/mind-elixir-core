@@ -1,4 +1,3 @@
-import vari from '../var'
 import { NodeObj } from '../index'
 
 export function encodeHTML(s) {
@@ -37,6 +36,15 @@ export const addParentLink = (data: NodeObj, parent?: NodeObj) => {
   if (data.children) {
     for (let i = 0; i < data.children.length; i++) {
       addParentLink(data.children[i], data)
+    }
+  }
+}
+
+export function refreshIds(data: NodeObj) {
+  data.id = generateUUID()
+  if (data.children) {
+    for (let i = 0; i < data.children.length; i++) {
+      refreshIds(data.children[i])
     }
   }
 }
@@ -144,7 +152,7 @@ export function generateUUID(): string {
 export function generateNewObj(): NodeObj {
   const id = generateUUID()
   return {
-    topic: vari.newTopicName || 'new node',
+    topic: this.newTopicName || 'new node',
     id,
   }
 }

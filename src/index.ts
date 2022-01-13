@@ -1,12 +1,12 @@
-import vari from './var'
 import { LEFT, RIGHT, SIDE } from './const'
 import {
   isMobile,
   addParentLink,
   getObjById,
   generateUUID,
+  generateNewObj,
 } from './utils/index'
-import { findEle, createInputDiv, layout, Topic } from './utils/dom'
+import { findEle, createInputDiv, layout, Topic, createChildren, createGroup, createTop, createTopic } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -35,6 +35,7 @@ import {
   insertSibling,
   insertBefore,
   addChild,
+  copyNode,
   moveNode,
   removeNode,
   moveUpNode,
@@ -100,6 +101,10 @@ export interface NodeObj {
   expanded?: boolean,
   direction?: number,
   root?: boolean
+}
+
+export interface NodeElement extends HTMLElement {
+  nodeObj:Object
 }
 export interface MindElixirData {
   nodeData: NodeObj,
@@ -215,8 +220,8 @@ function MindElixir(this: MindElixirInstance, {
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
-  vari.draggable = draggable === undefined ? true : draggable
-  vari.newTopicName = newTopicName
+  this.draggable = draggable === undefined ? true : draggable
+  this.newTopicName = newTopicName
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? true : allowUndo
   // this.parentMap = {} // deal with large amount of nodes
@@ -285,10 +290,12 @@ function beforeHook(fn:(el:any, node?:any)=>void) {
 MindElixir.prototype = {
   addParentLink,
   getObjById,
+  generateNewObj,
   // node operation
   insertSibling: beforeHook(insertSibling),
   insertBefore: beforeHook(insertBefore),
   addChild: beforeHook(addChild),
+  copyNode: beforeHook(copyNode),
   moveNode: beforeHook(moveNode),
   removeNode: beforeHook(removeNode),
   moveUpNode: beforeHook(moveUpNode),
@@ -311,6 +318,8 @@ MindElixir.prototype = {
   layout,
   linkDiv,
   createInputDiv,
+
+  createChildren, createGroup, createTop, createTopic,
 
   selectNode,
   unselectNode,
@@ -398,7 +407,7 @@ MindElixir.prototype = {
     } else {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
     }
-    vari.draggable && nodeDraggable(this)
+    this.draggable && nodeDraggable(this)
 
     this.toCenter()
     this.layout()

@@ -1,17 +1,19 @@
+import type { NodeElement, NodeObj } from './index'
+
 import {
   moveNodeObj,
   removeNodeObj,
   insertNodeObj,
   insertBeforeNodeObj,
-  generateNewObj,
   checkMoveValid,
   addParentLink,
   moveUpObj,
   moveDownObj,
   moveNodeBeforeObj,
   moveNodeAfterObj,
+  refreshIds,
 } from './utils/index'
-import { findEle, createExpander, createGroup, shapeTpc } from './utils/dom'
+import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { rgbHex } from './utils/index'
 import { LEFT, RIGHT, SIDE } from './const'
 // TODO copy node
@@ -106,13 +108,13 @@ export const insertSibling = function(el, node) {
     this.addChild()
     return
   }
-  const newNodeObj = node || generateNewObj()
+  const newNodeObj = node || this.generateNewObj()
   insertNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
-  const { grp, top } = createGroup(newNodeObj)
+  const { grp, top } = this.createGroup(newNodeObj)
 
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode.nextSibling)
@@ -141,13 +143,13 @@ export const insertBefore = function(el, node) {
     this.addChild()
     return
   }
-  const newNodeObj = node || generateNewObj()
+  const newNodeObj = node || this.generateNewObj()
   insertBeforeNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
-  const { grp, top } = createGroup(newNodeObj)
+  const { grp, top } = this.createGroup(newNodeObj)
 
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode)
@@ -178,24 +180,24 @@ export const insertBefore = function(el, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild = function(el, node) {
+export const addChild = function(el: NodeElement, node: NodeObj) {
   console.time('addChild')
   let nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
     this.expandNode(nodeEle, true)
-    // dom reset thus
+    // dom had resetted
     nodeEle = findEle(nodeObj.id)
   }
-  const newNodeObj = node || generateNewObj()
-  nodeObj.expanded = true
+  const newNodeObj = node || this.generateNewObj()
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
   addParentLink(this.nodeData)
+
   const top = nodeEle.parentElement
 
-  const { grp, top: newTop } = createGroup(newNodeObj)
+  const { grp, top: newTop } = this.createGroup(newNodeObj)
 
   if (top.tagName === 'T') {
     if (top.children[1]) {
@@ -224,6 +226,17 @@ export const addChild = function(el, node) {
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
+
+export const copyNode = function(node: NodeElement, to: NodeElement) {
+  const deepCloneObj = JSON.parse(
+    JSON.stringify(node.nodeObj, (k, v) => {
+      if (k === 'parent') return undefined
+      return v
+    })
+  )
+  refreshIds(deepCloneObj)
+  this.addChild(to, deepCloneObj)
+}
 
 /**
  * @function

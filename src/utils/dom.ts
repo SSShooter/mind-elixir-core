@@ -1,5 +1,4 @@
 import { LEFT, RIGHT, SIDE } from '../const'
-import vari from '../var'
 import { NodeObj } from '../index'
 import { encodeHTML } from '../utils/index'
 export type Top = HTMLElement
@@ -19,20 +18,6 @@ const $d = document
 export const findEle = (id: string, instance?) => {
   const scope = instance ? instance.mindElixirBox : $d
   return scope.querySelector(`[data-nodeid=me${id}]`)
-}
-
-export const createGroup = function(nodeObj: NodeObj) {
-  const grp: Group = $d.createElement('GRP')
-  const top: Top = createTop(nodeObj)
-  grp.appendChild(top)
-  if (nodeObj.children && nodeObj.children.length > 0) {
-    top.appendChild(createExpander(nodeObj.expanded))
-    if (nodeObj.expanded !== false) {
-      const children = createChildren(nodeObj.children)
-      grp.appendChild(children)
-    }
-  }
-  return { grp, top }
 }
 
 export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
@@ -78,9 +63,23 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
+export const createGroup = function(nodeObj: NodeObj) {
+  const grp: Group = $d.createElement('GRP')
+  const top: Top = this.createTop(nodeObj)
+  grp.appendChild(top)
+  if (nodeObj.children && nodeObj.children.length > 0) {
+    top.appendChild(createExpander(nodeObj.expanded))
+    if (nodeObj.expanded !== false) {
+      const children = this.createChildren(nodeObj.children)
+      grp.appendChild(children)
+    }
+  }
+  return { grp, top }
+}
+
 export const createTop = function(nodeObj: NodeObj): Top {
   const top = $d.createElement('t')
-  const tpc = createTopic(nodeObj)
+  const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
   top.appendChild(tpc)
   return top
@@ -90,7 +89,7 @@ export const createTopic = function(nodeObj: NodeObj): Topic {
   const topic: Topic = $d.createElement('tpc')
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
-  topic.draggable = vari.draggable
+  topic.draggable = this.draggable
   return topic
 }
 
@@ -196,12 +195,12 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
         grp.className = 'rhs'
       }
     }
-    const top = createTop(nodeObj)
+    const top = this.createTop(nodeObj)
     if (nodeObj.children && nodeObj.children.length > 0) {
       top.appendChild(createExpander(nodeObj.expanded))
       grp.appendChild(top)
       if (nodeObj.expanded !== false) {
-        const children = createChildren(nodeObj.children)
+        const children = this.createChildren(nodeObj.children)
         grp.appendChild(children)
       }
     } else {
@@ -217,7 +216,7 @@ export function layout() {
   console.time('layout')
   this.root.innerHTML = ''
   this.box.innerHTML = ''
-  const tpc = createTopic(this.nodeData)
+  const tpc = this.createTopic(this.nodeData)
   shapeTpc(tpc, this.nodeData) // shape root tpc
   tpc.draggable = false
   this.root.appendChild(tpc)
@@ -246,6 +245,6 @@ export function layout() {
       }
     })
   }
-  createChildren(this.nodeData.children, this.box, this.direction)
+  this.createChildren(this.nodeData.children, this.box, this.direction)
   console.timeEnd('layout')
 }
