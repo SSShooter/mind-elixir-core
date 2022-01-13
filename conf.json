@@ -3,10 +3,12 @@
     "allowUnknownTags": true
   },
   "source": {
-    "includePattern": ".+\\.js(doc|x)?$",
+    "includePattern": "\\.(jsx|js|ts|tsx)$",
     "excludePattern": "(^|\\/|\\\\)_"
   },
-  "plugins": [],
+  "plugins": [
+      "node_modules/better-docs/typescript"
+  ],
   "templates": {
     "cleverLinks": false,
     "monospaceLinks": false,
@@ -15,7 +17,7 @@
     }
   },
   "opts": {
-    "template": "node_modules/docdash",
+    "template": "node_modules/better-docs",
     "destination": "./doc/"
   },
   "docdash": {

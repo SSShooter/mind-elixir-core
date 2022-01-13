@@ -31,6 +31,7 @@
     "@babel/runtime": "^7.15.4",
     "@typescript-eslint/parser": "^5.0.0",
     "babel-loader": "^8.0.6",
+    "better-docs": "^2.3.2",
     "canvg": "^3.0.6",
     "css-loader": "^2.1.1",
     "docdash": "^1.1.1",
