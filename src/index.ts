@@ -266,7 +266,7 @@ function MindElixir(this: MindElixirInstance, {
       } else {
         this.addChild(E(operation.originParentId), operation.obj)
       }
-    } else if (operation.name === 'addChild') {
+    } else if (operation.name === 'addChild' || operation.name === 'copyNode') {
       this.removeNode(E(operation.obj.id))
     } else if (operation.name === 'finishEdit') {
       this.setNodeTopic(E(operation.obj.id), operation.origin)

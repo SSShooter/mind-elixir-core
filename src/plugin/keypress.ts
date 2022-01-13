@@ -54,19 +54,33 @@ export default function(mind) {
       // pageDown
       mind.moveDownNode()
     },
+    67(e) {
+      if (e.metaKey || e.ctrlKey) {
+      // ctrl c
+        mind.waitCopy = mind.currentNode
+      }
+    },
+    86(e) {
+      if (!mind.waitCopy) return
+      if (e.metaKey || e.ctrlKey) {
+      // ctrl v
+        mind.copyNode(mind.waitCopy, mind.currentNode)
+        mind.waitCopy = null
+      }
+    },
     // ctrl z
     90: e => {
       if (!mind.allowUndo) return
       if (e.metaKey || e.ctrlKey) mind.undo()
     },
-    // +
+    // ctrl +
     187: e => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal > 1.6) return
         mind.scale((mind.scaleVal += 0.2))
       }
     },
-    // -
+    // ctrl -
     189: e => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal < 0.6) return
@@ -75,6 +89,7 @@ export default function(mind) {
     },
   }
   mind.map.onkeydown = e => {
+    // console.log(e)
     e.preventDefault()
     if (!mind.editable) return
     // console.log(e, e.target)

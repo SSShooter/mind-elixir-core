@@ -16,7 +16,6 @@ import {
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { rgbHex } from './utils/index'
 import { LEFT, RIGHT, SIDE } from './const'
-// TODO copy node
 const $d = document
 
 /**
@@ -170,19 +169,7 @@ export const insertBefore = function(el, node) {
   })
 }
 
-/**
- * @function
- * @instance
- * @name addChild
- * @memberof NodeOperation
- * @description Create a child node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @example
- * addChild(E('bd4313fbac40284b'))
- */
-export const addChild = function(el: NodeElement, node: NodeObj) {
-  console.time('addChild')
-  let nodeEle = el || this.currentNode
+export const addChildFunction = function(nodeEle, node) {
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
@@ -214,11 +201,30 @@ export const addChild = function(el: NodeElement, node: NodeObj) {
     top.nextSibling.appendChild(grp)
     this.linkDiv()
   }
+  return { newTop, newNodeObj }
+}
+
+/**
+ * @function
+ * @instance
+ * @name addChild
+ * @memberof NodeOperation
+ * @description Create a child node.
+ * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
+ * @param {node} node - New node information.
+ * @example
+ * addChild(E('bd4313fbac40284b'))
+ */
+export const addChild = function(el: NodeElement, node: NodeObj) {
+  console.time('addChild')
+  const nodeEle = el || this.currentNode
+  if (!nodeEle) return
+  const { newTop, newNodeObj } = addChildFunction.call(this, nodeEle, node)
+  console.timeEnd('addChild')
   if (!node) {
     this.createInputDiv(newTop.children[0])
   }
   this.selectNode(newTop.children[0], true)
-  console.timeEnd('addChild')
   this.bus.fire('operation', {
     name: 'addChild',
     obj: newNodeObj,
@@ -227,7 +233,19 @@ export const addChild = function(el: NodeElement, node: NodeObj) {
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
 
+/**
+ * @function
+ * @instance
+ * @name copyNode
+ * @memberof NodeOperation
+ * @description Copy node to another node.
+ * @param {TargetElement} node - Target element return by E('...'), default value: currentTarget.
+ * @param {TargetElement} to - The target(as parent node) you want to copy to.
+ * @example
+ * copyNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
+ */
 export const copyNode = function(node: NodeElement, to: NodeElement) {
+  console.time('copyNode')
   const deepCloneObj = JSON.parse(
     JSON.stringify(node.nodeObj, (k, v) => {
       if (k === 'parent') return undefined
@@ -235,7 +253,12 @@ export const copyNode = function(node: NodeElement, to: NodeElement) {
     })
   )
   refreshIds(deepCloneObj)
-  this.addChild(to, deepCloneObj)
+  const { newNodeObj } = addChildFunction.call(this, to, deepCloneObj)
+  console.timeEnd('copyNode')
+  this.bus.fire('operation', {
+    name: 'copyNode',
+    obj: newNodeObj,
+  })
 }
 
 /**
@@ -312,7 +335,7 @@ export const removeNode = function(el) {
   const originSiblingId = next && next.id
 
   const childrenLength = removeNodeObj(nodeObj)
-  const t = nodeEle.parentNode // T
+  const t = nodeEle.parentNode
   if (t.tagName === 'ROOT') {
     return
   }
