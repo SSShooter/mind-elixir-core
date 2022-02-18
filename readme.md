@@ -152,8 +152,13 @@ mind.bus.addListener('operation', operation => {
   // name: moveNode
   // obj: {from:target1,to:target2}
 })
+
 mind.bus.addListener('selectNode', node => {
   console.log(node)
+})
+
+mind.bus.addListener('expandNode', node => {
+  console.log('expandNode: ', node)
 })
 ```
 
@@ -166,6 +171,8 @@ mind.getAllDataMd() // markdown
 ```
 
 ### Export as image
+
+**WIP**
 
 ```javascript
 import painter from 'mind-elixir/dist/painter'

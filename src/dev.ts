@@ -81,6 +81,9 @@ mind.bus.addListener('operation', operation => {
 mind.bus.addListener('selectNode', node => {
   console.log(node)
 })
+mind.bus.addListener('expandNode', node => {
+  console.log('expandNode: ', node)
+})
 window.m = mind
 // window.m2 = mind2
 window.M = MindElixir

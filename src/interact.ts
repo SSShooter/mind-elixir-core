@@ -313,6 +313,7 @@ export const expandNode = function(el, isExpand) {
   this.layout()
   // linkDiv 已实现只更新特定主节点
   this.linkDiv()
+  this.bus.fire('expandNode', node)
 }
 
 /**
