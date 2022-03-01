@@ -7,8 +7,8 @@ import example2 from './exampleData/2'
 const mind = new MindElixir({
   el: '#map',
   newTopicName: '子节点',
-  // direction: MindElixir.LEFT,
-  direction: MindElixir.RIGHT,
+  direction: MindElixir.SIDE,
+  // direction: MindElixir.RIGHT,
   // data: MindElixir.new('new topic'),
   data: example,
   locale: 'en',
@@ -39,11 +39,11 @@ const mind = new MindElixir({
       return true
     },
     async addChild(el, obj) {
-      await sleep()
+      // await sleep()
       return true
     },
   },
-  // primaryLinkStyle: 2,
+  primaryLinkStyle: 2,
   primaryNodeVerticalGap: 15, // 25
   primaryNodeHorizontalGap: 15, // 65
 })

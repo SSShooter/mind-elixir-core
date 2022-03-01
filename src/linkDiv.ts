@@ -79,37 +79,25 @@ export default function linkDiv(primaryNode) {
     let x2, y2
     const el = primaryNodeList[i]
     const elOffsetH = el.offsetHeight
-    // let Cy
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
-      el.style.left =
-        10000 -
-        root.offsetWidth / 2 -
-        primaryNodeHorizontalGap -
-        el.offsetWidth +
-        'px'
+      el.style.left = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap - el.offsetWidth + 'px'
       x2 = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap - 15 // padding
       y2 = base + currentOffsetL + elOffsetH / 2
 
+      // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
       let LEFT = 10000
       if (this.primaryLinkStyle === 2) {
         if (this.direction === SIDE) {
           LEFT = 10000 - root.offsetWidth / 6
         }
         if (y2 < 10000) {
-          primaryPath += `M ${LEFT} 10000
-         L ${LEFT} ${y2 + 20} 
-        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
-          L ${x2} ${y2}`
+          primaryPath += `M ${LEFT} 10000 V ${y2 + 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} H ${x2}`
         } else {
-          primaryPath += `M ${LEFT} 10000
-         L ${LEFT} ${y2 - 20} 
-        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} 
-          L ${x2} ${y2}`
+          primaryPath += `M ${LEFT} 10000 V ${y2 - 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} H ${x2}`
         }
       } else {
-        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03
-        } ${y2} ${x2} ${y2}`
+        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
       }
 
       if (shortSide === 'l') {
@@ -119,8 +107,7 @@ export default function linkDiv(primaryNode) {
       }
     } else {
       el.style.top = base + currentOffsetR + 'px'
-      el.style.left =
-        10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 'px'
+      el.style.left = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 'px'
       x2 = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
 
@@ -130,19 +117,12 @@ export default function linkDiv(primaryNode) {
           LEFT = 10000 + root.offsetWidth / 6
         }
         if (y2 < 10000) {
-          primaryPath += `M ${LEFT} 10000
-         L ${LEFT} ${y2 + 20} 
-        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
-          L ${x2} ${y2}`
+          primaryPath += `M ${LEFT} 10000 V ${y2 + 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} H ${x2}`
         } else {
-          primaryPath += `M ${LEFT} 10000
-         L ${LEFT} ${y2 - 20} 
-        C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} 
-          L ${x2} ${y2}`
+          primaryPath += `M ${LEFT} 10000 V ${y2 - 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} H ${x2}`
         }
       } else {
-        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03
-        } ${y2} ${x2} ${y2}`
+        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
       }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
@@ -225,29 +205,19 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
       x1 = parentOL + GAP
       xMiddle = parentOL
       x2 = parentOL - childT.offsetWidth
-      // console.log('x1,y1,x2,y2,child',x1,y1,x2,y2,child)
+
       if (
         childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
         childTOT + childTOH > parentOT + parentOH / 2 - 50
       ) {
         // 相差+-50内直接直线
-        path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
+        path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
       } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
-        // 子底部高于父中点
-        path += `M ${x1} ${y1} 
-      L ${xMiddle} ${y1} 
-      L ${xMiddle} ${y2 - TURNPOINT_R} 
-      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 
-      ${xMiddle - TURNPOINT_R},${y2} 
-      L ${x2} ${y2}`
-      } else {
         // 子底部低于父中点
-        path += `M ${x1} ${y1} 
-      L ${xMiddle} ${y1} 
-      L ${xMiddle} ${y2 + TURNPOINT_R} 
-      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 
-      ${xMiddle - TURNPOINT_R},${y2} 
-      L ${x2} ${y2}`
+        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle - TURNPOINT_R} ${y2} H ${x2}`
+      } else {
+        // 子底部高于父中点
+        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle - TURNPOINT_R} ${y2} H ${x2}`
       }
     } else if (direction === 'rhs') {
       x1 = parentOL + parentOW - GAP
@@ -258,19 +228,11 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
         childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
         childTOT + childTOH > parentOT + parentOH / 2 - 50
       ) {
-        path += `M ${x1} ${y1} L ${xMiddle} ${y1} L ${xMiddle} ${y2} L ${x2} ${y2}`
+        path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
       } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
-        path += `M ${x1} ${y1} 
-      L ${xMiddle} ${y1} 
-      L ${xMiddle} ${y2 - TURNPOINT_R} 
-      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle + TURNPOINT_R},${y2} 
-      L ${x2} ${y2}`
+        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle + TURNPOINT_R} ${y2} H ${x2}`
       } else {
-        path += `M ${x1} ${y1} 
-      L ${xMiddle} ${y1} 
-      L ${xMiddle} ${y2 + TURNPOINT_R} 
-      A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle + TURNPOINT_R},${y2} 
-      L ${x2} ${y2}`
+        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle + TURNPOINT_R} ${y2} H ${x2}`
       }
     }
 
