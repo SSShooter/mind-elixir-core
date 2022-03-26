@@ -47,14 +47,8 @@
         border-radius: 5px;
         font-size: 25px;
         white-space: pre-wrap;
-        [contentEditable] {
-          position: absolute;
-          top: 0;
-          left: 0;
-          background-color: rgb(0, 170, 255);
-          max-width: 300px;
-          z-index: 11;
-          user-select: auto;
+        #input-box {
+          padding: 10px @GAP;
         }
       }
     }
@@ -70,16 +64,8 @@
         color: rgb(115, 92, 69);
         padding: 8px 10px;
         margin: 0;
-        [contentEditable] {
-          position: absolute;
-          top: 0;
-          left: 0;
-          background-color: #fff;
-          max-width: 300px;
+        #input-box {
           padding: 8px 10px;
-          z-index: 11;
-          direction: ltr;
-          user-select: auto;
         }
       }
     }
@@ -112,16 +98,8 @@
         pointer-events: all;
         max-width: 800px;
         white-space: pre-wrap;
-        [contentEditable] {
-          position: absolute;
-          top: 0;
-          left: 0;
-          background-color: #fff;
-          max-width: 300px;
+        #input-box {
           padding: 5px;
-          z-index: 11;
-          direction: ltr;
-          user-select: auto;
         }
         .tags {
           direction: ltr;
@@ -156,8 +134,8 @@
         }
         .show {
           background: #7ad5ff;
-          pointer-events: none;  // 不加会识别为不可移动
-          opacity: .7
+          pointer-events: none; // 不加会识别为不可移动
+          opacity: 0.7;
         }
         .in {
           height: 100%;
@@ -253,4 +231,16 @@
   border-radius: 100%;
   background: #aaa;
   cursor: pointer;
+}
+
+#input-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  width: max-content; // let words expand the div and keep max length at the same time
+  max-width: 800px;
+  z-index: 11;
+  direction: ltr;
+  user-select: auto;
 }

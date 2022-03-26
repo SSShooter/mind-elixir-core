@@ -109,6 +109,7 @@ export function createInputDiv(tpc: Topic) {
   let div = $d.createElement('div')
   const origin = tpc.childNodes[0].textContent as string
   tpc.appendChild(div)
+  div.id = 'input-box'
   div.innerText = origin
   div.contentEditable = 'true'
   div.spellcheck = false
