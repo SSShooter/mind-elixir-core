@@ -12,10 +12,10 @@ import {
  * Link nodes with svg,
  * only link specific node if `primaryNode` is present
  *
- * process:
+ * procedure:
  * 1. calculate position of primary nodes
  * 2. layout primary node, generate primary link
- * 3. generate link inside primary node
+ * 3. generate links inside primary node
  * 4. generate custom link
  * @param {object} primaryNode process the specific primary node only
  */
@@ -24,8 +24,7 @@ export default function linkDiv(primaryNode) {
   var primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
   const root = this.root
-  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2
-  }px;`
+  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
   const primaryNodeList = this.box.children
   this.svg2nd.innerHTML = ''
 
@@ -75,14 +74,16 @@ export default function linkDiv(primaryNode) {
 
   // 2. layout primary node, generate primary link
   let primaryPath = ''
+  const alignRight = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap
+  const alignLeft = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap
   for (let i = 0; i < primaryNodeList.length; i++) {
     let x2, y2
     const el = primaryNodeList[i]
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
-      el.style.left = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap - el.offsetWidth + 'px'
-      x2 = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap - 15 // padding
+      el.style.left = alignRight - el.offsetWidth + 'px'
+      x2 = alignRight - 15 // padding
       y2 = base + currentOffsetL + elOffsetH / 2
 
       // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
@@ -97,7 +98,7 @@ export default function linkDiv(primaryNode) {
           primaryPath += `M ${LEFT} 10000 V ${y2 - 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} H ${x2}`
         }
       } else {
-        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
+        primaryPath += `M 10000 10000 C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
       }
 
       if (shortSide === 'l') {
@@ -107,8 +108,8 @@ export default function linkDiv(primaryNode) {
       }
     } else {
       el.style.top = base + currentOffsetR + 'px'
-      el.style.left = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 'px'
-      x2 = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap + 15 // padding
+      el.style.left = alignLeft + 'px'
+      x2 = alignLeft + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
 
       let LEFT = 10000
@@ -122,7 +123,7 @@ export default function linkDiv(primaryNode) {
           primaryPath += `M ${LEFT} 10000 V ${y2 - 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} H ${x2}`
         }
       } else {
-        primaryPath += `M ${10000} ${10000} C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
+        primaryPath += `M 10000 10000 C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
       }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap

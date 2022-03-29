@@ -23,7 +23,7 @@ beforeAll(async() => {
 describe('nodeOperation', () => {
   it('addChild"', async() => {
     await page.evaluate(`m.addChild(E('bd1f07c598e729dc'))`)
-    await page.waitFor('[contentEditable]')
+    await page.waitFor('#input-box')
     await page.keyboard.press('Enter')
     const id = await page.evaluate(() => {
       return E('bd1f07c598e729dc').nodeObj.children[0].parent.id
@@ -33,7 +33,7 @@ describe('nodeOperation', () => {
   it('insertSibling"', async() => {
     await page.evaluate(`m.insertSibling(E('bd1f07c598e729dc'))`)
     const newId = await page.evaluate(`currentOperation.obj.id`)
-    await page.waitFor('[contentEditable]')
+    await page.waitFor('#input-box')
     await page.keyboard.press('Enter')
     const res = await page.evaluate(newId => {
       const newNode = E(newId).nodeObj

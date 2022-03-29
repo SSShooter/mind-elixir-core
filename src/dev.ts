@@ -36,9 +36,11 @@ const mind = new MindElixir({
       return false
     },
     insertSibling(el, obj) {
+      console.log('insertSibling', el, obj)
       return true
     },
     async addChild(el, obj) {
+      console.log('addChild', el, obj)
       // await sleep()
       return true
     },
