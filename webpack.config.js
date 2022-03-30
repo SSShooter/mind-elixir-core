@@ -1,7 +1,7 @@
 const path = require('path')
 // const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
 //   .BundleAnalyzerPlugin
 
@@ -78,13 +78,16 @@ module.exports = (env, argv) => {
       //   new BundleAnalyzerPlugin()
       // ],
       optimization: {
-        minimizer: [new UglifyJsPlugin({
-          uglifyOptions: {
-            compress: {
-              drop_console: true,
+        minimize: true,
+        minimizer: [
+          new TerserPlugin({
+            terserOptions: {
+              compress: {
+                drop_console: true,
+              },
             },
-          },
-        })],
+          }),
+        ],
       },
     }
   }
