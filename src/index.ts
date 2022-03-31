@@ -167,7 +167,7 @@ export interface Options {
 }
 const $d = document
 /**
- * @class MindElixir
+ * @export MindElixir
  * @example
  * let mind = new MindElixir({
   el: '#map',

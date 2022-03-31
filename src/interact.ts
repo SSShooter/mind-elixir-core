@@ -1,5 +1,10 @@
 import { findEle } from './utils/dom'
 /**
+ * @exports -
+ * workaround for jsdoc
+ */
+/**
+ * @exports MapInteraction
  * @namespace MapInteraction
  */
 function getData(instance) {

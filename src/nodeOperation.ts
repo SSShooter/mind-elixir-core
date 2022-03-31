@@ -19,6 +19,7 @@ import { LEFT, RIGHT, SIDE } from './const'
 const $d = document
 
 /**
+ * @exports NodeOperation
  * @namespace NodeOperation
  */
 export const updateNodeStyle = function(object) {

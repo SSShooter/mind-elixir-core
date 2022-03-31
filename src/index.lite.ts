@@ -132,23 +132,6 @@ export interface Options {
   mobileMenu?: boolean,
 }
 const $d = document
-/**
- * @class MindElixir
- * @example
- * let mind = new MindElixir({
-  el: '#map',
-  direction: 2,
-  data: data,
-  draggable: true,
-  editable: true,
-  contextMenu: true,
-  toolBar: true,
-  nodeMenu: true,
-  keypress: true,
-})
-mind.init()
- *
- */
 function MindElixir(this: MindElixirInstance, {
   el,
   data,
