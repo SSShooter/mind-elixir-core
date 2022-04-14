@@ -5,6 +5,7 @@ import {
   removeNodeObj,
   insertNodeObj,
   insertBeforeNodeObj,
+  insertParentNodeObj,
   checkMoveValid,
   addParentLink,
   moveUpObj,
@@ -166,6 +167,46 @@ export const insertBefore = function(el, node) {
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
+    obj: newNodeObj,
+  })
+}
+
+export const insertParent = function(el, node) {
+  const nodeEle = el || this.currentNode
+  if (!nodeEle) return
+  const nodeObj = nodeEle.nodeObj
+  if (nodeObj.root === true) {
+    return
+  }
+  const newNodeObj = node || this.generateNewObj()
+  insertParentNodeObj(nodeObj, newNodeObj)
+  addParentLink(this.nodeData)
+  const grp0 = nodeEle.parentElement.parentElement
+  console.time('insertParent_DOM')
+  const { grp, top } = this.createGroup(newNodeObj)
+  // console.log(grp)
+  const children = grp0.parentNode
+  children.insertBefore(grp, grp0.nextSibling)
+
+  // const c = $d.createElement('children')
+  // c.appendChild(grp0)
+  // top.appendChild(createExpander(true))
+  // top.parentElement.insertBefore(c, top.nextSibling)
+  grp0.remove()
+  if (children.className === 'box') {
+    this.processPrimaryNode(grp, newNodeObj)
+    this.linkDiv()
+  } else {
+    this.linkDiv(grp.offsetParent)
+  }
+
+  if (!node) {
+    this.createInputDiv(top.children[0])
+  }
+  this.selectNode(top.children[0], true)
+  console.timeEnd('insertParent_DOM')
+  this.bus.fire('operation', {
+    name: 'insertParent',
     obj: newNodeObj,
   })
 }
@@ -344,7 +385,9 @@ export const removeNode = function(el) {
     // remove epd when children length === 0
     const parentT = t.parentNode.parentNode.previousSibling
     // root doesn't have epd
-    if (parentT.tagName !== 'ROOT') { parentT.children[1].remove() }
+    if (parentT.tagName !== 'ROOT') {
+      parentT.children[1].remove()
+    }
     this.selectParent()
   } else {
     // select sibling automatically

@@ -9,11 +9,11 @@ Bus.prototype = {
     if (this.handlers[type] === undefined) this.handlers[type] = []
     this.handlers[type].push(handler)
   },
-  fire: function(type, payload) {
+  fire: function(type, ...payload) {
     if (this.handlers[type] instanceof Array) {
       var handlers = this.handlers[type]
       for (var i = 0; i < handlers.length; i++) {
-        handlers[i](payload)
+        handlers[i](...payload)
       }
     }
   },

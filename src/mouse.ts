@@ -9,7 +9,7 @@ export default function(mind) {
       e.target.parentElement.nodeName === 'T' ||
       e.target.parentElement.nodeName === 'ROOT'
     ) {
-      mind.selectNode(e.target)
+      mind.selectNode(e.target, false, e)
     } else if (e.target.nodeName === 'path') {
       if (e.target.parentElement.nodeName === 'g') {
         mind.selectLink(e.target.parentElement)

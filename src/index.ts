@@ -34,6 +34,7 @@ import {
 import {
   insertSibling,
   insertBefore,
+  insertParent,
   addChild,
   copyNode,
   moveNode,
@@ -294,6 +295,7 @@ MindElixir.prototype = {
   // node operation
   insertSibling: beforeHook(insertSibling),
   insertBefore: beforeHook(insertBefore),
+  insertParent: beforeHook(insertParent),
   addChild: beforeHook(addChild),
   copyNode: beforeHook(copyNode),
   moveNode: beforeHook(moveNode),

@@ -1,5 +1,6 @@
 const cn = {
   addChild: '插入子节点',
+  addParent: '插入父节点',
   addSibling: '插入同级节点',
   removeNode: '删除节点',
   focus: '专注',
@@ -21,6 +22,7 @@ export default {
   zh_CN: cn,
   zh_TW: {
     addChild: '插入子節點',
+    addParent: '插入父節點',
     addSibling: '插入同級節點',
     removeNode: '刪除節點',
     focus: '專注',
@@ -38,8 +40,9 @@ export default {
     iconsSeparate: '多個圖標半角逗號分隔',
   },
   en: {
-    addChild: 'Add a child',
-    addSibling: 'Add a sibling',
+    addChild: 'Add child',
+    addParent: 'Add parent',
+    addSibling: 'Add sibling',
     removeNode: 'Remove node',
     focus: 'Focus Mode',
     cancelFocus: 'Cancel Focus Mode',
@@ -57,6 +60,7 @@ export default {
   },
   ja: {
     addChild: '子ノードを追加する',
+    addParent: '親ノードを追加します',
     addSibling: '兄弟ノードを追加する',
     removeNode: 'ノードを削除',
     focus: '集中',
@@ -75,6 +79,7 @@ export default {
   },
   pt: {
     addChild: 'Adicionar item filho',
+    addParent: 'Adicionar item pai',
     addSibling: 'Adicionar item irmao',
     removeNode: 'Remover item',
     focus: 'Modo Foco',

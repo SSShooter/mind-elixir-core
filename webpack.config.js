@@ -44,10 +44,10 @@ let config = {
 
 module.exports = (env, argv) => {
   if (argv.mode === 'development') {
-    console.log('development')
+    console.log('development', env)
     config = {
       ...config,
-      entry: env.dist ? './src/dev.dist.js' : './src/dev.ts',
+      entry: env.dist !== '0' ? './src/dev.dist.js' : './src/dev.ts',
       plugins: [
         new HtmlWebpackPlugin({
           title: 'MindElixir',

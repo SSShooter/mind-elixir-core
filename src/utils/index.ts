@@ -237,6 +237,13 @@ export function insertBeforeNodeObj(obj: NodeObj, newObj: NodeObj) {
   childrenList.splice(index, 0, newObj)
 }
 
+export function insertParentNodeObj(obj: NodeObj, newObj: NodeObj) {
+  const childrenList = obj.parent.children
+  const index = childrenList.indexOf(obj)
+  childrenList[index] = newObj
+  newObj.children = [obj]
+}
+
 export function moveNodeObj(from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
   if (to.children) to.children.push(from)

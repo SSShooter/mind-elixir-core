@@ -128,7 +128,7 @@ export function createInputDiv(tpc: Topic) {
   div.addEventListener('keydown', e => {
     e.stopPropagation()
     const key = e.key
-    console.log(e, key)
+    // console.log(e, key)
     if (key === 'Enter' || key === 'Tab') {
       // keep wrap for shift enter
       if (e.shiftKey) return

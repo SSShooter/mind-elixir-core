@@ -176,7 +176,8 @@ export default function(mind) {
   mind.bus.addListener('unselectNode', function() {
     menuContainer.hidden = true
   })
-  mind.bus.addListener('selectNode', function(nodeObj) {
+  mind.bus.addListener('selectNode', function(nodeObj, clickEvent) {
+    if (!clickEvent) return
     menuContainer.hidden = false
     clearSelect('.palette', 'nmenu-selected')
     clearSelect('.size', 'size-selected')
