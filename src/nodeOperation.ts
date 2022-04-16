@@ -136,6 +136,17 @@ export const insertSibling = function(el, node) {
   })
 }
 
+/**
+ * @function
+ * @instance
+ * @name insertBefore
+ * @memberof NodeOperation
+ * @description Create a sibling node before the selected node.
+ * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
+ * @param {node} node - New node information.
+ * @example
+ * insertBefore(E('bd4313fbac40284b'))
+ */
 export const insertBefore = function(el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -171,6 +182,17 @@ export const insertBefore = function(el, node) {
   })
 }
 
+/**
+ * @function
+ * @instance
+ * @name insertParent
+ * @memberof NodeOperation
+ * @description Create a parent node of the selected node.
+ * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
+ * @param {node} node - New node information.
+ * @example
+ * insertParent(E('bd4313fbac40284b'))
+ */
 export const insertParent = function(el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -183,18 +205,19 @@ export const insertParent = function(el, node) {
   addParentLink(this.nodeData)
   const grp0 = nodeEle.parentElement.parentElement
   console.time('insertParent_DOM')
-  const { grp, top } = this.createGroup(newNodeObj)
-  // console.log(grp)
+  const { grp, top } = this.createGroup(newNodeObj, true)
   const children = grp0.parentNode
   children.insertBefore(grp, grp0.nextSibling)
 
-  // const c = $d.createElement('children')
-  // c.appendChild(grp0)
-  // top.appendChild(createExpander(true))
-  // top.parentElement.insertBefore(c, top.nextSibling)
-  grp0.remove()
+  const c = $d.createElement('children')
+  c.appendChild(grp0)
+  top.appendChild(createExpander(true))
+  top.parentElement.insertBefore(c, top.nextSibling)
+
   if (children.className === 'box') {
-    this.processPrimaryNode(grp, newNodeObj)
+    grp.className = grp0.className
+    grp0.className = ''
+    grp0.querySelector('.svg3rd').remove()
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -421,7 +444,7 @@ export const removeNode = function(el) {
  * @instance
  * @name moveNode
  * @memberof NodeOperation
- * @description Move the target node to another node (as child node).
+ * @description Move a node to another node (as child node).
  * @param {TargetElement} from - The target you want to move.
  * @param {TargetElement} to - The target(as parent node) you want to move to.
  * @example
@@ -479,6 +502,17 @@ export const moveNode = function(from, to) {
   console.timeEnd('moveNode')
 }
 
+/**
+ * @function
+ * @instance
+ * @name moveNodeBefore
+ * @memberof NodeOperation
+ * @description Move a node and become previous node of another node.
+ * @param {TargetElement} from
+ * @param {TargetElement} to
+ * @example
+ * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
+ */
 export const moveNodeBefore = function(from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
@@ -498,6 +532,17 @@ export const moveNodeBefore = function(from, to) {
   })
 }
 
+/**
+ * @function
+ * @instance
+ * @name moveNodeAfter
+ * @memberof NodeOperation
+ * @description Move a node and become next node of another node.
+ * @param {TargetElement} from
+ * @param {TargetElement} to
+ * @example
+ * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
+ */
 export const moveNodeAfter = function(from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj

@@ -63,11 +63,11 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
-export const createGroup = function(nodeObj: NodeObj) {
+export const createGroup = function(nodeObj: NodeObj, omitChildren?: boolean) {
   const grp: Group = $d.createElement('GRP')
   const top: Top = this.createTop(nodeObj)
   grp.appendChild(top)
-  if (nodeObj.children && nodeObj.children.length > 0) {
+  if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
     top.appendChild(createExpander(nodeObj.expanded))
     if (nodeObj.expanded !== false) {
       const children = this.createChildren(nodeObj.children)

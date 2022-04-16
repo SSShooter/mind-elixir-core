@@ -7,6 +7,7 @@ interface Window {
     currentOperation: any;
     m: any;
     M: any;
+    E: any;
     exportSvg: any;
     exportPng: any;
 }

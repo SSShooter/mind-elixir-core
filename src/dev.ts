@@ -45,7 +45,7 @@ const mind = new MindElixir({
       return true
     },
   },
-  primaryLinkStyle: 2,
+  primaryLinkStyle: 1,
   primaryNodeVerticalGap: 15, // 25
   primaryNodeHorizontalGap: 15, // 65
 })
@@ -89,5 +89,6 @@ mind.bus.addListener('expandNode', node => {
 window.m = mind
 // window.m2 = mind2
 window.M = MindElixir
+window.E = MindElixir.E
 window.exportSvg = exportSvg
 window.exportPng = exportPng
