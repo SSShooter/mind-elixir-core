@@ -203,19 +203,21 @@ export const insertParent = function(el, node) {
   const newNodeObj = node || this.generateNewObj()
   insertParentNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
+
   const grp0 = nodeEle.parentElement.parentElement
   console.time('insertParent_DOM')
   const { grp, top } = this.createGroup(newNodeObj, true)
-  const children = grp0.parentNode
-  children.insertBefore(grp, grp0.nextSibling)
+  top.appendChild(createExpander(true))
+  const children0 = grp0.parentNode
+  grp0.insertAdjacentElement('afterend', grp)
 
   const c = $d.createElement('children')
   c.appendChild(grp0)
-  top.appendChild(createExpander(true))
-  top.parentElement.insertBefore(c, top.nextSibling)
 
-  if (children.className === 'box') {
-    grp.className = grp0.className
+  top.insertAdjacentElement('afterend', c)
+
+  if (children0.className === 'box') {
+    grp.className = grp0.className // l/rhs
     grp0.className = ''
     grp0.querySelector('.svg3rd').remove()
     this.linkDiv()
@@ -258,7 +260,7 @@ export const addChildFunction = function(nodeEle, node) {
       const c = $d.createElement('children')
       c.appendChild(grp)
       top.appendChild(createExpander(true))
-      top.parentElement.insertBefore(c, top.nextSibling)
+      top.insertAdjacentElement('afterend', c)
     }
     this.linkDiv(grp.offsetParent)
   } else if (top.tagName === 'ROOT') {
@@ -367,7 +369,7 @@ export const moveDownNode = function(el) {
   const obj = nodeEle.nodeObj
   moveDownObj(obj)
   if (grp.nextSibling) {
-    grp.parentNode.insertBefore(grp, grp.nextSibling.nextSibling)
+    grp.insertAdjacentElement('afterend', grp.nextSibling)
   } else {
     grp.parentNode.prepend(grp)
   }

@@ -21,7 +21,7 @@ export const findEle = (id: string, instance?) => {
 }
 
 export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
-  tpc.innerText = nodeObj.topic
+  tpc.textContent = nodeObj.topic
 
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color || 'inherit'
@@ -110,7 +110,7 @@ export function createInputDiv(tpc: Topic) {
   const origin = tpc.childNodes[0].textContent as string
   tpc.appendChild(div)
   div.id = 'input-box'
-  div.innerText = origin
+  div.textContent = origin
   div.contentEditable = 'true'
   div.spellcheck = false
   div.style.cssText = `min-width:${tpc.offsetWidth - 8}px;`
@@ -142,18 +142,19 @@ export function createInputDiv(tpc: Topic) {
     if (!div) return // 防止重复blur
     const node = tpc.nodeObj
     const topic = div.textContent!.trim()
+    console.log(topic)
     if (topic === '') node.topic = origin
     else node.topic = topic
     div.remove()
     this.inputDiv = div = null
+    if (topic === origin) return // 没有修改不做处理
+    tpc.childNodes[0].textContent = node.topic
+    this.linkDiv()
     this.bus.fire('operation', {
       name: 'finishEdit',
       obj: node,
       origin,
     })
-    if (topic === origin) return // 没有修改不做处理
-    tpc.childNodes[0].textContent = node.topic
-    this.linkDiv()
   })
   console.timeEnd('createInputDiv')
 }

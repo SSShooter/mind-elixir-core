@@ -170,7 +170,7 @@ export default {
         children: [
           {
             topic:
-              'Drag a node to another node\nand the former one will become a child node of latter one',
+              'Drag a node to another node\nand the former one will become a child node of latter one',
             id: 'bd1f07c598e729dc',
           },
         ],
