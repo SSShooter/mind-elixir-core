@@ -20,7 +20,7 @@ Mind elixir is a free open source mind map core.
 
 [中文](https://github.com/ssshooter/mind-elixir-core/blob/master/readme.cn.md)
 
-## Use now
+## Try now
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
 
@@ -34,7 +34,7 @@ with React https://codesandbox.io/s/mind-elixir-react-9sisb
 
 with Vue https://codesandbox.io/s/mind-elixir-vue-nqjjl
 
-## Use in your project
+## Usage
 
 ### Install
 
@@ -207,3 +207,7 @@ let mind = new MindElixir({
 ## Doc
 
 https://doc.mindelixir.ink/
+
+## Thanks
+
+[canvg](https://github.com/canvg/canvg)

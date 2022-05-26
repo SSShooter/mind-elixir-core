@@ -1,19 +1,40 @@
 ![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/logo.png)
 
 <p>
-  <a href="https://www.npmjs.com/package/mind-elixir"><img src="https://img.shields.io/npm/v/mind-elixir" alt="version"></a>
+  <a href="https://www.npmjs.com/package/mind-elixir">
+    <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
+  </a>
   <img src="https://img.shields.io/npm/l/mind-elixir" alt="license">
+  <a href="https://app.codacy.com/gh/ssshooter/mind-elixir-core?utm_source=github.com&utm_medium=referral&utm_content=ssshooter/mind-elixir-core&utm_campaign=Badge_Grade_Settings">
+    <img src="https://api.codacy.com/project/badge/Grade/09fadec5bf094886b30cea6aabf3a88b" alt="code quality">
+  </a>
+  <a href="https://bundlephobia.com/result?p=mind-elixir">
+    <img src="https://badgen.net/bundlephobia/dependency-count/mind-elixir" alt="dependency-count">
+  </a>
+  <a href="https://packagephobia.com/result?p=mind-elixir">
+    <img src="https://packagephobia.com/badge?p=mind-elixir" alt="dependency-count">
+  </a>
 </p>
 
-Mind elixir 是一个免费开源的思维导图内核
+Mind elixir 是一个无框架依赖的思维导图内核
 
-## 立即试用
+[English](https://github.com/ssshooter/mind-elixir-core/blob/master/readme.md)
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.cn.png)
+## 立即尝试
+
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
 
 https://mindelixir.ink/#/
 
-## 在项目中使用
+### Playground
+
+https://codepen.io/ssshooter/pen/GVQRYK
+
+with React https://codesandbox.io/s/mind-elixir-react-9sisb
+
+with Vue https://codesandbox.io/s/mind-elixir-vue-nqjjl
+
+## 如何使用
 
 ### 安装
 
@@ -27,7 +48,7 @@ npm i mind-elixir -S
 import MindElixir, { E } from 'mind-elixir'
 ```
 
-#### script 标签引入
+#### Script 标签
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/mind-elixir.js"></script>
@@ -36,9 +57,7 @@ import MindElixir, { E } from 'mind-elixir'
 ### HTML 结构
 
 ```html
-<div class="outer">
-  <div id="map"></div>
-</div>
+<div id="map"></div>
 <style>
   #map {
     height: 500px;
@@ -50,50 +69,145 @@ import MindElixir, { E } from 'mind-elixir'
 ### 初始化
 
 ```javascript
-let mind = new MindElixir({
+import MindElixir, { E } from 'mind-elixir'
+import { exportSvg, exportPng } from '../dist/painter'
+import example from '../dist/example1'
+
+let options = {
   el: '#map',
   direction: MindElixir.LEFT,
-  // 创建新数据
-  data: MindElixir.new('new topic'), 
-  // 也使用 getDataAll 得到的数据
-  data: {...},
-  draggable: true, // 启用拖动 default true
-  contextMenu: true, // 启用右键菜单 default true
-  toolBar: true, // 启用工具栏 default true
-  nodeMenu: true, // 启用节点菜单 default true
-  keypress: true, // 启用快捷键 default true
-})
+  // create new map data
+  data: MindElixir.new('new topic') or example,
+  // the data return from `.getAllData()`
+  draggable: true, // default true
+  contextMenu: true, // default true
+  toolBar: true, // default true
+  nodeMenu: true, // default true
+  keypress: true, // default true
+  locale: 'en', // [zh_CN,zh_TW,en,ja,pt] waiting for PRs
+  overflowHidden: false, // default false
+  primaryLinkStyle: 2, // [1,2] default 1
+  primaryNodeVerticalGap: 15, // default 25
+  primaryNodeHorizontalGap: 15, // default 65
+  contextMenuOption: {
+    focus: true,
+    link: true,
+    extend: [
+      {
+        name: 'Node edit',
+        onclick: () => {
+          alert('extend menu')
+        },
+      },
+    ],
+  },
+  allowUndo: false,
+  before: {
+    insertSibling(el, obj) {
+      return true
+    },
+    async addChild(el, obj) {
+      await sleep()
+      return true
+    },
+  },
+}
+
+let mind = new MindElixir(options)
 mind.init()
 
 // get a node
 E('node-id')
+
 ```
 
-### Data Export
+### 数据结构
 
 ```javascript
-mind.getAllData()
-// see src/example.js
+// whole node data structure up to now
+{
+  topic: 'node topic',
+  id: 'bd1c24420cd2c2f5',
+  style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
+  parent: null,
+  tags: ['Tag'],
+  icons: ['😀'],
+  hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
+}
 ```
 
-## 使用提示
-
-### direction 选项
-
-direction 选项可选 `MindElixir.LEFT`、`MindElixir.RIGHT` 和 `MindElixir.SIDE`。
-
-### HTML 结构
-
-挂载的目标需要定宽高，可以是百分百；外层元素建议设置 `position: relative;`，否则菜单位置以视窗为标准分布。
-
-### E 函数
-
-在使用节点操作方法时需要传入的参数可以借助 `E` 函数获得。
+### 事件处理
 
 ```javascript
-mind.insertSibling(E('bd4313fbac40284b'))
+mind.bus.addListener('operation', operation => {
+  console.log(operation)
+  // return {
+  //   name: action name,
+  //   obj: target object
+  // }
+
+  // name: [insertSibling|addChild|removeNode|beginEdit|finishEdit]
+  // obj: target
+
+  // name: moveNode
+  // obj: {from:target1,to:target2}
+})
+
+mind.bus.addListener('selectNode', node => {
+  console.log(node)
+})
+
+mind.bus.addListener('expandNode', node => {
+  console.log('expandNode: ', node)
+})
+```
+
+### 数据导出
+
+```javascript
+mind.getAllData() // javascript object, see src/example.js
+mind.getAllDataString() // stringify object
+mind.getAllDataMd() // markdown
+```
+
+### 输出图片
+
+**WIP**
+
+```javascript
+import painter from 'mind-elixir/dist/painter'
+painter.exportSvg()
+painter.exportPng()
+```
+
+### 操作拦截
+
+```javascript
+let mind = new MindElixir({
+  ...
+  before: {
+    insertSibling(el, obj) {
+      console.log(el, obj)
+      if (this.currentNode.nodeObj.parent.root) {
+        return false
+      }
+      return true
+    },
+    async addChild(el, obj) {
+      await sleep()
+      if (this.currentNode.nodeObj.parent.root) {
+        return false
+      }
+      return true
+    },
+  },
+})
 ```
 
 ## 文档
 
-https://inspiring-golick-3c01b9.netlify.com/
+https://doc.mindelixir.ink/
+
+## 感谢
+
+[canvg](https://github.com/canvg/canvg)
