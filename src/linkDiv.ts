@@ -1,12 +1,6 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle, Expander } from './utils/dom'
-import {
-  SIDE,
-  GAP,
-  TURNPOINT_R,
-  PRIMARY_NODE_HORIZONTAL_GAP,
-  PRIMARY_NODE_VERTICAL_GAP,
-} from './const'
+import { SIDE, GAP, TURNPOINT_R, PRIMARY_NODE_HORIZONTAL_GAP, PRIMARY_NODE_VERTICAL_GAP } from './const'
 
 /**
  * Link nodes with svg,
@@ -134,8 +128,7 @@ export default function linkDiv(primaryNode) {
     // set position of expander
     const expander = el.children[0].children[1]
     if (expander) {
-      expander.style.top =
-        (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
+      expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
       if (el.className === 'lhs') {
         expander.style.left = -10 + 'px'
       } else {
@@ -171,17 +164,13 @@ export default function linkDiv(primaryNode) {
     if (typeof link.from === 'string') {
       this.createLink(findEle(link.from), findEle(link.to), true, link)
     } else {
-      this.createLink(
-        findEle(link.from.nodeObj.id),
-        findEle(link.to.nodeObj.id),
-        true,
-        link
-      )
+      this.createLink(findEle(link.from.nodeObj.id), findEle(link.to.nodeObj.id), true, link)
     }
   }
   console.timeEnd('linkDiv')
 }
 
+// core function of generate svg3rd
 let path = ''
 function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean) {
   const parentOT = parent.offsetTop
@@ -207,10 +196,7 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
       xMiddle = parentOL
       x2 = parentOL - childT.offsetWidth
 
-      if (
-        childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
-        childTOT + childTOH > parentOT + parentOH / 2 - 50
-      ) {
+      if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
         // 相差+-50内直接直线
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
       } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
@@ -225,10 +211,7 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
       xMiddle = parentOL + parentOW
       x2 = parentOL + parentOW + childT.offsetWidth
 
-      if (
-        childTOT + childTOH < parentOT + parentOH / 2 + 50 &&
-        childTOT + childTOH > parentOT + parentOH / 2 - 50
-      ) {
+      if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
       } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle + TURNPOINT_R} ${y2} H ${x2}`
@@ -239,8 +222,7 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
 
     const expander = childT.children[1] as Expander
     if (expander) {
-      expander.style.top =
-        (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
+      expander.style.top = (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
       if (direction === 'lhs') {
         expander.style.left = -10 + 'px'
       } else if (direction === 'rhs') {

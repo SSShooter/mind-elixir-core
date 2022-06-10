@@ -423,11 +423,7 @@ export const removeNode = function(el) {
     // MAYBEBUG should traversal all children node
     const link = this.linkData[prop]
     if (link.from === t.firstChild || link.to === t.firstChild) {
-      this.removeLink(
-        this.mindElixirBox.querySelector(
-          `[data-linkid=${this.linkData[prop].id}]`
-        )
-      )
+      this.removeLink(this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`))
     }
   }
   // remove GRP
@@ -527,6 +523,7 @@ export const moveNodeBefore = function(from, to) {
   const toGrp = toTop.parentNode
   const toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp)
+  if (toGrp.className) fromGrp.className = toGrp.className
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeBefore',
@@ -557,6 +554,7 @@ export const moveNodeAfter = function(from, to) {
   const toGrp = toTop.parentNode
   const toChilren = toTop.parentNode.parentNode
   toChilren.insertBefore(fromGrp, toGrp.nextSibling)
+  if (toGrp.className) fromGrp.className = toGrp.className
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeAfter',

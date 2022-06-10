@@ -4,13 +4,24 @@ import { exportSvg, exportPng } from '../painter/index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 
+interface Window {
+  currentOperation: any
+  m: any
+  M: any
+  E: any
+  exportSvg: any
+  exportPng: any
+}
+
+declare let window: Window
+
 const mind = new MindElixir({
   el: '#map',
   newTopicName: '子节点',
   direction: MindElixir.SIDE,
   // direction: MindElixir.RIGHT,
-  // data: MindElixir.new('new topic'),
-  data: example,
+  data: MindElixir.new('new topic'),
+  // data: example,
   locale: 'en',
   draggable: true,
   editable: true,
