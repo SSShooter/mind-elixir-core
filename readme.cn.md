@@ -24,7 +24,7 @@ Mind elixir 是一个无框架依赖的思维导图内核
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
 
-https://mindelixir.ink/#/
+https://mind-elixir.com/#/
 
 ### Playground
 
@@ -206,7 +206,7 @@ let mind = new MindElixir({
 
 ## 文档
 
-https://doc.mindelixir.ink/
+https://doc.mind-elixir.com/
 
 ## 感谢
 

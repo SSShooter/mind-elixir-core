@@ -21,7 +21,7 @@
     "type": "git",
     "url": "https://github.com/ssshooter/mind-elixir-core"
   },
-  "homepage": "https://mindelixir.ink/",
+  "homepage": "https://mind-elixir.com/",
   "author": "ssshooter",
   "license": "MIT",
   "devDependencies": {

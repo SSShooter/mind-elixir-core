@@ -24,7 +24,7 @@ Mind elixir is a free open source mind map core.
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
 
-https://mindelixir.ink/#/
+https://mind-elixir.com/#/
 
 ### Playground
 
@@ -206,7 +206,7 @@ let mind = new MindElixir({
 
 ## Doc
 
-https://doc.mindelixir.ink/
+https://doc.mind-elixir.com/
 
 ## Thanks
 
