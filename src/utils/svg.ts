@@ -22,10 +22,10 @@ export const createLine = function(
   y2: number
 ) {
   const line = $d.createElementNS(svgNS, 'line')
-  line.setAttribute('x1', x1 + '')
-  line.setAttribute('y1', y1 + '')
-  line.setAttribute('x2', x2 + '')
-  line.setAttribute('y2', y2 + '')
+  line.setAttribute('x1', x1)
+  line.setAttribute('y1', y1)
+  line.setAttribute('x2', x2)
+  line.setAttribute('y2', y2)
   line.setAttribute('stroke', '#bbb')
   line.setAttribute('fill', 'none')
   line.setAttribute('stroke-width', '2')

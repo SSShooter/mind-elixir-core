@@ -1,4 +1,4 @@
-![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/logo.png)
+![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png)
 
 <p>
   <a href="https://www.npmjs.com/package/mind-elixir">
@@ -22,7 +22,7 @@ Mind elixir 是一个无框架依赖的思维导图内核
 
 ## 立即尝试
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/screenshot.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot.png)
 
 https://mind-elixir.com/#/
 
