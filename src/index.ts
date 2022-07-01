@@ -70,16 +70,22 @@ import mobileMenu from './plugin/mobileMenu'
 import Bus from './utils/pubsub'
 
 import './index.less'
-import './plugin/contextMenu.less'
-import './plugin/toolBar.less'
-import './plugin/nodeMenu.less'
-import './plugin/mobileMenu.less'
 
 // import { exportSvg, exportPng } from '../painter'
 
 import './iconfont/iconfont.js'
 
 // TODO show up animation
+
+/**
+ * @function
+ * @global
+ * @name E
+ * @param {string} id Node id.
+ * @return {TargetElement} Target element.
+ * @example
+ * E('bd4313fbac40284b')
+ */
 export const E = findEle
 type LinkObj = object
 type operation = {
@@ -346,15 +352,6 @@ MindElixir.prototype = {
   refresh,
 
   init: function() {
-    /**
-     * @function
-     * @global
-     * @name E
-     * @param {string} id Node id.
-     * @return {TargetElement} Target element.
-     * @example
-     * E('bd4313fbac40284b')
-     */
     addParentLink(this.nodeData)
     console.log('ME_version ' + MindElixir.version)
     console.log(this)

@@ -39,8 +39,6 @@ export const createPath = function(d: string) {
   path.setAttribute('fill', 'none')
   path.setAttribute('stroke-linecap', 'square')
   path.setAttribute('stroke-width', '1')
-  path.setAttribute('transform', 'translate(0.5,-0.5)')
-  // adding translate(0.5,-0.5) can fix render error on windows, but i still dunno why
   return path
 }
 

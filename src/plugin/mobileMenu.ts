@@ -1,3 +1,5 @@
+import './mobileMenu.less'
+
 export default function(mind, option?) {
   const createLi = (id, name) => {
     const div = document.createElement('div')

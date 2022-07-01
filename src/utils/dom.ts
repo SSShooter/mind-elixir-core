@@ -128,7 +128,7 @@ export function createInputDiv(tpc: Topic) {
   div.addEventListener('keydown', e => {
     e.stopPropagation()
     const key = e.key
-    // console.log(e, key)
+
     if (key === 'Enter' || key === 'Tab') {
       // keep wrap for shift enter
       if (e.shiftKey) return
@@ -139,7 +139,7 @@ export function createInputDiv(tpc: Topic) {
     }
   })
   div.addEventListener('blur', () => {
-    if (!div) return // 防止重复blur
+    if (!div) return
     const node = tpc.nodeObj
     const topic = div.textContent!.trim()
     console.log(topic)
@@ -147,7 +147,7 @@ export function createInputDiv(tpc: Topic) {
     else node.topic = topic
     div.remove()
     this.inputDiv = div = null
-    if (topic === origin) return // 没有修改不做处理
+    if (topic === origin) return
     tpc.childNodes[0].textContent = node.topic
     this.linkDiv()
     this.bus.fire('operation', {
@@ -162,7 +162,6 @@ export function createInputDiv(tpc: Topic) {
 export const createExpander = function(expanded: boolean | undefined): Expander {
   const expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
-  // expander.innerText = expanded !== false ? '⊖' : '⊕'
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''
   return expander

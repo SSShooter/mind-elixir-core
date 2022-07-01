@@ -1,5 +1,6 @@
 import i18n from '../i18n'
 import { encodeHTML } from '../utils/index'
+import './contextMenu.less'
 
 export default function(mind, option) {
   const createTips = words => {
@@ -163,7 +164,7 @@ export default function(mind, option) {
         ) {
           mind.createLink(from, mind.currentNode)
         } else {
-          console.log('取消连接')
+          console.log('link cancel')
         }
       },
       {

@@ -1,3 +1,4 @@
+import './nodeMenu.less'
 import i18n from '../i18n'
 
 const createDiv = (id) => {
