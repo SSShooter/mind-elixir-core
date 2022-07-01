@@ -34,6 +34,7 @@ export default function(mind) {
   const styleDiv = createDiv('nm-style')
   const tagDiv = createDiv('nm-tag')
   const iconDiv = createDiv('nm-icon')
+  const urlDiv = createDiv('nm-url')
 
   styleDiv.innerHTML = `
       <div class="nm-fontsize-container">
@@ -62,6 +63,7 @@ export default function(mind) {
   `
   tagDiv.innerHTML = `${i18n[locale].tag}<input class="nm-tag" tabindex="-1" placeholder="${i18n[locale].tagsSeparate}" /><br>`
   iconDiv.innerHTML = `${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${i18n[locale].iconsSeparate}" /><br>`
+  urlDiv.innerHTML = `${i18n[locale].url}<input class="nm-url" tabindex="-1" /><br>`
 
   const menuContainer = document.createElement('nmenu')
   menuContainer.innerHTML = `
@@ -72,6 +74,7 @@ export default function(mind) {
   menuContainer.appendChild(styleDiv)
   menuContainer.appendChild(tagDiv)
   menuContainer.appendChild(iconDiv)
+  menuContainer.appendChild(urlDiv)
   menuContainer.hidden = true
 
   function clearSelect(klass, remove) {
@@ -88,6 +91,7 @@ export default function(mind) {
   const fontBtn:HTMLElement = menuContainer.querySelector('.font')
   const tagInput:HTMLInputElement = mind.container.querySelector('.nm-tag')
   const iconInput:HTMLInputElement = mind.container.querySelector('.nm-icon')
+  const urlInput:HTMLInputElement = mind.container.querySelector('.nm-url')
   menuContainer.onclick = e => {
     if (!mind.currentNode) return
     const nodeObj = mind.currentNode.nodeObj
@@ -162,6 +166,10 @@ export default function(mind) {
       mind.updateNodeIcons(mind.currentNode.nodeObj, newIcons.filter(icon => icon))
     }
   }
+  urlInput.onchange = (e:InputEvent & { target: HTMLInputElement}) => {
+    if (!mind.currentNode) return
+    mind.updateNodeHyperLink(mind.currentNode.nodeObj, e.target.value)
+  }
   let state = 'open'
   buttonContainer.onclick = e => {
     if (state === 'open') {
@@ -208,6 +216,11 @@ export default function(mind) {
       iconInput.value = nodeObj.icons.join(',')
     } else {
       iconInput.value = ''
+    }
+    if (nodeObj.hyperLink) {
+      urlInput.value = nodeObj.hyperLink
+    } else {
+      urlInput.value = ''
     }
   })
 }

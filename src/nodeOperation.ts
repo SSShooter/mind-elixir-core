@@ -45,7 +45,6 @@ export const updateNodeStyle = function(object) {
 }
 
 export const updateNodeTags = function(object, tags) {
-  if (!tags) return
   const oldVal = object.tags
   object.tags = tags
   const nodeEle = findEle(object.id)
@@ -59,7 +58,6 @@ export const updateNodeTags = function(object, tags) {
 }
 
 export const updateNodeIcons = function(object, icons) {
-  if (!icons) return
   const oldVal = object.icons
   object.icons = icons
   const nodeEle = findEle(object.id)
@@ -73,7 +71,6 @@ export const updateNodeIcons = function(object, icons) {
 }
 
 export const updateNodeHyperLink = function(object, hyperLink) {
-  if (!hyperLink) return
   const oldVal = object.hyperLink
   object.hyperLink = hyperLink
   const nodeEle = findEle(object.id)

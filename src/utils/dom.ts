@@ -7,6 +7,7 @@ export type Group = HTMLElement
 
 export interface Topic extends HTMLElement {
   nodeObj?: NodeObj
+  linkContainer?: HTMLElement
 }
 
 export interface Expander extends HTMLElement {
@@ -44,6 +45,11 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
     linkContainer.innerText = '🔗'
     linkContainer.href = nodeObj.hyperLink
     tpc.appendChild(linkContainer)
+    tpc.linkContainer = linkContainer
+    console.log(linkContainer)
+  } else if (tpc.linkContainer) {
+    tpc.linkContainer.remove()
+    tpc.linkContainer = null
   }
   if (nodeObj.icons && nodeObj.icons.length) {
     const iconsContainer = $d.createElement('span')
