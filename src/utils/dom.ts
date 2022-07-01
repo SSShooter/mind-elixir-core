@@ -45,7 +45,7 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
     linkContainer.href = nodeObj.hyperLink
     tpc.appendChild(linkContainer)
   }
-  if (nodeObj.icons) {
+  if (nodeObj.icons && nodeObj.icons.length) {
     const iconsContainer = $d.createElement('span')
     iconsContainer.className = 'icons'
     iconsContainer.innerHTML = nodeObj.icons
@@ -53,7 +53,7 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
       .join('')
     tpc.appendChild(iconsContainer)
   }
-  if (nodeObj.tags) {
+  if (nodeObj.tags && nodeObj.tags.length) {
     const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
     tagsContainer.innerHTML = nodeObj.tags

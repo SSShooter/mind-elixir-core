@@ -150,16 +150,16 @@ export default function(mind) {
   }
   tagInput.onchange = (e:InputEvent & { target: HTMLInputElement}) => {
     if (!mind.currentNode) return
-    if (e.target.value) {
+    if (typeof e.target.value === 'string') {
       const newTags = e.target.value.split(',')
-      mind.updateNodeTags(mind.currentNode.nodeObj, newTags)
+      mind.updateNodeTags(mind.currentNode.nodeObj, newTags.filter(tag => tag))
     }
   }
   iconInput.onchange = (e:InputEvent & { target: HTMLInputElement}) => {
     if (!mind.currentNode) return
-    if (e.target.value) {
+    if (typeof e.target.value === 'string') {
       const newIcons = e.target.value.split(',')
-      mind.updateNodeIcons(mind.currentNode.nodeObj, newIcons)
+      mind.updateNodeIcons(mind.currentNode.nodeObj, newIcons.filter(icon => icon))
     }
   }
   let state = 'open'
