@@ -162,7 +162,7 @@ export function createInputDiv(tpc: Topic) {
 export const createExpander = function(expanded: boolean | undefined): Expander {
   const expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
-  expander.innerText = expanded !== false ? '-' : '+'
+  // expander.innerText = expanded !== false ? '⊖' : '⊕'
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''
   return expander

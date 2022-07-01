@@ -150,16 +150,22 @@
       }
       epd {
         position: absolute;
-        height: 12px;
-        width: 12px;
-        line-height: 12px;
+        height: 18px;
+        width: 18px;
+        // line-height: 12px;
         text-align: center;
-        border-radius: 50%;
-        border: 1px solid #4f4f4f;
-        background-color: #fff;
+        // border-radius: 50%;
+        // border: 1px solid #4f4f4f;
+        // background-color: #fff;
+        background-image: url('./icons/add-circle.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+
         pointer-events: all;
         z-index: 9;
         &.minus {
+          background-image: url('./icons/minus-circle.svg') !important;
           transition: all 0.3s;
           opacity: 0;
           &:hover {

@@ -27,17 +27,18 @@ let config = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
-      {
-        test: /\.(ttf|woff|woff2|eot|svg)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192,
-            },
-          },
-        ],
-      },
+      { test: /\.svg/, type: 'asset/inline' },
+      // {
+      //   test: /\.(ttf|woff|woff2|eot|svg)$/i,
+      //   use: [
+      //     {
+      //       loader: 'url-loader',
+      //       options: {
+      //         limit: false,
+      //       },
+      //     },
+      //   ],
+      // },
     ],
   },
 }
