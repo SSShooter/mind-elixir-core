@@ -194,7 +194,7 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
     if (direction === 'lhs') {
       x1 = parentOL + GAP
       xMiddle = parentOL
-      x2 = parentOL - childT.offsetWidth
+      x2 = parentOL - childT.offsetWidth + GAP
 
       if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
         // 相差+-50内直接直线
@@ -209,7 +209,7 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
     } else if (direction === 'rhs') {
       x1 = parentOL + parentOW - GAP
       xMiddle = parentOL + parentOW
-      x2 = parentOL + parentOW + childT.offsetWidth
+      x2 = parentOL + parentOW + childT.offsetWidth - GAP
 
       if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
