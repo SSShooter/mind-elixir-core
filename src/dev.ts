@@ -20,8 +20,6 @@ const options = {
   newTopicName: '子节点',
   direction: MindElixir.SIDE,
   // direction: MindElixir.RIGHT,
-  data: MindElixir.new('new topic'),
-  // data: example,
   locale: 'en',
   draggable: true,
   editable: true,
@@ -62,7 +60,9 @@ const options = {
 }
 
 const mind = new (MindElixir as any)(options)
-mind.init()
+
+const data = MindElixir.new('new topic')
+mind.init(example) // or try `example`
 function sleep() {
   return new Promise<void>((res, rej) => {
     setTimeout(() => res(), 1000)
@@ -72,12 +72,11 @@ console.log('test E function', E('bd4313fbac40284b'))
 const mind2 = new (MindElixirLite as any)({
   el: document.querySelector('#map2'),
   direction: 2,
-  data: example2,
   draggable: false,
   // overflowHidden: true,
   nodeMenu: true,
 })
-mind2.init()
+mind2.init(example2)
 window.currentOperation = null
 mind.bus.addListener('operation', operation => {
   console.log(operation)

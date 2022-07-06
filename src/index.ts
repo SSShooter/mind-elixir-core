@@ -71,9 +71,6 @@ import mobileMenu from './plugin/mobileMenu'
 import Bus from './utils/pubsub'
 
 import './index.less'
-
-// import { exportSvg, exportPng } from '../painter'
-
 import './iconfont/iconfont.js'
 
 // TODO show up animation
@@ -151,6 +148,18 @@ export interface MindElixirInstance {
   primaryNodeHorizontalGap: number,
   primaryNodeVerticalGap: number,
   mobileMenu: boolean,
+
+  container: HTMLElement,
+  map: HTMLElement,
+  root: HTMLElement,
+  box: HTMLElement,
+  svg2nd: SVGElement,
+  linkController:SVGElement,
+  P2: HTMLElement,
+  P3: HTMLElement,
+  line1:SVGElement,
+  line2:SVGElement,
+  linkSvgGroup:SVGElement,
 }
 export interface Options {
   el: string | Element,
@@ -193,7 +202,6 @@ mind.init()
  */
 function MindElixir(this: MindElixirInstance, {
   el,
-  data,
   direction,
   locale,
   draggable,
@@ -212,6 +220,7 @@ function MindElixir(this: MindElixirInstance, {
   primaryNodeVerticalGap,
   mobileMenu,
 }: Options) {
+  console.log('ME_version ' + MindElixir.version, this)
   let box
   const elType = Object.prototype.toString.call(el)
   if (elType === '[object HTMLDivElement]') {
@@ -222,8 +231,6 @@ function MindElixir(this: MindElixirInstance, {
   if (!box) return new Error('MindElixir: el is not a valid element')
   this.mindElixirBox = box
   this.before = before || {}
-  this.nodeData = data.nodeData
-  this.linkData = data.linkData || {}
   this.locale = locale
   this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
@@ -288,6 +295,49 @@ function MindElixir(this: MindElixirInstance, {
       this.isUndo = false
     }
   }
+
+  this.mindElixirBox.className += ' mind-elixir'
+  this.mindElixirBox.innerHTML = ''
+
+  this.container = $d.createElement('div') // map container
+  this.container.className = 'map-container'
+
+  this.map = $d.createElement('div') // map-canvas Element
+  this.map.className = 'map-canvas'
+  this.map.setAttribute('tabindex', '0')
+  this.container.appendChild(this.map)
+  this.mindElixirBox.appendChild(this.container)
+  this.root = $d.createElement('root')
+
+  this.box = $d.createElement('children')
+  this.box.className = 'box'
+
+  // infrastructure
+
+  this.svg2nd = createLinkSvg('svg2nd') // main link container
+
+  this.linkController = createLinkSvg('linkcontroller') // bezier controller container
+  this.P2 = $d.createElement('div') // bezier P2
+  this.P3 = $d.createElement('div') // bezier P3
+  this.P2.className = this.P3.className = 'circle'
+  this.line1 = createLine(0, 0, 0, 0) // bezier auxiliary line1
+  this.line2 = createLine(0, 0, 0, 0) // bezier auxiliary line2
+  this.linkController.appendChild(this.line1)
+  this.linkController.appendChild(this.line2)
+
+  this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
+
+  this.map.appendChild(this.root)
+  this.map.appendChild(this.box)
+  this.map.appendChild(this.svg2nd)
+  this.map.appendChild(this.linkController)
+  this.map.appendChild(this.linkSvgGroup)
+  this.map.appendChild(this.P2)
+  this.map.appendChild(this.P3)
+
+  if (this.overflowHidden) {
+    this.container.style.overflow = 'hidden'
+  } else initMouseEvent(this)
 }
 
 function beforeHook(fn:(el:any, node?:any)=>void) {
@@ -358,52 +408,13 @@ MindElixir.prototype = {
   disableEdit,
   expandNode,
   refresh,
-
-  init: function() {
-    addParentLink(this.nodeData)
-    console.log('ME_version ' + MindElixir.version)
-    console.log(this)
-    this.mindElixirBox.className += ' mind-elixir'
-    this.mindElixirBox.innerHTML = ''
-
-    this.container = $d.createElement('div') // map container
-    this.container.className = 'map-container'
-
-    if (this.overflowHidden) this.container.style.overflow = 'hidden'
-
-    this.map = $d.createElement('div') // map-canvas Element
-    this.map.className = 'map-canvas'
-    this.map.setAttribute('tabindex', '0')
-    this.container.appendChild(this.map)
-    this.mindElixirBox.appendChild(this.container)
-    this.root = $d.createElement('root')
-
-    this.box = $d.createElement('children')
-    this.box.className = 'box'
-
-    // infrastructure
-
-    this.svg2nd = createLinkSvg('svg2nd') // main link container
-
-    this.linkController = createLinkSvg('linkcontroller') // bezier controller container
-    this.P2 = $d.createElement('div') // bezier P2
-    this.P3 = $d.createElement('div') // bezier P3
-    this.P2.className = this.P3.className = 'circle'
-    this.line1 = createLine(0, 0, 0, 0) // bezier auxiliary line1
-    this.line2 = createLine(0, 0, 0, 0) // bezier auxiliary line2
-    this.linkController.appendChild(this.line1)
-    this.linkController.appendChild(this.line2)
-
-    this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
-
-    this.map.appendChild(this.root)
-    this.map.appendChild(this.box)
-    this.map.appendChild(this.svg2nd)
-    this.map.appendChild(this.linkController)
-    this.map.appendChild(this.linkSvgGroup)
-    this.map.appendChild(this.P2)
-    this.map.appendChild(this.P3)
-
+  install(plugin) {
+    plugin(this)
+  },
+  init(data:MindElixirData) {
+    if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
+    this.nodeData = data.nodeData
+    this.linkData = data.linkData || {}
     // plugin
     this.toolBar && toolBar(this)
     this.nodeMenu && nodeMenu(this)
@@ -416,10 +427,10 @@ MindElixir.prototype = {
     }
     this.draggable && nodeDraggable(this)
 
+    addParentLink(this.nodeData)
     this.toCenter()
     this.layout()
     this.linkDiv()
-    if (!this.overflowHidden) initMouseEvent(this)
   },
 }
 
@@ -430,7 +441,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '0.17.0'
+MindElixir.version = '1.0.0'
 MindElixir.E = findEle
 
 /**
