@@ -15,7 +15,7 @@ interface Window {
 
 declare let window: Window
 
-const mind = new MindElixir({
+const options = {
   el: '#map',
   newTopicName: '子节点',
   direction: MindElixir.SIDE,
@@ -59,7 +59,9 @@ const mind = new MindElixir({
   primaryLinkStyle: 1,
   primaryNodeVerticalGap: 15, // 25
   primaryNodeHorizontalGap: 15, // 65
-})
+}
+
+const mind = new (MindElixir as any)(options)
 mind.init()
 function sleep() {
   return new Promise<void>((res, rej) => {
@@ -67,8 +69,8 @@ function sleep() {
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
-const mind2 = new MindElixirLite({
-  el: '#map2',
+const mind2 = new (MindElixirLite as any)({
+  el: document.querySelector('#map2'),
   direction: 2,
   data: example2,
   draggable: false,

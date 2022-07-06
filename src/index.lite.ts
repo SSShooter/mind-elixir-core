@@ -111,7 +111,7 @@ export interface MindElixirInstance {
 
 }
 export interface Options {
-  el: string,
+  el: string | Element,
   data: MindElixirData,
   direction?: number,
   locale?: string,
@@ -147,8 +147,14 @@ function MindElixir(this: MindElixirInstance, {
   primaryNodeVerticalGap,
   mobileMenu,
 }: Options) {
-  const box = document.querySelector(el) as HTMLElement
-  if (!box) return
+  let box
+  const elType = Object.prototype.toString.call(el)
+  if (elType === '[object HTMLDivElement]') {
+    box = el as HTMLElement
+  } else if (elType === '[object String]') {
+    box = document.querySelector(el as string) as HTMLElement
+  }
+  if (!box) return new Error('MindElixir: el is not a valid element')
   this.mindElixirBox = box
   this.nodeData = data.nodeData
   this.linkData = data.linkData || {}
