@@ -284,15 +284,15 @@ export const addChild = function(el: NodeElement, node: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const { newTop, newNodeObj } = addChildFunction.call(this, nodeEle, node)
+  this.bus.fire('operation', {
+    name: 'addChild',
+    obj: newNodeObj,
+  })
   console.timeEnd('addChild')
   if (!node) {
     this.createInputDiv(newTop.children[0])
   }
   this.selectNode(newTop.children[0], true)
-  this.bus.fire('operation', {
-    name: 'addChild',
-    obj: newNodeObj,
-  })
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
