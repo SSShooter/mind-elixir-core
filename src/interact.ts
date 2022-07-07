@@ -333,7 +333,8 @@ export const expandNode = function(el, isExpand) {
 export const refresh = function(data) {
   // add parent property to every node
   if (data) {
-    this.nodeData = data
+    this.nodeData = data.nodeData
+    this.linkData = data.linkData || {}
   }
   this.addParentLink(this.nodeData)
   // create dom element for every node
