@@ -3,6 +3,7 @@ import MindElixirLite from './index.lite'
 import { exportSvg, exportPng } from '../painter/index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
+import example3 from './exampleData/3'
 
 interface Window {
   currentOperation: any

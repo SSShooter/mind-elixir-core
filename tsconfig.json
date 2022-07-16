@@ -2,9 +2,7 @@
   "compilerOptions": {
     "strict": false,
     "target": "es2016",
-    "allowJs": true,
-    "sourceMap": true,
-    "outDir": "./dist"
+    "allowJs": true
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }
