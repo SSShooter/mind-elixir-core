@@ -1,9 +1,10 @@
 import './nodeMenu.less'
 import i18n from '../i18n'
 
-const createDiv = (id) => {
+const createDiv = (id, innerHTML) => {
   const div = document.createElement('div')
   div.id = id
+  div.innerHTML = innerHTML
   return div
 }
 
@@ -29,42 +30,45 @@ const colorList = [
 ]
 
 export default function(mind) {
-  const locale = i18n[mind.locale] ? mind.locale : 'en'
-  let bgOrFont
-  const styleDiv = createDiv('nm-style')
-  const tagDiv = createDiv('nm-tag')
-  const iconDiv = createDiv('nm-icon')
-  const urlDiv = createDiv('nm-url')
+  function clearSelect(klass, remove) {
+    var elems = mind.container.querySelectorAll(klass)
+    ;[].forEach.call(elems, function(el) {
+      el.classList.remove(remove)
+    })
+  }
 
-  styleDiv.innerHTML = `
-      <div class="nm-fontsize-container">
-        ${['15', '24', '32']
+  // create element
+  const locale = i18n[mind.locale] ? mind.locale : 'en'
+  const styleDiv = createDiv('nm-style', `
+  <div class="nm-fontsize-container">
+    ${['15', '24', '32']
     .map(size => {
       return `<div class="size"  data-size="${size}">
-        <svg class="icon" style="width: ${size}px;height: ${size}px" aria-hidden="true">
-          <use xlink:href="#icon-a"></use>
-        </svg></div>`
+    <svg class="icon" style="width: ${size}px;height: ${size}px" aria-hidden="true">
+      <use xlink:href="#icon-a"></use>
+    </svg></div>`
     })
     .join('')}<div class="bold"><svg class="icon" aria-hidden="true">
-  <use xlink:href="#icon-B"></use>
-  </svg></div>
-      </div>
-      <div class="nm-fontcolor-container">
-        ${colorList
+<use xlink:href="#icon-B"></use>
+</svg></div>
+  </div>
+  <div class="nm-fontcolor-container">
+    ${colorList
     .map(color => {
       return `<div class="split6"><div class="palette" data-color="${color}" style="background-color: ${color};"></div></div>`
     })
     .join('')}
-      </div>
-      <div class="bof">
-      <span class="font">${i18n[locale].font}</span>
-      <span class="background">${i18n[locale].background}</span>
-      </div>
-  `
-  tagDiv.innerHTML = `${i18n[locale].tag}<input class="nm-tag" tabindex="-1" placeholder="${i18n[locale].tagsSeparate}" /><br>`
-  iconDiv.innerHTML = `${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${i18n[locale].iconsSeparate}" /><br>`
-  urlDiv.innerHTML = `${i18n[locale].url}<input class="nm-url" tabindex="-1" /><br>`
+  </div>
+  <div class="bof">
+  <span class="font">${i18n[locale].font}</span>
+  <span class="background">${i18n[locale].background}</span>
+  </div>`)
+  const tagDiv = createDiv('nm-tag', `${i18n[locale].tag}<input class="nm-tag" tabindex="-1" placeholder="${i18n[locale].tagsSeparate}" />`)
+  const iconDiv = createDiv('nm-icon', `${i18n[locale].icon}<input class="nm-icon" tabindex="-1" placeholder="${i18n[locale].iconsSeparate}" />`)
+  const urlDiv = createDiv('nm-url', `${i18n[locale].url}<input class="nm-url" tabindex="-1" />`)
+  const memoDiv = createDiv('nm-memo', `${i18n[locale].memo || 'Memo'}<textarea class="nm-memo" rows="5" tabindex="-1" />`)
 
+  // create container
   const menuContainer = document.createElement('nmenu')
   menuContainer.innerHTML = `
   <div class="button-container"><svg class="icon" aria-hidden="true">
@@ -75,16 +79,11 @@ export default function(mind) {
   menuContainer.appendChild(tagDiv)
   menuContainer.appendChild(iconDiv)
   menuContainer.appendChild(urlDiv)
+  menuContainer.appendChild(memoDiv)
   menuContainer.hidden = true
-
-  function clearSelect(klass, remove) {
-    var elems = mind.container.querySelectorAll(klass)
-    ;[].forEach.call(elems, function(el) {
-      el.classList.remove(remove)
-    })
-  }
-
   mind.container.append(menuContainer)
+
+  // query input element
   const sizeSelector = menuContainer.querySelectorAll('.size')
   const bold:HTMLElement = menuContainer.querySelector('.bold')
   const buttonContainer:HTMLElement = menuContainer.querySelector('.button-container')
@@ -92,6 +91,10 @@ export default function(mind) {
   const tagInput:HTMLInputElement = mind.container.querySelector('.nm-tag')
   const iconInput:HTMLInputElement = mind.container.querySelector('.nm-icon')
   const urlInput:HTMLInputElement = mind.container.querySelector('.nm-url')
+  const memoInput:HTMLInputElement = mind.container.querySelector('.nm-memo')
+
+  // handle input and button click
+  let bgOrFont
   menuContainer.onclick = e => {
     if (!mind.currentNode) return
     const nodeObj = mind.currentNode.nodeObj
@@ -170,6 +173,10 @@ export default function(mind) {
     if (!mind.currentNode) return
     mind.updateNodeHyperLink(mind.currentNode.nodeObj, e.target.value)
   }
+  memoInput.onchange = (e:InputEvent & { target: HTMLInputElement}) => {
+    if (!mind.currentNode) return
+    mind.currentNode.nodeObj.memo = e.target.value
+  }
   let state = 'open'
   buttonContainer.onclick = e => {
     if (state === 'open') {
@@ -182,6 +189,8 @@ export default function(mind) {
       buttonContainer.innerHTML = `<svg class="icon" aria-hidden="true"><use xlink:href="#icon-close"></use></svg>`
     }
   }
+
+  // handle node selection
   mind.bus.addListener('unselectNode', function() {
     menuContainer.hidden = true
   })
@@ -217,10 +226,7 @@ export default function(mind) {
     } else {
       iconInput.value = ''
     }
-    if (nodeObj.hyperLink) {
-      urlInput.value = nodeObj.hyperLink
-    } else {
-      urlInput.value = ''
-    }
+    urlInput.value = nodeObj.hyperLink || ''
+    memoInput.value = nodeObj.memo || ''
   })
 }
