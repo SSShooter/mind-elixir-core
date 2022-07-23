@@ -136,7 +136,7 @@ E('node-id')
 
 ```javascript
 // whole node data structure up to now
-{
+nodeData = {
   topic: 'node topic',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
@@ -144,6 +144,13 @@ E('node-id')
   tags: ['Tag'],
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
+  children: [
+    {
+      topic: 'child',
+      id: 'xxxx',
+      // ...
+    },
+  ],
 }
 ```
 
@@ -218,6 +225,10 @@ painter.exportPng()
 ## Doc
 
 https://doc.mind-elixir.com/
+
+## Not only core
+
+- [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
 
 ## Thanks
 
