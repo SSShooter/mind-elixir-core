@@ -340,11 +340,11 @@ function MindElixir(this: MindElixirInstance, {
   } else initMouseEvent(this)
 }
 
-function beforeHook(fn:(el:any, node?:any)=>void) {
+function beforeHook(fn:(el:any, node?:any)=>void, fnName:string) {
   return async function(...args:unknown[]) {
     if (
-      !this.before[fn.name] ||
-      (await this.before[fn.name].apply(this, args))
+      !this.before[fnName] ||
+      (await this.before[fnName].apply(this, args))
     ) {
       fn.apply(this, args)
     }
@@ -356,18 +356,18 @@ MindElixir.prototype = {
   getObjById,
   generateNewObj,
   // node operation
-  insertSibling: beforeHook(insertSibling),
-  insertBefore: beforeHook(insertBefore),
-  insertParent: beforeHook(insertParent),
-  addChild: beforeHook(addChild),
-  copyNode: beforeHook(copyNode),
-  moveNode: beforeHook(moveNode),
-  removeNode: beforeHook(removeNode),
-  moveUpNode: beforeHook(moveUpNode),
-  moveDownNode: beforeHook(moveDownNode),
-  beginEdit: beforeHook(beginEdit),
-  moveNodeBefore: beforeHook(moveNodeBefore),
-  moveNodeAfter: beforeHook(moveNodeAfter),
+  insertSibling: beforeHook(insertSibling, 'insertSibling'),
+  insertBefore: beforeHook(insertBefore, 'insertBefore'),
+  insertParent: beforeHook(insertParent, 'insertParent'),
+  addChild: beforeHook(addChild, 'addChild'),
+  copyNode: beforeHook(copyNode, 'copyNode'),
+  moveNode: beforeHook(moveNode, 'moveNode'),
+  removeNode: beforeHook(removeNode, 'removeNode'),
+  moveUpNode: beforeHook(moveUpNode, 'moveUpNode'),
+  moveDownNode: beforeHook(moveDownNode, 'moveDownNode'),
+  beginEdit: beforeHook(beginEdit, 'beginEdit'),
+  moveNodeBefore: beforeHook(moveNodeBefore, 'moveNodeBefore'),
+  moveNodeAfter: beforeHook(moveNodeAfter, 'moveNodeAfter'),
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,

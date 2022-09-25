@@ -35,6 +35,7 @@ const mind = new MindElixir({
       return false
     },
     insertSibling(el, obj) {
+      console.log('insertSibling', el, obj)
       return true
     },
     async addChild(el, obj) {
@@ -46,7 +47,7 @@ const mind = new MindElixir({
   primaryNodeVerticalGap: 15, // 25
   primaryNodeHorizontalGap: 15, // 65
 })
-mind.init()
+mind.init(example)
 function sleep() {
   return new Promise((res, rej) => {
     setTimeout(() => res(), 1000)
