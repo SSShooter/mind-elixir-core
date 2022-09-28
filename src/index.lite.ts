@@ -72,7 +72,8 @@ export interface NodeObj {
 }
 export interface MindElixirData {
   nodeData: NodeObj,
-  linkData?: LinkObj
+  linkData?: LinkObj,
+  direction?: number,
 }
 export interface MindElixirInstance {
   mindElixirBox: HTMLElement,
@@ -113,12 +114,12 @@ export interface MindElixirInstance {
   root: HTMLElement,
   box: HTMLElement,
   svg2nd: SVGElement,
-  linkController:SVGElement,
+  linkController: SVGElement,
   P2: HTMLElement,
   P3: HTMLElement,
-  line1:SVGElement,
-  line2:SVGElement,
-  linkSvgGroup:SVGElement,
+  line1: SVGElement,
+  line2: SVGElement,
+  linkSvgGroup: SVGElement,
 }
 export interface Options {
   el: string | Element,
@@ -280,7 +281,10 @@ MindElixir.prototype = {
   expandNode,
   refresh,
 
-  init: function(data:MindElixirData) {
+  init: function(data: MindElixirData) {
+    if (data.direction) {
+      this.direction = data.direction
+    }
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
     // plugin

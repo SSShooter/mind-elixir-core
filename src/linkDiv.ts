@@ -197,13 +197,13 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
       x2 = parentOL - childT.offsetWidth + GAP
 
       if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
-        // 相差+-50内直接直线
+        // straight line
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
       } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
-        // 子底部低于父中点
+        // child bottom lower than parent
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle - TURNPOINT_R} ${y2} H ${x2}`
       } else {
-        // 子底部高于父中点
+        // child bottom higher than parent
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle - TURNPOINT_R} ${y2} H ${x2}`
       }
     } else if (direction === 'rhs') {

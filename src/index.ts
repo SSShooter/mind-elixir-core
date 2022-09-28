@@ -113,7 +113,8 @@ export interface NodeElement extends HTMLElement {
 }
 export interface MindElixirData {
   nodeData: NodeObj,
-  linkData?: LinkObj
+  linkData?: LinkObj,
+  direction?: number
 }
 export interface MindElixirInstance {
   mindElixirBox: HTMLElement,
@@ -413,6 +414,9 @@ MindElixir.prototype = {
   },
   init(data:MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
+    if (data.direction) {
+      this.direction = data.direction
+    }
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
     // plugin
