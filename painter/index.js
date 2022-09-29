@@ -80,13 +80,13 @@ function RootToSvg() {
   let rootOffsetY = root.offsetTop - maxTop
   let rootOffsetX = root.offsetLeft - maxLeft
 
-  let svg2ndEle = $d.querySelector('.svg2nd')
+  let svg2ndEle = $d.querySelector('.lines')
 
-  let svg2nd = `<g transform="translate(${IMG_PADDING - maxLeft}, ${
+  let lines = `<g transform="translate(${IMG_PADDING - maxLeft}, ${
     IMG_PADDING - maxTop
   })">${svg2ndEle.innerHTML}</g>`
   return (
-    svg2nd +
+    lines +
     `<g id="root" transform="translate(${rootOffsetX + IMG_PADDING}, ${
       rootOffsetY + IMG_PADDING
     })">
@@ -108,11 +108,11 @@ function PrimaryToSvg(primaryNode) {
   let primaryNodeOffsetX = primaryNode.offsetLeft - maxLeft
 
   let svg = ''
-  let svg3rd = primaryNode.querySelector('.svg3rd')
+  let subLines = primaryNode.querySelector('.subLines')
   svg += `<g transform="translate(${primaryNodeOffsetX + IMG_PADDING}, ${
     primaryNodeOffsetY + IMG_PADDING
   })">`
-  svg += svg3rd ? svg3rd.innerHTML : ''
+  svg += subLines ? subLines.innerHTML : ''
   for (let i = 0; i < topics.length; i++) {
     let tpc = topics[i]
     let t = tpc.parentNode

@@ -28,7 +28,7 @@ import {
   refresh,
 } from './interact'
 import {
-  processPrimaryNode,
+  judgeDirection,
   setNodeTopic,
 } from './nodeOperation'
 import {
@@ -113,7 +113,7 @@ export interface MindElixirInstance {
   map: HTMLElement,
   root: HTMLElement,
   box: HTMLElement,
-  svg2nd: SVGElement,
+  lines: SVGElement,
   linkController: SVGElement,
   P2: HTMLElement,
   P3: HTMLElement,
@@ -223,7 +223,7 @@ function MindElixir(this: MindElixirInstance, {
 
   // infrastructure
 
-  this.svg2nd = createLinkSvg('svg2nd') // main link container
+  this.lines = createLinkSvg('lines') // main link container
 
   this.linkController = createLinkSvg('linkcontroller') // bezier controller container
   this.P2 = $d.createElement('div') // bezier P2
@@ -238,7 +238,7 @@ function MindElixir(this: MindElixirInstance, {
 
   this.map.appendChild(this.root)
   this.map.appendChild(this.box)
-  this.map.appendChild(this.svg2nd)
+  this.map.appendChild(this.lines)
   this.map.appendChild(this.linkController)
   this.map.appendChild(this.linkSvgGroup)
   this.map.appendChild(this.P2)
@@ -253,7 +253,7 @@ MindElixir.prototype = {
   addParentLink,
   getObjById,
   // node operation
-  processPrimaryNode,
+  judgeDirection,
   setNodeTopic,
   createLink,
   layout,

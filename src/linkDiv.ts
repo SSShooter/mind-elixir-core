@@ -20,7 +20,7 @@ export default function linkDiv(primaryNode) {
   const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
   const primaryNodeList = this.box.children
-  this.svg2nd.innerHTML = ''
+  this.lines.innerHTML = ''
 
   // 1. calculate position of primary nodes
   let totalHeight = 0
@@ -136,7 +136,7 @@ export default function linkDiv(primaryNode) {
       }
     }
   }
-  this.svg2nd.appendChild(createMainPath(primaryPath))
+  this.lines.appendChild(createMainPath(primaryPath))
 
   // 3. generate link inside primary node
   for (let i = 0; i < primaryNodeList.length; i++) {
@@ -145,14 +145,13 @@ export default function linkDiv(primaryNode) {
       continue
     }
     if (el.childElementCount) {
-      const svg = createLinkSvg('svg3rd')
+      const svg = createLinkSvg('subLines')
       // svg tag name is lower case
       if (el.lastChild.tagName === 'svg') el.lastChild.remove()
       el.appendChild(svg)
       const parent = el.children[0]
       const children = el.children[1].children
-      path = ''
-      loopChildren(children, parent, true)
+      const path = traverseChildren(children, parent, true)
       svg.appendChild(createPath(path))
     }
   }
@@ -170,9 +169,9 @@ export default function linkDiv(primaryNode) {
   console.timeEnd('linkDiv')
 }
 
-// core function of generate svg3rd
-let path = ''
-function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean) {
+// core function of generate subLines
+function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean):string {
+  let path = ''
   const parentOT = parent.offsetTop
   const parentOL = parent.offsetLeft
   const parentOW = parent.offsetWidth
@@ -197,7 +196,7 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
       x2 = parentOL - childT.offsetWidth + GAP
 
       if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
-        // straight line
+        // draw straight line if the distance is between +-50
         path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
       } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
         // child bottom lower than parent
@@ -234,8 +233,9 @@ function loopChildren(children: HTMLCollection, parent: HTMLElement, first?: boo
       // expander not exist
       continue
     }
-    // traversal
+
     const nextChildren = child.children[1].children
-    if (nextChildren.length > 0) loopChildren(nextChildren, childT)
+    if (nextChildren.length > 0) { path += traverseChildren(nextChildren, childT) }
   }
+  return path
 }

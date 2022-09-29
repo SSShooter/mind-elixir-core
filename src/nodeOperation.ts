@@ -117,7 +117,7 @@ export const insertSibling = function(el, node) {
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode.nextSibling)
   if (children.className === 'box') {
-    this.processPrimaryNode(grp, newNodeObj)
+    this.judgeDirection(grp, newNodeObj)
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -163,7 +163,7 @@ export const insertBefore = function(el, node) {
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode)
   if (children.className === 'box') {
-    this.processPrimaryNode(grp, newNodeObj)
+    this.judgeDirection(grp, newNodeObj)
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -216,7 +216,7 @@ export const insertParent = function(el, node) {
   if (children0.className === 'box') {
     grp.className = grp0.className // l/rhs
     grp0.className = ''
-    grp0.querySelector('.svg3rd').remove()
+    grp0.querySelector('.subLines').remove()
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -261,7 +261,7 @@ export const addChildFunction = function(nodeEle, node) {
     }
     this.linkDiv(grp.offsetParent)
   } else if (top.tagName === 'ROOT') {
-    this.processPrimaryNode(grp, newNodeObj)
+    this.judgeDirection(grp, newNodeObj)
     top.nextSibling.appendChild(grp)
     this.linkDiv()
   }
@@ -486,7 +486,7 @@ export const moveNode = function(from, to) {
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }
   } else if (toTop.tagName === 'ROOT') {
-    this.processPrimaryNode(fromTop.parentNode, fromObj)
+    this.judgeDirection(fromTop.parentNode, fromObj)
     toTop.nextSibling.appendChild(fromTop.parentNode)
   }
   this.linkDiv()
@@ -582,7 +582,7 @@ export const setNodeTopic = function(tpc, topic) {
 }
 
 // Judge L or R
-export function processPrimaryNode(primaryNode, obj) {
+export function judgeDirection(primaryNode, obj) {
   if (this.direction === LEFT) {
     primaryNode.className = 'lhs'
   } else if (this.direction === RIGHT) {
