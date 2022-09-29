@@ -71,6 +71,7 @@ export default function linkDiv(primaryNode) {
   const alignRight = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap
   const alignLeft = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap
   for (let i = 0; i < primaryNodeList.length; i++) {
+    let x1 = 10000
     let x2, y2
     const el = primaryNodeList[i]
     const elOffsetH = el.offsetHeight
@@ -81,15 +82,14 @@ export default function linkDiv(primaryNode) {
       y2 = base + currentOffsetL + elOffsetH / 2
 
       // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
-      let LEFT = 10000
       if (this.primaryLinkStyle === 2) {
         if (this.direction === SIDE) {
-          LEFT = 10000 - root.offsetWidth / 6
+          x1 = 10000 - root.offsetWidth / 6
         }
         if (y2 < 10000) {
-          primaryPath += `M ${LEFT} 10000 V ${y2 + 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} H ${x2}`
+          primaryPath += `M ${x1} 10000 V ${y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x1 - 20} ${y2} H ${x2}`
         } else {
-          primaryPath += `M ${LEFT} 10000 V ${y2 - 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT - 20} ${y2} H ${x2}`
+          primaryPath += `M ${x1} 10000 V ${y2 - 20} C ${x1} ${y2} ${x1} ${y2} ${x1 - 20} ${y2} H ${x2}`
         }
       } else {
         primaryPath += `M 10000 10000 C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
@@ -106,15 +106,14 @@ export default function linkDiv(primaryNode) {
       x2 = alignLeft + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
 
-      let LEFT = 10000
       if (this.primaryLinkStyle === 2) {
         if (this.direction === SIDE) {
-          LEFT = 10000 + root.offsetWidth / 6
+          x1 = 10000 + root.offsetWidth / 6
         }
         if (y2 < 10000) {
-          primaryPath += `M ${LEFT} 10000 V ${y2 + 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} H ${x2}`
+          primaryPath += `M ${x1} 10000 V ${y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x1 + 20} ${y2} H ${x2}`
         } else {
-          primaryPath += `M ${LEFT} 10000 V ${y2 - 20} C ${LEFT} ${y2} ${LEFT} ${y2} ${LEFT + 20} ${y2} H ${x2}`
+          primaryPath += `M ${x1} 10000 V ${y2 - 20} C ${x1} ${y2} ${x1} ${y2} ${x1 + 20} ${y2} H ${x2}`
         }
       } else {
         primaryPath += `M 10000 10000 C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
