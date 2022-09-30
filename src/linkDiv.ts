@@ -72,6 +72,7 @@ export default function linkDiv(primaryNode) {
   const alignLeft = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap
   for (let i = 0; i < primaryNodeList.length; i++) {
     let x1 = 10000
+    const y1 = 10000
     let x2, y2
     const el = primaryNodeList[i]
     const elOffsetH = el.offsetHeight
@@ -80,20 +81,6 @@ export default function linkDiv(primaryNode) {
       el.style.left = alignRight - el.offsetWidth + 'px'
       x2 = alignRight - 15 // padding
       y2 = base + currentOffsetL + elOffsetH / 2
-
-      // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
-      if (this.primaryLinkStyle === 2) {
-        if (this.direction === SIDE) {
-          x1 = 10000 - root.offsetWidth / 6
-        }
-        if (y2 < 10000) {
-          primaryPath += `M ${x1} 10000 V ${y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x1 - 20} ${y2} H ${x2}`
-        } else {
-          primaryPath += `M ${x1} 10000 V ${y2 - 20} C ${x1} ${y2} ${x1} ${y2} ${x1 - 20} ${y2} H ${x2}`
-        }
-      } else {
-        primaryPath += `M 10000 10000 C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
-      }
 
       if (shortSide === 'l') {
         currentOffsetL += elOffsetH + shortSideGap
@@ -106,24 +93,22 @@ export default function linkDiv(primaryNode) {
       x2 = alignLeft + 15 // padding
       y2 = base + currentOffsetR + elOffsetH / 2
 
-      if (this.primaryLinkStyle === 2) {
-        if (this.direction === SIDE) {
-          x1 = 10000 + root.offsetWidth / 6
-        }
-        if (y2 < 10000) {
-          primaryPath += `M ${x1} 10000 V ${y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x1 + 20} ${y2} H ${x2}`
-        } else {
-          primaryPath += `M ${x1} 10000 V ${y2 - 20} C ${x1} ${y2} ${x1} ${y2} ${x1 + 20} ${y2} H ${x2}`
-        }
-      } else {
-        primaryPath += `M 10000 10000 C 10000 10000 ${10000 + 2 * primaryNodeHorizontalGap * 0.03} ${y2} ${x2} ${y2}`
-      }
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
       } else {
         currentOffsetR += elOffsetH + primaryNodeVerticalGap
       }
     }
+
+    if (this.primaryLinkStyle === 2) {
+      if (this.direction === SIDE) {
+        if (el.className === 'lhs') { x1 = 10000 - root.offsetWidth / 6 } else { x1 = 10000 + root.offsetWidth / 6 }
+      }
+      primaryPath += generatePrimaryLine2({ x1, y1, x2, y2 })
+    } else {
+      primaryPath += generatePrimaryLine1({ x1, y1, x2, y2 })
+    }
+
     // set position of expander
     const expander = el.children[0].children[1]
     if (expander) {
@@ -193,30 +178,13 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
       x1 = parentOL + GAP
       xMiddle = parentOL
       x2 = parentOL - childT.offsetWidth + GAP
-
-      if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
-        // draw straight line if the distance is between +-50
-        path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
-      } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
-        // child bottom lower than parent
-        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle - TURNPOINT_R} ${y2} H ${x2}`
-      } else {
-        // child bottom higher than parent
-        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle - TURNPOINT_R} ${y2} H ${x2}`
-      }
     } else if (direction === 'rhs') {
       x1 = parentOL + parentOW - GAP
       xMiddle = parentOL + parentOW
       x2 = parentOL + parentOW + childT.offsetWidth - GAP
-
-      if (childTOT + childTOH < parentOT + parentOH / 2 + 50 && childTOT + childTOH > parentOT + parentOH / 2 - 50) {
-        path += `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
-      } else if (childTOT + childTOH >= parentOT + parentOH / 2) {
-        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 0 ${xMiddle + TURNPOINT_R} ${y2} H ${x2}`
-      } else {
-        path += `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 1 ${xMiddle + TURNPOINT_R} ${y2} H ${x2}`
-      }
     }
+
+    path += generateSubLine({ x1, y1, x2, y2, xMiddle })
 
     const expander = childT.children[1] as Expander
     if (expander) {
@@ -237,4 +205,26 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     if (nextChildren.length > 0) { path += traverseChildren(nextChildren, childT) }
   }
   return path
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
+function generatePrimaryLine2({ x1, y1, x2, y2 }) {
+  return `M ${x1} 10000 V ${y2 > y1 ? (y2 - 20) : (y2 + 20)} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? (x1 + 20) : (x1 - 20)} ${y2} H ${x2}`
+}
+
+function generatePrimaryLine1({ x1, y1, x2, y2 }) {
+  return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
+}
+
+function generateSubLine({ x1, y1, x2, y2, xMiddle }) {
+  if (y2 < y1 + 50 && y2 > y1 - 50) {
+    // draw straight line if the distance is between +-50
+    return `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
+  } else if (y2 >= y1) {
+    // child bottom lower than parent
+    return `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 1 : 0} ${x1 > x2 ? (xMiddle - TURNPOINT_R) : (xMiddle + TURNPOINT_R)} ${y2} H ${x2}`
+  } else {
+    // child bottom higher than parent
+    return `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 0 : 1} ${x1 > x2 ? (xMiddle - TURNPOINT_R) : (xMiddle + TURNPOINT_R)} ${y2} H ${x2}`
+  }
 }
