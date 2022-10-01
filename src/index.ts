@@ -46,7 +46,7 @@ import {
   updateNodeTags,
   updateNodeIcons,
   updateNodeHyperLink,
-  processPrimaryNode,
+  judgeDirection,
   setNodeTopic,
   moveNodeBefore,
   moveNodeAfter,
@@ -113,7 +113,8 @@ export interface NodeElement extends HTMLElement {
 }
 export interface MindElixirData {
   nodeData: NodeObj,
-  linkData?: LinkObj
+  linkData?: LinkObj,
+  direction?: number
 }
 export interface MindElixirInstance {
   mindElixirBox: HTMLElement,
@@ -153,7 +154,7 @@ export interface MindElixirInstance {
   map: HTMLElement,
   root: HTMLElement,
   box: HTMLElement,
-  svg2nd: SVGElement,
+  lines: SVGElement,
   linkController:SVGElement,
   P2: HTMLElement,
   P3: HTMLElement,
@@ -314,7 +315,7 @@ function MindElixir(this: MindElixirInstance, {
 
   // infrastructure
 
-  this.svg2nd = createLinkSvg('svg2nd') // main link container
+  this.lines = createLinkSvg('lines') // main link container
 
   this.linkController = createLinkSvg('linkcontroller') // bezier controller container
   this.P2 = $d.createElement('div') // bezier P2
@@ -329,7 +330,7 @@ function MindElixir(this: MindElixirInstance, {
 
   this.map.appendChild(this.root)
   this.map.appendChild(this.box)
-  this.map.appendChild(this.svg2nd)
+  this.map.appendChild(this.lines)
   this.map.appendChild(this.linkController)
   this.map.appendChild(this.linkSvgGroup)
   this.map.appendChild(this.P2)
@@ -340,11 +341,11 @@ function MindElixir(this: MindElixirInstance, {
   } else initMouseEvent(this)
 }
 
-function beforeHook(fn:(el:any, node?:any)=>void) {
+function beforeHook(fn:(el:any, node?:any)=>void, fnName:string) {
   return async function(...args:unknown[]) {
     if (
-      !this.before[fn.name] ||
-      (await this.before[fn.name].apply(this, args))
+      !this.before[fnName] ||
+      (await this.before[fnName].apply(this, args))
     ) {
       fn.apply(this, args)
     }
@@ -356,23 +357,23 @@ MindElixir.prototype = {
   getObjById,
   generateNewObj,
   // node operation
-  insertSibling: beforeHook(insertSibling),
-  insertBefore: beforeHook(insertBefore),
-  insertParent: beforeHook(insertParent),
-  addChild: beforeHook(addChild),
-  copyNode: beforeHook(copyNode),
-  moveNode: beforeHook(moveNode),
-  removeNode: beforeHook(removeNode),
-  moveUpNode: beforeHook(moveUpNode),
-  moveDownNode: beforeHook(moveDownNode),
-  beginEdit: beforeHook(beginEdit),
-  moveNodeBefore: beforeHook(moveNodeBefore),
-  moveNodeAfter: beforeHook(moveNodeAfter),
+  insertSibling: beforeHook(insertSibling, 'insertSibling'),
+  insertBefore: beforeHook(insertBefore, 'insertBefore'),
+  insertParent: beforeHook(insertParent, 'insertParent'),
+  addChild: beforeHook(addChild, 'addChild'),
+  copyNode: beforeHook(copyNode, 'copyNode'),
+  moveNode: beforeHook(moveNode, 'moveNode'),
+  removeNode: beforeHook(removeNode, 'removeNode'),
+  moveUpNode: beforeHook(moveUpNode, 'moveUpNode'),
+  moveDownNode: beforeHook(moveDownNode, 'moveDownNode'),
+  beginEdit: beforeHook(beginEdit, 'beginEdit'),
+  moveNodeBefore: beforeHook(moveNodeBefore, 'moveNodeBefore'),
+  moveNodeAfter: beforeHook(moveNodeAfter, 'moveNodeAfter'),
   updateNodeStyle,
   updateNodeTags,
   updateNodeIcons,
   updateNodeHyperLink,
-  processPrimaryNode,
+  judgeDirection,
   setNodeTopic,
 
   createLink,
@@ -413,6 +414,9 @@ MindElixir.prototype = {
   },
   init(data:MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
+    if (data.direction) {
+      this.direction = data.direction
+    }
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
     // plugin

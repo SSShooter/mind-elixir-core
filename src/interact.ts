@@ -115,6 +115,7 @@ export const getAllDataString = function() {
   const data = {
     nodeData: getData(this),
     linkData: this.linkData,
+    direction: this.direction,
   }
   return JSON.stringify(data, (k, v) => {
     if (k === 'parent') return undefined
@@ -135,6 +136,7 @@ export const getAllData = function(): object {
   const data = {
     nodeData: getData(this),
     linkData: this.linkData,
+    direction: this.direction,
   }
   return JSON.parse(
     JSON.stringify(data, (k, v) => {

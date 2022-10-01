@@ -28,7 +28,7 @@ import {
   refresh,
 } from './interact'
 import {
-  processPrimaryNode,
+  judgeDirection,
   setNodeTopic,
 } from './nodeOperation'
 import {
@@ -72,7 +72,8 @@ export interface NodeObj {
 }
 export interface MindElixirData {
   nodeData: NodeObj,
-  linkData?: LinkObj
+  linkData?: LinkObj,
+  direction?: number,
 }
 export interface MindElixirInstance {
   mindElixirBox: HTMLElement,
@@ -112,13 +113,13 @@ export interface MindElixirInstance {
   map: HTMLElement,
   root: HTMLElement,
   box: HTMLElement,
-  svg2nd: SVGElement,
-  linkController:SVGElement,
+  lines: SVGElement,
+  linkController: SVGElement,
   P2: HTMLElement,
   P3: HTMLElement,
-  line1:SVGElement,
-  line2:SVGElement,
-  linkSvgGroup:SVGElement,
+  line1: SVGElement,
+  line2: SVGElement,
+  linkSvgGroup: SVGElement,
 }
 export interface Options {
   el: string | Element,
@@ -222,7 +223,7 @@ function MindElixir(this: MindElixirInstance, {
 
   // infrastructure
 
-  this.svg2nd = createLinkSvg('svg2nd') // main link container
+  this.lines = createLinkSvg('lines') // main link container
 
   this.linkController = createLinkSvg('linkcontroller') // bezier controller container
   this.P2 = $d.createElement('div') // bezier P2
@@ -237,7 +238,7 @@ function MindElixir(this: MindElixirInstance, {
 
   this.map.appendChild(this.root)
   this.map.appendChild(this.box)
-  this.map.appendChild(this.svg2nd)
+  this.map.appendChild(this.lines)
   this.map.appendChild(this.linkController)
   this.map.appendChild(this.linkSvgGroup)
   this.map.appendChild(this.P2)
@@ -252,7 +253,7 @@ MindElixir.prototype = {
   addParentLink,
   getObjById,
   // node operation
-  processPrimaryNode,
+  judgeDirection,
   setNodeTopic,
   createLink,
   layout,
@@ -280,7 +281,10 @@ MindElixir.prototype = {
   expandNode,
   refresh,
 
-  init: function(data:MindElixirData) {
+  init: function(data: MindElixirData) {
+    if (data.direction) {
+      this.direction = data.direction
+    }
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
     // plugin
