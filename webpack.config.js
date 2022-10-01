@@ -64,7 +64,6 @@ module.exports = (env, argv) => {
       entry: {
         MindElixir: './src/index.ts',
         MindElixirLite: './src/index.lite.ts',
-        painter: './painter/index.js',
         example1: './src/exampleData/1.js',
         example2: './src/exampleData/2.js',
       },
