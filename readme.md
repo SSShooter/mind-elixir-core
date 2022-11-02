@@ -21,10 +21,14 @@
 Mind elixir is a free open source mind map core.
 
 - High performance
-- Small size
+- Lightweight
 - Framework agnostic
 - Pluginable
 - Build-in drag and drop / node edit plugin
+
+## Doc
+
+https://doc.mind-elixir.com/
 
 ## Try now
 
@@ -210,10 +214,6 @@ let mind = new MindElixir({
   },
 })
 ```
-
-## Doc
-
-https://doc.mind-elixir.com/
 
 ## Not only core
 
