@@ -1,6 +1,5 @@
 import MindElixir, { E } from './index'
 import MindElixirLite from './index.lite'
-import { exportSvg, exportPng } from '../painter/index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
@@ -103,5 +102,3 @@ window.m = mind
 // window.m2 = mind2
 window.M = MindElixir
 window.E = MindElixir.E
-window.exportSvg = exportSvg
-window.exportPng = exportPng

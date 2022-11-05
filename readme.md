@@ -21,10 +21,14 @@
 Mind elixir is a free open source mind map core.
 
 - High performance
-- Small size
+- Lightweight
 - Framework agnostic
 - Pluginable
 - Build-in drag and drop / node edit plugin
+
+## Doc
+
+https://doc.mind-elixir.com/
 
 ## Try now
 
@@ -78,7 +82,6 @@ import MindElixir, { E } from 'mind-elixir'
 
 ```javascript
 import MindElixir, { E } from 'mind-elixir'
-import { exportSvg, exportPng } from '../dist/painter'
 import example from '../dist/example1'
 
 let options = {
@@ -212,24 +215,7 @@ let mind = new MindElixir({
 })
 ```
 
-### Export as image
-
-**WIP**
-
-```javascript
-import painter from 'mind-elixir/dist/painter'
-painter.exportSvg()
-painter.exportPng()
-```
-
-## Doc
-
-https://doc.mind-elixir.com/
-
 ## Not only core
 
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
-
-## Thanks
-
-[canvg](https://github.com/canvg/canvg)
+- [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)

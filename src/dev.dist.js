@@ -1,5 +1,4 @@
 import MindElixir, { E } from '../dist/MindElixir'
-import { exportSvg, exportPng } from '../dist/painter'
 import example from '../dist/example1'
 // import example2 from '../dist/example2'
 
@@ -84,5 +83,3 @@ mind.bus.addListener('selectNode', node => {
 window.m = mind
 // window.m2 = mind2
 window.M = MindElixir
-window.exportSvg = exportSvg
-window.exportPng = exportPng
