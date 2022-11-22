@@ -1,4 +1,5 @@
 export default {
+  direction: 0,
   nodeData: {
     id: 'root',
     topic: 'Mind Elixir',

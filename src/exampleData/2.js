@@ -1,4 +1,5 @@
 export default {
+  direction: 1,
   nodeData: {
     id: 'root',
     topic: 'HTML structure',
