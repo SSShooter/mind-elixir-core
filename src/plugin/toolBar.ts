@@ -1,3 +1,5 @@
+import './toolBar.less'
+
 const createButton = (id, name) => {
   const button = document.createElement('span')
   button.id = id

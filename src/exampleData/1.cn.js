@@ -37,7 +37,7 @@ export default {
                 id: 'c1f1e245b0a89f9b',
               },
               {
-                topic: 'new MindElixir({...}).init()',
+                topic: 'new MindElixir({...}).init(data)',
                 id: 'c1f1ebc7072c8928',
               },
             ],

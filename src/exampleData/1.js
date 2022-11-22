@@ -27,7 +27,7 @@ export default {
                 topic: "import MindElixir from 'mind-elixir'",
                 id: 'c1f1e245b0a89f9b',
               },
-              { topic: 'new MindElixir({...}).init()', id: 'c1f1ebc7072c8928' },
+              { topic: 'new MindElixir({...}).init(data)', id: 'c1f1ebc7072c8928' },
             ],
           },
           {

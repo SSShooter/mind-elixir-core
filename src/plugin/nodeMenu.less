@@ -12,7 +12,7 @@ nmenu {
   transition: 0.3s all;
   &.close {
     height: 30px;
-    width: 50px;
+    width: 46px;
     overflow: hidden;
   }
   .button-container {
@@ -41,7 +41,8 @@ nmenu {
   .nm-fontcolor-container {
     margin-bottom: 10px;
   }
-  input {
+  input,
+  textarea {
     background: #f7f9fa;
     border: 1px solid #dce2e6;
     border-radius: 3px;
@@ -49,6 +50,9 @@ nmenu {
     margin: 10px 0;
     width: 100%;
     box-sizing: border-box;
+  }
+  textarea {
+    resize: none;
   }
   .split6 {
     display: inline-block;

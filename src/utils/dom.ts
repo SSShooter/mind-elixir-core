@@ -7,6 +7,7 @@ export type Group = HTMLElement
 
 export interface Topic extends HTMLElement {
   nodeObj?: NodeObj
+  linkContainer?: HTMLElement
 }
 
 export interface Expander extends HTMLElement {
@@ -44,8 +45,13 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
     linkContainer.innerText = '🔗'
     linkContainer.href = nodeObj.hyperLink
     tpc.appendChild(linkContainer)
+    tpc.linkContainer = linkContainer
+    console.log(linkContainer)
+  } else if (tpc.linkContainer) {
+    tpc.linkContainer.remove()
+    tpc.linkContainer = null
   }
-  if (nodeObj.icons) {
+  if (nodeObj.icons && nodeObj.icons.length) {
     const iconsContainer = $d.createElement('span')
     iconsContainer.className = 'icons'
     iconsContainer.innerHTML = nodeObj.icons
@@ -53,7 +59,7 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
       .join('')
     tpc.appendChild(iconsContainer)
   }
-  if (nodeObj.tags) {
+  if (nodeObj.tags && nodeObj.tags.length) {
     const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
     tagsContainer.innerHTML = nodeObj.tags
@@ -128,7 +134,7 @@ export function createInputDiv(tpc: Topic) {
   div.addEventListener('keydown', e => {
     e.stopPropagation()
     const key = e.key
-    // console.log(e, key)
+
     if (key === 'Enter' || key === 'Tab') {
       // keep wrap for shift enter
       if (e.shiftKey) return
@@ -139,7 +145,7 @@ export function createInputDiv(tpc: Topic) {
     }
   })
   div.addEventListener('blur', () => {
-    if (!div) return // 防止重复blur
+    if (!div) return
     const node = tpc.nodeObj
     const topic = div.textContent!.trim()
     console.log(topic)
@@ -147,7 +153,7 @@ export function createInputDiv(tpc: Topic) {
     else node.topic = topic
     div.remove()
     this.inputDiv = div = null
-    if (topic === origin) return // 没有修改不做处理
+    if (topic === origin) return
     tpc.childNodes[0].textContent = node.topic
     this.linkDiv()
     this.bus.fire('operation', {
@@ -162,7 +168,6 @@ export function createInputDiv(tpc: Topic) {
 export const createExpander = function(expanded: boolean | undefined): Expander {
   const expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
-  expander.innerText = expanded !== false ? '-' : '+'
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''
   return expander

@@ -16,9 +16,19 @@
   </a>
 </p>
 
+[中文 README](https://github.com/ssshooter/mind-elixir-core/blob/master/readme.cn.md)
+
 Mind elixir is a free open source mind map core.
 
-[中文](https://github.com/ssshooter/mind-elixir-core/blob/master/readme.cn.md)
+- High performance
+- Lightweight
+- Framework agnostic
+- Pluginable
+- Build-in drag and drop / node edit plugin
+
+## Doc
+
+https://doc.mind-elixir.com/
 
 ## Try now
 
@@ -51,7 +61,7 @@ import MindElixir, { E } from 'mind-elixir'
 #### Script tag
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/mind-elixir.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
 ```
 
 ### HTML structure
@@ -68,17 +78,15 @@ import MindElixir, { E } from 'mind-elixir'
 
 ### Init
 
+**Breaking Change** since 1.0.0, `data` should be passed to `init()`, not `options`.
+
 ```javascript
 import MindElixir, { E } from 'mind-elixir'
-import { exportSvg, exportPng } from '../dist/painter'
 import example from '../dist/example1'
 
 let options = {
-  el: '#map',
+  el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
-  // create new map data
-  data: MindElixir.new('new topic') or example,
-  // the data return from `.getAllData()`
   draggable: true, // default true
   contextMenu: true, // default true
   toolBar: true, // default true
@@ -114,18 +122,24 @@ let options = {
 }
 
 let mind = new MindElixir(options)
-mind.init()
+
+mind.install(plugin) // install your plugin
+
+// create new map data
+const data = MindElixir.new('new topic')
+// or `example`
+// or the data return from `.getAllData()`
+mind.init(data)
 
 // get a node
 E('node-id')
-
 ```
 
 ### Data Structure
 
 ```javascript
 // whole node data structure up to now
-{
+nodeData = {
   topic: 'node topic',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
@@ -133,6 +147,13 @@ E('node-id')
   tags: ['Tag'],
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
+  children: [
+    {
+      topic: 'child',
+      id: 'xxxx',
+      // ...
+    },
+  ],
 }
 ```
 
@@ -170,21 +191,11 @@ mind.getAllDataString() // stringify object
 mind.getAllDataMd() // markdown
 ```
 
-### Export as image
-
-**WIP**
-
-```javascript
-import painter from 'mind-elixir/dist/painter'
-painter.exportSvg()
-painter.exportPng()
-```
-
 ### Operation Guards
 
 ```javascript
 let mind = new MindElixir({
-  ...
+  // ...
   before: {
     insertSibling(el, obj) {
       console.log(el, obj)
@@ -204,10 +215,7 @@ let mind = new MindElixir({
 })
 ```
 
-## Doc
+## Not only core
 
-https://doc.mind-elixir.com/
-
-## Thanks
-
-[canvg](https://github.com/canvg/canvg)
+- [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
+- [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)

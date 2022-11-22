@@ -1,8 +1,8 @@
 import MindElixir, { E } from './index'
 import MindElixirLite from './index.lite'
-import { exportSvg, exportPng } from '../painter/index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
+import example3 from './exampleData/3'
 
 interface Window {
   currentOperation: any
@@ -15,13 +15,11 @@ interface Window {
 
 declare let window: Window
 
-const mind = new MindElixir({
+const options = {
   el: '#map',
   newTopicName: '子节点',
   direction: MindElixir.SIDE,
   // direction: MindElixir.RIGHT,
-  data: MindElixir.new('new topic'),
-  // data: example,
   locale: 'en',
   draggable: true,
   editable: true,
@@ -57,25 +55,28 @@ const mind = new MindElixir({
     },
   },
   primaryLinkStyle: 1,
-  primaryNodeVerticalGap: 15, // 25
-  primaryNodeHorizontalGap: 15, // 65
-})
-mind.init()
+  primaryNodeVerticalGap: 25, // 25
+  primaryNodeHorizontalGap: 65, // 65
+}
+
+const mind = new (MindElixir as any)(options)
+
+const data = MindElixir.new('new topic')
+mind.init(example) // or try `example`
 function sleep() {
   return new Promise<void>((res, rej) => {
     setTimeout(() => res(), 1000)
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
-const mind2 = new MindElixirLite({
-  el: '#map2',
+const mind2 = new (MindElixirLite as any)({
+  el: document.querySelector('#map2'),
   direction: 2,
-  data: example2,
   draggable: false,
   // overflowHidden: true,
   nodeMenu: true,
 })
-mind2.init()
+mind2.init(example2)
 window.currentOperation = null
 mind.bus.addListener('operation', operation => {
   console.log(operation)
@@ -101,5 +102,3 @@ window.m = mind
 // window.m2 = mind2
 window.M = MindElixir
 window.E = MindElixir.E
-window.exportSvg = exportSvg
-window.exportPng = exportPng

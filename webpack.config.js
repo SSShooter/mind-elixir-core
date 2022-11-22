@@ -27,17 +27,18 @@ let config = {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
-      {
-        test: /\.(ttf|woff|woff2|eot|svg)$/i,
-        use: [
-          {
-            loader: 'url-loader',
-            options: {
-              limit: 8192,
-            },
-          },
-        ],
-      },
+      { test: /\.svg/, type: 'asset/inline' },
+      // {
+      //   test: /\.(ttf|woff|woff2|eot|svg)$/i,
+      //   use: [
+      //     {
+      //       loader: 'url-loader',
+      //       options: {
+      //         limit: false,
+      //       },
+      //     },
+      //   ],
+      // },
     ],
   },
 }
@@ -63,7 +64,6 @@ module.exports = (env, argv) => {
       entry: {
         MindElixir: './src/index.ts',
         MindElixirLite: './src/index.lite.ts',
-        painter: './painter/index.js',
         example1: './src/exampleData/1.js',
         example2: './src/exampleData/2.js',
       },

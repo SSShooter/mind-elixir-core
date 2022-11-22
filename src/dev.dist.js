@@ -1,5 +1,4 @@
 import MindElixir, { E } from '../dist/MindElixir'
-import { exportSvg, exportPng } from '../dist/painter'
 import example from '../dist/example1'
 // import example2 from '../dist/example2'
 
@@ -35,6 +34,7 @@ const mind = new MindElixir({
       return false
     },
     insertSibling(el, obj) {
+      console.log('insertSibling', el, obj)
       return true
     },
     async addChild(el, obj) {
@@ -46,7 +46,7 @@ const mind = new MindElixir({
   primaryNodeVerticalGap: 15, // 25
   primaryNodeHorizontalGap: 15, // 65
 })
-mind.init()
+mind.init(example)
 function sleep() {
   return new Promise((res, rej) => {
     setTimeout(() => res(), 1000)
@@ -83,5 +83,3 @@ mind.bus.addListener('selectNode', node => {
 window.m = mind
 // window.m2 = mind2
 window.M = MindElixir
-window.exportSvg = exportSvg
-window.exportPng = exportPng

@@ -18,7 +18,8 @@ export default function(mind) {
       // skip circle
     } else {
       mind.unselectNode()
-      mind.hideLinkController()
+      // lite version doesn't have hideLinkController
+      mind.hideLinkController && mind.hideLinkController()
     }
   })
 

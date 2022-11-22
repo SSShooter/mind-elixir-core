@@ -45,7 +45,6 @@ export const updateNodeStyle = function(object) {
 }
 
 export const updateNodeTags = function(object, tags) {
-  if (!tags) return
   const oldVal = object.tags
   object.tags = tags
   const nodeEle = findEle(object.id)
@@ -59,7 +58,6 @@ export const updateNodeTags = function(object, tags) {
 }
 
 export const updateNodeIcons = function(object, icons) {
-  if (!icons) return
   const oldVal = object.icons
   object.icons = icons
   const nodeEle = findEle(object.id)
@@ -73,7 +71,6 @@ export const updateNodeIcons = function(object, icons) {
 }
 
 export const updateNodeHyperLink = function(object, hyperLink) {
-  if (!hyperLink) return
   const oldVal = object.hyperLink
   object.hyperLink = hyperLink
   const nodeEle = findEle(object.id)
@@ -120,7 +117,7 @@ export const insertSibling = function(el, node) {
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode.nextSibling)
   if (children.className === 'box') {
-    this.processPrimaryNode(grp, newNodeObj)
+    this.judgeDirection(grp, newNodeObj)
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -166,7 +163,7 @@ export const insertBefore = function(el, node) {
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode)
   if (children.className === 'box') {
-    this.processPrimaryNode(grp, newNodeObj)
+    this.judgeDirection(grp, newNodeObj)
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -219,7 +216,7 @@ export const insertParent = function(el, node) {
   if (children0.className === 'box') {
     grp.className = grp0.className // l/rhs
     grp0.className = ''
-    grp0.querySelector('.svg3rd').remove()
+    grp0.querySelector('.subLines').remove()
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -264,7 +261,7 @@ export const addChildFunction = function(nodeEle, node) {
     }
     this.linkDiv(grp.offsetParent)
   } else if (top.tagName === 'ROOT') {
-    this.processPrimaryNode(grp, newNodeObj)
+    this.judgeDirection(grp, newNodeObj)
     top.nextSibling.appendChild(grp)
     this.linkDiv()
   }
@@ -287,15 +284,15 @@ export const addChild = function(el: NodeElement, node: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const { newTop, newNodeObj } = addChildFunction.call(this, nodeEle, node)
+  this.bus.fire('operation', {
+    name: 'addChild',
+    obj: newNodeObj,
+  })
   console.timeEnd('addChild')
   if (!node) {
     this.createInputDiv(newTop.children[0])
   }
   this.selectNode(newTop.children[0], true)
-  this.bus.fire('operation', {
-    name: 'addChild',
-    obj: newNodeObj,
-  })
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of primary node
@@ -489,7 +486,7 @@ export const moveNode = function(from, to) {
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }
   } else if (toTop.tagName === 'ROOT') {
-    this.processPrimaryNode(fromTop.parentNode, fromObj)
+    this.judgeDirection(fromTop.parentNode, fromObj)
     toTop.nextSibling.appendChild(fromTop.parentNode)
   }
   this.linkDiv()
@@ -585,7 +582,7 @@ export const setNodeTopic = function(tpc, topic) {
 }
 
 // Judge L or R
-export function processPrimaryNode(primaryNode, obj) {
+export function judgeDirection(primaryNode, obj) {
   if (this.direction === LEFT) {
     primaryNode.className = 'lhs'
   } else if (this.direction === RIGHT) {

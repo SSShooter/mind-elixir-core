@@ -115,6 +115,7 @@ export const getAllDataString = function() {
   const data = {
     nodeData: getData(this),
     linkData: this.linkData,
+    direction: this.direction,
   }
   return JSON.stringify(data, (k, v) => {
     if (k === 'parent') return undefined
@@ -135,6 +136,7 @@ export const getAllData = function(): object {
   const data = {
     nodeData: getData(this),
     linkData: this.linkData,
+    direction: this.direction,
   }
   return JSON.parse(
     JSON.stringify(data, (k, v) => {
@@ -242,6 +244,7 @@ export const focusNode = function(tpcEl) {
   this.nodeData = tpcEl.nodeObj
   this.nodeData.root = true
   this.initRight()
+  this.toCenter()
 }
 /**
  * @function
@@ -257,7 +260,8 @@ export const cancelFocus = function() {
     this.nodeData = this.nodeDataBackup
     this.direction = this.tempDirection
     this.tempDirection = null
-    this.init()
+    this.refresh()
+    this.toCenter()
   }
 }
 /**
@@ -269,7 +273,7 @@ export const cancelFocus = function() {
  */
 export const initLeft = function() {
   this.direction = 0
-  this.init()
+  this.refresh()
 }
 /**
  * @function
@@ -280,7 +284,7 @@ export const initLeft = function() {
  */
 export const initRight = function() {
   this.direction = 1
-  this.init()
+  this.refresh()
 }
 /**
  * @function
@@ -291,7 +295,7 @@ export const initRight = function() {
  */
 export const initSide = function() {
   this.direction = 2
-  this.init()
+  this.refresh()
 }
 
 /**
@@ -302,7 +306,7 @@ export const initSide = function() {
  */
 export const setLocale = function(locale) {
   this.locale = locale
-  this.init()
+  this.refresh()
 }
 
 export const expandNode = function(el, isExpand) {
@@ -328,8 +332,12 @@ export const expandNode = function(el, isExpand) {
  * @description Refresh mind map, you can use it after modified `this.nodeData`
  * @memberof MapInteraction
  */
-export const refresh = function() {
+export const refresh = function(data) {
   // add parent property to every node
+  if (data) {
+    this.nodeData = data.nodeData
+    this.linkData = data.linkData || {}
+  }
   this.addParentLink(this.nodeData)
   // create dom element for every node
   this.layout()
