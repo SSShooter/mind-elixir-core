@@ -191,6 +191,17 @@ mind.getAllDataString() // stringify object
 mind.getAllDataMd() // markdown
 ```
 
+### Data Import
+```js
+    // const data = MindElixir.new("root node", root)
+    let root = cols2mind(db_data); // You implement this. Mine sets up the data structure in the 'root' object.
+    mind.init(data); // Set up the mind maps root node.
+    let newdata = MindElixir.new("root node", root) // Get new data.
+    mind.addParentLink(newdata) // Add parent property in child nodes.
+    mind.nodeData = root // Set data to mind elixir.
+    mind.refresh() // re-paint mind map
+````
+
 ### Operation Guards
 
 ```javascript
