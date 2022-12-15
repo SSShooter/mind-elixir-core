@@ -218,4 +218,5 @@ let mind = new MindElixir({
 ## Not only core
 
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
+- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)
