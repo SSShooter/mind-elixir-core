@@ -146,7 +146,6 @@ function MindElixir(this: MindElixirInstance, {
   el,
   direction,
   locale,
-  draggable,
   toolBar,
   keypress,
   newTopicName,
@@ -172,7 +171,7 @@ function MindElixir(this: MindElixirInstance, {
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
-  this.draggable = draggable === undefined ? true : draggable
+  this.draggable = false
   this.newTopicName = newTopicName
   this.editable = false
   // this.parentMap = {} // deal with large amount of nodes
@@ -187,20 +186,6 @@ function MindElixir(this: MindElixirInstance, {
   this.primaryNodeVerticalGap = primaryNodeVerticalGap
 
   this.bus = new Bus()
-  ;(this.bus as any).addListener('operation', (operation: operation) => {
-    if (this.isUndo) {
-      this.isUndo = false
-      return
-    }
-    if (
-      ['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(
-        operation.name
-      )
-    ) {
-      this.history.push(operation)
-      // console.log(operation, this.history)
-    }
-  })
 
   console.log('ME_version ' + MindElixir.version)
   this.mindElixirBox.className += ' mind-elixir'
