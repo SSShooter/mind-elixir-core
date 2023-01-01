@@ -5,6 +5,8 @@ export default function(mind) {
     // e.preventDefault() // can cause a tag don't work
     if (e.target.nodeName === 'EPD') {
       mind.expandNode(e.target.previousSibling)
+    } else if (!mind.editable) {
+      return
     } else if (
       e.target.parentElement.nodeName === 'T' ||
       e.target.parentElement.nodeName === 'ROOT'
