@@ -31,13 +31,19 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
 
-  // TODO allow to add online image
-  // if (nodeObj.image) {
-  //   const imgContainer = $d.createElement('img')
-  //   imgContainer.src = nodeObj.image.url
-  //   imgContainer.style.width = nodeObj.image.width + 'px'
-  //   tpc.appendChild(imgContainer)
-  // }
+  if (nodeObj.image) {
+    const img = nodeObj.image
+    if (img.url && img.width && img.height) {
+      const imgContainer = $d.createElement('img')
+      imgContainer.src = img.url
+      imgContainer.style.width = img.width + 'px'
+      imgContainer.style.height = img.height + 'px'
+      tpc.appendChild(imgContainer)
+    } else {
+      console.warn('image url/width/height are required')
+    }
+  }
+
   if (nodeObj.hyperLink) {
     const linkContainer = $d.createElement('a')
     linkContainer.className = 'hyper-link'

@@ -106,10 +106,15 @@ export interface NodeObj {
   expanded?: boolean,
   direction?: number,
   root?: boolean
+  image?: {
+    url: string,
+    width: number,
+    height: number
+  }
 }
 
 export interface NodeElement extends HTMLElement {
-  nodeObj:Object
+  nodeObj: Object
 }
 export interface MindElixirData {
   nodeData: NodeObj,
@@ -155,12 +160,12 @@ export interface MindElixirInstance {
   root: HTMLElement,
   box: HTMLElement,
   lines: SVGElement,
-  linkController:SVGElement,
+  linkController: SVGElement,
   P2: HTMLElement,
   P3: HTMLElement,
-  line1:SVGElement,
-  line2:SVGElement,
-  linkSvgGroup:SVGElement,
+  line1: SVGElement,
+  line2: SVGElement,
+  linkSvgGroup: SVGElement,
 }
 export interface Options {
   el: string | Element,
@@ -257,7 +262,7 @@ function MindElixir(this: MindElixirInstance, {
   this.primaryNodeVerticalGap = primaryNodeVerticalGap
 
   this.bus = new Bus()
-  ;(this.bus as any).addListener('operation', (operation: operation) => {
+  ; (this.bus as any).addListener('operation', (operation: operation) => {
     if (this.isUndo) {
       this.isUndo = false
       return
@@ -340,8 +345,8 @@ function MindElixir(this: MindElixirInstance, {
   } else initMouseEvent(this)
 }
 
-function beforeHook(fn:(el:any, node?:any)=>void, fnName:string) {
-  return async function(...args:unknown[]) {
+function beforeHook(fn: (el: any, node?: any) => void, fnName: string) {
+  return async function(...args: unknown[]) {
     if (
       !this.before[fnName] ||
       (await this.before[fnName].apply(this, args))
@@ -411,7 +416,7 @@ MindElixir.prototype = {
   install(plugin) {
     plugin(this)
   },
-  init(data:MindElixirData) {
+  init(data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction) {
       this.direction = data.direction
