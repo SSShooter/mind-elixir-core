@@ -331,6 +331,7 @@ export const expandNode = function(el, isExpand) {
  * @name refresh
  * @description Refresh mind map, you can use it after modified `this.nodeData`
  * @memberof MapInteraction
+ * @param {TargetElement} data mind elixir data
  */
 export const refresh = function(data) {
   // add parent property to every node
