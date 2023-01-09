@@ -38,11 +38,21 @@ https://mind-elixir.com/#/
 
 ### Playground
 
+#### Vanilla JS
+
 https://codepen.io/ssshooter/pen/GVQRYK
 
-with React https://codesandbox.io/s/mind-elixir-react-9sisb
+#### Use with React 
 
-with Vue https://codesandbox.io/s/mind-elixir-vue-nqjjl
+https://codesandbox.io/s/mind-elixir-react-9sisb
+
+#### Use with Vue 
+
+https://codesandbox.io/s/mind-elixir-vue-nqjjl
+
+#### Use with Vue3
+
+https://codesandbox.io/s/mind-elixir-vue3-dtcq6u
 
 ## Usage
 
