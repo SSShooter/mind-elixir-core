@@ -26,6 +26,9 @@ Mind elixir is a free open source mind map core.
 - Pluginable
 - Build-in drag and drop / node edit plugin
 
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fssshooter%2Fmind-elixir-core.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fssshooter%2Fmind-elixir-core?ref=badge_large)
+
 ## Doc
 
 https://doc.mind-elixir.com/
@@ -33,6 +36,7 @@ https://doc.mind-elixir.com/
 ## Try now
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fssshooter%2Fmind-elixir-core.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fssshooter%2Fmind-elixir-core?ref=badge_shield)
 
 https://mind-elixir.com/#/
 
