@@ -26,6 +26,24 @@ Mind elixir is a free open source mind map core.
 - Pluginable
 - Build-in drag and drop / node edit plugin
 
+<details>
+<summary>Table of Contents</summary>
+
+- [Doc](#doc)
+- [Try now](#try-now)
+- [Playground](#playground)
+- [Usage](#usage)
+  - [Install](#install)
+  - [HTML structure](#html-structure)
+  - [Init](#init)
+  - [Data Structure](#data-structure)
+  - [Event Handling](#event-handling)
+  - [Data Export](#data-export)
+  - [Operation Guards](#operation-guards)
+- [Not only core](#not-only-core)
+
+</details>
+
 ## Doc
 
 https://doc.mind-elixir.com/
@@ -34,7 +52,7 @@ https://doc.mind-elixir.com/
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot.png)
 
-https://mind-elixir.com/#/
+https://mind-elixir.com/
 
 ### Playground
 
