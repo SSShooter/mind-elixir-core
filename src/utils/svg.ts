@@ -1,6 +1,6 @@
 const $d = document
 const svgNS = 'http://www.w3.org/2000/svg'
-export const createMainPath = function(d: string) {
+export const createMainPath = function (d: string) {
   const path = $d.createElementNS(svgNS, 'path')
   path.setAttribute('d', d)
   path.setAttribute('stroke', '#666')
@@ -9,18 +9,13 @@ export const createMainPath = function(d: string) {
   return path
 }
 
-export const createLinkSvg = function(klass: string) {
+export const createLinkSvg = function (klass: string) {
   const svg = $d.createElementNS(svgNS, 'svg')
   svg.setAttribute('class', klass)
   return svg
 }
 
-export const createLine = function(
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number
-) {
+export const createLine = function (x1: number, y1: number, x2: number, y2: number) {
   const line = $d.createElementNS(svgNS, 'line')
   line.setAttribute('x1', x1)
   line.setAttribute('y1', y1)
@@ -32,7 +27,7 @@ export const createLine = function(
   return line
 }
 
-export const createPath = function(d: string) {
+export const createPath = function (d: string) {
   const path = $d.createElementNS(svgNS, 'path')
   path.setAttribute('d', d)
   path.setAttribute('stroke', '#555')
@@ -45,7 +40,7 @@ export const createPath = function(d: string) {
 interface CustomSvg extends SVGElement {
   linkObj?: object
 }
-export const createSvgGroup = function(d: string, arrowd: string): CustomSvg {
+export const createSvgGroup = function (d: string, arrowd: string): CustomSvg {
   const g = $d.createElementNS(svgNS, 'g')
   const path = $d.createElementNS(svgNS, 'path')
   const arrow = $d.createElementNS(svgNS, 'path')

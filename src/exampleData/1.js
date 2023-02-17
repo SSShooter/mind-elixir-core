@@ -9,7 +9,8 @@ export default {
         topic: 'logo',
         id: '56dae51a90d350a8',
         direction: 0,
-        expanded: true, children: [
+        expanded: true,
+        children: [
           {
             topic: 'mind-elixir',
             image: {
@@ -185,8 +186,7 @@ export default {
         expanded: true,
         children: [
           {
-            topic:
-              'Drag a node to another node\nand the former one will become a child node of latter one',
+            topic: 'Drag a node to another node\nand the former one will become a child node of latter one',
             id: 'bd1f07c598e729dc',
           },
         ],

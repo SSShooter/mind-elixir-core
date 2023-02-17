@@ -1,6 +1,6 @@
 import './mobileMenu.less'
 
-export default function(mind, option?) {
+export default function (mind, option?) {
   const createLi = (id, name) => {
     const div = document.createElement('div')
     div.id = id
@@ -84,10 +84,10 @@ export default function(mind, option?) {
   //   }
   // }
 
-  mind.bus.addListener('unselectNode', function() {
+  mind.bus.addListener('unselectNode', function () {
     menuContainer.hidden = true
   })
-  mind.bus.addListener('selectNode', function(nodeObj) {
+  mind.bus.addListener('selectNode', function (nodeObj) {
     menuContainer.hidden = false
     if (nodeObj.root) {
       isRoot = true

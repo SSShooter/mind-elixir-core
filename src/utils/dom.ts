@@ -21,7 +21,7 @@ export const findEle = (id: string, instance?) => {
   return scope.querySelector(`[data-nodeid=me${id}]`)
 }
 
-export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
+export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.textContent = nodeObj.topic
 
   if (nodeObj.style) {
@@ -60,22 +60,18 @@ export const shapeTpc = function(tpc: Topic, nodeObj: NodeObj) {
   if (nodeObj.icons && nodeObj.icons.length) {
     const iconsContainer = $d.createElement('span')
     iconsContainer.className = 'icons'
-    iconsContainer.innerHTML = nodeObj.icons
-      .map(icon => `<span>${encodeHTML(icon)}</span>`)
-      .join('')
+    iconsContainer.innerHTML = nodeObj.icons.map(icon => `<span>${encodeHTML(icon)}</span>`).join('')
     tpc.appendChild(iconsContainer)
   }
   if (nodeObj.tags && nodeObj.tags.length) {
     const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
-    tagsContainer.innerHTML = nodeObj.tags
-      .map(tag => `<span>${encodeHTML(tag)}</span>`)
-      .join('')
+    tagsContainer.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
     tpc.appendChild(tagsContainer)
   }
 }
 
-export const createGroup = function(nodeObj: NodeObj, omitChildren?: boolean) {
+export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {
   const grp: Group = $d.createElement('GRP')
   const top: Top = this.createTop(nodeObj)
   grp.appendChild(top)
@@ -89,7 +85,7 @@ export const createGroup = function(nodeObj: NodeObj, omitChildren?: boolean) {
   return { grp, top }
 }
 
-export const createTop = function(nodeObj: NodeObj): Top {
+export const createTop = function (nodeObj: NodeObj): Top {
   const top = $d.createElement('t')
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
@@ -97,7 +93,7 @@ export const createTop = function(nodeObj: NodeObj): Top {
   return top
 }
 
-export const createTopic = function(nodeObj: NodeObj): Topic {
+export const createTopic = function (nodeObj: NodeObj): Topic {
   const topic: Topic = $d.createElement('tpc')
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
@@ -171,7 +167,7 @@ export function createInputDiv(tpc: Topic) {
   console.timeEnd('createInputDiv')
 }
 
-export const createExpander = function(expanded: boolean | undefined): Expander {
+export const createExpander = function (expanded: boolean | undefined): Expander {
   const expander: Expander = $d.createElement('epd')
   // 包含未定义 expanded 的情况，未定义视为展开
   expander.expanded = expanded !== false
