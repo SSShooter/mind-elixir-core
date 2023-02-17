@@ -4,6 +4,7 @@
   "description": "Mind elixir is a free open source mind map core.",
   "main": "dist/MindElixir.js",
   "scripts": {
+    "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,json,ts}\" --fix",
     "start": "webpack-dev-server --mode development --env dist=0",
     "startd": "webpack-dev-server --mode development --env dist=1",
     "test": "jest --runInBand",
