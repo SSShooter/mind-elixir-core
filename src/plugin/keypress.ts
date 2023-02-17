@@ -1,4 +1,4 @@
-export default function(mind) {
+export default function (mind) {
   const key2func = {
     13: () => {
       // enter
@@ -25,24 +25,16 @@ export default function(mind) {
       if (!mind.currentNode) return
       if (mind.currentNode.offsetParent.offsetParent.className === 'rhs') {
         mind.selectParent()
-      } else if (
-        mind.currentNode.offsetParent.offsetParent.className === 'lhs' ||
-        mind.currentNode.nodeObj.root
-      ) {
+      } else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs' || mind.currentNode.nodeObj.root) {
         mind.selectFirstChild()
       }
     },
     39: () => {
       // right
       if (!mind.currentNode) return
-      if (
-        mind.currentNode.offsetParent.offsetParent.className === 'rhs' ||
-        mind.currentNode.nodeObj.root
-      ) {
+      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs' || mind.currentNode.nodeObj.root) {
         mind.selectFirstChild()
-      } else if (
-        mind.currentNode.offsetParent.offsetParent.className === 'lhs'
-      ) {
+      } else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs') {
         mind.selectParent()
       }
     },
@@ -56,14 +48,14 @@ export default function(mind) {
     },
     67(e) {
       if (e.metaKey || e.ctrlKey) {
-      // ctrl c
+        // ctrl c
         mind.waitCopy = mind.currentNode
       }
     },
     86(e) {
       if (!mind.waitCopy) return
       if (e.metaKey || e.ctrlKey) {
-      // ctrl v
+        // ctrl v
         mind.copyNode(mind.waitCopy, mind.currentNode)
         mind.waitCopy = null
       }

@@ -23,7 +23,7 @@ const $d = document
  * @exports NodeOperation
  * @namespace NodeOperation
  */
-export const updateNodeStyle = function(object) {
+export const updateNodeStyle = function (object) {
   if (!object.style) return
   const nodeEle = findEle(object.id, this)
   const origin = {
@@ -44,7 +44,7 @@ export const updateNodeStyle = function(object) {
   })
 }
 
-export const updateNodeTags = function(object, tags) {
+export const updateNodeTags = function (object, tags) {
   const oldVal = object.tags
   object.tags = tags
   const nodeEle = findEle(object.id)
@@ -57,7 +57,7 @@ export const updateNodeTags = function(object, tags) {
   })
 }
 
-export const updateNodeIcons = function(object, icons) {
+export const updateNodeIcons = function (object, icons) {
   const oldVal = object.icons
   object.icons = icons
   const nodeEle = findEle(object.id)
@@ -70,7 +70,7 @@ export const updateNodeIcons = function(object, icons) {
   })
 }
 
-export const updateNodeHyperLink = function(object, hyperLink) {
+export const updateNodeHyperLink = function (object, hyperLink) {
   const oldVal = object.hyperLink
   object.hyperLink = hyperLink
   const nodeEle = findEle(object.id)
@@ -83,7 +83,7 @@ export const updateNodeHyperLink = function(object, hyperLink) {
   })
 }
 
-export const updateNodeSvgChart = function() {
+export const updateNodeSvgChart = function () {
   // TODO
 }
 
@@ -98,7 +98,7 @@ export const updateNodeSvgChart = function() {
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export const insertSibling = function(el, node) {
+export const insertSibling = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -144,7 +144,7 @@ export const insertSibling = function(el, node) {
  * @example
  * insertBefore(E('bd4313fbac40284b'))
  */
-export const insertBefore = function(el, node) {
+export const insertBefore = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -190,7 +190,7 @@ export const insertBefore = function(el, node) {
  * @example
  * insertParent(E('bd4313fbac40284b'))
  */
-export const insertParent = function(el, node) {
+export const insertParent = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -233,7 +233,7 @@ export const insertParent = function(el, node) {
   })
 }
 
-export const addChildFunction = function(nodeEle, node) {
+export const addChildFunction = function (nodeEle, node) {
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
@@ -279,7 +279,7 @@ export const addChildFunction = function(nodeEle, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild = function(el: NodeElement, node: NodeObj) {
+export const addChild = function (el: NodeElement, node: NodeObj) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -308,7 +308,7 @@ export const addChild = function(el: NodeElement, node: NodeObj) {
  * @example
  * copyNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const copyNode = function(node: NodeElement, to: NodeElement) {
+export const copyNode = function (node: NodeElement, to: NodeElement) {
   console.time('copyNode')
   const deepCloneObj = JSON.parse(
     JSON.stringify(node.nodeObj, (k, v) => {
@@ -335,7 +335,7 @@ export const copyNode = function(node: NodeElement, to: NodeElement) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export const moveUpNode = function(el) {
+export const moveUpNode = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -359,7 +359,7 @@ export const moveUpNode = function(el) {
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export const moveDownNode = function(el) {
+export const moveDownNode = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -387,7 +387,7 @@ export const moveDownNode = function(el) {
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export const removeNode = function(el) {
+export const removeNode = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -445,7 +445,7 @@ export const removeNode = function(el) {
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNode = function(from, to) {
+export const moveNode = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -508,7 +508,7 @@ export const moveNode = function(from, to) {
  * @example
  * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeBefore = function(from, to) {
+export const moveNodeBefore = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -539,7 +539,7 @@ export const moveNodeBefore = function(from, to) {
  * @example
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeAfter = function(from, to) {
+export const moveNodeAfter = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -569,13 +569,13 @@ export const moveNodeAfter = function(from, to) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-export const beginEdit = function(el) {
+export const beginEdit = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   this.createInputDiv(nodeEle)
 }
 
-export const setNodeTopic = function(tpc, topic) {
+export const setNodeTopic = function (tpc, topic) {
   tpc.childNodes[0].textContent = topic
   tpc.nodeObj.topic = topic
   this.linkDiv()

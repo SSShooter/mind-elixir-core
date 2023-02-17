@@ -61,7 +61,7 @@ function createToolBarLTContainer(mind) {
   return toolBarLTContainer
 }
 
-export default function(mind) {
+export default function (mind) {
   mind.container.append(createToolBarRBContainer(mind))
   mind.container.append(createToolBarLTContainer(mind))
 }

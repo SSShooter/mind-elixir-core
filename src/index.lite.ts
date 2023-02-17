@@ -1,9 +1,5 @@
 import { LEFT, RIGHT, SIDE } from './const'
-import {
-  isMobile,
-  addParentLink,
-  getObjById,
-} from './utils/index'
+import { isMobile, addParentLink, getObjById } from './utils/index'
 import { findEle, layout, Topic, createChildren, createGroup, createTop, createTopic } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
@@ -27,13 +23,8 @@ import {
   expandNode,
   refresh,
 } from './interact'
-import {
-  judgeDirection,
-  setNodeTopic,
-} from './nodeOperation'
-import {
-  createLink,
-} from './customLink'
+import { judgeDirection, setNodeTopic } from './nodeOperation'
+import { createLink } from './customLink'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
 
@@ -53,109 +44,111 @@ type operation = {
   name: string
 }
 export interface NodeObj {
-  topic: string,
-  id: string,
+  topic: string
+  id: string
   style?: {
-    fontSize?: string,
-    color?: string,
-    background?: string,
+    fontSize?: string
+    color?: string
+    background?: string
     fontWeight?: string
-  },
-  parent?: NodeObj,
-  children?: NodeObj[],
-  tags?: string[],
-  icons?: string[],
-  hyperLink?: string,
-  expanded?: boolean,
-  direction?: number,
+  }
+  parent?: NodeObj
+  children?: NodeObj[]
+  tags?: string[]
+  icons?: string[]
+  hyperLink?: string
+  expanded?: boolean
+  direction?: number
   root?: boolean
 }
 export interface MindElixirData {
-  nodeData: NodeObj,
-  linkData?: LinkObj,
-  direction?: number,
+  nodeData: NodeObj
+  linkData?: LinkObj
+  direction?: number
 }
 export interface MindElixirInstance {
-  mindElixirBox: HTMLElement,
-  nodeData: NodeObj,
-  linkData: LinkObj,
-  currentNode: Topic | null,
-  currentLink: SVGElement | null,
-  inputDiv: HTMLElement | null,
-  scaleVal: number,
-  tempDirection: number | null,
-  bus: object, // wip
+  mindElixirBox: HTMLElement
+  nodeData: NodeObj
+  linkData: LinkObj
+  currentNode: Topic | null
+  currentLink: SVGElement | null
+  inputDiv: HTMLElement | null
+  scaleVal: number
+  tempDirection: number | null
+  bus: object // wip
 
   // wip
-  history: operation[],
-  isUndo: boolean,
-  undo: () => void,
+  history: operation[]
+  isUndo: boolean
+  undo: () => void
 
-  direction: number,
-  locale: string,
-  draggable: boolean,
-  editable: boolean,
-  contextMenu: boolean,
-  contextMenuOption: object,
-  toolBar: boolean,
-  nodeMenu: boolean,
-  keypress: boolean,
-  before: object,
-  newTopicName: string,
-  allowUndo: boolean,
-  overflowHidden: boolean,
-  primaryLinkStyle: number,
-  primaryNodeHorizontalGap: number,
-  primaryNodeVerticalGap: number,
-  mobileMenu: boolean,
+  direction: number
+  locale: string
+  draggable: boolean
+  editable: boolean
+  contextMenu: boolean
+  contextMenuOption: object
+  toolBar: boolean
+  nodeMenu: boolean
+  keypress: boolean
+  before: object
+  newTopicName: string
+  allowUndo: boolean
+  overflowHidden: boolean
+  primaryLinkStyle: number
+  primaryNodeHorizontalGap: number
+  primaryNodeVerticalGap: number
+  mobileMenu: boolean
 
-  container: HTMLElement,
-  map: HTMLElement,
-  root: HTMLElement,
-  box: HTMLElement,
-  lines: SVGElement,
-  linkController: SVGElement,
-  P2: HTMLElement,
-  P3: HTMLElement,
-  line1: SVGElement,
-  line2: SVGElement,
-  linkSvgGroup: SVGElement,
+  container: HTMLElement
+  map: HTMLElement
+  root: HTMLElement
+  box: HTMLElement
+  lines: SVGElement
+  linkController: SVGElement
+  P2: HTMLElement
+  P3: HTMLElement
+  line1: SVGElement
+  line2: SVGElement
+  linkSvgGroup: SVGElement
 }
 export interface Options {
-  el: string | Element,
-  direction?: number,
-  locale?: string,
-  draggable?: boolean,
-  editable?: boolean,
-  contextMenu?: boolean,
-  contextMenuOption?: object,
-  toolBar?: boolean,
-  nodeMenu?: boolean,
-  keypress?: boolean,
-  before?: object,
-  newTopicName?: string,
-  allowUndo?: boolean,
-  overflowHidden?: boolean,
-  primaryLinkStyle?: number,
-  primaryNodeHorizontalGap?: number,
-  primaryNodeVerticalGap?: number,
-  mobileMenu?: boolean,
+  el: string | Element
+  direction?: number
+  locale?: string
+  draggable?: boolean
+  editable?: boolean
+  contextMenu?: boolean
+  contextMenuOption?: object
+  toolBar?: boolean
+  nodeMenu?: boolean
+  keypress?: boolean
+  before?: object
+  newTopicName?: string
+  allowUndo?: boolean
+  overflowHidden?: boolean
+  primaryLinkStyle?: number
+  primaryNodeHorizontalGap?: number
+  primaryNodeVerticalGap?: number
+  mobileMenu?: boolean
 }
 const $d = document
-function MindElixir(this: MindElixirInstance, {
-  el,
-  direction,
-  locale,
-  draggable,
-  toolBar,
-  keypress,
-  newTopicName,
-  primaryLinkStyle,
-  overflowHidden,
-  primaryNodeHorizontalGap,
-  primaryNodeVerticalGap,
-  mobileMenu,
-}: Options) {
+function MindElixir(
+  this: MindElixirInstance,
+  {
+    el,
+    direction,
+    locale,
+    toolBar,
+    keypress,
+    newTopicName,
+    primaryLinkStyle,
+    overflowHidden,
+    primaryNodeHorizontalGap,
+    primaryNodeVerticalGap,
+    mobileMenu,
+  }: Options
+) {
   let box
   const elType = Object.prototype.toString.call(el)
   if (elType === '[object HTMLDivElement]') {
@@ -172,7 +165,7 @@ function MindElixir(this: MindElixirInstance, {
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
-  this.draggable = draggable === undefined ? true : draggable
+  this.draggable = false
   this.newTopicName = newTopicName
   this.editable = false
   // this.parentMap = {} // deal with large amount of nodes
@@ -187,20 +180,6 @@ function MindElixir(this: MindElixirInstance, {
   this.primaryNodeVerticalGap = primaryNodeVerticalGap
 
   this.bus = new Bus()
-  ;(this.bus as any).addListener('operation', (operation: operation) => {
-    if (this.isUndo) {
-      this.isUndo = false
-      return
-    }
-    if (
-      ['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(
-        operation.name
-      )
-    ) {
-      this.history.push(operation)
-      // console.log(operation, this.history)
-    }
-  })
 
   console.log('ME_version ' + MindElixir.version)
   this.mindElixirBox.className += ' mind-elixir'
@@ -259,7 +238,10 @@ MindElixir.prototype = {
   layout,
   linkDiv,
 
-  createChildren, createGroup, createTop, createTopic,
+  createChildren,
+  createGroup,
+  createTop,
+  createTopic,
 
   selectNode,
   unselectNode,
@@ -281,7 +263,7 @@ MindElixir.prototype = {
   expandNode,
   refresh,
 
-  init: function(data: MindElixirData) {
+  init: function (data: MindElixirData) {
     if (data.direction) {
       this.direction = data.direction
     }

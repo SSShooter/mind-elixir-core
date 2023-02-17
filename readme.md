@@ -120,7 +120,7 @@ let options = {
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt] waiting for PRs
+  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
   overflowHidden: false, // default false
   primaryLinkStyle: 2, // [1,2] default 1
   primaryNodeVerticalGap: 15, // default 25
@@ -175,6 +175,11 @@ nodeData = {
   tags: ['Tag'],
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
+  image: {
+    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png', // required
+    height: 90, // required
+    width: 300, // required
+  },
   children: [
     {
       topic: 'child',
