@@ -4,6 +4,7 @@
   "description": "Mind elixir is a free open source mind map core.",
   "main": "dist/MindElixir.js",
   "scripts": {
+    "prepare": "husky install",
     "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,json,ts}\" --fix",
     "start": "webpack-dev-server --mode development --env dist=0",
     "startd": "webpack-dev-server --mode development --env dist=1",
@@ -13,6 +14,11 @@
     "md": "./node_modules/.bin/jsdoc2md 'src/*.js' > api.md",
     "publish2": "npm run build && npm version patch -m \"build: release %s\" && npm publish",
     "beta": "npm run build && npm publish --tag beta"
+  },
+  "lint-staged": {
+    "src/**/*.{ts,js,json}": [
+      "eslint --cache --fix"
+    ]
   },
   "files": [
     "package.json",
@@ -41,11 +47,13 @@
     "eslint-plugin-prettier": "^4.2.1",
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.3.2",
+    "husky": "^8.0.3",
     "jest": "^27.5.1",
     "jsdoc": "^3.6.3",
     "jsdoc-to-markdown": "^7.1.1",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
+    "lint-staged": "^13.1.2",
     "prettier": "2.8.4",
     "puppeteer": "^13.5.1",
     "puppeteer-to-istanbul": "^1.4.0",
