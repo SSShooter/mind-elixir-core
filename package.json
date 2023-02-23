@@ -16,8 +16,11 @@
     "beta": "npm run build && npm publish --tag beta"
   },
   "lint-staged": {
-    "src/**/*.{ts,js,json}": [
+    "src/**/*.{ts,js}": [
       "eslint --cache --fix"
+    ],
+    "src/**/*.{json,less}": [
+      "prettier --write"
     ]
   },
   "files": [
