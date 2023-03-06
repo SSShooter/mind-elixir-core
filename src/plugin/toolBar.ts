@@ -10,7 +10,7 @@ const createButton = (id, name) => {
 }
 
 function createToolBarRBContainer(mind) {
-  const toolBarRBContainer = document.createElement('toolbar')
+  const toolBarRBContainer = document.createElement('mindElixirToolbar')
   const fc = createButton('fullscreen', 'full')
   const gc = createButton('toCenter', 'living')
   const zo = createButton('zoomout', 'move')
@@ -22,7 +22,7 @@ function createToolBarRBContainer(mind) {
   toolBarRBContainer.appendChild(zo)
   toolBarRBContainer.appendChild(zi)
   // toolBarRBContainer.appendChild(percentage)
-  toolBarRBContainer.className = 'rb'
+  toolBarRBContainer.className = 'mind-elixir-rb'
   fc.onclick = () => {
     mind.container.requestFullscreen()
   }
@@ -40,7 +40,7 @@ function createToolBarRBContainer(mind) {
   return toolBarRBContainer
 }
 function createToolBarLTContainer(mind) {
-  const toolBarLTContainer = document.createElement('toolbar')
+  const toolBarLTContainer = document.createElement('mindElixirToolbar')
   const l = createButton('tbltl', 'left')
   const r = createButton('tbltr', 'right')
   const s = createButton('tblts', 'side')
@@ -48,7 +48,7 @@ function createToolBarLTContainer(mind) {
   toolBarLTContainer.appendChild(l)
   toolBarLTContainer.appendChild(r)
   toolBarLTContainer.appendChild(s)
-  toolBarLTContainer.className = 'lt'
+  toolBarLTContainer.className = 'mind-elixir-lt'
   l.onclick = () => {
     mind.initLeft()
   }
