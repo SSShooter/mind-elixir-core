@@ -38,7 +38,7 @@ Mind elixir is a free open source mind map core.
   - [Init](#init)
   - [Data Structure](#data-structure)
   - [Event Handling](#event-handling)
-  - [Data Export](#data-export)
+  - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
 - [Not only core](#not-only-core)
 
@@ -177,6 +177,7 @@ nodeData = {
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
   image: {
     url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png', // required
+    // you need to query the height and width of the image and calculate the appropriate value to display the image
     height: 90, // required
     width: 300, // required
   },
@@ -216,12 +217,20 @@ mind.bus.addListener('expandNode', node => {
 })
 ```
 
-### Data Export
+### Data Export And Import
 
 ```javascript
-mind.getAllData() // javascript object, see src/example.js
+// data export
+const data = mind.getAllData() // javascript object, see src/example.js
 mind.getAllDataString() // stringify object
 mind.getAllDataMd() // markdown
+
+// data import
+// initiate
+let mind = new MindElixir(options)
+mind.init(data)
+// data update
+mind.refresh(data)
 ```
 
 ### Operation Guards
@@ -253,3 +262,4 @@ let mind = new MindElixir({
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
 - [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)
+- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
