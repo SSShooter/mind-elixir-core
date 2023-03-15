@@ -4,20 +4,15 @@ export function encodeHTML(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
 }
 
-export const isMobile = (): boolean =>
-  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  )
+export const isMobile = (): boolean => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-export const rgbHex = (rgb) => {
-  return rgb.replace(
-    /\brgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/g,
-    function($0, $1, $2, $3) {
-      return '#' + ('0' + Number($1).toString(16)).substr(-2) + ('0' + Number($2).toString(16)).substr(-2) + ('0' + Number($3).toString(16)).substr(-2)
-    })
+export const rgbHex = rgb => {
+  return rgb.replace(/\brgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/g, function ($0, $1, $2, $3) {
+    return '#' + ('0' + Number($1).toString(16)).substr(-2) + ('0' + Number($2).toString(16)).substr(-2) + ('0' + Number($3).toString(16)).substr(-2)
+  })
 }
 
-export const getObjById = function(id: string, data: NodeObj) {
+export const getObjById = function (id: string, data: NodeObj) {
   data = data || this.nodeData
   if (data.id === id) {
     return data
@@ -50,13 +45,11 @@ export function refreshIds(data: NodeObj) {
 }
 
 export const throttle = (fn: (any) => void, wait: number) => {
-  var pre = Date.now()
-  return function() {
-    var context = this
-    var args = arguments
-    var now = Date.now()
+  let pre = Date.now()
+  return function (...args) {
+    const now = Date.now()
     if (now - pre >= wait) {
-      fn.apply(context, args)
+      fn.apply(this, args)
       pre = Date.now()
     }
   }
@@ -77,7 +70,7 @@ export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: numbe
   }
   const arrowLength = 20
   const arrowAngle = 30
-  var a1 = angle + arrowAngle
+  const a1 = angle + arrowAngle
   const a2 = angle - arrowAngle
   return {
     x1: p4x + Math.cos((Math.PI * a1) / 180) * arrowLength,
@@ -144,9 +137,7 @@ export function calcP4(toData, p3x, p3y) {
 }
 
 export function generateUUID(): string {
-  return (
-    new Date().getTime().toString(16) + Math.random().toString(16).substr(2)
-  ).substr(2, 16)
+  return (new Date().getTime().toString(16) + Math.random().toString(16).substr(2)).substr(2, 16)
 }
 
 export function generateNewObj(): NodeObj {
@@ -291,10 +282,7 @@ export const dragMoveHelper = {
       }
       const deltaX = this.lastX - e.pageX
       const deltaY = this.lastY - e.pageY
-      container.scrollTo(
-        container.scrollLeft + deltaX,
-        container.scrollTop + deltaY
-      )
+      container.scrollTo(container.scrollLeft + deltaX, container.scrollTop + deltaY)
       this.lastX = e.pageX
       this.lastY = e.pageY
     }
@@ -314,7 +302,7 @@ export function LinkDragMoveHelper(dom) {
   this.lastY = null
 }
 
-LinkDragMoveHelper.prototype.init = function(map, cb) {
+LinkDragMoveHelper.prototype.init = function (map, cb) {
   this.handleMouseMove = e => {
     e.stopPropagation()
     if (this.mousedown) {
@@ -344,14 +332,14 @@ LinkDragMoveHelper.prototype.init = function(map, cb) {
   this.dom.addEventListener('mousedown', this.handleMouseDown)
 }
 
-LinkDragMoveHelper.prototype.destory = function(map) {
+LinkDragMoveHelper.prototype.destory = function (map) {
   map.removeEventListener('mousemove', this.handleMouseMove)
   map.removeEventListener('mouseleave', this.handleClear)
   map.removeEventListener('mouseup', this.handleClear)
   this.dom.removeEventListener('mousedown', this.handleMouseDown)
 }
 
-LinkDragMoveHelper.prototype.clear = function() {
+LinkDragMoveHelper.prototype.clear = function () {
   this.mousedown = false
   this.lastX = null
   this.lastY = null

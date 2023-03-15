@@ -14,8 +14,8 @@ import { SIDE, GAP, TURNPOINT_R, PRIMARY_NODE_HORIZONTAL_GAP, PRIMARY_NODE_VERTI
  * @param {object} primaryNode process the specific primary node only
  */
 export default function linkDiv(primaryNode) {
-  var primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
-  var primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
+  const primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
+  const primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
   const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
@@ -102,7 +102,11 @@ export default function linkDiv(primaryNode) {
 
     if (this.primaryLinkStyle === 2) {
       if (this.direction === SIDE) {
-        if (el.className === 'lhs') { x1 = 10000 - root.offsetWidth / 6 } else { x1 = 10000 + root.offsetWidth / 6 }
+        if (el.className === 'lhs') {
+          x1 = 10000 - root.offsetWidth / 6
+        } else {
+          x1 = 10000 + root.offsetWidth / 6
+        }
       }
       primaryPath += generatePrimaryLine2({ x1, y1, x2, y2 })
     } else {
@@ -154,7 +158,7 @@ export default function linkDiv(primaryNode) {
 }
 
 // core function of generate subLines
-function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean):string {
+function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean): string {
   let path = ''
   const parentOT = parent.offsetTop
   const parentOL = parent.offsetLeft
@@ -202,14 +206,16 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     }
 
     const nextChildren = child.children[1].children
-    if (nextChildren.length > 0) { path += traverseChildren(nextChildren, childT) }
+    if (nextChildren.length > 0) {
+      path += traverseChildren(nextChildren, childT)
+    }
   }
   return path
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
 function generatePrimaryLine2({ x1, y1, x2, y2 }) {
-  return `M ${x1} 10000 V ${y2 > y1 ? (y2 - 20) : (y2 + 20)} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? (x1 + 20) : (x1 - 20)} ${y2} H ${x2}`
+  return `M ${x1} 10000 V ${y2 > y1 ? y2 - 20 : y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? x1 + 20 : x1 - 20} ${y2} H ${x2}`
 }
 
 function generatePrimaryLine1({ x1, y1, x2, y2 }) {
@@ -222,9 +228,13 @@ function generateSubLine({ x1, y1, x2, y2, xMiddle }) {
     return `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
   } else if (y2 >= y1) {
     // child bottom lower than parent
-    return `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 1 : 0} ${x1 > x2 ? (xMiddle - TURNPOINT_R) : (xMiddle + TURNPOINT_R)} ${y2} H ${x2}`
+    return `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 1 : 0} ${
+      x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
+    } ${y2} H ${x2}`
   } else {
     // child bottom higher than parent
-    return `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 0 : 1} ${x1 > x2 ? (xMiddle - TURNPOINT_R) : (xMiddle + TURNPOINT_R)} ${y2} H ${x2}`
+    return `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 0 : 1} ${
+      x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
+    } ${y2} H ${x2}`
   }
 }

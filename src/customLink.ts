@@ -1,14 +1,8 @@
-import {
-  LinkDragMoveHelper,
-  generateUUID,
-  getArrowPoints,
-  calcP1,
-  calcP4,
-} from './utils/index'
+import { LinkDragMoveHelper, generateUUID, getArrowPoints, calcP1, calcP4 } from './utils/index'
 import { createSvgGroup } from './utils/svg'
 
 // TODO Link label
-export const createLink = function(from, to, isInitPaint, obj) {
+export const createLink = function (from, to, isInitPaint, obj) {
   const map = this.map.getBoundingClientRect()
   if (!from || !to) {
     return // not expand
@@ -115,10 +109,12 @@ export const createLink = function(from, to, isInitPaint, obj) {
     this.currentLink = newSvgGroup
   }
   this.linkSvgGroup.appendChild(newSvgGroup)
-  if (!isInitPaint) { this.showLinkController(p2x, p2y, p3x, p3y, newLinkObj, fromData, toData) }
+  if (!isInitPaint) {
+    this.showLinkController(p2x, p2y, p3x, p3y, newLinkObj, fromData, toData)
+  }
 }
 
-export const removeLink = function(linkSvg) {
+export const removeLink = function (linkSvg) {
   let link
   if (linkSvg) {
     link = linkSvg
@@ -134,7 +130,7 @@ export const removeLink = function(linkSvg) {
   link.remove()
   link = null
 }
-export const selectLink = function(targetElement) {
+export const selectLink = function (targetElement) {
   this.currentLink = targetElement
   const obj = targetElement.linkObj
   const from = obj.from
@@ -168,20 +164,12 @@ export const selectLink = function(targetElement) {
 
   this.showLinkController(p2x, p2y, p3x, p3y, obj, fromData, toData)
 }
-export const hideLinkController = function() {
+export const hideLinkController = function () {
   this.linkController.style.display = 'none'
   this.P2.style.display = 'none'
   this.P3.style.display = 'none'
 }
-export const showLinkController = function(
-  p2x,
-  p2y,
-  p3x,
-  p3y,
-  linkObj,
-  fromData,
-  toData
-) {
+export const showLinkController = function (p2x, p2y, p3x, p3y, linkObj, fromData, toData) {
   this.linkController.style.display = 'initial'
   this.P2.style.display = 'initial'
   this.P3.style.display = 'initial'
@@ -227,10 +215,7 @@ export const showLinkController = function(
 
     this.P2.style.top = p2y + 'px'
     this.P2.style.left = p2x + 'px'
-    this.currentLink.children[0].setAttribute(
-      'd',
-      `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`
-    )
+    this.currentLink.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
     this.line1.setAttribute('x1', p1x)
     this.line1.setAttribute('y1', p1y)
     this.line1.setAttribute('x2', p2x)
@@ -250,14 +235,8 @@ export const showLinkController = function(
 
     this.P3.style.top = p3y + 'px'
     this.P3.style.left = p3x + 'px'
-    this.currentLink.children[0].setAttribute(
-      'd',
-      `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`
-    )
-    this.currentLink.children[1].setAttribute(
-      'd',
-      `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
-    )
+    this.currentLink.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+    this.currentLink.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
     this.line2.setAttribute('x1', p3x)
     this.line2.setAttribute('y1', p3y)
     this.line2.setAttribute('x2', p4x)

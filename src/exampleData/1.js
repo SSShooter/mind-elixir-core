@@ -1,9 +1,26 @@
 export default {
+  direction: 0,
   nodeData: {
     id: 'root',
     topic: 'Mind Elixir',
     root: true,
     children: [
+      {
+        topic: 'logo',
+        id: '56dae51a90d350a8',
+        direction: 0,
+        expanded: true,
+        children: [
+          {
+            topic: 'mind-elixir',
+            image: {
+              url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png',
+              height: 90,
+              width: 300,
+            },
+          },
+        ],
+      },
       {
         topic: 'What is Minde Elixir',
         id: 'bd4313fbac40284b',
@@ -169,8 +186,7 @@ export default {
         expanded: true,
         children: [
           {
-            topic:
-              'Drag a node to another node\nand the former one will become a child node of latter one',
+            topic: 'Drag a node to another node\nand the former one will become a child node of latter one',
             id: 'bd1f07c598e729dc',
           },
         ],

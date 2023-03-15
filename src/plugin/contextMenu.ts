@@ -2,7 +2,7 @@ import i18n from '../i18n'
 import { encodeHTML } from '../utils/index'
 import './contextMenu.less'
 
-export default function(mind, option) {
+export default function (mind, option) {
   const createTips = words => {
     const div = document.createElement('div')
     div.innerText = words
@@ -20,11 +20,7 @@ export default function(mind, option) {
   const add_child = createLi('cm-add_child', i18n[locale].addChild, 'tab')
   const add_parent = createLi('cm-add_parent', i18n[locale].addParent, '')
   const add_sibling = createLi('cm-add_sibling', i18n[locale].addSibling, 'enter')
-  const remove_child = createLi(
-    'cm-remove_child',
-    i18n[locale].removeNode,
-    'delete'
-  )
+  const remove_child = createLi('cm-remove_child', i18n[locale].removeNode, 'delete')
   const focus = createLi('cm-fucus', i18n[locale].focus, '')
   const unfocus = createLi('cm-unfucus', i18n[locale].cancelFocus, '')
   const up = createLi('cm-up', i18n[locale].moveUp, 'PgUp')
@@ -62,7 +58,7 @@ export default function(mind, option) {
 
   mind.container.append(menuContainer)
   let isRoot = true
-  mind.container.oncontextmenu = function(e) {
+  mind.container.oncontextmenu = function (e) {
     e.preventDefault()
     if (!mind.editable) return
     // console.log(e.pageY, e.screenY, e.clientY)
@@ -158,10 +154,7 @@ export default function(mind, option) {
       e => {
         e.preventDefault()
         tips.remove()
-        if (
-          e.target.parentElement.nodeName === 'T' ||
-          e.target.parentElement.nodeName === 'ROOT'
-        ) {
+        if (e.target.parentElement.nodeName === 'T' || e.target.parentElement.nodeName === 'ROOT') {
           mind.createLink(from, mind.currentNode)
         } else {
           console.log('link cancel')

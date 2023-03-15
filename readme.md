@@ -26,6 +26,24 @@ Mind elixir is a free open source mind map core.
 - Pluginable
 - Build-in drag and drop / node edit plugin
 
+<details>
+<summary>Table of Contents</summary>
+
+- [Doc](#doc)
+- [Try now](#try-now)
+- [Playground](#playground)
+- [Usage](#usage)
+  - [Install](#install)
+  - [HTML structure](#html-structure)
+  - [Init](#init)
+  - [Data Structure](#data-structure)
+  - [Event Handling](#event-handling)
+  - [Data Export And Import](#data-export-and-import)
+  - [Operation Guards](#operation-guards)
+- [Not only core](#not-only-core)
+
+</details>
+
 ## Doc
 
 https://doc.mind-elixir.com/
@@ -34,15 +52,25 @@ https://doc.mind-elixir.com/
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot.png)
 
-https://mind-elixir.com/#/
+https://mind-elixir.com/
 
 ### Playground
 
+#### Vanilla JS
+
 https://codepen.io/ssshooter/pen/GVQRYK
 
-with React https://codesandbox.io/s/mind-elixir-react-9sisb
+#### Use with React 
 
-with Vue https://codesandbox.io/s/mind-elixir-vue-nqjjl
+https://codesandbox.io/s/mind-elixir-react-9sisb
+
+#### Use with Vue 
+
+https://codesandbox.io/s/mind-elixir-vue-nqjjl
+
+#### Use with Vue3
+
+https://codesandbox.io/s/mind-elixir-vue3-dtcq6u
 
 ## Usage
 
@@ -92,7 +120,7 @@ let options = {
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt] waiting for PRs
+  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
   overflowHidden: false, // default false
   primaryLinkStyle: 2, // [1,2] default 1
   primaryNodeVerticalGap: 15, // default 25
@@ -147,6 +175,12 @@ nodeData = {
   tags: ['Tag'],
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
+  image: {
+    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png', // required
+    // you need to query the height and width of the image and calculate the appropriate value to display the image
+    height: 90, // required
+    width: 300, // required
+  },
   children: [
     {
       topic: 'child',
@@ -183,12 +217,20 @@ mind.bus.addListener('expandNode', node => {
 })
 ```
 
-### Data Export
+### Data Export And Import
 
 ```javascript
-mind.getAllData() // javascript object, see src/example.js
+// data export
+const data = mind.getAllData() // javascript object, see src/example.js
 mind.getAllDataString() // stringify object
 mind.getAllDataMd() // markdown
+
+// data import
+// initiate
+let mind = new MindElixir(options)
+mind.init(data)
+// data update
+mind.refresh(data)
 ```
 
 ### Operation Guards
@@ -218,4 +260,6 @@ let mind = new MindElixir({
 ## Not only core
 
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
+- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)
+- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)

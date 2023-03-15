@@ -1,4 +1,5 @@
 export default {
+  direction: 1,
   nodeData: {
     id: 'root',
     topic: 'HTML structure',
@@ -64,9 +65,7 @@ export default {
                           {
                             topic: 'grp',
                             id: '3390930112ea7367',
-                            tags: [
-                              'what add node actually do is to append grp tag to children',
-                            ],
+                            tags: ['what add node actually do is to append grp tag to children'],
                           },
                           { topic: 'grp...', id: '3390940a8c8380a6' },
                         ],

@@ -18,7 +18,7 @@ function getData(instance) {
  * @description Select a node and add solid border to it.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const selectNode = function(targetElement, isNewNode, clickEvent) {
+export const selectNode = function (targetElement, isNewNode, clickEvent) {
   if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
@@ -34,14 +34,14 @@ export const selectNode = function(targetElement, isNewNode, clickEvent) {
   }
   console.timeEnd('selectNode')
 }
-export const unselectNode = function() {
+export const unselectNode = function () {
   if (this.currentNode) {
     this.currentNode.className = ''
   }
   this.currentNode = null
   this.bus.fire('unselectNode')
 }
-export const selectNextSibling = function() {
+export const selectNextSibling = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.nextSibling
@@ -63,7 +63,7 @@ export const selectNextSibling = function() {
   this.selectNode(target)
   return true
 }
-export const selectPrevSibling = function() {
+export const selectPrevSibling = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
@@ -85,7 +85,7 @@ export const selectPrevSibling = function() {
   this.selectNode(target)
   return true
 }
-export const selectFirstChild = function() {
+export const selectFirstChild = function () {
   if (!this.currentNode) return
   const children = this.currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
@@ -93,11 +93,10 @@ export const selectFirstChild = function() {
     this.selectNode(target)
   }
 }
-export const selectParent = function() {
+export const selectParent = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
-  const parent = this.currentNode.parentElement.parentElement.parentElement
-    .previousSibling
+  const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
   if (parent) {
     const target = parent.firstChild
     this.selectNode(target)
@@ -111,7 +110,7 @@ export const selectParent = function() {
  * @memberof MapInteraction
  * @return {string}
  */
-export const getAllDataString = function() {
+export const getAllDataString = function () {
   const data = {
     nodeData: getData(this),
     linkData: this.linkData,
@@ -132,7 +131,7 @@ export const getAllDataString = function() {
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getAllData = function(): object {
+export const getAllData = function (): object {
   const data = {
     nodeData: getData(this),
     linkData: this.linkData,
@@ -156,7 +155,7 @@ export const getAllData = function(): object {
  * @memberof MapInteraction
  * @return {String}
  */
-export const getAllDataMd = function():string {
+export const getAllDataMd = function (): string {
   const data = getData(this)
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children, deep) {
@@ -164,8 +163,7 @@ export const getAllDataMd = function():string {
       if (deep <= 6) {
         mdString += ''.padStart(deep, '#') + ' ' + children[i].topic + '\n\n'
       } else {
-        mdString +=
-          ''.padStart(deep - 7, '\t') + '- ' + children[i].topic + '\n'
+        mdString += ''.padStart(deep - 7, '\t') + '- ' + children[i].topic + '\n'
       }
       if (children[i].children) {
         writeMd(children[i].children, deep + 1)
@@ -182,7 +180,7 @@ export const getAllDataMd = function():string {
  * @name enableEdit
  * @memberof MapInteraction
  */
-export const enableEdit = function() {
+export const enableEdit = function () {
   this.editable = true
 }
 
@@ -192,7 +190,7 @@ export const enableEdit = function() {
  * @name disableEdit
  * @memberof MapInteraction
  */
-export const disableEdit = function() {
+export const disableEdit = function () {
   this.editable = false
 }
 
@@ -204,7 +202,7 @@ export const disableEdit = function() {
  * @memberof MapInteraction
  * @param {number}
  */
-export const scale = function(scaleVal) {
+export const scale = function (scaleVal) {
   this.scaleVal = scaleVal
   this.map.style.transform = 'scale(' + scaleVal + ')'
 }
@@ -215,13 +213,10 @@ export const scale = function(scaleVal) {
  * @description Reset position of the map to center.
  * @memberof MapInteraction
  */
-export const toCenter = function() {
-  this.container.scrollTo(
-    10000 - this.container.offsetWidth / 2,
-    10000 - this.container.offsetHeight / 2
-  )
+export const toCenter = function () {
+  this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
 }
-export const install = function(plugin) {
+export const install = function (plugin) {
   plugin(this)
 }
 /**
@@ -232,7 +227,7 @@ export const install = function(plugin) {
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const focusNode = function(tpcEl) {
+export const focusNode = function (tpcEl) {
   if (tpcEl.nodeObj.root) return
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
@@ -253,7 +248,7 @@ export const focusNode = function(tpcEl) {
  * @description Exit focus mode.
  * @memberof MapInteraction
  */
-export const cancelFocus = function() {
+export const cancelFocus = function () {
   this.isFocusMode = false
   if (this.tempDirection !== null) {
     delete this.nodeData.root
@@ -271,7 +266,7 @@ export const cancelFocus = function() {
  * @description Child nodes will distribute on the left side of the root node.
  * @memberof MapInteraction
  */
-export const initLeft = function() {
+export const initLeft = function () {
   this.direction = 0
   this.refresh()
 }
@@ -282,7 +277,7 @@ export const initLeft = function() {
  * @description Child nodes will distribute on the right side of the root node.
  * @memberof MapInteraction
  */
-export const initRight = function() {
+export const initRight = function () {
   this.direction = 1
   this.refresh()
 }
@@ -293,7 +288,7 @@ export const initRight = function() {
  * @description Child nodes will distribute on both left and right side of the root node.
  * @memberof MapInteraction
  */
-export const initSide = function() {
+export const initSide = function () {
   this.direction = 2
   this.refresh()
 }
@@ -304,12 +299,12 @@ export const initSide = function() {
  * @name setLocale
  * @memberof MapInteraction
  */
-export const setLocale = function(locale) {
+export const setLocale = function (locale) {
   this.locale = locale
   this.refresh()
 }
 
-export const expandNode = function(el, isExpand) {
+export const expandNode = function (el, isExpand) {
   const node = el.nodeObj
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand
@@ -331,8 +326,9 @@ export const expandNode = function(el, isExpand) {
  * @name refresh
  * @description Refresh mind map, you can use it after modified `this.nodeData`
  * @memberof MapInteraction
+ * @param {TargetElement} data mind elixir data
  */
-export const refresh = function(data) {
+export const refresh = function (data) {
   // add parent property to every node
   if (data) {
     this.nodeData = data.nodeData
