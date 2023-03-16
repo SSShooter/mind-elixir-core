@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Mind elixir is a free open source mind map core.",
   "main": "dist/MindElixir.js",
   "scripts": {
@@ -16,8 +16,11 @@
     "beta": "npm run build && npm publish --tag beta"
   },
   "lint-staged": {
-    "src/**/*.{ts,js,json}": [
+    "src/**/*.{ts,js}": [
       "eslint --cache --fix"
+    ],
+    "src/**/*.{json,less}": [
+      "prettier --write"
     ]
   },
   "files": [

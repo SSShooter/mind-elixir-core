@@ -72,7 +72,8 @@ export default function (mind) {
   const memoDiv = createDiv('nm-memo', `${i18n[locale].memo || 'Memo'}<textarea class="nm-memo" rows="5" tabindex="-1" />`)
 
   // create container
-  const menuContainer = document.createElement('nmenu')
+  const menuContainer = document.createElement('div')
+  menuContainer.className = 'node-menu'
   menuContainer.innerHTML = `
   <div class="button-container"><svg class="icon" aria-hidden="true">
   <use xlink:href="#icon-close"></use>

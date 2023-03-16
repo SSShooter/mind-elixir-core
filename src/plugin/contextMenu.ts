@@ -52,7 +52,8 @@ export default function (mind, option) {
       }
     }
   }
-  const menuContainer = document.createElement('cmenu')
+  const menuContainer = document.createElement('div')
+  menuContainer.className = 'context-menu'
   menuContainer.appendChild(menuUl)
   menuContainer.hidden = true
 
@@ -107,44 +108,44 @@ export default function (mind, option) {
     if (e.target === menuContainer) menuContainer.hidden = true
   }
 
-  add_child.onclick = e => {
+  add_child.onclick = () => {
     mind.addChild()
     menuContainer.hidden = true
   }
-  add_parent.onclick = e => {
+  add_parent.onclick = () => {
     mind.insertParent()
     menuContainer.hidden = true
   }
-  add_sibling.onclick = e => {
+  add_sibling.onclick = () => {
     if (isRoot) return
     mind.insertSibling()
     menuContainer.hidden = true
   }
-  remove_child.onclick = e => {
+  remove_child.onclick = () => {
     if (isRoot) return
     mind.removeNode()
     menuContainer.hidden = true
   }
-  focus.onclick = e => {
+  focus.onclick = () => {
     if (isRoot) return
     mind.focusNode(mind.currentNode)
     menuContainer.hidden = true
   }
-  unfocus.onclick = e => {
+  unfocus.onclick = () => {
     mind.cancelFocus()
     menuContainer.hidden = true
   }
-  up.onclick = e => {
+  up.onclick = () => {
     if (isRoot) return
     mind.moveUpNode()
     menuContainer.hidden = true
   }
-  down.onclick = e => {
+  down.onclick = () => {
     if (isRoot) return
     mind.moveDownNode()
     menuContainer.hidden = true
   }
-  link.onclick = e => {
+  link.onclick = () => {
     menuContainer.hidden = true
     const from = mind.currentNode
     const tips = createTips(i18n[locale].clickTips)

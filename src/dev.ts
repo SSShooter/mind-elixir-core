@@ -36,6 +36,7 @@ const options = {
       },
     ],
   },
+  mobileMenu: true,
   toolBar: true,
   nodeMenu: true,
   keypress: true,
