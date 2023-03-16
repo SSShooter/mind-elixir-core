@@ -31,9 +31,15 @@ Mind elixir is a free open source mind map core.
 
 - [Doc](#doc)
 - [Try now](#try-now)
-- [Playground](#playground)
+  - [Playground](#playground)
+    - [Vanilla JS](#vanilla-js)
+    - [Use with React](#use-with-react)
+    - [Use with Vue](#use-with-vue)
+    - [Use with Vue3](#use-with-vue3)
 - [Usage](#usage)
   - [Install](#install)
+    - [NPM](#npm)
+    - [Script tag](#script-tag)
   - [HTML structure](#html-structure)
   - [Init](#init)
   - [Data Structure](#data-structure)
@@ -110,7 +116,7 @@ import MindElixir, { E } from 'mind-elixir'
 
 ```javascript
 import MindElixir, { E } from 'mind-elixir'
-import example from '../dist/example1'
+import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // or HTMLDivElement

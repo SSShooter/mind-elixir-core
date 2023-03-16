@@ -118,7 +118,9 @@ export interface MindElixirInstance {
   inputDiv: HTMLElement | null
   scaleVal: number
   tempDirection: number | null
-  bus: object // wip
+  bus: {
+    addListener: (type, handler) => void
+  } // wip
 
   // wip
   history: operation[]
@@ -253,7 +255,7 @@ function MindElixir(
   this.primaryNodeVerticalGap = primaryNodeVerticalGap
 
   this.bus = new Bus()
-  ;(this.bus as any).addListener('operation', (operation: operation) => {
+  this.bus.addListener('operation', (operation: operation) => {
     if (this.isUndo) {
       this.isUndo = false
       return
