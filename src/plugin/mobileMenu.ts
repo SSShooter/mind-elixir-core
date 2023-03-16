@@ -36,6 +36,7 @@ export default function (mind, option?) {
     }
   }
   const menuContainer = document.createElement('mmenu')
+  menuContainer.className = 'mobile-menu'
   menuContainer.appendChild(add_child)
   menuContainer.appendChild(add_sibling)
   menuContainer.appendChild(remove_child)
