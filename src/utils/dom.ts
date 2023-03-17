@@ -69,6 +69,10 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     tagsContainer.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
     tpc.appendChild(tagsContainer)
   }
+
+  if (nodeObj.branchColor) {
+    tpc.style.borderColor = nodeObj.branchColor
+  }
 }
 
 export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {

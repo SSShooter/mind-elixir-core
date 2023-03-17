@@ -99,6 +99,8 @@ export interface NodeObj {
     width: number
     height: number
   }
+  // main node specific properties
+  branchColor?: string
 }
 
 export interface NodeElement extends HTMLElement {

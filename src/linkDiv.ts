@@ -67,7 +67,6 @@ export default function linkDiv(primaryNode) {
   }
 
   // 2. layout primary node, generate primary link
-  let primaryPath = ''
   const alignRight = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap
   const alignLeft = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap
   for (let i = 0; i < primaryNodeList.length; i++) {
@@ -75,6 +74,7 @@ export default function linkDiv(primaryNode) {
     const y1 = 10000
     let x2, y2
     const el = primaryNodeList[i]
+    const branchColor = el.querySelector('tpc').nodeObj.branchColor
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
@@ -100,6 +100,7 @@ export default function linkDiv(primaryNode) {
       }
     }
 
+    let primaryPath = ''
     if (this.primaryLinkStyle === 2) {
       if (this.direction === SIDE) {
         if (el.className === 'lhs') {
@@ -108,10 +109,11 @@ export default function linkDiv(primaryNode) {
           x1 = 10000 + root.offsetWidth / 6
         }
       }
-      primaryPath += generatePrimaryLine2({ x1, y1, x2, y2 })
+      primaryPath = generatePrimaryLine2({ x1, y1, x2, y2 })
     } else {
-      primaryPath += generatePrimaryLine1({ x1, y1, x2, y2 })
+      primaryPath = generatePrimaryLine1({ x1, y1, x2, y2 })
     }
+    this.lines.appendChild(createMainPath(primaryPath, branchColor))
 
     // set position of expander
     const expander = el.children[0].children[1]
@@ -123,12 +125,8 @@ export default function linkDiv(primaryNode) {
         expander.style.left = expander.parentNode.offsetWidth - 10 + 'px'
       }
     }
-  }
-  this.lines.appendChild(createMainPath(primaryPath))
 
-  // 3. generate link inside primary node
-  for (let i = 0; i < primaryNodeList.length; i++) {
-    const el = primaryNodeList[i]
+    // 3. generate link inside primary node
     if (primaryNode && primaryNode !== primaryNodeList[i]) {
       continue
     }
@@ -140,7 +138,7 @@ export default function linkDiv(primaryNode) {
       const parent = el.children[0]
       const children = el.children[1].children
       const path = traverseChildren(children, parent, true)
-      svg.appendChild(createPath(path))
+      svg.appendChild(createPath(path, branchColor))
     }
   }
 
