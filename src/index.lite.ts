@@ -1,6 +1,7 @@
 import { LEFT, RIGHT, SIDE } from './const'
 import { isMobile, addParentLink, getObjById } from './utils/index'
-import { findEle, layout, Topic, createChildren, createGroup, createTop, createTopic } from './utils/dom'
+import { findEle, Topic, createGroup, createTop, createTopic } from './utils/dom'
+import { layout, createChildren } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
