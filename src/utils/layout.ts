@@ -21,18 +21,16 @@ export function layout() {
     let lcount = 0
     let rcount = 0
     primaryNodes.map(node => {
-      if (node.direction === undefined) {
+      if (node.direction === LEFT) {
+        lcount += 1
+      } else if (node.direction === RIGHT) {
+        rcount += 1
+      } else {
         if (lcount <= rcount) {
           node.direction = LEFT
           lcount += 1
         } else {
           node.direction = RIGHT
-          rcount += 1
-        }
-      } else {
-        if (node.direction === LEFT) {
-          lcount += 1
-        } else {
           rcount += 1
         }
       }
@@ -60,6 +58,7 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
     const grp = $d.createElement('GRP')
+    // only main nodes have `direction`
     if (direction === LEFT) {
       grp.className = 'lhs'
     } else if (direction === RIGHT) {
@@ -85,4 +84,23 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
     chldr.appendChild(grp)
   }
   return chldr
+}
+
+// Judge new added node L or R
+export function judgeDirection(primaryNode, obj) {
+  if (this.direction === LEFT) {
+    primaryNode.className = 'lhs'
+  } else if (this.direction === RIGHT) {
+    primaryNode.className = 'rhs'
+  } else if (this.direction === SIDE) {
+    const l = $d.querySelectorAll('.lhs').length
+    const r = $d.querySelectorAll('.rhs').length
+    if (l <= r) {
+      primaryNode.className = 'lhs'
+      obj.direction = LEFT
+    } else {
+      primaryNode.className = 'rhs'
+      obj.direction = RIGHT
+    }
+  }
 }

@@ -1,7 +1,7 @@
 import { LEFT, RIGHT, SIDE } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, Topic, createGroup, createTop, createTopic } from './utils/dom'
-import { layout, createChildren } from './utils/layout'
+import { layout, createChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -41,7 +41,6 @@ import {
   updateNodeTags,
   updateNodeIcons,
   updateNodeHyperLink,
-  judgeDirection,
   setNodeTopic,
   moveNodeBefore,
   moveNodeAfter,

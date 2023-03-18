@@ -13,13 +13,13 @@ export default {
           {
             topic: 'div.map-canvas',
             id: '33905d3c66649e8f',
-            tags: ['A special case of grp tag'],
+            tags: ['A special case of a `grp` tag'],
             expanded: true,
             children: [
               {
                 topic: 'root',
                 id: '33906b754897b9b9',
-                tags: ['A special case of t tag'],
+                tags: ['A special case of a `t` tag'],
                 expanded: true,
                 children: [{ topic: 'tpc', id: '33b5cbc93b9968ab' }],
               },

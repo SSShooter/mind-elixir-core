@@ -16,7 +16,6 @@ import {
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { rgbHex } from './utils/index'
-import { LEFT, RIGHT, SIDE } from './const'
 const $d = document
 
 /**
@@ -43,7 +42,7 @@ export const updateNodeStyle = function (object) {
     origin,
   })
 }
-
+// 删掉删掉！
 export const updateNodeTags = function (object, tags) {
   const oldVal = object.tags
   object.tags = tags
@@ -81,10 +80,6 @@ export const updateNodeHyperLink = function (object, hyperLink) {
     obj: object,
     origin: oldVal,
   })
-}
-
-export const updateNodeSvgChart = function () {
-  // TODO
 }
 
 /**
@@ -249,7 +244,8 @@ export const addChildFunction = function (nodeEle, node) {
   const top = nodeEle.parentElement
 
   const { grp, top: newTop } = this.createGroup(newNodeObj)
-
+  // 先全部构建相同结构，减少这些判断？×
+  // eliminate T tag
   if (top.tagName === 'T') {
     if (top.children[1]) {
       top.nextSibling.appendChild(grp)
@@ -579,23 +575,4 @@ export const setNodeTopic = function (tpc, topic) {
   tpc.childNodes[0].textContent = topic
   tpc.nodeObj.topic = topic
   this.linkDiv()
-}
-
-// Judge L or R
-export function judgeDirection(primaryNode, obj) {
-  if (this.direction === LEFT) {
-    primaryNode.className = 'lhs'
-  } else if (this.direction === RIGHT) {
-    primaryNode.className = 'rhs'
-  } else if (this.direction === SIDE) {
-    const l = $d.querySelectorAll('.lhs').length
-    const r = $d.querySelectorAll('.rhs').length
-    if (l <= r) {
-      primaryNode.className = 'lhs'
-      obj.direction = LEFT
-    } else {
-      primaryNode.className = 'rhs'
-      obj.direction = RIGHT
-    }
-  }
 }
