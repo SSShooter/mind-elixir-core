@@ -212,6 +212,18 @@
       cursor: pointer;
     }
   }
+  #input-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    color: #666666;
+    width: max-content; // let words expand the div and keep max length at the same time
+    max-width: 800px;
+    z-index: 11;
+    direction: ltr;
+    user-select: auto;
+  }
 }
 
 tpc > img {
@@ -239,17 +251,4 @@ tpc > img {
   border-radius: 100%;
   background: #aaa;
   cursor: pointer;
-}
-
-#input-box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #fff;
-  color: #666666;
-  width: max-content; // let words expand the div and keep max length at the same time
-  max-width: 800px;
-  z-index: 11;
-  direction: ltr;
-  user-select: auto;
 }
