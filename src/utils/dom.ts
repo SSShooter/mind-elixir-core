@@ -75,6 +75,7 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
+// everything is staring from `Group`
 export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {
   const grp: Group = $d.createElement('GRP')
   const top: Top = this.createTop(nodeObj)

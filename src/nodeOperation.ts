@@ -42,7 +42,8 @@ export const updateNodeStyle = function (object) {
     origin,
   })
 }
-// 删掉删掉！
+
+// replace updateNodeXxxx with updateNode(object, newData)
 export const updateNodeTags = function (object, tags) {
   const oldVal = object.tags
   object.tags = tags
@@ -196,19 +197,19 @@ export const insertParent = function (el, node) {
   insertParentNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
 
+  // warning: the tricky part
   const grp0 = nodeEle.parentElement.parentElement
   console.time('insertParent_DOM')
   const { grp, top } = this.createGroup(newNodeObj, true)
   top.appendChild(createExpander(true))
-  const children0 = grp0.parentNode
   grp0.insertAdjacentElement('afterend', grp)
 
   const c = $d.createElement('children')
   c.appendChild(grp0)
-
   top.insertAdjacentElement('afterend', c)
 
-  if (children0.className === 'box') {
+  // if it's a main node previously
+  if (grp0.parentNode.className === 'box') {
     grp.className = grp0.className // l/rhs
     grp0.className = ''
     grp0.querySelector('.subLines').remove()
@@ -226,6 +227,10 @@ export const insertParent = function (el, node) {
     name: 'insertParent',
     obj: newNodeObj,
   })
+}
+
+const initChildren = function (tpc) {
+  const wrapper = tpc.parentNode
 }
 
 export const addChildFunction = function (nodeEle, node) {
@@ -396,9 +401,6 @@ export const removeNode = function (el) {
 
   const childrenLength = removeNodeObj(nodeObj)
   const t = nodeEle.parentNode
-  if (t.tagName === 'ROOT') {
-    return
-  }
   if (childrenLength === 0) {
     // remove epd when children length === 0
     const parentT = t.parentNode.parentNode.previousSibling
