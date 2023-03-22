@@ -4,7 +4,7 @@ import { NodeObj } from '../index'
 
 const $d = document
 
-// Set primary nodes' direction and invoke createChildren()
+// Set main nodes' direction and invoke createChildren()
 export function layout() {
   console.time('layout')
   this.root.innerHTML = ''
@@ -17,7 +17,7 @@ export function layout() {
   const primaryNodes: NodeObj[] = this.nodeData.children
   if (!primaryNodes || primaryNodes.length === 0) return
   if (this.direction === SIDE) {
-    // initiate direction of primary nodes
+    // initiate direction of main nodes
     let lcount = 0
     let rcount = 0
     primaryNodes.map(node => {
@@ -44,8 +44,8 @@ export function layout() {
  * traversal data and generate dom structure of mind map
  * @ignore
  * @param {object} data node data object
- * @param {object} container node container(mostly primary node)
- * @param {number} direction primary node direction
+ * @param {object} container node container(optional)
+ * @param {number} direction main node direction(optional)
  * @return {ChildrenElement} children element.
  */
 export function createChildren(data: NodeObj[], container?: HTMLElement, direction?) {
@@ -87,19 +87,19 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
 }
 
 // Judge new added node L or R
-export function judgeDirection(primaryNode, obj) {
+export function judgeDirection(mainNode, obj) {
   if (this.direction === LEFT) {
-    primaryNode.className = 'lhs'
+    mainNode.className = 'lhs'
   } else if (this.direction === RIGHT) {
-    primaryNode.className = 'rhs'
+    mainNode.className = 'rhs'
   } else if (this.direction === SIDE) {
     const l = $d.querySelectorAll('.lhs').length
     const r = $d.querySelectorAll('.rhs').length
     if (l <= r) {
-      primaryNode.className = 'lhs'
+      mainNode.className = 'lhs'
       obj.direction = LEFT
     } else {
-      primaryNode.className = 'rhs'
+      mainNode.className = 'rhs'
       obj.direction = RIGHT
     }
   }

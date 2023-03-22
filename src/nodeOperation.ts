@@ -296,7 +296,7 @@ export const addChild = function (el: NodeElement, node: NodeObj) {
   this.selectNode(newTop.children[0], true)
 }
 // uncertain link disappear sometimes??
-// TODO while direction = SIDE, move up won't change the direction of primary node
+// TODO while direction = SIDE, move up won't change the direction of main node
 
 /**
  * @function
@@ -463,14 +463,14 @@ export const moveNode = function (from, to) {
   const fromChilren = fromTop.parentNode.parentNode
   const toTop = to.parentElement
   if (fromChilren.className === 'box') {
-    // clear svg group of primary node
+    // clear svg group of main node
     fromTop.parentNode.lastChild.remove()
   } else if (fromTop.parentNode.className === 'box') {
     fromTop.style.cssText = '' // clear style
   }
   if (toTop.tagName === 'T') {
     if (fromChilren.className === 'box') {
-      // clear direaction class of primary node
+      // clear direaction class of main node
       fromTop.parentNode.className = ''
     }
     if (toTop.children[1]) {

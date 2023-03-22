@@ -4,16 +4,16 @@ import { SIDE, GAP, TURNPOINT_R, PRIMARY_NODE_HORIZONTAL_GAP, PRIMARY_NODE_VERTI
 
 /**
  * Link nodes with svg,
- * only link specific node if `primaryNode` is present
+ * only link specific node if `mainNode` is present
  *
  * procedure:
- * 1. calculate position of primary nodes
- * 2. layout primary node, generate primary link
- * 3. generate links inside primary node
+ * 1. calculate position of main nodes
+ * 2. layout main node, generate main link
+ * 3. generate links inside main node
  * 4. generate custom link
- * @param {object} primaryNode process the specific primary node only
+ * @param {object} mainNode process the specific main node only
  */
-export default function linkDiv(primaryNode) {
+export default function linkDiv(mainNode) {
   const primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
   const primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
@@ -22,7 +22,7 @@ export default function linkDiv(primaryNode) {
   const primaryNodeList = this.box.children
   this.lines.innerHTML = ''
 
-  // 1. calculate position of primary nodes
+  // 1. calculate position of main nodes
   let totalHeight = 0
   let shortSide: string // l or r
   let shortSideGap = 0 // balance heigt of two side
@@ -66,7 +66,7 @@ export default function linkDiv(primaryNode) {
     base = 10000 - totalHeight / 2
   }
 
-  // 2. layout primary node, generate primary link
+  // 2. layout main node, generate main link
   const alignRight = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap
   const alignLeft = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap
   for (let i = 0; i < primaryNodeList.length; i++) {
@@ -126,8 +126,8 @@ export default function linkDiv(primaryNode) {
       }
     }
 
-    // 3. generate link inside primary node
-    if (primaryNode && primaryNode !== primaryNodeList[i]) {
+    // 3. generate link inside main node
+    if (mainNode && mainNode !== primaryNodeList[i]) {
       continue
     }
     if (el.childElementCount) {
