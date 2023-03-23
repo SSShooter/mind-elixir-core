@@ -30,7 +30,7 @@ export default function linkDiv(mainNode) {
   let currentOffsetR = 0 // right side total offset
   let totalHeightL = 0
   let totalHeightR = 0
-  let base: number
+  let base: number // start offset
 
   if (this.direction === SIDE) {
     let countL = 0
@@ -111,6 +111,12 @@ export default function linkDiv(mainNode) {
       }
       primaryPath = generatePrimaryLine2({ x1, y1, x2, y2 })
     } else {
+      const pct = Math.abs(y2 - 10000) / (10000 - base)
+      if (el.className === 'lhs') {
+        x1 = 10000 - root.offsetWidth / 10 - (1 - pct) * 0.25 * (root.offsetWidth / 2)
+      } else {
+        x1 = 10000 + root.offsetWidth / 10 + (1 - pct) * 0.25 * (root.offsetWidth / 2)
+      }
       primaryPath = generatePrimaryLine1({ x1, y1, x2, y2 })
     }
     this.lines.appendChild(createMainPath(primaryPath, branchColor))
@@ -167,6 +173,7 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     const childT: HTMLElement = child.children[0] as HTMLElement // t tag inside the child dom
     const childTOT = childT.offsetTop
     const childTOH = childT.offsetHeight
+    const cTW = childT.offsetWidth
     let y1: number
     if (first) {
       y1 = parentOT + parentOH / 2
@@ -178,12 +185,12 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     const direction = child.offsetParent.className
     if (direction === 'lhs') {
       x1 = parentOL + GAP
-      xMiddle = parentOL
-      x2 = parentOL - childT.offsetWidth
+      x2 = parentOL - cTW
+      xMiddle = childT.offsetLeft + cTW
     } else if (direction === 'rhs') {
       x1 = parentOL + parentOW - GAP
-      xMiddle = parentOL + parentOW
-      x2 = parentOL + parentOW + childT.offsetWidth
+      x2 = parentOL + parentOW + cTW
+      xMiddle = childT.offsetLeft
     }
 
     path += generateSubLine({ x1, y1, x2, y2, xMiddle })
