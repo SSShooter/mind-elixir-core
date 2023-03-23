@@ -79,7 +79,7 @@ export default function linkDiv(mainNode) {
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
       el.style.left = alignRight - el.offsetWidth + 'px'
-      x2 = alignRight - 15 // padding
+      x2 = alignRight - GAP
       y2 = base + currentOffsetL + elOffsetH / 2
 
       if (shortSide === 'l') {
@@ -90,7 +90,7 @@ export default function linkDiv(mainNode) {
     } else {
       el.style.top = base + currentOffsetR + 'px'
       el.style.left = alignLeft + 'px'
-      x2 = alignLeft + 15 // padding
+      x2 = alignLeft + GAP
       y2 = base + currentOffsetR + elOffsetH / 2
 
       if (shortSide === 'r') {
