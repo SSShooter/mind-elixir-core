@@ -179,11 +179,11 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     if (direction === 'lhs') {
       x1 = parentOL + GAP
       xMiddle = parentOL
-      x2 = parentOL - childT.offsetWidth + GAP
+      x2 = parentOL - childT.offsetWidth
     } else if (direction === 'rhs') {
       x1 = parentOL + parentOW - GAP
       xMiddle = parentOL + parentOW
-      x2 = parentOL + parentOW + childT.offsetWidth - GAP
+      x2 = parentOL + parentOW + childT.offsetWidth
     }
 
     path += generateSubLine({ x1, y1, x2, y2, xMiddle })

@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE } from './const'
+import { LEFT, RIGHT, SIDE, GAP } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, Topic, createGroup, createTop, createTopic } from './utils/dom'
 import { layout, createChildren, judgeDirection } from './utils/layout'
@@ -230,6 +230,10 @@ function MindElixir(
     box = document.querySelector(el as string) as HTMLElement
   }
   if (!box) return new Error('MindElixir: el is not a valid element')
+
+  box.className += ' mind-elixir'
+  box.innerHTML = ''
+  box.style.setProperty('--gap', GAP + 'px')
   this.mindElixirBox = box
   this.before = before || {}
   this.locale = locale
@@ -290,9 +294,6 @@ function MindElixir(
       this.isUndo = false
     }
   }
-
-  this.mindElixirBox.className += ' mind-elixir'
-  this.mindElixirBox.innerHTML = ''
 
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
