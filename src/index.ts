@@ -1,6 +1,7 @@
-import { LEFT, RIGHT, SIDE } from './const'
+import { LEFT, RIGHT, SIDE, GAP } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
-import { findEle, createInputDiv, layout, Topic, createChildren, createGroup, createTop, createTopic } from './utils/dom'
+import { findEle, createInputDiv, Topic, createGroup, createTop, createTopic } from './utils/dom'
+import { layout, createChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -40,7 +41,6 @@ import {
   updateNodeTags,
   updateNodeIcons,
   updateNodeHyperLink,
-  judgeDirection,
   setNodeTopic,
   moveNodeBefore,
   moveNodeAfter,
@@ -99,6 +99,8 @@ export interface NodeObj {
     width: number
     height: number
   }
+  // main node specific properties
+  branchColor?: string
 }
 
 export interface NodeElement extends HTMLElement {
@@ -228,6 +230,10 @@ function MindElixir(
     box = document.querySelector(el as string) as HTMLElement
   }
   if (!box) return new Error('MindElixir: el is not a valid element')
+
+  box.className += ' mind-elixir'
+  box.innerHTML = ''
+  box.style.setProperty('--gap', GAP + 'px')
   this.mindElixirBox = box
   this.before = before || {}
   this.locale = locale
@@ -288,9 +294,6 @@ function MindElixir(
       this.isUndo = false
     }
   }
-
-  this.mindElixirBox.className += ' mind-elixir'
-  this.mindElixirBox.innerHTML = ''
 
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'

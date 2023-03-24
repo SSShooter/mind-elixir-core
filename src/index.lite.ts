@@ -1,6 +1,7 @@
 import { LEFT, RIGHT, SIDE } from './const'
 import { isMobile, addParentLink, getObjById } from './utils/index'
-import { findEle, layout, Topic, createChildren, createGroup, createTop, createTopic } from './utils/dom'
+import { findEle, Topic, createGroup, createTop, createTopic } from './utils/dom'
+import { layout, createChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -23,7 +24,7 @@ import {
   expandNode,
   refresh,
 } from './interact'
-import { judgeDirection, setNodeTopic } from './nodeOperation'
+import { setNodeTopic } from './nodeOperation'
 import { createLink } from './customLink'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'

@@ -26,6 +26,7 @@ export default {
         id: 'bd4313fbac40284b',
         direction: 0,
         expanded: true,
+        branchColor: '#e64553',
         children: [
           { topic: 'A mind map core', id: 'beeb823afd6d2114' },
           { topic: 'Free', id: 'c1f068377de9f3a0' },

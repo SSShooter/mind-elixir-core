@@ -16,7 +16,6 @@ import {
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { rgbHex } from './utils/index'
-import { LEFT, RIGHT, SIDE } from './const'
 const $d = document
 
 /**
@@ -44,6 +43,7 @@ export const updateNodeStyle = function (object) {
   })
 }
 
+// replace updateNodeXxxx with updateNode(object, newData)
 export const updateNodeTags = function (object, tags) {
   const oldVal = object.tags
   object.tags = tags
@@ -81,10 +81,6 @@ export const updateNodeHyperLink = function (object, hyperLink) {
     obj: object,
     origin: oldVal,
   })
-}
-
-export const updateNodeSvgChart = function () {
-  // TODO
 }
 
 /**
@@ -201,19 +197,19 @@ export const insertParent = function (el, node) {
   insertParentNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
 
+  // warning: the tricky part
   const grp0 = nodeEle.parentElement.parentElement
   console.time('insertParent_DOM')
   const { grp, top } = this.createGroup(newNodeObj, true)
   top.appendChild(createExpander(true))
-  const children0 = grp0.parentNode
   grp0.insertAdjacentElement('afterend', grp)
 
   const c = $d.createElement('children')
   c.appendChild(grp0)
-
   top.insertAdjacentElement('afterend', c)
 
-  if (children0.className === 'box') {
+  // if it's a main node previously
+  if (grp0.parentNode.className === 'box') {
     grp.className = grp0.className // l/rhs
     grp0.className = ''
     grp0.querySelector('.subLines').remove()
@@ -233,6 +229,10 @@ export const insertParent = function (el, node) {
   })
 }
 
+const initChildren = function (tpc) {
+  const wrapper = tpc.parentNode
+}
+
 export const addChildFunction = function (nodeEle, node) {
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -249,7 +249,8 @@ export const addChildFunction = function (nodeEle, node) {
   const top = nodeEle.parentElement
 
   const { grp, top: newTop } = this.createGroup(newNodeObj)
-
+  // 先全部构建相同结构，减少这些判断？×
+  // eliminate T tag
   if (top.tagName === 'T') {
     if (top.children[1]) {
       top.nextSibling.appendChild(grp)
@@ -295,7 +296,7 @@ export const addChild = function (el: NodeElement, node: NodeObj) {
   this.selectNode(newTop.children[0], true)
 }
 // uncertain link disappear sometimes??
-// TODO while direction = SIDE, move up won't change the direction of primary node
+// TODO while direction = SIDE, move up won't change the direction of main node
 
 /**
  * @function
@@ -390,6 +391,7 @@ export const moveDownNode = function (el) {
 export const removeNode = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
+  console.log('removeNode', nodeEle)
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     throw new Error('Can not remove root node')
@@ -400,9 +402,6 @@ export const removeNode = function (el) {
 
   const childrenLength = removeNodeObj(nodeObj)
   const t = nodeEle.parentNode
-  if (t.tagName === 'ROOT') {
-    return
-  }
   if (childrenLength === 0) {
     // remove epd when children length === 0
     const parentT = t.parentNode.parentNode.previousSibling
@@ -413,8 +412,7 @@ export const removeNode = function (el) {
     this.selectParent()
   } else {
     // select sibling automatically
-    const success = this.selectPrevSibling()
-    if (!success) this.selectNextSibling()
+    this.selectPrevSibling() || this.selectNextSibling() || this.selectParent()
   }
   for (const prop in this.linkData) {
     // MAYBEBUG should traversal all children node
@@ -465,14 +463,14 @@ export const moveNode = function (from, to) {
   const fromChilren = fromTop.parentNode.parentNode
   const toTop = to.parentElement
   if (fromChilren.className === 'box') {
-    // clear svg group of primary node
+    // clear svg group of main node
     fromTop.parentNode.lastChild.remove()
   } else if (fromTop.parentNode.className === 'box') {
     fromTop.style.cssText = '' // clear style
   }
   if (toTop.tagName === 'T') {
     if (fromChilren.className === 'box') {
-      // clear direaction class of primary node
+      // clear direaction class of main node
       fromTop.parentNode.className = ''
     }
     if (toTop.children[1]) {
@@ -579,23 +577,4 @@ export const setNodeTopic = function (tpc, topic) {
   tpc.childNodes[0].textContent = topic
   tpc.nodeObj.topic = topic
   this.linkDiv()
-}
-
-// Judge L or R
-export function judgeDirection(primaryNode, obj) {
-  if (this.direction === LEFT) {
-    primaryNode.className = 'lhs'
-  } else if (this.direction === RIGHT) {
-    primaryNode.className = 'rhs'
-  } else if (this.direction === SIDE) {
-    const l = $d.querySelectorAll('.lhs').length
-    const r = $d.querySelectorAll('.rhs').length
-    if (l <= r) {
-      primaryNode.className = 'lhs'
-      obj.direction = LEFT
-    } else {
-      primaryNode.className = 'rhs'
-      obj.direction = RIGHT
-    }
-  }
 }

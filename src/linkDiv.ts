@@ -4,16 +4,16 @@ import { SIDE, GAP, TURNPOINT_R, PRIMARY_NODE_HORIZONTAL_GAP, PRIMARY_NODE_VERTI
 
 /**
  * Link nodes with svg,
- * only link specific node if `primaryNode` is present
+ * only link specific node if `mainNode` is present
  *
  * procedure:
- * 1. calculate position of primary nodes
- * 2. layout primary node, generate primary link
- * 3. generate links inside primary node
+ * 1. calculate position of main nodes
+ * 2. layout main node, generate main link
+ * 3. generate links inside main node
  * 4. generate custom link
- * @param {object} primaryNode process the specific primary node only
+ * @param {object} mainNode process the specific main node only
  */
-export default function linkDiv(primaryNode) {
+export default function linkDiv(mainNode) {
   const primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
   const primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
   console.time('linkDiv')
@@ -22,7 +22,7 @@ export default function linkDiv(primaryNode) {
   const primaryNodeList = this.box.children
   this.lines.innerHTML = ''
 
-  // 1. calculate position of primary nodes
+  // 1. calculate position of main nodes
   let totalHeight = 0
   let shortSide: string // l or r
   let shortSideGap = 0 // balance heigt of two side
@@ -30,7 +30,7 @@ export default function linkDiv(primaryNode) {
   let currentOffsetR = 0 // right side total offset
   let totalHeightL = 0
   let totalHeightR = 0
-  let base: number
+  let base: number // start offset
 
   if (this.direction === SIDE) {
     let countL = 0
@@ -66,8 +66,7 @@ export default function linkDiv(primaryNode) {
     base = 10000 - totalHeight / 2
   }
 
-  // 2. layout primary node, generate primary link
-  let primaryPath = ''
+  // 2. layout main node, generate main link
   const alignRight = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap
   const alignLeft = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap
   for (let i = 0; i < primaryNodeList.length; i++) {
@@ -75,11 +74,12 @@ export default function linkDiv(primaryNode) {
     const y1 = 10000
     let x2, y2
     const el = primaryNodeList[i]
+    const branchColor = el.querySelector('tpc').nodeObj.branchColor
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
       el.style.left = alignRight - el.offsetWidth + 'px'
-      x2 = alignRight - 15 // padding
+      x2 = alignRight - GAP
       y2 = base + currentOffsetL + elOffsetH / 2
 
       if (shortSide === 'l') {
@@ -90,7 +90,7 @@ export default function linkDiv(primaryNode) {
     } else {
       el.style.top = base + currentOffsetR + 'px'
       el.style.left = alignLeft + 'px'
-      x2 = alignLeft + 15 // padding
+      x2 = alignLeft + GAP
       y2 = base + currentOffsetR + elOffsetH / 2
 
       if (shortSide === 'r') {
@@ -100,6 +100,7 @@ export default function linkDiv(primaryNode) {
       }
     }
 
+    let primaryPath = ''
     if (this.primaryLinkStyle === 2) {
       if (this.direction === SIDE) {
         if (el.className === 'lhs') {
@@ -108,10 +109,17 @@ export default function linkDiv(primaryNode) {
           x1 = 10000 + root.offsetWidth / 6
         }
       }
-      primaryPath += generatePrimaryLine2({ x1, y1, x2, y2 })
+      primaryPath = generatePrimaryLine2({ x1, y1, x2, y2 })
     } else {
-      primaryPath += generatePrimaryLine1({ x1, y1, x2, y2 })
+      const pct = Math.abs(y2 - 10000) / (10000 - base)
+      if (el.className === 'lhs') {
+        x1 = 10000 - root.offsetWidth / 10 - (1 - pct) * 0.25 * (root.offsetWidth / 2)
+      } else {
+        x1 = 10000 + root.offsetWidth / 10 + (1 - pct) * 0.25 * (root.offsetWidth / 2)
+      }
+      primaryPath = generatePrimaryLine1({ x1, y1, x2, y2 })
     }
+    this.lines.appendChild(createMainPath(primaryPath, branchColor))
 
     // set position of expander
     const expander = el.children[0].children[1]
@@ -123,13 +131,9 @@ export default function linkDiv(primaryNode) {
         expander.style.left = expander.parentNode.offsetWidth - 10 + 'px'
       }
     }
-  }
-  this.lines.appendChild(createMainPath(primaryPath))
 
-  // 3. generate link inside primary node
-  for (let i = 0; i < primaryNodeList.length; i++) {
-    const el = primaryNodeList[i]
-    if (primaryNode && primaryNode !== primaryNodeList[i]) {
+    // 3. generate link inside main node
+    if (mainNode && mainNode !== primaryNodeList[i]) {
       continue
     }
     if (el.childElementCount) {
@@ -140,7 +144,7 @@ export default function linkDiv(primaryNode) {
       const parent = el.children[0]
       const children = el.children[1].children
       const path = traverseChildren(children, parent, true)
-      svg.appendChild(createPath(path))
+      svg.appendChild(createPath(path, branchColor))
     }
   }
 
@@ -169,6 +173,7 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     const childT: HTMLElement = child.children[0] as HTMLElement // t tag inside the child dom
     const childTOT = childT.offsetTop
     const childTOH = childT.offsetHeight
+    const cTW = childT.offsetWidth
     let y1: number
     if (first) {
       y1 = parentOT + parentOH / 2
@@ -180,12 +185,12 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     const direction = child.offsetParent.className
     if (direction === 'lhs') {
       x1 = parentOL + GAP
-      xMiddle = parentOL
-      x2 = parentOL - childT.offsetWidth + GAP
+      x2 = parentOL - cTW
+      xMiddle = childT.offsetLeft + cTW
     } else if (direction === 'rhs') {
       x1 = parentOL + parentOW - GAP
-      xMiddle = parentOL + parentOW
-      x2 = parentOL + parentOW + childT.offsetWidth - GAP
+      x2 = parentOL + parentOW + cTW
+      xMiddle = childT.offsetLeft
     }
 
     path += generateSubLine({ x1, y1, x2, y2, xMiddle })

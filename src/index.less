@@ -1,6 +1,5 @@
-@GAP: 15px; // child node horizontal gap
-
 .mind-elixir {
+  --gap: 20px; // child node horizontal gap, it will be updated at instance initialization
   position: relative;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC,
@@ -40,33 +39,32 @@
     }
     root {
       position: absolute;
+      padding: 10px var(--gap);
+      color: rgb(255, 255, 255);
+      background-color: rgb(0, 170, 255);
+      border-radius: 5px;
       tpc {
         display: block;
-        color: rgb(255, 255, 255);
-        padding: 10px @GAP;
-        background-color: rgb(0, 170, 255);
-        border-radius: 5px;
         font-size: 25px;
         white-space: pre-wrap;
         #input-box {
-          padding: 10px @GAP;
+          padding: 10px var(--gap);
         }
       }
     }
   }
   .box {
     & > grp {
-      // for primary node
+      // for main node
       position: absolute;
-      & > t > tpc {
+      & > t {
+        margin: var(--gap);
         background-color: rgb(255, 255, 255);
         border: 1px solid rgb(68, 68, 68);
+        padding: 8px var(--gap);
         border-radius: 5px;
-        color: rgb(115, 92, 69);
-        padding: 8px 10px;
-        margin: 0;
-        #input-box {
-          padding: 8px 10px;
+        & > tpc {
+          color: rgb(115, 92, 69);
         }
       }
     }
@@ -88,21 +86,17 @@
     t {
       position: relative;
       cursor: pointer;
-      padding: 0 @GAP;
+      padding: 5px var(--gap);
       margin-top: 10px;
       tpc {
         position: relative;
         display: block;
-        padding: 5px;
         border-radius: 3px;
         color: rgb(102, 102, 102);
         pointer-events: all;
         max-width: 800px;
         white-space: pre-wrap;
         line-height: 1.2; // assure the line-height consistency between different languages
-        #input-box {
-          padding: 5px;
-        }
         .tags {
           direction: ltr;
           span {
@@ -212,6 +206,18 @@
       cursor: pointer;
     }
   }
+  #input-box {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    color: #666666;
+    width: max-content; // let words expand the div and keep max length at the same time
+    max-width: 800px;
+    z-index: 11;
+    direction: ltr;
+    user-select: auto;
+  }
 }
 
 tpc > img {
@@ -239,17 +245,4 @@ tpc > img {
   border-radius: 100%;
   background: #aaa;
   cursor: pointer;
-}
-
-#input-box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #fff;
-  color: #666666;
-  width: max-content; // let words expand the div and keep max length at the same time
-  max-width: 800px;
-  z-index: 11;
-  direction: ltr;
-  user-select: auto;
 }
