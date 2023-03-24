@@ -1,6 +1,8 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle, Expander } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R, PRIMARY_NODE_HORIZONTAL_GAP, PRIMARY_NODE_VERTICAL_GAP } from './const'
+const Macchiato = ['#f0c6c6', '#ee99a0', '#f5a97f', '#eed49f', '#a6da95', '#91d7e3', '#8aadf4', '#b7bdf8']
+const Latte = ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd']
 
 /**
  * Link nodes with svg,
@@ -74,7 +76,8 @@ export default function linkDiv(mainNode) {
     const y1 = 10000
     let x2, y2
     const el = primaryNodeList[i]
-    const branchColor = el.querySelector('tpc').nodeObj.branchColor
+    const palette = Latte
+    const branchColor = el.querySelector('tpc').nodeObj.branchColor || palette[i % palette.length]
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
