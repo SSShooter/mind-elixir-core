@@ -391,6 +391,7 @@ export const moveDownNode = function (el) {
 export const removeNode = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
+  console.log('removeNode', nodeEle)
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     throw new Error('Can not remove root node')
@@ -411,8 +412,7 @@ export const removeNode = function (el) {
     this.selectParent()
   } else {
     // select sibling automatically
-    const success = this.selectPrevSibling()
-    if (!success) this.selectNextSibling()
+    this.selectPrevSibling() || this.selectNextSibling() || this.selectParent()
   }
   for (const prop in this.linkData) {
     // MAYBEBUG should traversal all children node

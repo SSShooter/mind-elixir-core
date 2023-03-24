@@ -26,6 +26,7 @@ export const selectNode = function (targetElement, isNewNode, clickEvent) {
   }
   if (this.currentNode) this.currentNode.className = ''
   targetElement.className = 'selected'
+  targetElement.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   this.currentNode = targetElement
   if (isNewNode) {
     this.bus.fire('selectNewNode', targetElement.nodeObj, clickEvent)
@@ -67,7 +68,7 @@ export const selectPrevSibling = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
-  let target
+  let target: HTMLElement
   const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
     const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
