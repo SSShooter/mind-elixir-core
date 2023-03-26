@@ -37,10 +37,7 @@ import {
   moveUpNode,
   moveDownNode,
   beginEdit,
-  updateNodeStyle,
-  updateNodeTags,
-  updateNodeIcons,
-  updateNodeHyperLink,
+  reshapeNode,
   setNodeTopic,
   moveNodeBefore,
   moveNodeAfter,
@@ -361,10 +358,7 @@ MindElixir.prototype = {
   beginEdit: beforeHook(beginEdit, 'beginEdit'),
   moveNodeBefore: beforeHook(moveNodeBefore, 'moveNodeBefore'),
   moveNodeAfter: beforeHook(moveNodeAfter, 'moveNodeAfter'),
-  updateNodeStyle,
-  updateNodeTags,
-  updateNodeIcons,
-  updateNodeHyperLink,
+  reshapeNode,
   judgeDirection,
   setNodeTopic,
 
@@ -404,6 +398,7 @@ MindElixir.prototype = {
   disableEdit,
   expandNode,
   refresh,
+  findEle,
   install(plugin) {
     plugin(this)
   },

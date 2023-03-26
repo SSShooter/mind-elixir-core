@@ -15,71 +15,40 @@ import {
   refreshIds,
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
-import { rgbHex } from './utils/index'
+import { deepClone } from './utils/index'
 const $d = document
 
 /**
  * @exports NodeOperation
  * @namespace NodeOperation
  */
-export const updateNodeStyle = function (object) {
-  if (!object.style) return
-  const nodeEle = findEle(object.id, this)
-  const origin = {
-    color: nodeEle.style.color && rgbHex(nodeEle.style.color),
-    background: nodeEle.style.background && rgbHex(nodeEle.style.background),
-    fontSize: nodeEle.style.fontSize && nodeEle.style.fontSize + 'px',
-    fontWeight: nodeEle.style.fontWeight,
+
+/**
+ * @function
+ * @instance
+ * @name reshapeNode
+ * @memberof NodeOperation
+ * @description Re-shape a node.
+ * @param {TargetElement} el - Target element return by E('...')
+ * @param {patchData} node - Data should be patched to the original data
+ * @example
+ * reshapeNode(E('bd4313fbac40284b'),{tags:['A', 'B'], style:{color:'#000'}})
+ */
+export const reshapeNode = function (tpc, patchData) {
+  console.log(patchData)
+  const nodeObj = tpc.nodeObj
+  const origin = deepClone(nodeObj)
+  // merge styles
+  if (origin.style && patchData.style) {
+    patchData.style = Object.assign(origin.style, patchData.style)
   }
-  nodeEle.style.color = object.style.color
-  nodeEle.style.background = object.style.background
-  nodeEle.style.fontSize = object.style.fontSize + 'px'
-  nodeEle.style.fontWeight = object.style.fontWeight || 'normal'
+  const newObj = Object.assign(nodeObj, patchData)
+  shapeTpc(tpc, newObj)
   this.linkDiv()
   this.bus.fire('operation', {
-    name: 'editStyle',
-    obj: object,
+    name: 'reshapeNode',
+    obj: newObj,
     origin,
-  })
-}
-
-// replace updateNodeXxxx with updateNode(object, newData)
-export const updateNodeTags = function (object, tags) {
-  const oldVal = object.tags
-  object.tags = tags
-  const nodeEle = findEle(object.id)
-  shapeTpc(nodeEle, object)
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'editTags',
-    obj: object,
-    origin: oldVal,
-  })
-}
-
-export const updateNodeIcons = function (object, icons) {
-  const oldVal = object.icons
-  object.icons = icons
-  const nodeEle = findEle(object.id)
-  shapeTpc(nodeEle, object)
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'editIcons',
-    obj: object,
-    origin: oldVal,
-  })
-}
-
-export const updateNodeHyperLink = function (object, hyperLink) {
-  const oldVal = object.hyperLink
-  object.hyperLink = hyperLink
-  const nodeEle = findEle(object.id)
-  shapeTpc(nodeEle, object)
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'editHyperLink',
-    obj: object,
-    origin: oldVal,
   })
 }
 
@@ -311,12 +280,7 @@ export const addChild = function (el: NodeElement, node: NodeObj) {
  */
 export const copyNode = function (node: NodeElement, to: NodeElement) {
   console.time('copyNode')
-  const deepCloneObj = JSON.parse(
-    JSON.stringify(node.nodeObj, (k, v) => {
-      if (k === 'parent') return undefined
-      return v
-    })
-  )
+  const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)
   const { newNodeObj } = addChildFunction.call(this, to, deepCloneObj)
   console.timeEnd('copyNode')

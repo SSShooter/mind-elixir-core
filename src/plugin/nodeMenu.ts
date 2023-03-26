@@ -99,20 +99,23 @@ export default function (mind) {
 
   // handle input and button click
   let bgOrFont
+  const E = mind.findEle
   menuContainer.onclick = e => {
     if (!mind.currentNode) return
     const nodeObj = mind.currentNode.nodeObj
     const target = e.target as HTMLElement
     if (target.className === 'palette') {
-      if (!nodeObj.style) nodeObj.style = {}
       clearSelect('.palette', 'nmenu-selected')
       target.className = 'palette nmenu-selected'
+      const color = target.dataset.color
+      const patch = { style: {} as any }
       if (bgOrFont === 'font') {
-        nodeObj.style.color = target.dataset.color
+        patch.style.color = color
       } else if (bgOrFont === 'background') {
-        nodeObj.style.background = target.dataset.color
+        patch.style.background = color
       }
-      mind.updateNodeStyle(nodeObj)
+      console.log(patch)
+      mind.reshapeNode(mind.currentNode, patch)
     } else if (target.className === 'background') {
       clearSelect('.palette', 'nmenu-selected')
       bgOrFont = 'background'
@@ -133,49 +136,39 @@ export default function (mind) {
   }
   Array.from(sizeSelector).map(dom => {
     ;(dom as HTMLElement).onclick = e => {
-      if (!mind.currentNode.nodeObj.style) mind.currentNode.nodeObj.style = {}
       clearSelect('.size', 'size-selected')
       const size = e.currentTarget as HTMLElement
-      mind.currentNode.nodeObj.style.fontSize = size.dataset.size
       size.className = 'size size-selected'
-      mind.updateNodeStyle(mind.currentNode.nodeObj)
+      mind.reshapeNode(mind.currentNode, { style: { fontSize: size.dataset.size } })
     }
   })
   bold.onclick = (e: MouseEvent & { currentTarget: Element }) => {
-    if (!mind.currentNode.nodeObj.style) mind.currentNode.nodeObj.style = {}
-    if (mind.currentNode.nodeObj.style.fontWeight === 'bold') {
-      delete mind.currentNode.nodeObj.style.fontWeight
+    let fontWeight = ''
+    if (mind.currentNode.nodeObj?.style?.fontWeight === 'bold') {
       e.currentTarget.className = 'bold'
-      mind.updateNodeStyle(mind.currentNode.nodeObj)
     } else {
-      mind.currentNode.nodeObj.style.fontWeight = 'bold'
+      fontWeight = 'bold'
       e.currentTarget.className = 'bold size-selected'
-      mind.updateNodeStyle(mind.currentNode.nodeObj)
     }
+    mind.reshapeNode(mind.currentNode, { style: { fontWeight } })
   }
   tagInput.onchange = (e: InputEvent & { target: HTMLInputElement }) => {
     if (!mind.currentNode) return
     if (typeof e.target.value === 'string') {
       const newTags = e.target.value.split(',')
-      mind.updateNodeTags(
-        mind.currentNode.nodeObj,
-        newTags.filter(tag => tag)
-      )
+      mind.reshapeNode(mind.currentNode, { tags: newTags.filter(tag => tag) })
     }
   }
   iconInput.onchange = (e: InputEvent & { target: HTMLInputElement }) => {
     if (!mind.currentNode) return
     if (typeof e.target.value === 'string') {
       const newIcons = e.target.value.split(',')
-      mind.updateNodeIcons(
-        mind.currentNode.nodeObj,
-        newIcons.filter(icon => icon)
-      )
+      mind.reshapeNode(mind.currentNode, { icons: newIcons.filter(icon => icon) })
     }
   }
   urlInput.onchange = (e: InputEvent & { target: HTMLInputElement }) => {
     if (!mind.currentNode) return
-    mind.updateNodeHyperLink(mind.currentNode.nodeObj, e.target.value)
+    mind.reshapeNode(mind.currentNode, { hyperLink: e.target.value })
   }
   memoInput.onchange = (e: InputEvent & { target: HTMLInputElement }) => {
     if (!mind.currentNode) return
