@@ -48,7 +48,6 @@ import initMouseEvent from './mouse'
 
 import contextMenu from './plugin/contextMenu'
 import toolBar from './plugin/toolBar'
-import nodeMenu from './plugin/nodeMenu'
 import nodeDraggable from './plugin/nodeDraggable'
 import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
@@ -133,7 +132,6 @@ export interface MindElixirInstance {
   contextMenu: boolean
   contextMenuOption: object
   toolBar: boolean
-  nodeMenu: boolean
   keypress: boolean
   before: object
   newTopicName: string
@@ -166,7 +164,6 @@ export interface Options {
   contextMenu?: boolean
   contextMenuOption?: object
   toolBar?: boolean
-  nodeMenu?: boolean
   keypress?: boolean
   before?: object
   newTopicName?: string
@@ -188,8 +185,7 @@ const $d = document
   draggable: true,
   editable: true,
   contextMenu: true,
-  toolBar: true,
-  nodeMenu: true,
+  toolBar: true, 
   keypress: true,
 })
 mind.init()
@@ -206,7 +202,6 @@ function MindElixir(
     contextMenu,
     contextMenuOption,
     toolBar,
-    nodeMenu,
     keypress,
     before,
     newTopicName,
@@ -237,7 +232,6 @@ function MindElixir(
   this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
-  this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
   this.keypress = keypress === undefined ? true : keypress
   this.mobileMenu = mobileMenu
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
@@ -411,7 +405,6 @@ MindElixir.prototype = {
     this.linkData = data.linkData || {}
     // plugin
     this.toolBar && toolBar(this)
-    this.nodeMenu && nodeMenu(this)
     this.keypress && keypress(this)
 
     if (isMobile() && this.mobileMenu) {

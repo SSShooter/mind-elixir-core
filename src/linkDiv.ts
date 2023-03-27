@@ -176,7 +176,8 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     const childT: HTMLElement = child.children[0] as HTMLElement // t tag inside the child dom
     const childTOT = childT.offsetTop
     const childTOH = childT.offsetHeight
-    const cTW = childT.offsetWidth
+    const cW = childT.offsetWidth
+    const cL = childT.offsetLeft
     let y1: number
     if (first) {
       y1 = parentOT + parentOH / 2
@@ -188,12 +189,12 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
     const direction = child.offsetParent.className
     if (direction === 'lhs') {
       x1 = parentOL + GAP
-      x2 = parentOL - cTW
-      xMiddle = childT.offsetLeft + cTW
+      x2 = cL
+      xMiddle = cL + cW
     } else if (direction === 'rhs') {
       x1 = parentOL + parentOW - GAP
-      x2 = parentOL + parentOW + cTW
-      xMiddle = childT.offsetLeft
+      x2 = cL + cW
+      xMiddle = cL
     }
 
     path += generateSubLine({ x1, y1, x2, y2, xMiddle })
@@ -245,4 +246,8 @@ function generateSubLine({ x1, y1, x2, y2, xMiddle }) {
       x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
     } ${y2} H ${x2}`
   }
+}
+
+function generateSubLine2({ x1, y1, x2, y2, xMiddle }) {
+  return `M ${x1} ${y1} Q ${x1} ${y2} ${xMiddle} ${y2} H ${x2}`
 }
