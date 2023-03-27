@@ -14,13 +14,13 @@ export function layout() {
   tpc.draggable = false
   this.root.appendChild(tpc)
 
-  const primaryNodes: NodeObj[] = this.nodeData.children
-  if (!primaryNodes || primaryNodes.length === 0) return
+  const mainNodes: NodeObj[] = this.nodeData.children
+  if (!mainNodes || mainNodes.length === 0) return
   if (this.direction === SIDE) {
     // initiate direction of main nodes
     let lcount = 0
     let rcount = 0
-    primaryNodes.map(node => {
+    mainNodes.map(node => {
       if (node.direction === LEFT) {
         lcount += 1
       } else if (node.direction === RIGHT) {

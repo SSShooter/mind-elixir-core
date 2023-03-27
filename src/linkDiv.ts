@@ -1,6 +1,6 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle, Expander } from './utils/dom'
-import { SIDE, GAP, TURNPOINT_R, PRIMARY_NODE_HORIZONTAL_GAP, PRIMARY_NODE_VERTICAL_GAP } from './const'
+import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
 const Macchiato = ['#f0c6c6', '#ee99a0', '#f5a97f', '#eed49f', '#a6da95', '#91d7e3', '#8aadf4', '#b7bdf8']
 const Latte = ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd']
 
@@ -16,12 +16,12 @@ const Latte = ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d',
  * @param {object} mainNode process the specific main node only
  */
 export default function linkDiv(mainNode) {
-  const primaryNodeHorizontalGap = this.primaryNodeHorizontalGap || PRIMARY_NODE_HORIZONTAL_GAP
-  const primaryNodeVerticalGap = this.primaryNodeVerticalGap || PRIMARY_NODE_VERTICAL_GAP
+  const mainNodeHorizontalGap = this.mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
+  const mainNodeVerticalGap = this.mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
   console.time('linkDiv')
   const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
-  const primaryNodeList = this.box.children
+  const mainNodeList = this.box.children
   this.lines.innerHTML = ''
 
   // 1. calculate position of main nodes
@@ -39,14 +39,14 @@ export default function linkDiv(mainNode) {
     let countR = 0
     let totalHeightLWithoutGap = 0
     let totalHeightRWithoutGap = 0
-    for (let i = 0; i < primaryNodeList.length; i++) {
-      const el = primaryNodeList[i]
+    for (let i = 0; i < mainNodeList.length; i++) {
+      const el = mainNodeList[i]
       if (el.className === 'lhs') {
-        totalHeightL += el.offsetHeight + primaryNodeVerticalGap
+        totalHeightL += el.offsetHeight + mainNodeVerticalGap
         totalHeightLWithoutGap += el.offsetHeight
         countL += 1
       } else {
-        totalHeightR += el.offsetHeight + primaryNodeVerticalGap
+        totalHeightR += el.offsetHeight + mainNodeVerticalGap
         totalHeightRWithoutGap += el.offsetHeight
         countR += 1
       }
@@ -61,21 +61,21 @@ export default function linkDiv(mainNode) {
       shortSideGap = (totalHeightR - totalHeightLWithoutGap) / (countL - 1)
     }
   } else {
-    for (let i = 0; i < primaryNodeList.length; i++) {
-      const el = primaryNodeList[i]
-      totalHeight += el.offsetHeight + primaryNodeVerticalGap
+    for (let i = 0; i < mainNodeList.length; i++) {
+      const el = mainNodeList[i]
+      totalHeight += el.offsetHeight + mainNodeVerticalGap
     }
     base = 10000 - totalHeight / 2
   }
 
   // 2. layout main node, generate main link
-  const alignRight = 10000 - root.offsetWidth / 2 - primaryNodeHorizontalGap
-  const alignLeft = 10000 + root.offsetWidth / 2 + primaryNodeHorizontalGap
-  for (let i = 0; i < primaryNodeList.length; i++) {
+  const alignRight = 10000 - root.offsetWidth / 2 - mainNodeHorizontalGap
+  const alignLeft = 10000 + root.offsetWidth / 2 + mainNodeHorizontalGap
+  for (let i = 0; i < mainNodeList.length; i++) {
     let x1 = 10000
     const y1 = 10000
     let x2, y2
-    const el = primaryNodeList[i]
+    const el = mainNodeList[i]
     const palette = Latte
     const branchColor = el.querySelector('tpc').nodeObj.branchColor || palette[i % palette.length]
     const elOffsetH = el.offsetHeight
@@ -88,7 +88,7 @@ export default function linkDiv(mainNode) {
       if (shortSide === 'l') {
         currentOffsetL += elOffsetH + shortSideGap
       } else {
-        currentOffsetL += elOffsetH + primaryNodeVerticalGap
+        currentOffsetL += elOffsetH + mainNodeVerticalGap
       }
     } else {
       el.style.top = base + currentOffsetR + 'px'
@@ -99,12 +99,12 @@ export default function linkDiv(mainNode) {
       if (shortSide === 'r') {
         currentOffsetR += elOffsetH + shortSideGap
       } else {
-        currentOffsetR += elOffsetH + primaryNodeVerticalGap
+        currentOffsetR += elOffsetH + mainNodeVerticalGap
       }
     }
 
-    let primaryPath = ''
-    if (this.primaryLinkStyle === 2) {
+    let mainPath = ''
+    if (this.mainLinkStyle === 2) {
       if (this.direction === SIDE) {
         if (el.className === 'lhs') {
           x1 = 10000 - root.offsetWidth / 6
@@ -112,7 +112,7 @@ export default function linkDiv(mainNode) {
           x1 = 10000 + root.offsetWidth / 6
         }
       }
-      primaryPath = generatePrimaryLine2({ x1, y1, x2, y2 })
+      mainPath = generateMainLine2({ x1, y1, x2, y2 })
     } else {
       const pct = Math.abs(y2 - 10000) / (10000 - base)
       if (el.className === 'lhs') {
@@ -120,9 +120,9 @@ export default function linkDiv(mainNode) {
       } else {
         x1 = 10000 + root.offsetWidth / 10 + (1 - pct) * 0.25 * (root.offsetWidth / 2)
       }
-      primaryPath = generatePrimaryLine1({ x1, y1, x2, y2 })
+      mainPath = generateMainLine1({ x1, y1, x2, y2 })
     }
-    this.lines.appendChild(createMainPath(primaryPath, branchColor))
+    this.lines.appendChild(createMainPath(mainPath, branchColor))
 
     // set position of expander
     const expander = el.children[0].children[1]
@@ -136,7 +136,7 @@ export default function linkDiv(mainNode) {
     }
 
     // 3. generate link inside main node
-    if (mainNode && mainNode !== primaryNodeList[i]) {
+    if (mainNode && mainNode !== mainNodeList[i]) {
       continue
     }
     if (el.childElementCount) {
@@ -223,11 +223,11 @@ function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?:
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
-function generatePrimaryLine2({ x1, y1, x2, y2 }) {
+function generateMainLine2({ x1, y1, x2, y2 }) {
   return `M ${x1} 10000 V ${y2 > y1 ? y2 - 20 : y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? x1 + 20 : x1 - 20} ${y2} H ${x2}`
 }
 
-function generatePrimaryLine1({ x1, y1, x2, y2 }) {
+function generateMainLine1({ x1, y1, x2, y2 }) {
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 

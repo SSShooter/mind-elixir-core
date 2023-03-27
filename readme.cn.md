@@ -86,9 +86,9 @@ let options = {
   keypress: true, // default true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt] waiting for PRs
   overflowHidden: false, // default false
-  primaryLinkStyle: 2, // [1,2] default 1
-  primaryNodeVerticalGap: 15, // default 25
-  primaryNodeHorizontalGap: 15, // default 65
+  mainLinkStyle: 2, // [1,2] default 1
+  mainNodeVerticalGap: 15, // default 25
+  mainNodeHorizontalGap: 15, // default 65
   contextMenuOption: {
     focus: true,
     link: true,

@@ -55,9 +55,9 @@ const options = {
       return true
     },
   },
-  primaryLinkStyle: 1,
-  primaryNodeVerticalGap: 25, // 25
-  primaryNodeHorizontalGap: 65, // 65
+  mainLinkStyle: 1,
+  mainNodeVerticalGap: 25, // 25
+  mainNodeHorizontalGap: 65, // 65
 }
 
 const mind = new (MindElixir as any)(options)

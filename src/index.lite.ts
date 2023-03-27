@@ -96,9 +96,9 @@ export interface MindElixirInstance {
   newTopicName: string
   allowUndo: boolean
   overflowHidden: boolean
-  primaryLinkStyle: number
-  primaryNodeHorizontalGap: number
-  primaryNodeVerticalGap: number
+  mainLinkStyle: number
+  mainNodeHorizontalGap: number
+  mainNodeVerticalGap: number
   mobileMenu: boolean
 
   container: HTMLElement
@@ -128,9 +128,9 @@ export interface Options {
   newTopicName?: string
   allowUndo?: boolean
   overflowHidden?: boolean
-  primaryLinkStyle?: number
-  primaryNodeHorizontalGap?: number
-  primaryNodeVerticalGap?: number
+  mainLinkStyle?: number
+  mainNodeHorizontalGap?: number
+  mainNodeVerticalGap?: number
   mobileMenu?: boolean
 }
 const $d = document
@@ -143,10 +143,10 @@ function MindElixir(
     toolBar,
     keypress,
     newTopicName,
-    primaryLinkStyle,
+    mainLinkStyle,
     overflowHidden,
-    primaryNodeHorizontalGap,
-    primaryNodeVerticalGap,
+    mainNodeHorizontalGap,
+    mainNodeVerticalGap,
     mobileMenu,
   }: Options
 ) {
@@ -175,10 +175,10 @@ function MindElixir(
   this.inputDiv = null // editor
   this.scaleVal = 1
   this.tempDirection = null
-  this.primaryLinkStyle = primaryLinkStyle || 0
+  this.mainLinkStyle = mainLinkStyle || 0
   this.overflowHidden = overflowHidden
-  this.primaryNodeHorizontalGap = primaryNodeHorizontalGap
-  this.primaryNodeVerticalGap = primaryNodeVerticalGap
+  this.mainNodeHorizontalGap = mainNodeHorizontalGap
+  this.mainNodeVerticalGap = mainNodeVerticalGap
 
   this.bus = new Bus()
 
