@@ -4,11 +4,11 @@ export default function (mind) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return
     // e.preventDefault() // can cause a tag don't work
-    if (e.target.nodeName === 'EPD') {
+    if (e.target.nodeName === 'ME-EPD') {
       mind.expandNode(e.target.previousSibling)
     } else if (!mind.editable) {
       return
-    } else if (e.target.parentElement.nodeName === 'T' || e.target.parentElement.nodeName === 'ROOT') {
+    } else if (e.target.parentElement.nodeName === 'ME-PARENT' || e.target.parentElement.nodeName === 'ME-ROOT') {
       mind.selectNode(e.target, false, e)
     } else if (e.target.nodeName === 'path') {
       if (e.target.parentElement.nodeName === 'g') {
@@ -26,7 +26,7 @@ export default function (mind) {
   mind.map.addEventListener('dblclick', e => {
     e.preventDefault()
     if (!mind.editable) return
-    if (e.target.parentElement.nodeName === 'T' || e.target.parentElement.nodeName === 'ROOT') {
+    if (e.target.parentElement.nodeName === 'ME-PARENT' || e.target.parentElement.nodeName === 'ME-ROOT') {
       mind.beginEdit(e.target)
     }
   })

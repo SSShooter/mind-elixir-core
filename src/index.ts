@@ -294,9 +294,9 @@ function MindElixir(
   this.map.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.mindElixirBox.appendChild(this.container)
-  this.root = $d.createElement('root')
+  this.root = $d.createElement('me-root')
 
-  this.box = $d.createElement('children')
+  this.box = $d.createElement('me-children')
   this.box.className = 'box'
 
   // infrastructure

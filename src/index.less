@@ -39,13 +39,13 @@
     .selected {
       outline: 2px solid #4dc4ff;
     }
-    root {
+    me-root {
       position: absolute;
       padding: 10px var(--gap);
       color: rgb(255, 255, 255);
       background-color: #4c4f69;
       border-radius: var(--root-radius);
-      tpc {
+      me-tpc {
         display: block;
         font-size: 25px;
         white-space: pre-wrap;
@@ -56,41 +56,41 @@
     }
   }
   .box {
-    & > grp {
+    & > me-wrapper {
       // for main node
       position: absolute;
-      & > t {
+      & > me-parent {
         margin: var(--gap);
         background-color: rgb(255, 255, 255);
         border: 1px solid rgb(68, 68, 68);
         padding: 8px var(--gap);
         border-radius: var(--main-radius);
-        & > tpc {
+        & > me-tpc {
           color: rgb(115, 92, 69);
         }
       }
     }
     .lhs {
       direction: rtl;
-      tpc {
+      me-tpc {
         direction: ltr;
       }
     }
-    grp {
+    me-wrapper {
       display: block;
       pointer-events: none;
     }
-    children,
-    t {
+    me-children,
+    me-parent {
       display: inline-block;
       vertical-align: middle;
     }
-    t {
+    me-parent {
       position: relative;
       cursor: pointer;
       padding: 6px var(--gap);
       margin-top: 10px;
-      tpc {
+      me-tpc {
         position: relative;
         display: block;
         border-radius: 3px;
@@ -144,7 +144,7 @@
           bottom: -14px;
         }
       }
-      epd {
+      me-epd {
         position: absolute;
         height: 18px;
         width: 18px;
@@ -222,18 +222,18 @@
   }
 }
 
-tpc > img {
+me-tpc > img {
   pointer-events: none;
   display: block;
 }
 
 // TODO For org chart
 .down {
-  t,
-  children {
+  me-parent,
+  me-children {
     display: block !important;
   }
-  grp {
+  me-wrapper {
     display: inline-block !important;
   }
 }

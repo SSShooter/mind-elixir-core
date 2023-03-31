@@ -77,7 +77,7 @@ export default function linkDiv(mainNode) {
     let x2, y2
     const el = mainNodeList[i]
     const palette = Latte
-    const branchColor = el.querySelector('tpc').nodeObj.branchColor || palette[i % palette.length]
+    const branchColor = el.querySelector('me-tpc').nodeObj.branchColor || palette[i % palette.length]
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'

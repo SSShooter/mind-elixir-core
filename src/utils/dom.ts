@@ -77,7 +77,7 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
 
 // everything is staring from `Group`
 export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {
-  const grp: Group = $d.createElement('GRP')
+  const grp: Group = $d.createElement('me-wrapper')
   const top: Top = this.createTop(nodeObj)
   grp.appendChild(top)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
@@ -91,7 +91,7 @@ export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {
 }
 
 export const createTop = function (nodeObj: NodeObj): Top {
-  const top = $d.createElement('t')
+  const top = $d.createElement('me-parent')
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
   top.appendChild(tpc)
@@ -99,7 +99,7 @@ export const createTop = function (nodeObj: NodeObj): Top {
 }
 
 export const createTopic = function (nodeObj: NodeObj): Topic {
-  const topic: Topic = $d.createElement('tpc')
+  const topic: Topic = $d.createElement('me-tpc')
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   topic.draggable = this.draggable
@@ -173,7 +173,7 @@ export function createInputDiv(tpc: Topic) {
 }
 
 export const createExpander = function (expanded: boolean | undefined): Expander {
-  const expander: Expander = $d.createElement('epd')
+  const expander: Expander = $d.createElement('me-epd')
   // 包含未定义 expanded 的情况，未定义视为展开
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''

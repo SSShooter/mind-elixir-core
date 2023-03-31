@@ -53,11 +53,11 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
   if (container) {
     chldr = container
   } else {
-    chldr = $d.createElement('children')
+    chldr = $d.createElement('me-children')
   }
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
-    const grp = $d.createElement('GRP')
+    const grp = $d.createElement('me-wrapper')
     // only main nodes have `direction`
     if (direction === LEFT) {
       grp.className = 'lhs'

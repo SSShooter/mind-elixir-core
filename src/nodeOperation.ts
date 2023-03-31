@@ -173,7 +173,7 @@ export const insertParent = function (el, node) {
   top.appendChild(createExpander(true))
   grp0.insertAdjacentElement('afterend', grp)
 
-  const c = $d.createElement('children')
+  const c = $d.createElement('me-children')
   c.appendChild(grp0)
   top.insertAdjacentElement('afterend', c)
 
@@ -220,17 +220,17 @@ export const addChildFunction = function (nodeEle, node) {
   const { grp, top: newTop } = this.createGroup(newNodeObj)
   // 先全部构建相同结构，减少这些判断？×
   // eliminate T tag
-  if (top.tagName === 'T') {
+  if (top.tagName === 'ME-PARENT') {
     if (top.children[1]) {
       top.nextSibling.appendChild(grp)
     } else {
-      const c = $d.createElement('children')
+      const c = $d.createElement('me-children')
       c.appendChild(grp)
       top.appendChild(createExpander(true))
       top.insertAdjacentElement('afterend', c)
     }
     this.linkDiv(grp.offsetParent)
-  } else if (top.tagName === 'ROOT') {
+  } else if (top.tagName === 'ME-ROOT') {
     this.judgeDirection(grp, newNodeObj)
     top.nextSibling.appendChild(grp)
     this.linkDiv()
@@ -370,7 +370,7 @@ export const removeNode = function (el) {
     // remove epd when children length === 0
     const parentT = t.parentNode.parentNode.previousSibling
     // root doesn't have epd
-    if (parentT.tagName !== 'ROOT') {
+    if (parentT.tagName !== 'ME-ROOT') {
       parentT.children[1].remove()
     }
     this.selectParent()
@@ -432,7 +432,7 @@ export const moveNode = function (from, to) {
   } else if (fromTop.parentNode.className === 'box') {
     fromTop.style.cssText = '' // clear style
   }
-  if (toTop.tagName === 'T') {
+  if (toTop.tagName === 'ME-PARENT') {
     if (fromChilren.className === 'box') {
       // clear direaction class of main node
       fromTop.parentNode.className = ''
@@ -442,12 +442,12 @@ export const moveNode = function (from, to) {
       toTop.nextSibling.appendChild(fromTop.parentNode)
     } else {
       // expander not exist, no child
-      const c = $d.createElement('children')
+      const c = $d.createElement('me-children')
       c.appendChild(fromTop.parentNode)
       toTop.appendChild(createExpander(true))
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }
-  } else if (toTop.tagName === 'ROOT') {
+  } else if (toTop.tagName === 'ME-ROOT') {
     this.judgeDirection(fromTop.parentNode, fromObj)
     toTop.nextSibling.appendChild(fromTop.parentNode)
   }

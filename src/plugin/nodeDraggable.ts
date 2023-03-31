@@ -31,7 +31,7 @@ const clearPreview = function (el) {
 
 const canPreview = function (el: Element, dragged: Topic) {
   const isContain = dragged.parentNode.parentNode.contains(el)
-  return el && el.tagName === 'TPC' && el !== dragged && !isContain && (el as Topic).nodeObj.root !== true
+  return el && el.tagName === 'ME-TPC' && el !== dragged && !isContain && (el as Topic).nodeObj.root !== true
 }
 
 export default function (mind) {
