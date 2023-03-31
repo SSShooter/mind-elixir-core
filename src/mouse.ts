@@ -4,14 +4,14 @@ export default function (mind) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return
     // e.preventDefault() // can cause a tag don't work
-    if (e.target.nodeName === 'ME-EPD') {
+    if (e.target.tagName === 'ME-EPD') {
       mind.expandNode(e.target.previousSibling)
     } else if (!mind.editable) {
       return
-    } else if (e.target.parentElement.nodeName === 'ME-PARENT' || e.target.parentElement.nodeName === 'ME-ROOT') {
+    } else if (e.target.parentElement.tagName === 'ME-PARENT' || e.target.parentElement.tagName === 'ME-ROOT') {
       mind.selectNode(e.target, false, e)
-    } else if (e.target.nodeName === 'path') {
-      if (e.target.parentElement.nodeName === 'g') {
+    } else if (e.target.tagName === 'path') {
+      if (e.target.parentElement.tagName === 'g') {
         mind.selectLink(e.target.parentElement)
       }
     } else if (e.target.className === 'circle') {
@@ -26,7 +26,7 @@ export default function (mind) {
   mind.map.addEventListener('dblclick', e => {
     e.preventDefault()
     if (!mind.editable) return
-    if (e.target.parentElement.nodeName === 'ME-PARENT' || e.target.parentElement.nodeName === 'ME-ROOT') {
+    if (e.target.parentElement.tagName === 'ME-PARENT' || e.target.parentElement.tagName === 'ME-ROOT') {
       mind.beginEdit(e.target)
     }
   })

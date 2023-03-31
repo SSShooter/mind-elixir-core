@@ -138,8 +138,8 @@ export default function (mind, option?) {
   //     e => {
   //       e.preventDefault()
   //       if (
-  //         e.target.parentElement.nodeName === 'ME-PARENT' ||
-  //         e.target.parentElement.nodeName === 'ME-ROOT'
+  //         e.target.parentElement.tagName === 'ME-PARENT' ||
+  //         e.target.parentElement.tagName === 'ME-ROOT'
   //       ) {
   //         mind.createLink(from, mind.currentNode)
   //       } else {

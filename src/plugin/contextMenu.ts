@@ -155,7 +155,7 @@ export default function (mind, option) {
       e => {
         e.preventDefault()
         tips.remove()
-        if (e.target.parentElement.nodeName === 'ME-PARENT' || e.target.parentElement.nodeName === 'ME-ROOT') {
+        if (e.target.parentElement.tagName === 'ME-PARENT' || e.target.parentElement.tagName === 'ME-ROOT') {
           mind.createLink(from, mind.currentNode)
         } else {
           console.log('link cancel')
