@@ -77,7 +77,7 @@ export const insertSibling = function (el, node) {
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
-  const { grp, top } = this.createGroup(newNodeObj)
+  const { grp, top } = this.createWrapper(newNodeObj)
 
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode.nextSibling)
@@ -123,7 +123,7 @@ export const insertBefore = function (el, node) {
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
-  const { grp, top } = this.createGroup(newNodeObj)
+  const { grp, top } = this.createWrapper(newNodeObj)
 
   const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode)
@@ -169,7 +169,7 @@ export const insertParent = function (el, node) {
   // warning: the tricky part
   const grp0 = nodeEle.parentElement.parentElement
   console.time('insertParent_DOM')
-  const { grp, top } = this.createGroup(newNodeObj, true)
+  const { grp, top } = this.createWrapper(newNodeObj, true)
   top.appendChild(createExpander(true))
   grp0.insertAdjacentElement('afterend', grp)
 
@@ -217,7 +217,7 @@ export const addChildFunction = function (nodeEle, node) {
 
   const top = nodeEle.parentElement
 
-  const { grp, top: newTop } = this.createGroup(newNodeObj)
+  const { grp, top: newTop } = this.createWrapper(newNodeObj)
   // 先全部构建相同结构，减少这些判断？×
   // eliminate T tag
   if (top.tagName === 'ME-PARENT') {

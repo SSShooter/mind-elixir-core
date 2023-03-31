@@ -70,7 +70,7 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
         grp.className = 'rhs'
       }
     }
-    const top = this.createTop(nodeObj)
+    const top = this.createParent(nodeObj)
     if (nodeObj.children && nodeObj.children.length > 0) {
       top.appendChild(createExpander(nodeObj.expanded))
       grp.appendChild(top)

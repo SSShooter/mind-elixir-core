@@ -1,6 +1,6 @@
 import { LEFT, RIGHT, SIDE, GAP } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
-import { findEle, createInputDiv, Topic, createGroup, createTop, createTopic } from './utils/dom'
+import { findEle, createInputDiv, Topic, createWrapper, createParent, createTopic } from './utils/dom'
 import { layout, createChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
@@ -367,8 +367,8 @@ MindElixir.prototype = {
   createInputDiv,
 
   createChildren,
-  createGroup,
-  createTop,
+  createWrapper,
+  createParent,
   createTopic,
 
   selectNode,

@@ -75,10 +75,10 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
-// everything is staring from `Group`
-export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {
+// everything is staring from `Wrapper`
+export const createWrapper = function (nodeObj: NodeObj, omitChildren?: boolean) {
   const grp: Group = $d.createElement('me-wrapper')
-  const top: Top = this.createTop(nodeObj)
+  const top: Top = this.createParent(nodeObj)
   grp.appendChild(top)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
     top.appendChild(createExpander(nodeObj.expanded))
@@ -90,7 +90,7 @@ export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {
   return { grp, top }
 }
 
-export const createTop = function (nodeObj: NodeObj): Top {
+export const createParent = function (nodeObj: NodeObj): Top {
   const top = $d.createElement('me-parent')
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
