@@ -1,9 +1,9 @@
 import { LEFT } from '../const'
 import { NodeObj } from '../index'
 import { encodeHTML } from '../utils/index'
-export type Top = HTMLElement
-
-export type Group = HTMLElement
+export type Parent = HTMLElement
+export type Children = HTMLElement
+export type Wrapper = HTMLElement
 
 export interface Topic extends HTMLElement {
   nodeObj?: NodeObj
@@ -77,25 +77,31 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
 
 // everything is staring from `Wrapper`
 export const createWrapper = function (nodeObj: NodeObj, omitChildren?: boolean) {
-  const grp: Group = $d.createElement('me-wrapper')
-  const top: Top = this.createParent(nodeObj)
+  const grp: Wrapper = $d.createElement('me-wrapper')
+  const top: Parent = this.createParent(nodeObj)
   grp.appendChild(top)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
     top.appendChild(createExpander(nodeObj.expanded))
     if (nodeObj.expanded !== false) {
-      const children = this.createChildren(nodeObj.children)
+      const children = this.layoutChildren(nodeObj.children)
       grp.appendChild(children)
     }
   }
   return { grp, top }
 }
 
-export const createParent = function (nodeObj: NodeObj): Top {
+export const createParent = function (nodeObj: NodeObj): Parent {
   const top = $d.createElement('me-parent')
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
   top.appendChild(tpc)
   return top
+}
+
+export const createChildren = function (wrappers: Wrapper[]): Children {
+  const children = $d.createElement('me-children')
+  children.append(...wrappers)
+  return children
 }
 
 export const createTopic = function (nodeObj: NodeObj): Topic {

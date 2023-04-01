@@ -69,7 +69,7 @@ export default {
                           },
                           { topic: 'grp...', id: '3390940a8c8380a6' },
                         ],
-                        tags: ['createChildren return'],
+                        tags: ['layoutChildren return'],
                       },
                       { topic: 'svg.subLines', id: '33908986b6336a4f' },
                     ],

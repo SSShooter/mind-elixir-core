@@ -173,9 +173,9 @@ export const insertParent = function (el, node) {
   top.appendChild(createExpander(true))
   grp0.insertAdjacentElement('afterend', grp)
 
-  const c = $d.createElement('me-children')
-  c.appendChild(grp0)
+  const c = this.createChildren([grp0])
   top.insertAdjacentElement('afterend', c)
+  // FIX: style wrong when adding main node parent
 
   // if it's a main node previously
   if (grp0.parentNode.className === 'box') {
@@ -196,10 +196,6 @@ export const insertParent = function (el, node) {
     name: 'insertParent',
     obj: newNodeObj,
   })
-}
-
-const initChildren = function (tpc) {
-  const wrapper = tpc.parentNode
 }
 
 export const addChildFunction = function (nodeEle, node) {
@@ -224,8 +220,7 @@ export const addChildFunction = function (nodeEle, node) {
     if (top.children[1]) {
       top.nextSibling.appendChild(grp)
     } else {
-      const c = $d.createElement('me-children')
-      c.appendChild(grp)
+      const c = this.createChildren([grp])
       top.appendChild(createExpander(true))
       top.insertAdjacentElement('afterend', c)
     }
@@ -442,8 +437,7 @@ export const moveNode = function (from, to) {
       toTop.nextSibling.appendChild(fromTop.parentNode)
     } else {
       // expander not exist, no child
-      const c = $d.createElement('me-children')
-      c.appendChild(fromTop.parentNode)
+      const c = this.createChildren([fromTop.parentNode])
       toTop.appendChild(createExpander(true))
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }

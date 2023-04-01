@@ -4,7 +4,7 @@ import { NodeObj } from '../index'
 
 const $d = document
 
-// Set main nodes' direction and invoke createChildren()
+// Set main nodes' direction and invoke layoutChildren()
 export function layout() {
   console.time('layout')
   this.root.innerHTML = ''
@@ -36,7 +36,7 @@ export function layout() {
       }
     })
   }
-  this.createChildren(this.nodeData.children, this.box, this.direction)
+  this.layoutChildren(this.nodeData.children, this.box, this.direction)
   console.timeEnd('layout')
 }
 
@@ -48,7 +48,7 @@ export function layout() {
  * @param {number} direction main node direction(optional)
  * @return {ChildrenElement} children element.
  */
-export function createChildren(data: NodeObj[], container?: HTMLElement, direction?) {
+export function layoutChildren(data: NodeObj[], container?: HTMLElement, direction?) {
   let chldr: HTMLElement
   if (container) {
     chldr = container
@@ -75,7 +75,7 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
       top.appendChild(createExpander(nodeObj.expanded))
       grp.appendChild(top)
       if (nodeObj.expanded !== false) {
-        const children = this.createChildren(nodeObj.children)
+        const children = this.layoutChildren(nodeObj.children)
         grp.appendChild(children)
       }
     } else {

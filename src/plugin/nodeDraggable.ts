@@ -1,6 +1,6 @@
 import { throttle } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
-import { findEle as E, Topic, Group } from '../utils/dom'
+import { findEle as E, Topic, Wrapper } from '../utils/dom'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
 
 const $d = document
@@ -42,7 +42,7 @@ export default function (mind) {
 
   mind.map.addEventListener('dragstart', function (e) {
     dragged = e.target
-    ;(dragged.parentNode.parentNode as Group).style.opacity = '0.5'
+    ;(dragged.parentNode.parentNode as Wrapper).style.opacity = '0.5'
     dragMoveHelper.clear()
   })
 
@@ -63,7 +63,7 @@ export default function (mind) {
         mind.moveNode(dragged, meet)
         break
     }
-    ;(dragged.parentNode.parentNode as Group).style.opacity = '1'
+    ;(dragged.parentNode.parentNode as Wrapper).style.opacity = '1'
     dragged = null
   })
 
