@@ -17,5 +17,3 @@ export const THEME = {
     '--bgcolor': '#f6f6f6',
   },
 }
-
-const Macchiato = ['#f0c6c6', '#ee99a0', '#f5a97f', '#eed49f', '#a6da95', '#91d7e3', '#8aadf4', '#b7bdf8']

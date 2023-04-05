@@ -1,4 +1,4 @@
-![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png)
+![mindelixir logo2](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png)
 
 <p>
   <a href="https://www.npmjs.com/package/mind-elixir">
@@ -184,7 +184,7 @@ nodeData = {
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
   image: {
-    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png', // required
+    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png', // required
     // you need to query the height and width of the image and calculate the appropriate value to display the image
     height: 90, // required
     width: 300, // required

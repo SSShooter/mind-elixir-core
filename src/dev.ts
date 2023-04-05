@@ -60,7 +60,7 @@ const options = {
   mainNodeHorizontalGap: 65, // 65
   // theme: {
   //   name: 'Dark',
-  //   palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],
+  //   palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
   //   cssVar: {
   //     '--main-color': '#ffffff',
   //     '--main-bgcolor': '#4c4f69',

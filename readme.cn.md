@@ -1,4 +1,4 @@
-![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png)
+![mindelixir logo2](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png)
 
 <p>
   <a href="https://www.npmjs.com/package/mind-elixir">

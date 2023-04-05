@@ -6,7 +6,7 @@ export default {
     root: true,
     children: [
       {
-        topic: 'logo',
+        topic: 'logo2',
         id: '56dae51a90d350a8',
         direction: 0,
         expanded: true,
@@ -14,7 +14,7 @@ export default {
           {
             topic: 'mind-elixir',
             image: {
-              url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png',
+              url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png',
               height: 90,
               width: 300,
             },
@@ -170,14 +170,6 @@ export default {
             id: 'bd41fd4ca32322a5',
             hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
           },
-          // {
-          //   topic: 'Image URL',
-          //   id: 'bd41fd4ca32322a6',
-          //   image: {
-          //     url: 'https://cdn.jsdelivr.net/gh/ssshooter/mind-elixir-core/logo.png',
-          //     width: 200,
-          //   },
-          // },
         ],
       },
       {
