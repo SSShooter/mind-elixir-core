@@ -1,6 +1,6 @@
-![mindelixir logo2](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png)
+<p align="center"><a href="mind-elixir.com" target="_blank" rel="noopener noreferrer"><img width="150" src="https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png" alt="mindelixir logo2"></a></p>
 
-<p>
+<p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
@@ -68,11 +68,11 @@ https://mind-elixir.com/
 
 https://codepen.io/ssshooter/pen/GVQRYK
 
-#### Use with React 
+#### Use with React
 
 https://codesandbox.io/s/mind-elixir-react-9sisb
 
-#### Use with Vue 
+#### Use with Vue
 
 https://codesandbox.io/s/mind-elixir-vue-nqjjl
 
