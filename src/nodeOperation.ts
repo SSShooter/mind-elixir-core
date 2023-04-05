@@ -16,7 +16,6 @@ import {
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
-const $d = document
 
 /**
  * @exports NodeOperation
@@ -214,8 +213,6 @@ export const addChildFunction = function (nodeEle, node) {
   const top = nodeEle.parentElement
 
   const { grp, top: newTop } = this.createWrapper(newNodeObj)
-  // 先全部构建相同结构，减少这些判断？×
-  // eliminate T tag
   if (top.tagName === 'ME-PARENT') {
     if (top.children[1]) {
       top.nextSibling.appendChild(grp)

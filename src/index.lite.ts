@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE } from './const'
+import { LEFT, RIGHT, SIDE, THEME } from './const'
 import { isMobile, addParentLink, getObjById } from './utils/index'
 import { findEle, Topic, createWrapper, createParent, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
@@ -83,6 +83,9 @@ export interface MindElixirInstance {
   isUndo: boolean
   undo: () => void
 
+  theme: {
+    palette: Array<string>
+  }
   direction: number
   locale: string
   draggable: boolean
@@ -193,6 +196,7 @@ function MindElixir(
 
   this.map = $d.createElement('div') // map-canvas Element
   this.map.className = 'map-canvas'
+  this.theme = THEME
   this.map.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.mindElixirBox.appendChild(this.container)

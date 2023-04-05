@@ -25,8 +25,8 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.textContent = nodeObj.topic
 
   if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color || 'inherit'
-    tpc.style.background = nodeObj.style.background || 'inherit'
+    tpc.style.color = nodeObj.style.color || null
+    tpc.style.background = nodeObj.style.background || null
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }

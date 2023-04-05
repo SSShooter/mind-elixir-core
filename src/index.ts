@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE, GAP } from './const'
+import { LEFT, RIGHT, SIDE, GAP, THEME } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, Topic, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
@@ -99,6 +99,17 @@ export interface NodeObj {
   branchColor?: string
 }
 
+interface Theme {
+  name: string
+  palette: string[]
+  cssVar: {
+    '--main-color': string
+    '--main-bgcolor': string
+    '--color': string
+    '--bgcolor': string
+  }
+}
+
 export interface NodeElement extends HTMLElement {
   nodeObj: NodeObj
 }
@@ -106,6 +117,7 @@ export interface MindElixirData {
   nodeData: NodeObj
   linkData?: LinkObj
   direction?: number
+  theme?: Theme
 }
 export interface MindElixirInstance {
   mindElixirBox: HTMLElement
@@ -125,6 +137,7 @@ export interface MindElixirInstance {
   isUndo: boolean
   undo: () => void
 
+  theme: Theme
   direction: number
   locale: string
   draggable: boolean
@@ -173,6 +186,7 @@ export interface Options {
   mainNodeHorizontalGap?: number
   mainNodeVerticalGap?: number
   mobileMenu?: boolean
+  theme?: Theme
 }
 const $d = document
 /**
@@ -211,22 +225,23 @@ function MindElixir(
     mainNodeHorizontalGap,
     mainNodeVerticalGap,
     mobileMenu,
+    theme,
   }: Options
 ) {
   console.log('ME_version ' + MindElixir.version, this)
-  let box
+  let ele
   const elType = Object.prototype.toString.call(el)
   if (elType === '[object HTMLDivElement]') {
-    box = el as HTMLElement
+    ele = el as HTMLElement
   } else if (elType === '[object String]') {
-    box = document.querySelector(el as string) as HTMLElement
+    ele = document.querySelector(el as string) as HTMLElement
   }
-  if (!box) return new Error('MindElixir: el is not a valid element')
+  if (!ele) return new Error('MindElixir: el is not a valid element')
 
-  box.className += ' mind-elixir'
-  box.innerHTML = ''
-  box.style.setProperty('--gap', GAP + 'px')
-  this.mindElixirBox = box
+  ele.className += ' mind-elixir'
+  ele.innerHTML = ''
+  ele.style.setProperty('--gap', GAP + 'px')
+  this.mindElixirBox = ele
   this.before = before || {}
   this.locale = locale
   this.contextMenuOption = contextMenuOption
@@ -289,8 +304,10 @@ function MindElixir(
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
 
-  this.map = $d.createElement('div') // map-canvas Element
-  this.map.className = 'map-canvas'
+  this.theme = theme || THEME
+  const canvas = $d.createElement('div') // map-canvas Element
+  canvas.className = 'map-canvas'
+  this.map = canvas
   this.map.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.mindElixirBox.appendChild(this.container)
@@ -402,6 +419,9 @@ MindElixir.prototype = {
     if (data.direction) {
       this.direction = data.direction
     }
+    if (data.theme) {
+      this.theme = data.theme
+    }
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
     // plugin
@@ -414,6 +434,14 @@ MindElixir.prototype = {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
     }
     this.draggable && nodeDraggable(this)
+
+    const cssVar = this.theme.cssVar
+    const keys = Object.keys(cssVar)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      console.log(key, cssVar[key], this.box)
+      this.mindElixirBox.style.setProperty(key, cssVar[key])
+    }
 
     addParentLink(this.nodeData)
     this.toCenter()
