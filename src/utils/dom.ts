@@ -1,18 +1,5 @@
 import { LEFT } from '../const'
-import { NodeObj } from '../index'
 import { encodeHTML } from '../utils/index'
-export type Parent = HTMLElement
-export type Children = HTMLElement
-export type Wrapper = HTMLElement
-
-export interface Topic extends HTMLElement {
-  nodeObj?: NodeObj
-  linkContainer?: HTMLElement
-}
-
-export interface Expander extends HTMLElement {
-  expanded?: boolean
-}
 
 // DOM manipulation
 const $d = document

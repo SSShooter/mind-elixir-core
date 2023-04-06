@@ -37,9 +37,6 @@ export const createPath = function (d: string, color: string) {
   return path
 }
 
-interface CustomSvg extends SVGElement {
-  linkObj?: object
-}
 export const createSvgGroup = function (d: string, arrowd: string): CustomSvg {
   const g = $d.createElementNS(svgNS, 'g')
   const path = $d.createElementNS(svgNS, 'path')

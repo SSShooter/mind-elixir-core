@@ -1,6 +1,6 @@
 import { LEFT, RIGHT, SIDE, GAP, THEME } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
-import { findEle, createInputDiv, Topic, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
+import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
@@ -69,125 +69,6 @@ import './iconfont/iconfont.js'
  * E('bd4313fbac40284b')
  */
 export const E = findEle
-type LinkObj = object
-type operation = {
-  name: string
-}
-export interface NodeObj {
-  topic: string
-  id: string
-  style?: {
-    fontSize?: string
-    color?: string
-    background?: string
-    fontWeight?: string
-  }
-  parent?: NodeObj
-  children?: NodeObj[]
-  tags?: string[]
-  icons?: string[]
-  hyperLink?: string
-  expanded?: boolean
-  direction?: number
-  root?: boolean
-  image?: {
-    url: string
-    width: number
-    height: number
-  }
-  // main node specific properties
-  branchColor?: string
-}
-
-interface Theme {
-  name: string
-  palette: string[]
-  cssVar: {
-    '--main-color': string
-    '--main-bgcolor': string
-    '--color': string
-    '--bgcolor': string
-  }
-}
-
-export interface NodeElement extends HTMLElement {
-  nodeObj: NodeObj
-}
-export interface MindElixirData {
-  nodeData: NodeObj
-  linkData?: LinkObj
-  direction?: number
-  theme?: Theme
-}
-export interface MindElixirInstance {
-  mindElixirBox: HTMLElement
-  nodeData: NodeObj
-  linkData: LinkObj
-  currentNode: Topic | null
-  currentLink: SVGElement | null
-  inputDiv: HTMLElement | null
-  scaleVal: number
-  tempDirection: number | null
-  bus: {
-    addListener: (type, handler) => void
-  } // wip
-
-  // wip
-  history: operation[]
-  isUndo: boolean
-  undo: () => void
-
-  theme: Theme
-  direction: number
-  locale: string
-  draggable: boolean
-  editable: boolean
-  contextMenu: boolean
-  contextMenuOption: object
-  toolBar: boolean
-  keypress: boolean
-  before: object
-  newTopicName: string
-  allowUndo: boolean
-  overflowHidden: boolean
-  mainLinkStyle: number
-  mainNodeHorizontalGap: number
-  mainNodeVerticalGap: number
-  mobileMenu: boolean
-
-  container: HTMLElement
-  map: HTMLElement
-  root: HTMLElement
-  box: HTMLElement
-  lines: SVGElement
-  linkController: SVGElement
-  P2: HTMLElement
-  P3: HTMLElement
-  line1: SVGElement
-  line2: SVGElement
-  linkSvgGroup: SVGElement
-}
-export interface Options {
-  el: string | Element
-  data: MindElixirData
-  direction?: number
-  locale?: string
-  draggable?: boolean
-  editable?: boolean
-  contextMenu?: boolean
-  contextMenuOption?: object
-  toolBar?: boolean
-  keypress?: boolean
-  before?: object
-  newTopicName?: string
-  allowUndo?: boolean
-  overflowHidden?: boolean
-  mainLinkStyle?: number
-  mainNodeHorizontalGap?: number
-  mainNodeVerticalGap?: number
-  mobileMenu?: boolean
-  theme?: Theme
-}
 const $d = document
 /**
  * @export MindElixir

@@ -1,5 +1,5 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
-import { findEle, Expander } from './utils/dom'
+import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
 
 /**

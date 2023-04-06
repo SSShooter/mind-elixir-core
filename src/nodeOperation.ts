@@ -1,5 +1,3 @@
-import type { NodeElement, NodeObj } from './index'
-
 import {
   moveNodeObj,
   removeNodeObj,
@@ -241,7 +239,7 @@ export const addChildFunction = function (nodeEle, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild = function (el: NodeElement, node: NodeObj) {
+export const addChild = function (el: Topic, node: NodeObj) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -270,7 +268,7 @@ export const addChild = function (el: NodeElement, node: NodeObj) {
  * @example
  * copyNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const copyNode = function (node: NodeElement, to: NodeElement) {
+export const copyNode = function (node: Topic, to: Topic) {
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)

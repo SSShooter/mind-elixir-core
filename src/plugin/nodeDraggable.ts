@@ -1,6 +1,6 @@
 import { throttle } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
-import { findEle as E, Topic, Wrapper } from '../utils/dom'
+import { findEle as E } from '../utils/dom'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
 
 const $d = document

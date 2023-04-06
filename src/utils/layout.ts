@@ -1,6 +1,5 @@
 import { LEFT, RIGHT, SIDE } from '../const'
 import { createExpander, shapeTpc } from './dom'
-import { NodeObj } from '../index'
 
 const $d = document
 

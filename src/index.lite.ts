@@ -1,6 +1,6 @@
 import { LEFT, RIGHT, SIDE, THEME } from './const'
 import { isMobile, addParentLink, getObjById } from './utils/index'
-import { findEle, Topic, createWrapper, createParent, createTopic } from './utils/dom'
+import { findEle, createWrapper, createParent, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
@@ -28,114 +28,15 @@ import { setNodeTopic } from './nodeOperation'
 import { createLink } from './customLink'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
-
 import contextMenu from './plugin/contextMenu'
 import toolBar from './plugin/toolBar'
 import mobileMenu from './plugin/mobileMenu'
-
 import Bus from './utils/pubsub'
-
 import './index.less'
-
 import './iconfont/iconfont.js'
 
 export const E = findEle
-type LinkObj = object
-type operation = {
-  name: string
-}
-export interface NodeObj {
-  topic: string
-  id: string
-  style?: {
-    fontSize?: string
-    color?: string
-    background?: string
-    fontWeight?: string
-  }
-  parent?: NodeObj
-  children?: NodeObj[]
-  tags?: string[]
-  icons?: string[]
-  hyperLink?: string
-  expanded?: boolean
-  direction?: number
-  root?: boolean
-}
-export interface MindElixirData {
-  nodeData: NodeObj
-  linkData?: LinkObj
-  direction?: number
-}
-export interface MindElixirInstance {
-  mindElixirBox: HTMLElement
-  nodeData: NodeObj
-  linkData: LinkObj
-  currentNode: Topic | null
-  currentLink: SVGElement | null
-  inputDiv: HTMLElement | null
-  scaleVal: number
-  tempDirection: number | null
-  bus: object // wip
 
-  // wip
-  history: operation[]
-  isUndo: boolean
-  undo: () => void
-
-  theme: {
-    palette: Array<string>
-  }
-  direction: number
-  locale: string
-  draggable: boolean
-  editable: boolean
-  contextMenu: boolean
-  contextMenuOption: object
-  toolBar: boolean
-  nodeMenu: boolean
-  keypress: boolean
-  before: object
-  newTopicName: string
-  allowUndo: boolean
-  overflowHidden: boolean
-  mainLinkStyle: number
-  mainNodeHorizontalGap: number
-  mainNodeVerticalGap: number
-  mobileMenu: boolean
-
-  container: HTMLElement
-  map: HTMLElement
-  root: HTMLElement
-  box: HTMLElement
-  lines: SVGElement
-  linkController: SVGElement
-  P2: HTMLElement
-  P3: HTMLElement
-  line1: SVGElement
-  line2: SVGElement
-  linkSvgGroup: SVGElement
-}
-export interface Options {
-  el: string | Element
-  direction?: number
-  locale?: string
-  draggable?: boolean
-  editable?: boolean
-  contextMenu?: boolean
-  contextMenuOption?: object
-  toolBar?: boolean
-  nodeMenu?: boolean
-  keypress?: boolean
-  before?: object
-  newTopicName?: string
-  allowUndo?: boolean
-  overflowHidden?: boolean
-  mainLinkStyle?: number
-  mainNodeHorizontalGap?: number
-  mainNodeVerticalGap?: number
-  mobileMenu?: boolean
-}
 const $d = document
 function MindElixir(
   this: MindElixirInstance,
@@ -281,6 +182,13 @@ MindElixir.prototype = {
       mobileMenu(this)
     } else {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
+    }
+
+    const cssVar = this.theme.cssVar
+    const keys = Object.keys(cssVar)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      this.mindElixirBox.style.setProperty(key, cssVar[key])
     }
 
     addParentLink(this.nodeData)
