@@ -439,7 +439,6 @@ MindElixir.prototype = {
     const keys = Object.keys(cssVar)
     for (let i = 0; i < keys.length; i++) {
       const key = keys[i]
-      console.log(key, cssVar[key], this.box)
       this.mindElixirBox.style.setProperty(key, cssVar[key])
     }
 
@@ -457,7 +456,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '1.0.0'
+MindElixir.version = '2.0.0'
 MindElixir.E = findEle
 
 /**

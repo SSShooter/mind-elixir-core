@@ -8,7 +8,12 @@ import { findEle } from './utils/dom'
  * @namespace MapInteraction
  */
 function getData(instance) {
-  return instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData
+  return {
+    nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
+    linkData: instance.linkData,
+    direction: instance.direction,
+    theme: instance.theme,
+  }
 }
 /**
  * @function
@@ -112,11 +117,7 @@ export const selectParent = function () {
  * @return {string}
  */
 export const getAllDataString = function () {
-  const data = {
-    nodeData: getData(this),
-    linkData: this.linkData,
-    direction: this.direction,
-  }
+  const data = getData(this)
   return JSON.stringify(data, (k, v) => {
     if (k === 'parent') return undefined
     if (k === 'from') return v.nodeObj.id
@@ -133,11 +134,7 @@ export const getAllDataString = function () {
  * @return {Object}
  */
 export const getAllData = function (): object {
-  const data = {
-    nodeData: getData(this),
-    linkData: this.linkData,
-    direction: this.direction,
-  }
+  const data = getData(this)
   return JSON.parse(
     JSON.stringify(data, (k, v) => {
       if (k === 'parent') return undefined
@@ -157,7 +154,7 @@ export const getAllData = function (): object {
  * @return {String}
  */
 export const getAllDataMd = function (): string {
-  const data = getData(this)
+  const data = getData(this).nodeData
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children, deep) {
     for (let i = 0; i < children.length; i++) {
@@ -217,6 +214,13 @@ export const scale = function (scaleVal) {
 export const toCenter = function () {
   this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
 }
+/**
+ * @function
+ * @instance
+ * @name install
+ * @description Install plugin.
+ * @memberof MapInteraction
+ */
 export const install = function (plugin) {
   plugin(this)
 }

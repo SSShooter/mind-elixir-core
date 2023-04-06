@@ -1,5 +1,15 @@
 export default {
   direction: 0,
+  theme: {
+    name: 'Dark',
+    palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
+    cssVar: {
+      '--main-color': '#ffffff',
+      '--main-bgcolor': '#4c4f69',
+      '--color': '#cccccc',
+      '--bgcolor': '#252526',
+    },
+  },
   nodeData: {
     id: 'me-root',
     topic: 'Mind Elixir',
@@ -16,7 +26,7 @@ export default {
             image: {
               url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png',
               height: 90,
-              width: 300,
+              width: 90,
             },
           },
         ],

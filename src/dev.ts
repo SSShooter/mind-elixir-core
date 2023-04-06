@@ -58,16 +58,6 @@ const options = {
   mainLinkStyle: 1,
   mainNodeVerticalGap: 25, // 25
   mainNodeHorizontalGap: 65, // 65
-  // theme: {
-  //   name: 'Dark',
-  //   palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
-  //   cssVar: {
-  //     '--main-color': '#ffffff',
-  //     '--main-bgcolor': '#4c4f69',
-  //     '--color': '#cccccc',
-  //     '--bgcolor': '#252526',
-  //   },
-  // },
 }
 
 const mind = new (MindElixir as any)(options)
