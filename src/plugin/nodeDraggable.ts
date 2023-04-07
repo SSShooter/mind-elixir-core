@@ -3,8 +3,12 @@ import dragMoveHelper from '../utils/dragMoveHelper'
 import { findEle as E } from '../utils/dom'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
 
+interface MeDragEvent extends DragEvent {
+  target: Topic
+}
+
 const $d = document
-const insertPreview = function (el, insertLocation) {
+const insertPreview = function (el: Element, insertLocation: string) {
   if (!insertLocation) {
     clearPreview(el)
     return el
@@ -21,7 +25,7 @@ const insertPreview = function (el, insertLocation) {
   return el
 }
 
-const clearPreview = function (el) {
+const clearPreview = function (el: Element) {
   if (!el) return
   const query = el.getElementsByClassName('insert-preview')
   for (const queryElement of query || []) {
@@ -30,7 +34,7 @@ const clearPreview = function (el) {
 }
 
 const canPreview = function (el: Element, dragged: Topic) {
-  const isContain = dragged.parentNode.parentNode.contains(el)
+  const isContain = dragged.parentElement.parentElement.contains(el)
   return el && el.tagName === 'ME-TPC' && el !== dragged && !isContain && (el as Topic).nodeObj.root !== true
 }
 
@@ -40,14 +44,14 @@ export default function (mind) {
   let meet: Element
   const threshold = 12
 
-  mind.map.addEventListener('dragstart', function (e) {
+  mind.map.addEventListener('dragstart', function (e: MeDragEvent) {
     dragged = e.target
-    ;(dragged.parentNode.parentNode as Wrapper).style.opacity = '0.5'
+    dragged.parentElement.parentElement.style.opacity = '0.5'
     dragMoveHelper.clear()
   })
 
-  mind.map.addEventListener('dragend', async function (e: DragEvent) {
-    ;(e.target as HTMLElement).style.opacity = ''
+  mind.map.addEventListener('dragend', async function (e: MeDragEvent) {
+    e.target.style.opacity = ''
     clearPreview(meet)
     const obj = dragged.nodeObj
     switch (insertLocation) {
@@ -63,14 +67,13 @@ export default function (mind) {
         mind.moveNode(dragged, meet)
         break
     }
-    ;(dragged.parentNode.parentNode as Wrapper).style.opacity = '1'
+    dragged.parentElement.parentElement.style.opacity = '1'
     dragged = null
   })
 
   mind.map.addEventListener(
     'dragover',
-    throttle(function (e: DragEvent) {
-      // console.log('drag', e)
+    throttle(function (e: MeDragEvent) {
       clearPreview(meet)
       // minus threshold infer that postion of the cursor is above topic
       const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold)

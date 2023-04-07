@@ -3,7 +3,7 @@ import dragMoveHelper from './utils/dragMoveHelper'
 export default function (mind) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return
-    // e.preventDefault() // can cause a tag don't work
+    // e.preventDefault() // can cause <a /> tags don't work
     if (e.target.tagName === 'ME-EPD') {
       mind.expandNode(e.target.previousSibling)
     } else if (!mind.editable) {

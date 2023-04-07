@@ -40,19 +40,7 @@ export const E = findEle
 const $d = document
 function MindElixir(
   this: MindElixirInstance,
-  {
-    el,
-    direction,
-    locale,
-    toolBar,
-    keypress,
-    newTopicName,
-    mainLinkStyle,
-    overflowHidden,
-    mainNodeHorizontalGap,
-    mainNodeVerticalGap,
-    mobileMenu,
-  }: Options
+  { el, direction, toolBar, keypress, newTopicName, mainLinkStyle, overflowHidden, mainNodeHorizontalGap, mainNodeVerticalGap, mobileMenu }: Options
 ) {
   let box
   const elType = Object.prototype.toString.call(el)
@@ -63,7 +51,6 @@ function MindElixir(
   }
   if (!box) return new Error('MindElixir: el is not a valid element')
   this.mindElixirBox = box
-  this.locale = locale
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
   this.mobileMenu = mobileMenu

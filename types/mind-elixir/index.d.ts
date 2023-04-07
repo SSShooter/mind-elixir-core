@@ -28,7 +28,7 @@ interface MindElixirInstance {
   // wip
   bus: {
     addListener: (type, handler) => void
-  } 
+  }
 
   // wip
   history: operation[]
@@ -121,4 +121,3 @@ interface MindElixirData {
   direction?: number
   theme?: Theme
 }
-

@@ -207,7 +207,3 @@ let mind = new MindElixir({
 ## 文档
 
 https://doc.mind-elixir.com/
-
-## 感谢
-
-[canvg](https://github.com/canvg/canvg)

@@ -13,7 +13,7 @@ import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GA
  * 4. generate custom link
  * @param {object} mainNode process the specific main node only
  */
-export default function linkDiv(mainNode) {
+export default function linkDiv(mainNode: Wrapper) {
   const mainNodeHorizontalGap = this.mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
   const mainNodeVerticalGap = this.mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
   console.time('linkDiv')
@@ -163,15 +163,15 @@ export default function linkDiv(mainNode) {
 }
 
 // core function of generate subLines
-function traverseChildren(children: HTMLCollection, parent: HTMLElement, first?: boolean): string {
+function traverseChildren(children: HTMLCollection, parent: Parent, first?: boolean): string {
   let path = ''
   const parentOT = parent.offsetTop
   const parentOL = parent.offsetLeft
   const parentOW = parent.offsetWidth
   const parentOH = parent.offsetHeight
   for (let i = 0; i < children.length; i++) {
-    const child: HTMLElement = children[i] as HTMLElement
-    const childT: HTMLElement = child.children[0] as HTMLElement // t tag inside the child dom
+    const child: Wrapper = children[i] as HTMLElement
+    const childT: Parent = child.children[0] as HTMLElement
     const childTOT = childT.offsetTop
     const childTOH = childT.offsetHeight
     const cW = childT.offsetWidth

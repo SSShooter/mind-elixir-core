@@ -232,8 +232,8 @@ export const install = function (plugin) {
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const focusNode = function (tpcEl) {
-  if (tpcEl.nodeObj.root) return
+export const focusNode = function (el: Topic) {
+  if (el.nodeObj.root) return
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
   }
@@ -241,7 +241,7 @@ export const focusNode = function (tpcEl) {
     this.nodeDataBackup = this.nodeData // help reset focus mode
     this.isFocusMode = true
   }
-  this.nodeData = tpcEl.nodeObj
+  this.nodeData = el.nodeObj
   this.nodeData.root = true
   this.initRight()
   this.toCenter()
@@ -333,7 +333,7 @@ export const expandNode = function (el, isExpand) {
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */
-export const refresh = function (data) {
+export const refresh = function (data: MindElixirData) {
   // add parent property to every node
   if (data) {
     this.nodeData = data.nodeData

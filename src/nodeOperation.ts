@@ -290,7 +290,7 @@ export const copyNode = function (node: Topic, to: Topic) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export const moveUpNode = function (el) {
+export const moveUpNode = function (el: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -314,7 +314,7 @@ export const moveUpNode = function (el) {
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export const moveDownNode = function (el) {
+export const moveDownNode = function (el: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -342,7 +342,7 @@ export const moveDownNode = function (el) {
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export const removeNode = function (el) {
+export const removeNode = function (el: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   console.log('removeNode', nodeEle)
@@ -397,7 +397,7 @@ export const removeNode = function (el) {
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNode = function (from, to) {
+export const moveNode = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -414,31 +414,31 @@ export const moveNode = function (from, to) {
   moveNodeObj(fromObj, toObj)
   addParentLink(this.nodeData) // update parent property
   const fromTop = from.parentElement
-  const fromChilren = fromTop.parentNode.parentNode
+  const fromChilren = fromTop.parentElement.parentElement
   const toTop = to.parentElement
   if (fromChilren.className === 'box') {
     // clear svg group of main node
-    fromTop.parentNode.lastChild.remove()
-  } else if (fromTop.parentNode.className === 'box') {
+    fromTop.parentElement.lastChild.remove()
+  } else if (fromTop.parentElement.className === 'box') {
     fromTop.style.cssText = '' // clear style
   }
   if (toTop.tagName === 'ME-PARENT') {
     if (fromChilren.className === 'box') {
       // clear direaction class of main node
-      fromTop.parentNode.className = ''
+      fromTop.parentElement.className = ''
     }
     if (toTop.children[1]) {
       // expander exist
-      toTop.nextSibling.appendChild(fromTop.parentNode)
+      toTop.nextSibling.appendChild(fromTop.parentElement)
     } else {
       // expander not exist, no child
-      const c = this.createChildren([fromTop.parentNode])
+      const c = this.createChildren([fromTop.parentElement])
       toTop.appendChild(createExpander(true))
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }
   } else if (toTop.tagName === 'ME-ROOT') {
-    this.judgeDirection(fromTop.parentNode, fromObj)
-    toTop.nextSibling.appendChild(fromTop.parentNode)
+    this.judgeDirection(fromTop.parentElement, fromObj)
+    toTop.nextSibling.appendChild(fromTop.parentElement)
   }
   this.linkDiv()
   this.bus.fire('operation', {
@@ -490,17 +490,17 @@ export const moveNodeBefore = function (from, to) {
  * @example
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeAfter = function (from, to) {
+export const moveNodeAfter = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
   moveNodeAfterObj(fromObj, toObj)
   addParentLink(this.nodeData)
   const fromTop = from.parentElement
-  const fromGrp = fromTop.parentNode
+  const fromGrp = fromTop.parentElement
   const toTop = to.parentElement
-  const toGrp = toTop.parentNode
-  const toChilren = toTop.parentNode.parentNode
+  const toGrp = toTop.parentElement
+  const toChilren = toGrp.parentNode
   toChilren.insertBefore(fromGrp, toGrp.nextSibling)
   if (toGrp.className) fromGrp.className = toGrp.className
   this.linkDiv()
