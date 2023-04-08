@@ -133,16 +133,8 @@ export const getAllDataString = function () {
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getAllData = function (): object {
-  const data = getData(this)
-  return JSON.parse(
-    JSON.stringify(data, (k, v) => {
-      if (k === 'parent') return undefined
-      if (k === 'from') return v.nodeObj.id
-      if (k === 'to') return v.nodeObj.id
-      return v
-    })
-  )
+export const getAllData = function (): MindElixirData {
+  return JSON.parse(this.getAllDataString())
 }
 
 /**

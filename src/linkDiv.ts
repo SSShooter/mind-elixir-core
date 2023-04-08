@@ -127,9 +127,9 @@ export default function linkDiv(mainNode: Wrapper) {
     if (expander) {
       expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
       if (el.className === 'lhs') {
-        expander.style.left = -10 + 'px'
+        expander.style.left = -10 - GAP + 'px'
       } else {
-        expander.style.left = expander.parentNode.offsetWidth - 10 + 'px'
+        expander.style.right = -10 - GAP + 'px'
       }
     }
 
@@ -163,43 +163,26 @@ export default function linkDiv(mainNode: Wrapper) {
 }
 
 // core function of generate subLines
-function traverseChildren(children: HTMLCollection, parent: Parent, first?: boolean): string {
+function traverseChildren(children: HTMLCollection, parent: Parent, isFirst?: boolean): string {
   let path = ''
-  const parentOT = parent.offsetTop
-  const parentOL = parent.offsetLeft
-  const parentOW = parent.offsetWidth
-  const parentOH = parent.offsetHeight
+  const pT = parent.offsetTop
+  const pL = parent.offsetLeft
+  const pW = parent.offsetWidth
+  const pH = parent.offsetHeight
   for (let i = 0; i < children.length; i++) {
     const child: Wrapper = children[i] as HTMLElement
     const childT: Parent = child.children[0] as HTMLElement
-    const childTOT = childT.offsetTop
-    const childTOH = childT.offsetHeight
-    const cW = childT.offsetWidth
+    const cT = childT.offsetTop
     const cL = childT.offsetLeft
-    let y1: number
-    if (first) {
-      y1 = parentOT + parentOH / 2
-    } else {
-      y1 = parentOT + parentOH
-    }
-    const y2 = childTOT + childTOH
-    let x1: number, x2: number, xMiddle: number
+    const cW = childT.offsetWidth
+    const cH = childT.offsetHeight
     const direction = child.offsetParent.className
-    if (direction === 'lhs') {
-      x1 = parentOL + GAP
-      x2 = cL
-      xMiddle = cL + cW
-    } else if (direction === 'rhs') {
-      x1 = parentOL + parentOW - GAP
-      x2 = cL + cW
-      xMiddle = cL
-    }
 
-    path += generateSubLine({ x1, y1, x2, y2, xMiddle })
+    path += generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
 
     const expander = childT.children[1] as Expander
     if (expander) {
-      expander.style.top = (childT.offsetHeight - expander.offsetHeight) / 2 + 'px'
+      expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
       if (direction === 'lhs') {
         expander.style.left = -10 + 'px'
       } else if (direction === 'rhs') {
@@ -229,7 +212,25 @@ function generateMainLine1({ x1, y1, x2, y2 }) {
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 
-function generateSubLine({ x1, y1, x2, y2, xMiddle }) {
+function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }) {
+  let y1: number
+  if (isFirst) {
+    y1 = pT + pH / 2
+  } else {
+    y1 = pT + pH
+  }
+  const y2 = cT + cH
+  let x1: number, x2: number, xMiddle: number
+  if (direction === 'lhs') {
+    x1 = pL + GAP
+    x2 = cL
+    xMiddle = cL + cW
+  } else if (direction === 'rhs') {
+    x1 = pL + pW - GAP
+    x2 = cL + cW
+    xMiddle = cL
+  }
+
   if (y2 < y1 + 50 && y2 > y1 - 50) {
     // draw straight line if the distance is between +-50
     return `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
@@ -246,6 +247,30 @@ function generateSubLine({ x1, y1, x2, y2, xMiddle }) {
   }
 }
 
-function generateSubLine2({ x1, y1, x2, y2, xMiddle }) {
+function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }) {
+  let y1: number
+  let end: number
+  if (isFirst) {
+    y1 = pT + pH / 2
+  } else {
+    y1 = pT + pH
+  }
+  const y2 = cT + cH
+  let x1: number, x2: number, xMid: number
+  if (direction === 'lhs') {
+    xMid = pL - 10
+    x1 = xMid + GAP
+    x2 = xMid - GAP
+    end = cL + GAP - 10
+  } else if (direction === 'rhs') {
+    xMid = pL + pW + 10
+    x1 = xMid - GAP
+    x2 = xMid + GAP
+    end = cL + cW - GAP + 10
+  }
+  return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid} ${y2} ${x2} ${y2} H ${end}`
+}
+
+function generateSubLine3({ x1, y1, x2, y2, xMiddle }) {
   return `M ${x1} ${y1} Q ${x1} ${y2} ${xMiddle} ${y2} H ${x2}`
 }
