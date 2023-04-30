@@ -123,20 +123,21 @@
           direction: ltr;
           margin-right: 10px;
         }
+        // drag preview
         .insert-preview {
           position: absolute;
           width: 100%;
           left: 0px;
           z-index: 9;
         }
-        .before {
-          height: 14px;
-          top: -14px;
-        }
         .show {
           background: #7ad5ff;
           pointer-events: none; // 不加会识别为不可移动
           opacity: 0.7;
+        }
+        .before {
+          height: 14px;
+          top: -14px;
         }
         .in {
           height: 100%;
@@ -229,17 +230,6 @@
 me-tpc > img {
   pointer-events: none;
   display: block;
-}
-
-// TODO For org chart
-.down {
-  me-parent,
-  me-children {
-    display: block !important;
-  }
-  me-wrapper {
-    display: inline-block !important;
-  }
 }
 
 .circle {

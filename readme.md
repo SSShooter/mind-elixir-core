@@ -48,6 +48,7 @@ Mind elixir is a free open source mind map core.
   - [Event Handling](#event-handling)
   - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
+- [Theme](#theme)
 - [Not only core](#not-only-core)
 
 </details>
@@ -175,7 +176,7 @@ E('node-id')
 
 ```javascript
 // whole node data structure up to now
-nodeData = {
+const nodeData = {
   topic: 'node topic',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
@@ -187,7 +188,7 @@ nodeData = {
     url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png', // required
     // you need to query the height and width of the image and calculate the appropriate value to display the image
     height: 90, // required
-    width: 300, // required
+    width: 90, // required
   },
   children: [
     {
@@ -263,6 +264,28 @@ let mind = new MindElixir({
     },
   },
 })
+```
+
+## Theme
+
+```javascript
+const options = {
+  // ...
+  theme: {
+    name: 'Dark',
+    // main lines color palette
+    palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
+    // overwrite css variables
+    cssVar: {
+      '--main-color': '#ffffff',
+      '--main-bgcolor': '#4c4f69',
+      '--color': '#cccccc',
+      '--bgcolor': '#252526',
+    },
+    // all variables see /src/index.less
+  },
+  // ...
+}
 ```
 
 ## Not only core
