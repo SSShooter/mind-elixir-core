@@ -301,7 +301,7 @@ export const setLocale = function (locale) {
   this.refresh()
 }
 
-export const expandNode = function (el, isExpand) {
+export const expandNode: ExpandNode = function (el, isExpand) {
   const node = el.nodeObj
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand

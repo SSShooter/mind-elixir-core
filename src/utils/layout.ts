@@ -86,7 +86,7 @@ export function layoutChildren(data: NodeObj[], container?: HTMLElement, directi
 }
 
 // Judge new added node L or R
-export function judgeDirection(mainNode, obj) {
+export const judgeDirection: JudgeDirection = function (mainNode, obj) {
   if (this.direction === LEFT) {
     mainNode.className = 'lhs'
   } else if (this.direction === RIGHT) {

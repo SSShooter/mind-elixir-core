@@ -195,9 +195,9 @@ export const insertParent = function (el, node) {
   })
 }
 
-export const addChildFunction = function (nodeEle, node) {
+export const addChildFunction: AddChildFunction = function (nodeEle, node) {
   if (!nodeEle) return
-  const nodeObj = nodeEle.nodeObj
+  const nodeObj = nodeEle.nodeObj as NodeObj
   if (nodeObj.expanded === false) {
     this.expandNode(nodeEle, true)
     // dom had resetted
@@ -219,7 +219,7 @@ export const addChildFunction = function (nodeEle, node) {
       top.appendChild(createExpander(true))
       top.insertAdjacentElement('afterend', c)
     }
-    this.linkDiv(grp.offsetParent)
+    this.linkDiv(grp.offsetParent as Wrapper)
   } else if (top.tagName === 'ME-ROOT') {
     this.judgeDirection(grp, newNodeObj)
     top.nextSibling.appendChild(grp)
@@ -369,7 +369,7 @@ export const removeNode = function (el: Topic) {
     this.selectPrevSibling() || this.selectNextSibling() || this.selectParent()
   }
   for (const prop in this.linkData) {
-    // MAYBEBUG should traversal all children node
+    // MAYBEBUG should traverse all children node
     const link = this.linkData[prop]
     if (link.from === t.firstChild || link.to === t.firstChild) {
       this.removeLink(this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`))

@@ -1,4 +1,5 @@
 /// <reference path="./dom.d.ts" />
+/// <reference path="./function.d.ts" />
 
 type operation = {
   name: string
@@ -64,6 +65,28 @@ interface MindElixirInstance {
   line1: SVGElement
   line2: SVGElement
   linkSvgGroup: SVGElement
+
+  // insertSibling: Function
+  // insertBefore: Function
+  // insertParent: Function
+  // addChild: Function
+  // copyNode: Function
+  // moveNode: Function
+  // removeNode: Function
+  // moveUpNode: Function
+  // moveDownNode: Function
+  // beginEdit: Function
+  // reshapeNode: Function
+  // setNodeTopic: Function
+  // moveNodeBefore: Function
+  // moveNodeAfter: Function
+
+  generateNewObj: () => NodeObj
+  expandNode: ExpandNode
+  createWrapper: CreateWrapper
+  createChildren: CreateChildren
+  linkDiv: LinkDiv
+  judgeDirection: JudgeDirection
 }
 
 interface Options {

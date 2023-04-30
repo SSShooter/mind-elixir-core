@@ -63,7 +63,7 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
 }
 
 // everything is staring from `Wrapper`
-export const createWrapper = function (nodeObj: NodeObj, omitChildren?: boolean) {
+export const createWrapper: CreateWrapper = function (nodeObj, omitChildren) {
   const grp: Wrapper = $d.createElement('me-wrapper')
   const top: Parent = this.createParent(nodeObj)
   grp.appendChild(top)
@@ -85,7 +85,7 @@ export const createParent = function (nodeObj: NodeObj): Parent {
   return top
 }
 
-export const createChildren = function (wrappers: Wrapper[]): Children {
+export const createChildren: CreateChildren = function (wrappers: Wrapper[]): Children {
   const children = $d.createElement('me-children')
   children.append(...wrappers)
   return children
