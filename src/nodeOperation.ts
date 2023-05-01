@@ -31,7 +31,7 @@ import { deepClone } from './utils/index'
  * @example
  * reshapeNode(E('bd4313fbac40284b'),{tags:['A', 'B'], style:{color:'#000'}})
  */
-export const reshapeNode = function (tpc, patchData) {
+export const reshapeNode: ReshapeNode = function (tpc, patchData) {
   console.log(patchData)
   const nodeObj = tpc.nodeObj
   const origin = deepClone(nodeObj)
@@ -60,7 +60,7 @@ export const reshapeNode = function (tpc, patchData) {
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export const insertSibling = function (el, node) {
+export const insertSibling: InsertSibling = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -76,7 +76,7 @@ export const insertSibling = function (el, node) {
 
   const { grp, top } = this.createWrapper(newNodeObj)
 
-  const children = t.parentNode.parentNode
+  const children = t.parentNode.parentNode as Children
   children.insertBefore(grp, t.parentNode.nextSibling)
   if (children.className === 'box') {
     this.judgeDirection(grp, newNodeObj)
@@ -85,9 +85,9 @@ export const insertSibling = function (el, node) {
     this.linkDiv(grp.offsetParent)
   }
   if (!node) {
-    this.createInputDiv(top.children[0])
+    this.createInputDiv(top.children[0] as Topic)
   }
-  this.selectNode(top.children[0], true)
+  this.selectNode(top.children[0] as Topic, true)
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
@@ -239,7 +239,7 @@ export const addChildFunction: AddChildFunction = function (nodeEle, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild = function (el: Topic, node: NodeObj) {
+export const addChild: AddChild = function (el, node) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return

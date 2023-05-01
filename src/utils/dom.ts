@@ -64,8 +64,8 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
 
 // everything is staring from `Wrapper`
 export const createWrapper: CreateWrapper = function (nodeObj, omitChildren) {
-  const grp: Wrapper = $d.createElement('me-wrapper')
-  const top: Parent = this.createParent(nodeObj)
+  const grp = $d.createElement('me-wrapper') as Wrapper
+  const top = this.createParent(nodeObj)
   grp.appendChild(top)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
     top.appendChild(createExpander(nodeObj.expanded))
@@ -77,22 +77,22 @@ export const createWrapper: CreateWrapper = function (nodeObj, omitChildren) {
   return { grp, top }
 }
 
-export const createParent = function (nodeObj: NodeObj): Parent {
-  const top = $d.createElement('me-parent')
+export const createParent: CreateParent = function (nodeObj: NodeObj): Parent {
+  const top = $d.createElement('me-parent') as Parent
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
   top.appendChild(tpc)
   return top
 }
 
-export const createChildren: CreateChildren = function (wrappers: Wrapper[]): Children {
-  const children = $d.createElement('me-children')
+export const createChildren: CreateChildren = function (wrappers) {
+  const children = $d.createElement('me-children') as Children
   children.append(...wrappers)
   return children
 }
 
-export const createTopic = function (nodeObj: NodeObj): Topic {
-  const topic: Topic = $d.createElement('me-tpc')
+export const createTopic: CreateTopic = function (nodeObj) {
+  const topic = $d.createElement('me-tpc') as Topic
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   topic.draggable = this.draggable
@@ -109,7 +109,7 @@ export function selectText(div: HTMLElement) {
   }
 }
 
-export function createInputDiv(tpc: Topic) {
+export const createInputDiv: CreateInputDiv = function (tpc) {
   console.time('createInputDiv')
   if (!tpc) return
   let div = $d.createElement('div')
@@ -166,7 +166,7 @@ export function createInputDiv(tpc: Topic) {
 }
 
 export const createExpander = function (expanded: boolean | undefined): Expander {
-  const expander: Expander = $d.createElement('me-epd')
+  const expander = $d.createElement('me-epd') as Expander
   // 包含未定义 expanded 的情况，未定义视为展开
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''

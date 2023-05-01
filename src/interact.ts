@@ -23,7 +23,7 @@ function getData(instance) {
  * @description Select a node and add solid border to it.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const selectNode = function (targetElement, isNewNode, clickEvent) {
+export const selectNode: SelectNode = function (targetElement, isNewNode) {
   if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
@@ -34,9 +34,9 @@ export const selectNode = function (targetElement, isNewNode, clickEvent) {
   targetElement.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   this.currentNode = targetElement
   if (isNewNode) {
-    this.bus.fire('selectNewNode', targetElement.nodeObj, clickEvent)
+    this.bus.fire('selectNewNode', targetElement.nodeObj)
   } else {
-    this.bus.fire('selectNode', targetElement.nodeObj, clickEvent)
+    this.bus.fire('selectNode', targetElement.nodeObj)
   }
   console.timeEnd('selectNode')
 }

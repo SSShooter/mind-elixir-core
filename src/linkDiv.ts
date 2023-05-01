@@ -170,8 +170,8 @@ function traverseChildren(children: HTMLCollection, parent: Parent, isFirst?: bo
   const pW = parent.offsetWidth
   const pH = parent.offsetHeight
   for (let i = 0; i < children.length; i++) {
-    const child: Wrapper = children[i] as HTMLElement
-    const childT: Parent = child.children[0] as HTMLElement
+    const child = children[i] as Wrapper
+    const childT = child.children[0] as Parent
     const cT = childT.offsetTop
     const cL = childT.offsetLeft
     const cW = childT.offsetWidth

@@ -4,7 +4,7 @@ import { createExpander, shapeTpc } from './dom'
 const $d = document
 
 // Set main nodes' direction and invoke layoutChildren()
-export function layout() {
+export const layout = function () {
   console.time('layout')
   this.root.innerHTML = ''
   this.box.innerHTML = ''
@@ -47,12 +47,12 @@ export function layout() {
  * @param {number} direction main node direction(optional)
  * @return {ChildrenElement} children element.
  */
-export function layoutChildren(data: NodeObj[], container?: HTMLElement, direction?) {
-  let chldr: HTMLElement
+export const layoutChildren: LayoutChildren = function (data, container, direction) {
+  let chldr: Children
   if (container) {
     chldr = container
   } else {
-    chldr = $d.createElement('me-children')
+    chldr = $d.createElement('me-children') as Children
   }
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]

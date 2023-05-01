@@ -29,6 +29,7 @@ interface MindElixirInstance {
   // wip
   bus: {
     addListener: (type, handler) => void
+    fire: (type, data) => void
   }
 
   // wip
@@ -66,27 +67,23 @@ interface MindElixirInstance {
   line2: SVGElement
   linkSvgGroup: SVGElement
 
-  // insertSibling: Function
-  // insertBefore: Function
-  // insertParent: Function
-  // addChild: Function
-  // copyNode: Function
-  // moveNode: Function
-  // removeNode: Function
-  // moveUpNode: Function
-  // moveDownNode: Function
-  // beginEdit: Function
-  // reshapeNode: Function
-  // setNodeTopic: Function
-  // moveNodeBefore: Function
-  // moveNodeAfter: Function
-
   generateNewObj: () => NodeObj
   expandNode: ExpandNode
   createWrapper: CreateWrapper
+  createParent: CreateParent
   createChildren: CreateChildren
+  createTopic: CreateTopic
+
   linkDiv: LinkDiv
   judgeDirection: JudgeDirection
+
+  addChild: AddChild
+  createInputDiv: CreateInputDiv
+  layoutChildren: LayoutChildren
+
+  selectNode: SelectNode
+
+  layout: Layout
 }
 
 interface Options {

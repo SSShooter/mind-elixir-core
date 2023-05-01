@@ -5,6 +5,7 @@ interface Element {
 
 interface Wrapper extends HTMLElement {
   parentElement: Children
+  offsetParent: Wrapper
 }
 
 interface Parent extends HTMLElement {
