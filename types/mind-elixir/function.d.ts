@@ -11,7 +11,9 @@ type CreateChildren = (this: MindElixirInstance, wrappers: Wrapper[]) => Childre
 type CreateParent = (this: MindElixirInstance, nodeObj: NodeObj) => Parent
 type CreateTopic = (this: MindElixirInstance, nodeObj: NodeObj) => Topic
 
-type AddChild = (this: MindElixirInstance, el?: Topic, node?: NodeObj) => void
+type TNodeOperation = (this: MindElixirInstance, el?: Topic, node?: NodeObj) => void
+type TNodeMove = (this: MindElixirInstance, from: Topic, to?: Topic) => void
+type TNodeCopy = (this: MindElixirInstance, node: Topic, to: Topic) => void
 type AddChildFunction = (
   this: MindElixirInstance,
   nodeEle: Topic,
@@ -21,7 +23,6 @@ type AddChildFunction = (
   newNodeObj: NodeObj
 }
 type ReshapeNode = (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) => void
-type InsertSibling = (this: MindElixirInstance, el: Topic, node: NodeObj) => void
 
 type Layout = (this: MindElixirInstance) => void
 type LayoutChildren = (this: MindElixirInstance, data: NodeObj[], container?: Children, direction?) => Children
@@ -30,3 +31,5 @@ type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj
 
 type ExpandNode = (this: MindElixirInstance, el: Topic, isExpand: boolean) => void
 type SelectNode = (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean) => void
+type TCommonSelect = (this: MindElixirInstance) => void
+type TSiblingSelect = (this: MindElixirInstance) => boolean

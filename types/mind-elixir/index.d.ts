@@ -68,7 +68,6 @@ interface MindElixirInstance {
   linkSvgGroup: SVGElement
 
   generateNewObj: () => NodeObj
-  expandNode: ExpandNode
   createWrapper: CreateWrapper
   createParent: CreateParent
   createChildren: CreateChildren
@@ -77,13 +76,34 @@ interface MindElixirInstance {
   linkDiv: LinkDiv
   judgeDirection: JudgeDirection
 
-  addChild: AddChild
+  addChild: TNodeOperation
   createInputDiv: CreateInputDiv
   layoutChildren: LayoutChildren
 
   selectNode: SelectNode
+  unselectNode: TCommonSelect
+  selectNextSibling: TSiblingSelect
+  selectPrevSibling: TSiblingSelect
+  selectFirstChild: TCommonSelect
+  selectParent: TCommonSelect
+  getAllDataString
+  getAllData
+  getAllDataMd
+  scale
+  toCenter
+  focusNode
+  cancelFocus
+  initLeft
+  initRight
+  initSide
+  setLocale
+  enableEdit
+  disableEdit
+  expandNode: ExpandNode
+  refresh
 
   layout: Layout
+  removeLink
 }
 
 interface Options {

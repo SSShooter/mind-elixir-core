@@ -4,26 +4,33 @@ interface Element {
 }
 
 interface Wrapper extends HTMLElement {
+  parentNode: Children
   parentElement: Children
   offsetParent: Wrapper
+  nextSibling: Wrapper | undefined
 }
 
 interface Parent extends HTMLElement {
+  parentNode: Wrapper
   parentElement: Wrapper
 }
 
 interface Children extends HTMLElement {
+  parentNode: Wrapper
   parentElement: Wrapper
+  previousSibling: Parent
 }
 
 interface Topic extends HTMLElement {
   nodeObj?: NodeObj
   linkContainer?: HTMLElement
+  parentNode: Parent
   parentElement: Parent
 }
 
 interface Expander extends HTMLElement {
   expanded?: boolean
+  parentNode: Parent
   parentElement: Parent
 }
 

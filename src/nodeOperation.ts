@@ -60,7 +60,7 @@ export const reshapeNode: ReshapeNode = function (tpc, patchData) {
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export const insertSibling: InsertSibling = function (el, node) {
+export const insertSibling: TNodeOperation = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -106,7 +106,7 @@ export const insertSibling: InsertSibling = function (el, node) {
  * @example
  * insertBefore(E('bd4313fbac40284b'))
  */
-export const insertBefore = function (el, node) {
+export const insertBefore: TNodeOperation = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -122,7 +122,7 @@ export const insertBefore = function (el, node) {
 
   const { grp, top } = this.createWrapper(newNodeObj)
 
-  const children = t.parentNode.parentNode
+  const children = t.parentNode.parentNode as Children
   children.insertBefore(grp, t.parentNode)
   if (children.className === 'box') {
     this.judgeDirection(grp, newNodeObj)
@@ -131,9 +131,9 @@ export const insertBefore = function (el, node) {
     this.linkDiv(grp.offsetParent)
   }
   if (!node) {
-    this.createInputDiv(top.children[0])
+    this.createInputDiv(top.children[0] as Topic)
   }
-  this.selectNode(top.children[0], true)
+  this.selectNode(top.children[0] as Topic, true)
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
@@ -152,7 +152,7 @@ export const insertBefore = function (el, node) {
  * @example
  * insertParent(E('bd4313fbac40284b'))
  */
-export const insertParent = function (el, node) {
+export const insertParent: TNodeOperation = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -185,9 +185,9 @@ export const insertParent = function (el, node) {
   }
 
   if (!node) {
-    this.createInputDiv(top.children[0])
+    this.createInputDiv(top.children[0] as Topic)
   }
-  this.selectNode(top.children[0], true)
+  this.selectNode(top.children[0] as Topic, true)
   console.timeEnd('insertParent_DOM')
   this.bus.fire('operation', {
     name: 'insertParent',
@@ -239,7 +239,7 @@ export const addChildFunction: AddChildFunction = function (nodeEle, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild: AddChild = function (el, node) {
+export const addChild: TNodeOperation = function (el, node) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -268,7 +268,7 @@ export const addChild: AddChild = function (el, node) {
  * @example
  * copyNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const copyNode = function (node: Topic, to: Topic) {
+export const copyNode: TNodeCopy = function (node: Topic, to: Topic) {
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)
@@ -290,7 +290,7 @@ export const copyNode = function (node: Topic, to: Topic) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export const moveUpNode = function (el: Topic) {
+export const moveUpNode: TNodeMove = function (el: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -314,7 +314,7 @@ export const moveUpNode = function (el: Topic) {
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export const moveDownNode = function (el: Topic) {
+export const moveDownNode: TNodeMove = function (el: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -342,7 +342,7 @@ export const moveDownNode = function (el: Topic) {
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export const removeNode = function (el: Topic) {
+export const removeNode: TNodeOperation = function (el: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   console.log('removeNode', nodeEle)
@@ -397,7 +397,7 @@ export const removeNode = function (el: Topic) {
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNode = function (from: Topic, to: Topic) {
+export const moveNode: TNodeMove = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -459,7 +459,7 @@ export const moveNode = function (from: Topic, to: Topic) {
  * @example
  * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeBefore = function (from, to) {
+export const moveNodeBefore: TNodeMove = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -490,7 +490,7 @@ export const moveNodeBefore = function (from, to) {
  * @example
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeAfter = function (from: Topic, to: Topic) {
+export const moveNodeAfter: TNodeMove = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -520,7 +520,7 @@ export const moveNodeAfter = function (from: Topic, to: Topic) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-export const beginEdit = function (el) {
+export const beginEdit: TNodeOperation = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   this.createInputDiv(nodeEle)
