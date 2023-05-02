@@ -1,18 +1,5 @@
 import { LEFT } from '../const'
-import { NodeObj } from '../index'
 import { encodeHTML } from '../utils/index'
-export type Top = HTMLElement
-
-export type Group = HTMLElement
-
-export interface Topic extends HTMLElement {
-  nodeObj?: NodeObj
-  linkContainer?: HTMLElement
-}
-
-export interface Expander extends HTMLElement {
-  expanded?: boolean
-}
 
 // DOM manipulation
 const $d = document
@@ -25,8 +12,8 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.textContent = nodeObj.topic
 
   if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color || 'inherit'
-    tpc.style.background = nodeObj.style.background || 'inherit'
+    tpc.style.color = nodeObj.style.color || null
+    tpc.style.background = nodeObj.style.background || null
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
@@ -75,31 +62,37 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
-// everything is staring from `Group`
-export const createGroup = function (nodeObj: NodeObj, omitChildren?: boolean) {
-  const grp: Group = $d.createElement('GRP')
-  const top: Top = this.createTop(nodeObj)
+// everything is staring from `Wrapper`
+export const createWrapper: CreateWrapper = function (nodeObj, omitChildren) {
+  const grp = $d.createElement('me-wrapper') as Wrapper
+  const top = this.createParent(nodeObj)
   grp.appendChild(top)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
     top.appendChild(createExpander(nodeObj.expanded))
     if (nodeObj.expanded !== false) {
-      const children = this.createChildren(nodeObj.children)
+      const children = this.layoutChildren(nodeObj.children)
       grp.appendChild(children)
     }
   }
   return { grp, top }
 }
 
-export const createTop = function (nodeObj: NodeObj): Top {
-  const top = $d.createElement('t')
+export const createParent: CreateParent = function (nodeObj: NodeObj): Parent {
+  const top = $d.createElement('me-parent') as Parent
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
   top.appendChild(tpc)
   return top
 }
 
-export const createTopic = function (nodeObj: NodeObj): Topic {
-  const topic: Topic = $d.createElement('tpc')
+export const createChildren: CreateChildren = function (wrappers) {
+  const children = $d.createElement('me-children') as Children
+  children.append(...wrappers)
+  return children
+}
+
+export const createTopic: CreateTopic = function (nodeObj) {
+  const topic = $d.createElement('me-tpc') as Topic
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   topic.draggable = this.draggable
@@ -116,7 +109,7 @@ export function selectText(div: HTMLElement) {
   }
 }
 
-export function createInputDiv(tpc: Topic) {
+export const createInputDiv: CreateInputDiv = function (tpc) {
   console.time('createInputDiv')
   if (!tpc) return
   let div = $d.createElement('div')
@@ -173,7 +166,7 @@ export function createInputDiv(tpc: Topic) {
 }
 
 export const createExpander = function (expanded: boolean | undefined): Expander {
-  const expander: Expander = $d.createElement('epd')
+  const expander = $d.createElement('me-epd') as Expander
   // 包含未定义 expanded 的情况，未定义视为展开
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''

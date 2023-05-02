@@ -72,7 +72,7 @@ describe('nodeOperation', () => {
       await m.moveNode(from, to)
 
       const domCheck =
-        from.closest('children').previousElementSibling === to.parentNode
+        from.closest('me-children').previousElementSibling === to.parentNode
 
       from = from.nodeObj
       to = to.nodeObj
@@ -90,7 +90,7 @@ describe('nodeOperation', () => {
       await m.moveNodeBefore(from, to)
 
       const domCheck =
-        from.closest('grp') === to.closest('grp').previousElementSibling
+        from.closest('me-wrapper') === to.closest('me-wrapper').previousElementSibling
 
       from = from.nodeObj
       to = to.nodeObj
@@ -112,7 +112,7 @@ describe('nodeOperation', () => {
       await m.moveNodeAfter(from, to)
 
       const domCheck =
-        from.closest('grp').previousElementSibling === to.closest('grp')
+        from.closest('me-wrapper').previousElementSibling === to.closest('me-wrapper')
 
       from = from.nodeObj
       to = to.nodeObj
@@ -142,7 +142,7 @@ describe('nodeOperation', () => {
     expect(res[1]).toBeFalsy()
 
     const delRoot = await page.evaluate(async() => {
-      const el = E('root')
+      const el = E('me-root')
       try {
         await m.removeNode(el)
       } catch (err) {

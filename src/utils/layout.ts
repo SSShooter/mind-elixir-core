@@ -1,11 +1,10 @@
 import { LEFT, RIGHT, SIDE } from '../const'
 import { createExpander, shapeTpc } from './dom'
-import { NodeObj } from '../index'
 
 const $d = document
 
-// Set main nodes' direction and invoke createChildren()
-export function layout() {
+// Set main nodes' direction and invoke layoutChildren()
+export const layout = function () {
   console.time('layout')
   this.root.innerHTML = ''
   this.box.innerHTML = ''
@@ -14,13 +13,13 @@ export function layout() {
   tpc.draggable = false
   this.root.appendChild(tpc)
 
-  const primaryNodes: NodeObj[] = this.nodeData.children
-  if (!primaryNodes || primaryNodes.length === 0) return
+  const mainNodes: NodeObj[] = this.nodeData.children
+  if (!mainNodes || mainNodes.length === 0) return
   if (this.direction === SIDE) {
     // initiate direction of main nodes
     let lcount = 0
     let rcount = 0
-    primaryNodes.map(node => {
+    mainNodes.map(node => {
       if (node.direction === LEFT) {
         lcount += 1
       } else if (node.direction === RIGHT) {
@@ -36,7 +35,7 @@ export function layout() {
       }
     })
   }
-  this.createChildren(this.nodeData.children, this.box, this.direction)
+  this.layoutChildren(this.nodeData.children, this.box, this.direction)
   console.timeEnd('layout')
 }
 
@@ -48,16 +47,16 @@ export function layout() {
  * @param {number} direction main node direction(optional)
  * @return {ChildrenElement} children element.
  */
-export function createChildren(data: NodeObj[], container?: HTMLElement, direction?) {
-  let chldr: HTMLElement
+export const layoutChildren: LayoutChildren = function (data, container, direction) {
+  let chldr: Children
   if (container) {
     chldr = container
   } else {
-    chldr = $d.createElement('children')
+    chldr = $d.createElement('me-children') as Children
   }
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
-    const grp = $d.createElement('GRP')
+    const grp = $d.createElement('me-wrapper')
     // only main nodes have `direction`
     if (direction === LEFT) {
       grp.className = 'lhs'
@@ -70,12 +69,12 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
         grp.className = 'rhs'
       }
     }
-    const top = this.createTop(nodeObj)
+    const top = this.createParent(nodeObj)
     if (nodeObj.children && nodeObj.children.length > 0) {
       top.appendChild(createExpander(nodeObj.expanded))
       grp.appendChild(top)
       if (nodeObj.expanded !== false) {
-        const children = this.createChildren(nodeObj.children)
+        const children = this.layoutChildren(nodeObj.children)
         grp.appendChild(children)
       }
     } else {
@@ -87,7 +86,7 @@ export function createChildren(data: NodeObj[], container?: HTMLElement, directi
 }
 
 // Judge new added node L or R
-export function judgeDirection(mainNode, obj) {
+export const judgeDirection: JudgeDirection = function (mainNode, obj) {
   if (this.direction === LEFT) {
     mainNode.className = 'lhs'
   } else if (this.direction === RIGHT) {

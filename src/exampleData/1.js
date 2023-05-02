@@ -1,12 +1,22 @@
 export default {
   direction: 0,
+  theme: {
+    name: 'Dark',
+    palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
+    cssVar: {
+      '--main-color': '#ffffff',
+      '--main-bgcolor': '#4c4f69',
+      '--color': '#cccccc',
+      '--bgcolor': '#252526',
+    },
+  },
   nodeData: {
-    id: 'root',
+    id: 'me-root',
     topic: 'Mind Elixir',
     root: true,
     children: [
       {
-        topic: 'logo',
+        topic: 'logo2',
         id: '56dae51a90d350a8',
         direction: 0,
         expanded: true,
@@ -14,9 +24,9 @@ export default {
           {
             topic: 'mind-elixir',
             image: {
-              url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png',
+              url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png',
               height: 90,
-              width: 300,
+              width: 90,
             },
           },
         ],
@@ -26,7 +36,7 @@ export default {
         id: 'bd4313fbac40284b',
         direction: 0,
         expanded: true,
-        branchColor: '#e64553',
+        // branchColor: '#e64553',
         children: [
           { topic: 'A mind map core', id: 'beeb823afd6d2114' },
           { topic: 'Free', id: 'c1f068377de9f3a0' },
@@ -170,14 +180,6 @@ export default {
             id: 'bd41fd4ca32322a5',
             hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
           },
-          // {
-          //   topic: 'Image URL',
-          //   id: 'bd41fd4ca32322a6',
-          //   image: {
-          //     url: 'https://cdn.jsdelivr.net/gh/ssshooter/mind-elixir-core/logo.png',
-          //     width: 200,
-          //   },
-          // },
         ],
       },
       {

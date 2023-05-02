@@ -7,8 +7,13 @@ import { findEle } from './utils/dom'
  * @exports MapInteraction
  * @namespace MapInteraction
  */
-function getData(instance) {
-  return instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData
+function collectData(instance) {
+  return {
+    nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
+    linkData: instance.linkData,
+    direction: instance.direction,
+    theme: instance.theme,
+  }
 }
 /**
  * @function
@@ -18,7 +23,7 @@ function getData(instance) {
  * @description Select a node and add solid border to it.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const selectNode = function (targetElement, isNewNode, clickEvent) {
+export const selectNode: SelectNode = function (targetElement, isNewNode) {
   if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
@@ -29,94 +34,90 @@ export const selectNode = function (targetElement, isNewNode, clickEvent) {
   targetElement.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   this.currentNode = targetElement
   if (isNewNode) {
-    this.bus.fire('selectNewNode', targetElement.nodeObj, clickEvent)
+    this.bus.fire('selectNewNode', targetElement.nodeObj)
   } else {
-    this.bus.fire('selectNode', targetElement.nodeObj, clickEvent)
+    this.bus.fire('selectNode', targetElement.nodeObj)
   }
   console.timeEnd('selectNode')
 }
-export const unselectNode = function () {
+export const unselectNode: CommonSelectFunc = function () {
   if (this.currentNode) {
     this.currentNode.className = ''
   }
   this.currentNode = null
   this.bus.fire('unselectNode')
 }
-export const selectNextSibling = function () {
+export const selectNextSibling: SiblingSelectFunc = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.nextSibling
-  let target: HTMLElement
+  let target: Topic
   const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
     const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
     const i = Array.from(siblingList).indexOf(grp)
     if (i + 1 < siblingList.length) {
-      target = siblingList[i + 1].firstChild.firstChild
+      target = siblingList[i + 1].firstChild.firstChild as Topic
     } else {
       return false
     }
   } else if (sibling) {
-    target = sibling.firstChild.firstChild
+    target = sibling.firstChild.firstChild as Topic
   } else {
     return false
   }
   this.selectNode(target)
   return true
 }
-export const selectPrevSibling = function () {
+export const selectPrevSibling: SiblingSelectFunc = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
-  let target: HTMLElement
+  let target: Topic
   const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
     const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
     const i = Array.from(siblingList).indexOf(grp)
     if (i - 1 >= 0) {
-      target = siblingList[i - 1].firstChild.firstChild
+      target = siblingList[i - 1].firstChild.firstChild as Topic
     } else {
       return false
     }
   } else if (sibling) {
-    target = sibling.firstChild.firstChild
+    target = sibling.firstChild.firstChild as Topic
   } else {
     return false
   }
   this.selectNode(target)
   return true
 }
-export const selectFirstChild = function () {
+export const selectFirstChild: CommonSelectFunc = function () {
   if (!this.currentNode) return
   const children = this.currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
-    const target = children.firstChild.firstChild.firstChild
+    const target = children.firstChild.firstChild.firstChild as Topic
     this.selectNode(target)
   }
 }
-export const selectParent = function () {
+export const selectParent: CommonSelectFunc = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
   if (parent) {
-    const target = parent.firstChild
+    const target = parent.firstChild as Topic
     this.selectNode(target)
   }
 }
 /**
  * @function
  * @instance
- * @name getAllDataString
+ * @name getDataString
  * @description Get all node data as string.
  * @memberof MapInteraction
  * @return {string}
  */
-export const getAllDataString = function () {
-  const data = {
-    nodeData: getData(this),
-    linkData: this.linkData,
-    direction: this.direction,
-  }
+export const getDataString: GetDataStringFunc = function () {
+  const data = collectData(this)
   return JSON.stringify(data, (k, v) => {
     if (k === 'parent') return undefined
     if (k === 'from') return v.nodeObj.id
@@ -127,37 +128,25 @@ export const getAllDataString = function () {
 /**
  * @function
  * @instance
- * @name getAllData
+ * @name getData
  * @description Get all node data as object.
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getAllData = function (): object {
-  const data = {
-    nodeData: getData(this),
-    linkData: this.linkData,
-    direction: this.direction,
-  }
-  return JSON.parse(
-    JSON.stringify(data, (k, v) => {
-      if (k === 'parent') return undefined
-      if (k === 'from') return v.nodeObj.id
-      if (k === 'to') return v.nodeObj.id
-      return v
-    })
-  )
+export const getData: GetDataFunc = function () {
+  return JSON.parse(this.getDataString())
 }
 
 /**
  * @function
  * @instance
- * @name getAllDataMd
+ * @name getDataMd
  * @description Get all node data as markdown.
  * @memberof MapInteraction
  * @return {String}
  */
-export const getAllDataMd = function (): string {
-  const data = getData(this)
+export const getDataMd: GetDataStringFunc = function () {
+  const data = collectData(this).nodeData
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children, deep) {
     for (let i = 0; i < children.length; i++) {
@@ -217,6 +206,13 @@ export const scale = function (scaleVal) {
 export const toCenter = function () {
   this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
 }
+/**
+ * @function
+ * @instance
+ * @name install
+ * @description Install plugin.
+ * @memberof MapInteraction
+ */
 export const install = function (plugin) {
   plugin(this)
 }
@@ -228,8 +224,8 @@ export const install = function (plugin) {
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const focusNode = function (tpcEl) {
-  if (tpcEl.nodeObj.root) return
+export const focusNode = function (el: Topic) {
+  if (el.nodeObj.root) return
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
   }
@@ -237,7 +233,7 @@ export const focusNode = function (tpcEl) {
     this.nodeDataBackup = this.nodeData // help reset focus mode
     this.isFocusMode = true
   }
-  this.nodeData = tpcEl.nodeObj
+  this.nodeData = el.nodeObj
   this.nodeData.root = true
   this.initRight()
   this.toCenter()
@@ -305,7 +301,7 @@ export const setLocale = function (locale) {
   this.refresh()
 }
 
-export const expandNode = function (el, isExpand) {
+export const expandNode: ExpandNode = function (el, isExpand) {
   const node = el.nodeObj
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand
@@ -329,7 +325,7 @@ export const expandNode = function (el, isExpand) {
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */
-export const refresh = function (data) {
+export const refresh: RefreshFunc = function (data) {
   // add parent property to every node
   if (data) {
     this.nodeData = data.nodeData

@@ -1,7 +1,7 @@
 export default {
   nodeData: {
     topic: 'web前端能力地图',
-    id: 'root',
+    id: 'me-root',
     children: [
       {
         topic: '专业能力',

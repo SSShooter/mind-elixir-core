@@ -42,9 +42,9 @@ const mind = new MindElixir({
       return true
     },
   },
-  // primaryLinkStyle: 2,
-  primaryNodeVerticalGap: 15, // 25
-  primaryNodeHorizontalGap: 15, // 65
+  // mainLinkStyle: 2,
+  mainNodeVerticalGap: 15, // 25
+  mainNodeHorizontalGap: 15, // 65
 })
 mind.init(example)
 function sleep() {

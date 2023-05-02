@@ -9,14 +9,6 @@ const cn = {
   moveDown: '下移',
   link: '连接',
   clickTips: '请点击目标节点',
-
-  font: '文字',
-  background: '背景',
-  tag: '标签',
-  icon: '图标',
-  tagsSeparate: '多个标签半角逗号分隔',
-  iconsSeparate: '多个图标半角逗号分隔',
-  url: 'URL',
 }
 export default {
   cn,
@@ -32,14 +24,6 @@ export default {
     moveDown: '下移',
     link: '連接',
     clickTips: '請點擊目標節點',
-
-    font: '文字',
-    background: '背景',
-    tag: '標簽',
-    icon: '圖標',
-    tagsSeparate: '多個標簽半角逗號分隔',
-    iconsSeparate: '多個圖標半角逗號分隔',
-    url: 'URL',
   },
   en: {
     addChild: 'Add child',
@@ -52,14 +36,6 @@ export default {
     moveDown: 'Move down',
     link: 'Link',
     clickTips: 'Please click the target node',
-
-    font: 'Font',
-    background: 'Background',
-    tag: 'Tag',
-    icon: 'Icon',
-    tagsSeparate: 'Separate tags by comma',
-    iconsSeparate: 'Separate icons by comma',
-    url: 'URL',
   },
   ru: {
     addChild: 'Добавить дочерний элемент',
@@ -72,12 +48,6 @@ export default {
     moveDown: 'Опустить ниже',
     link: 'Ссылка',
     clickTips: 'Пожалуйста, нажмите на целевой узел',
-    font: 'Цвет шрифта',
-    background: 'Цвет фона',
-    tag: 'Тег',
-    icon: 'Иконка',
-    tagsSeparate: 'Разделяйте теги запятой',
-    iconsSeparate: 'Разделяйте иконки запятой',
   },
   ja: {
     addChild: '子ノードを追加する',
@@ -90,14 +60,6 @@ export default {
     moveDown: '下へ移動',
     link: 'コネクト',
     clickTips: 'ターゲットノードをクリックしてください',
-
-    font: 'フォント',
-    background: 'バックグラウンド',
-    tag: 'タグ',
-    icon: 'アイコン',
-    tagsSeparate: '複数タグはカンマ区切り',
-    iconsSeparate: '複数アイコンはカンマ区切り',
-    url: 'URL',
   },
   pt: {
     addChild: 'Adicionar item filho',
@@ -110,13 +72,5 @@ export default {
     moveDown: 'Mover para baixo',
     link: 'Link',
     clickTips: 'Favor clicar no item alvo',
-
-    font: 'Fonte',
-    background: 'Cor de fundo',
-    tag: 'Tag',
-    icon: 'Icone',
-    tagsSeparate: 'Separe tags por virgula',
-    iconsSeparate: 'Separe icones por virgula',
-    url: 'URL',
   },
 }

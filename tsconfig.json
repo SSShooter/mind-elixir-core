@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
     "strict": false,
-    "target": "es2016",
-    "allowJs": true
+    "target": "es2017",
+    "allowJs": true,
+    "typeRoots": [
+      "./types"
+    ]
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }

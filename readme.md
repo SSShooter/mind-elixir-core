@@ -1,6 +1,6 @@
-![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png)
+<p align="center"><a href="mind-elixir.com" target="_blank" rel="noopener noreferrer"><img width="150" src="https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png" alt="mindelixir logo2"></a></p>
 
-<p>
+<p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
@@ -20,11 +20,13 @@
 
 Mind elixir is a free open source mind map core.
 
+- Zero dependency
 - High performance
 - Lightweight
 - Framework agnostic
 - Pluginable
 - Build-in drag and drop / node edit plugin
+- Styling your node with CSS
 
 <details>
 <summary>Table of Contents</summary>
@@ -46,6 +48,7 @@ Mind elixir is a free open source mind map core.
   - [Event Handling](#event-handling)
   - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
+- [Theme](#theme)
 - [Not only core](#not-only-core)
 
 </details>
@@ -66,11 +69,11 @@ https://mind-elixir.com/
 
 https://codepen.io/ssshooter/pen/GVQRYK
 
-#### Use with React 
+#### Use with React
 
 https://codesandbox.io/s/mind-elixir-react-9sisb
 
-#### Use with Vue 
+#### Use with Vue
 
 https://codesandbox.io/s/mind-elixir-vue-nqjjl
 
@@ -128,9 +131,9 @@ let options = {
   keypress: true, // default true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
   overflowHidden: false, // default false
-  primaryLinkStyle: 2, // [1,2] default 1
-  primaryNodeVerticalGap: 15, // default 25
-  primaryNodeHorizontalGap: 15, // default 65
+  mainLinkStyle: 2, // [1,2] default 1
+  mainNodeVerticalGap: 15, // default 25
+  mainNodeHorizontalGap: 15, // default 65
   contextMenuOption: {
     focus: true,
     link: true,
@@ -162,7 +165,7 @@ mind.install(plugin) // install your plugin
 // create new map data
 const data = MindElixir.new('new topic')
 // or `example`
-// or the data return from `.getAllData()`
+// or the data return from `.getData()`
 mind.init(data)
 
 // get a node
@@ -173,7 +176,7 @@ E('node-id')
 
 ```javascript
 // whole node data structure up to now
-nodeData = {
+const nodeData = {
   topic: 'node topic',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
@@ -182,10 +185,10 @@ nodeData = {
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
   image: {
-    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png', // required
+    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png', // required
     // you need to query the height and width of the image and calculate the appropriate value to display the image
     height: 90, // required
-    width: 300, // required
+    width: 90, // required
   },
   children: [
     {
@@ -227,9 +230,9 @@ mind.bus.addListener('expandNode', node => {
 
 ```javascript
 // data export
-const data = mind.getAllData() // javascript object, see src/example.js
-mind.getAllDataString() // stringify object
-mind.getAllDataMd() // markdown
+const data = mind.getData() // javascript object, see src/example.js
+mind.getDataString() // stringify object
+mind.getDataMd() // markdown
 
 // data import
 // initiate
@@ -261,6 +264,28 @@ let mind = new MindElixir({
     },
   },
 })
+```
+
+## Theme
+
+```javascript
+const options = {
+  // ...
+  theme: {
+    name: 'Dark',
+    // main lines color palette
+    palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
+    // overwrite css variables
+    cssVar: {
+      '--main-color': '#ffffff',
+      '--main-bgcolor': '#4c4f69',
+      '--color': '#cccccc',
+      '--bgcolor': '#252526',
+    },
+    // all variables see /src/index.less
+  },
+  // ...
+}
 ```
 
 ## Not only core

@@ -1,16 +1,8 @@
-import { NodeObj } from '../index'
-
 export function encodeHTML(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
 }
 
 export const isMobile = (): boolean => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-
-export const rgbHex = rgb => {
-  return rgb.replace(/\brgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/g, function ($0, $1, $2, $3) {
-    return '#' + ('0' + Number($1).toString(16)).substr(-2) + ('0' + Number($2).toString(16)).substr(-2) + ('0' + Number($3).toString(16)).substr(-2)
-  })
-}
 
 export const getObjById = function (id: string, data: NodeObj) {
   data = data || this.nodeData
@@ -265,4 +257,14 @@ export function moveNodeAfterObj(from: NodeObj, to: NodeObj) {
     }
   }
   childrenList.splice(toIndex + 1, 0, from)
+}
+
+export function deepClone(obj) {
+  const deepCloneObj = JSON.parse(
+    JSON.stringify(obj, (k, v) => {
+      if (k === 'parent') return undefined
+      return v
+    })
+  )
+  return deepCloneObj
 }

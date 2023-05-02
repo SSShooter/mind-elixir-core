@@ -1,6 +1,6 @@
 export default {
   nodeData: {
-    id: 'root',
+    id: 'me-root',
     topic: 'Mind Elixir',
     root: true,
     children: [

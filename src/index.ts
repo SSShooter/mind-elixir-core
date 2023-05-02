@@ -1,7 +1,7 @@
-import { LEFT, RIGHT, SIDE, GAP } from './const'
+import { LEFT, RIGHT, SIDE, GAP, THEME } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
-import { findEle, createInputDiv, Topic, createGroup, createTop, createTopic } from './utils/dom'
-import { layout, createChildren, judgeDirection } from './utils/layout'
+import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
+import { layout, layoutChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -10,9 +10,9 @@ import {
   selectPrevSibling,
   selectFirstChild,
   selectParent,
-  getAllDataString,
-  getAllData,
-  getAllDataMd,
+  getDataString,
+  getData,
+  getDataMd,
   scale,
   toCenter,
   focusNode,
@@ -37,10 +37,7 @@ import {
   moveUpNode,
   moveDownNode,
   beginEdit,
-  updateNodeStyle,
-  updateNodeTags,
-  updateNodeIcons,
-  updateNodeHyperLink,
+  reshapeNode,
   setNodeTopic,
   moveNodeBefore,
   moveNodeAfter,
@@ -51,7 +48,6 @@ import initMouseEvent from './mouse'
 
 import contextMenu from './plugin/contextMenu'
 import toolBar from './plugin/toolBar'
-import nodeMenu from './plugin/nodeMenu'
 import nodeDraggable from './plugin/nodeDraggable'
 import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
@@ -73,113 +69,6 @@ import './iconfont/iconfont.js'
  * E('bd4313fbac40284b')
  */
 export const E = findEle
-type LinkObj = object
-type operation = {
-  name: string
-}
-export interface NodeObj {
-  topic: string
-  id: string
-  style?: {
-    fontSize?: string
-    color?: string
-    background?: string
-    fontWeight?: string
-  }
-  parent?: NodeObj
-  children?: NodeObj[]
-  tags?: string[]
-  icons?: string[]
-  hyperLink?: string
-  expanded?: boolean
-  direction?: number
-  root?: boolean
-  image?: {
-    url: string
-    width: number
-    height: number
-  }
-  // main node specific properties
-  branchColor?: string
-}
-
-export interface NodeElement extends HTMLElement {
-  nodeObj: NodeObj
-}
-export interface MindElixirData {
-  nodeData: NodeObj
-  linkData?: LinkObj
-  direction?: number
-}
-export interface MindElixirInstance {
-  mindElixirBox: HTMLElement
-  nodeData: NodeObj
-  linkData: LinkObj
-  currentNode: Topic | null
-  currentLink: SVGElement | null
-  inputDiv: HTMLElement | null
-  scaleVal: number
-  tempDirection: number | null
-  bus: {
-    addListener: (type, handler) => void
-  } // wip
-
-  // wip
-  history: operation[]
-  isUndo: boolean
-  undo: () => void
-
-  direction: number
-  locale: string
-  draggable: boolean
-  editable: boolean
-  contextMenu: boolean
-  contextMenuOption: object
-  toolBar: boolean
-  nodeMenu: boolean
-  keypress: boolean
-  before: object
-  newTopicName: string
-  allowUndo: boolean
-  overflowHidden: boolean
-  primaryLinkStyle: number
-  primaryNodeHorizontalGap: number
-  primaryNodeVerticalGap: number
-  mobileMenu: boolean
-
-  container: HTMLElement
-  map: HTMLElement
-  root: HTMLElement
-  box: HTMLElement
-  lines: SVGElement
-  linkController: SVGElement
-  P2: HTMLElement
-  P3: HTMLElement
-  line1: SVGElement
-  line2: SVGElement
-  linkSvgGroup: SVGElement
-}
-export interface Options {
-  el: string | Element
-  data: MindElixirData
-  direction?: number
-  locale?: string
-  draggable?: boolean
-  editable?: boolean
-  contextMenu?: boolean
-  contextMenuOption?: object
-  toolBar?: boolean
-  nodeMenu?: boolean
-  keypress?: boolean
-  before?: object
-  newTopicName?: string
-  allowUndo?: boolean
-  overflowHidden?: boolean
-  primaryLinkStyle?: number
-  primaryNodeHorizontalGap?: number
-  primaryNodeVerticalGap?: number
-  mobileMenu?: boolean
-}
 const $d = document
 /**
  * @export MindElixir
@@ -191,8 +80,7 @@ const $d = document
   draggable: true,
   editable: true,
   contextMenu: true,
-  toolBar: true,
-  nodeMenu: true,
+  toolBar: true, 
   keypress: true,
 })
 mind.init()
@@ -209,38 +97,37 @@ function MindElixir(
     contextMenu,
     contextMenuOption,
     toolBar,
-    nodeMenu,
     keypress,
     before,
     newTopicName,
     allowUndo,
-    primaryLinkStyle,
+    mainLinkStyle,
     overflowHidden,
-    primaryNodeHorizontalGap,
-    primaryNodeVerticalGap,
+    mainNodeHorizontalGap,
+    mainNodeVerticalGap,
     mobileMenu,
+    theme,
   }: Options
 ) {
   console.log('ME_version ' + MindElixir.version, this)
-  let box
+  let ele
   const elType = Object.prototype.toString.call(el)
   if (elType === '[object HTMLDivElement]') {
-    box = el as HTMLElement
+    ele = el as HTMLElement
   } else if (elType === '[object String]') {
-    box = document.querySelector(el as string) as HTMLElement
+    ele = document.querySelector(el as string) as HTMLElement
   }
-  if (!box) return new Error('MindElixir: el is not a valid element')
+  if (!ele) return new Error('MindElixir: el is not a valid element')
 
-  box.className += ' mind-elixir'
-  box.innerHTML = ''
-  box.style.setProperty('--gap', GAP + 'px')
-  this.mindElixirBox = box
+  ele.className += ' mind-elixir'
+  ele.innerHTML = ''
+  ele.style.setProperty('--gap', GAP + 'px')
+  this.mindElixirBox = ele
   this.before = before || {}
   this.locale = locale
   this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
-  this.nodeMenu = nodeMenu === undefined ? true : nodeMenu
   this.keypress = keypress === undefined ? true : keypress
   this.mobileMenu = mobileMenu
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
@@ -255,10 +142,10 @@ function MindElixir(
   this.inputDiv = null // editor
   this.scaleVal = 1
   this.tempDirection = null
-  this.primaryLinkStyle = primaryLinkStyle || 0
+  this.mainLinkStyle = mainLinkStyle || 0
   this.overflowHidden = overflowHidden
-  this.primaryNodeHorizontalGap = primaryNodeHorizontalGap
-  this.primaryNodeVerticalGap = primaryNodeVerticalGap
+  this.mainNodeHorizontalGap = mainNodeHorizontalGap
+  this.mainNodeVerticalGap = mainNodeVerticalGap
 
   this.bus = new Bus()
   this.bus.addListener('operation', (operation: operation) => {
@@ -298,14 +185,16 @@ function MindElixir(
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
 
-  this.map = $d.createElement('div') // map-canvas Element
-  this.map.className = 'map-canvas'
+  this.theme = theme || THEME
+  const canvas = $d.createElement('div') // map-canvas Element
+  canvas.className = 'map-canvas'
+  this.map = canvas
   this.map.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.mindElixirBox.appendChild(this.container)
-  this.root = $d.createElement('root')
+  this.root = $d.createElement('me-root')
 
-  this.box = $d.createElement('children')
+  this.box = $d.createElement('me-children')
   this.box.className = 'box'
 
   // infrastructure
@@ -361,10 +250,7 @@ MindElixir.prototype = {
   beginEdit: beforeHook(beginEdit, 'beginEdit'),
   moveNodeBefore: beforeHook(moveNodeBefore, 'moveNodeBefore'),
   moveNodeAfter: beforeHook(moveNodeAfter, 'moveNodeAfter'),
-  updateNodeStyle,
-  updateNodeTags,
-  updateNodeIcons,
-  updateNodeHyperLink,
+  reshapeNode,
   judgeDirection,
   setNodeTopic,
 
@@ -378,9 +264,10 @@ MindElixir.prototype = {
   linkDiv,
   createInputDiv,
 
+  layoutChildren,
+  createWrapper,
+  createParent,
   createChildren,
-  createGroup,
-  createTop,
   createTopic,
 
   selectNode,
@@ -389,9 +276,9 @@ MindElixir.prototype = {
   selectPrevSibling,
   selectFirstChild,
   selectParent,
-  getAllDataString,
-  getAllData,
-  getAllDataMd,
+  getDataString,
+  getData,
+  getDataMd,
   scale,
   toCenter,
   focusNode,
@@ -404,6 +291,7 @@ MindElixir.prototype = {
   disableEdit,
   expandNode,
   refresh,
+  findEle,
   install(plugin) {
     plugin(this)
   },
@@ -412,11 +300,13 @@ MindElixir.prototype = {
     if (data.direction) {
       this.direction = data.direction
     }
+    if (data.theme) {
+      this.theme = data.theme
+    }
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
     // plugin
     this.toolBar && toolBar(this)
-    this.nodeMenu && nodeMenu(this)
     this.keypress && keypress(this)
 
     if (isMobile() && this.mobileMenu) {
@@ -425,6 +315,13 @@ MindElixir.prototype = {
       this.contextMenu && contextMenu(this, this.contextMenuOption)
     }
     this.draggable && nodeDraggable(this)
+
+    const cssVar = this.theme.cssVar
+    const keys = Object.keys(cssVar)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      this.mindElixirBox.style.setProperty(key, cssVar[key])
+    }
 
     addParentLink(this.nodeData)
     this.toCenter()
@@ -440,7 +337,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '1.0.0'
+MindElixir.version = '2.0.0'
 MindElixir.E = findEle
 
 /**

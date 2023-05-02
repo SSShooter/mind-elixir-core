@@ -1,6 +1,6 @@
-![mindelixir logo](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo.png)
+<p align="center"><a href="mind-elixir.com" target="_blank" rel="noopener noreferrer"><img width="150" src="https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png" alt="mindelixir logo2"></a></p>
 
-<p>
+<p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
@@ -78,7 +78,7 @@ let options = {
   direction: MindElixir.LEFT,
   // create new map data
   data: MindElixir.new('new topic') or example,
-  // the data return from `.getAllData()`
+  // the data return from `.getData()`
   draggable: true, // default true
   contextMenu: true, // default true
   toolBar: true, // default true
@@ -86,9 +86,9 @@ let options = {
   keypress: true, // default true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt] waiting for PRs
   overflowHidden: false, // default false
-  primaryLinkStyle: 2, // [1,2] default 1
-  primaryNodeVerticalGap: 15, // default 25
-  primaryNodeHorizontalGap: 15, // default 65
+  mainLinkStyle: 2, // [1,2] default 1
+  mainNodeVerticalGap: 15, // default 25
+  mainNodeHorizontalGap: 15, // default 65
   contextMenuOption: {
     focus: true,
     link: true,
@@ -165,9 +165,9 @@ mind.bus.addListener('expandNode', node => {
 ### 数据导出
 
 ```javascript
-mind.getAllData() // javascript object, see src/example.js
-mind.getAllDataString() // stringify object
-mind.getAllDataMd() // markdown
+mind.getData() // javascript object, see src/example.js
+mind.getDataString() // stringify object
+mind.getDataMd() // markdown
 ```
 
 ### 输出图片
@@ -207,7 +207,3 @@ let mind = new MindElixir({
 ## 文档
 
 https://doc.mind-elixir.com/
-
-## 感谢
-
-[canvg](https://github.com/canvg/canvg)

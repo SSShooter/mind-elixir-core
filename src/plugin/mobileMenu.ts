@@ -55,8 +55,8 @@ export default function (mind, option?) {
   //   e.preventDefault()
   //   // console.log(e.pageY, e.screenY, e.clientY)
   //   let target = e.target
-  //   if (target.tagName === 'TPC') {
-  //     if (target.parentElement.tagName === 'ROOT') {
+  //   if (target.tagName === 'ME-TPC') {
+  //     if (target.parentElement.tagName === 'ME-ROOT') {
   //       isRoot = true
   //     } else {
   //       isRoot = false
@@ -138,8 +138,8 @@ export default function (mind, option?) {
   //     e => {
   //       e.preventDefault()
   //       if (
-  //         e.target.parentElement.nodeName === 'T' ||
-  //         e.target.parentElement.nodeName === 'ROOT'
+  //         e.target.parentElement.tagName === 'ME-PARENT' ||
+  //         e.target.parentElement.tagName === 'ME-ROOT'
   //       ) {
   //         mind.createLink(from, mind.currentNode)
   //       } else {
