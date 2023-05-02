@@ -31,5 +31,10 @@ type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj
 
 type ExpandNode = (this: MindElixirInstance, el: Topic, isExpand: boolean) => void
 type SelectNode = (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean) => void
-type TCommonSelect = (this: MindElixirInstance) => void
-type TSiblingSelect = (this: MindElixirInstance) => boolean
+type CommonSelectFunc = (this: MindElixirInstance) => void
+type SiblingSelectFunc = (this: MindElixirInstance) => boolean
+
+type GetDataStringFunc = (this: MindElixirInstance) => string
+type GetDataFunc = (this: MindElixirInstance) => MindElixirData
+
+type RefreshFunc = (this: MindElixirInstance, data: MindElixirData) => void

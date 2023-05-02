@@ -13,6 +13,7 @@ interface Wrapper extends HTMLElement {
 interface Parent extends HTMLElement {
   parentNode: Wrapper
   parentElement: Wrapper
+  nextSibling: Children
 }
 
 interface Children extends HTMLElement {

@@ -28,8 +28,8 @@ interface MindElixirInstance {
 
   // wip
   bus: {
-    addListener: (type, handler) => void
-    fire: (type, data) => void
+    addListener: (type: string, handler) => void
+    fire: (type: string, data?) => void
   }
 
   // wip
@@ -81,14 +81,14 @@ interface MindElixirInstance {
   layoutChildren: LayoutChildren
 
   selectNode: SelectNode
-  unselectNode: TCommonSelect
-  selectNextSibling: TSiblingSelect
-  selectPrevSibling: TSiblingSelect
-  selectFirstChild: TCommonSelect
-  selectParent: TCommonSelect
-  getAllDataString
-  getAllData
-  getAllDataMd
+  unselectNode: CommonSelectFunc
+  selectNextSibling: SiblingSelectFunc
+  selectPrevSibling: SiblingSelectFunc
+  selectFirstChild: CommonSelectFunc
+  selectParent: CommonSelectFunc
+  getAllDataString: GetDataStringFunc
+  getData: GetDataFunc
+  getAllDataMd: GetDataStringFunc
   scale
   toCenter
   focusNode
@@ -104,6 +104,7 @@ interface MindElixirInstance {
 
   layout: Layout
   removeLink
+  addParentLink
 }
 
 interface Options {

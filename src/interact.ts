@@ -7,7 +7,7 @@ import { findEle } from './utils/dom'
  * @exports MapInteraction
  * @namespace MapInteraction
  */
-function getData(instance) {
+function collectData(instance) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
     linkData: instance.linkData,
@@ -40,71 +40,71 @@ export const selectNode: SelectNode = function (targetElement, isNewNode) {
   }
   console.timeEnd('selectNode')
 }
-export const unselectNode = function () {
+export const unselectNode: CommonSelectFunc = function () {
   if (this.currentNode) {
     this.currentNode.className = ''
   }
   this.currentNode = null
   this.bus.fire('unselectNode')
 }
-export const selectNextSibling = function () {
+export const selectNextSibling: SiblingSelectFunc = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.nextSibling
-  let target: HTMLElement
+  let target: Topic
   const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
     const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
     const i = Array.from(siblingList).indexOf(grp)
     if (i + 1 < siblingList.length) {
-      target = siblingList[i + 1].firstChild.firstChild
+      target = siblingList[i + 1].firstChild.firstChild as Topic
     } else {
       return false
     }
   } else if (sibling) {
-    target = sibling.firstChild.firstChild
+    target = sibling.firstChild.firstChild as Topic
   } else {
     return false
   }
   this.selectNode(target)
   return true
 }
-export const selectPrevSibling = function () {
+export const selectPrevSibling: SiblingSelectFunc = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
-  let target: HTMLElement
+  let target: Topic
   const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
     const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
     const i = Array.from(siblingList).indexOf(grp)
     if (i - 1 >= 0) {
-      target = siblingList[i - 1].firstChild.firstChild
+      target = siblingList[i - 1].firstChild.firstChild as Topic
     } else {
       return false
     }
   } else if (sibling) {
-    target = sibling.firstChild.firstChild
+    target = sibling.firstChild.firstChild as Topic
   } else {
     return false
   }
   this.selectNode(target)
   return true
 }
-export const selectFirstChild = function () {
+export const selectFirstChild: CommonSelectFunc = function () {
   if (!this.currentNode) return
   const children = this.currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
-    const target = children.firstChild.firstChild.firstChild
+    const target = children.firstChild.firstChild.firstChild as Topic
     this.selectNode(target)
   }
 }
-export const selectParent = function () {
+export const selectParent: CommonSelectFunc = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
   if (parent) {
-    const target = parent.firstChild
+    const target = parent.firstChild as Topic
     this.selectNode(target)
   }
 }
@@ -116,8 +116,8 @@ export const selectParent = function () {
  * @memberof MapInteraction
  * @return {string}
  */
-export const getAllDataString = function () {
-  const data = getData(this)
+export const getAllDataString: GetDataStringFunc = function () {
+  const data = collectData(this)
   return JSON.stringify(data, (k, v) => {
     if (k === 'parent') return undefined
     if (k === 'from') return v.nodeObj.id
@@ -133,7 +133,7 @@ export const getAllDataString = function () {
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getAllData = function (): MindElixirData {
+export const getAllData: GetDataFunc = function () {
   return JSON.parse(this.getAllDataString())
 }
 
@@ -145,8 +145,8 @@ export const getAllData = function (): MindElixirData {
  * @memberof MapInteraction
  * @return {String}
  */
-export const getAllDataMd = function (): string {
-  const data = getData(this).nodeData
+export const getAllDataMd: GetDataStringFunc = function () {
+  const data = collectData(this).nodeData
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children, deep) {
     for (let i = 0; i < children.length; i++) {
@@ -325,7 +325,7 @@ export const expandNode: ExpandNode = function (el, isExpand) {
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */
-export const refresh = function (data: MindElixirData) {
+export const refresh: RefreshFunc = function (data) {
   // add parent property to every node
   if (data) {
     this.nodeData = data.nodeData
