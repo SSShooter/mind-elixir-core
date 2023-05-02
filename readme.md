@@ -165,7 +165,7 @@ mind.install(plugin) // install your plugin
 // create new map data
 const data = MindElixir.new('new topic')
 // or `example`
-// or the data return from `.getAllData()`
+// or the data return from `.getData()`
 mind.init(data)
 
 // get a node
@@ -230,9 +230,9 @@ mind.bus.addListener('expandNode', node => {
 
 ```javascript
 // data export
-const data = mind.getAllData() // javascript object, see src/example.js
-mind.getAllDataString() // stringify object
-mind.getAllDataMd() // markdown
+const data = mind.getData() // javascript object, see src/example.js
+mind.getDataString() // stringify object
+mind.getDataMd() // markdown
 
 // data import
 // initiate

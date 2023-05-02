@@ -86,9 +86,9 @@ interface MindElixirInstance {
   selectPrevSibling: SiblingSelectFunc
   selectFirstChild: CommonSelectFunc
   selectParent: CommonSelectFunc
-  getAllDataString: GetDataStringFunc
+  getDataString: GetDataStringFunc
   getData: GetDataFunc
-  getAllDataMd: GetDataStringFunc
+  getDataMd: GetDataStringFunc
   scale
   toCenter
   focusNode

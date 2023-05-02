@@ -78,7 +78,7 @@ let options = {
   direction: MindElixir.LEFT,
   // create new map data
   data: MindElixir.new('new topic') or example,
-  // the data return from `.getAllData()`
+  // the data return from `.getData()`
   draggable: true, // default true
   contextMenu: true, // default true
   toolBar: true, // default true
@@ -165,9 +165,9 @@ mind.bus.addListener('expandNode', node => {
 ### 数据导出
 
 ```javascript
-mind.getAllData() // javascript object, see src/example.js
-mind.getAllDataString() // stringify object
-mind.getAllDataMd() // markdown
+mind.getData() // javascript object, see src/example.js
+mind.getDataString() // stringify object
+mind.getDataMd() // markdown
 ```
 
 ### 输出图片

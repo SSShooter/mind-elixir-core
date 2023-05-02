@@ -111,12 +111,12 @@ export const selectParent: CommonSelectFunc = function () {
 /**
  * @function
  * @instance
- * @name getAllDataString
+ * @name getDataString
  * @description Get all node data as string.
  * @memberof MapInteraction
  * @return {string}
  */
-export const getAllDataString: GetDataStringFunc = function () {
+export const getDataString: GetDataStringFunc = function () {
   const data = collectData(this)
   return JSON.stringify(data, (k, v) => {
     if (k === 'parent') return undefined
@@ -128,24 +128,24 @@ export const getAllDataString: GetDataStringFunc = function () {
 /**
  * @function
  * @instance
- * @name getAllData
+ * @name getData
  * @description Get all node data as object.
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getAllData: GetDataFunc = function () {
-  return JSON.parse(this.getAllDataString())
+export const getData: GetDataFunc = function () {
+  return JSON.parse(this.getDataString())
 }
 
 /**
  * @function
  * @instance
- * @name getAllDataMd
+ * @name getDataMd
  * @description Get all node data as markdown.
  * @memberof MapInteraction
  * @return {String}
  */
-export const getAllDataMd: GetDataStringFunc = function () {
+export const getDataMd: GetDataStringFunc = function () {
   const data = collectData(this).nodeData
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children, deep) {
