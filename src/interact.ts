@@ -23,7 +23,7 @@ function collectData(instance) {
  * @description Select a node and add solid border to it.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const selectNode: SelectNode = function (targetElement, isNewNode) {
+export const selectNode: SelectNodeFunc = function (targetElement, isNewNode, e) {
   if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
@@ -36,7 +36,8 @@ export const selectNode: SelectNode = function (targetElement, isNewNode) {
   if (isNewNode) {
     this.bus.fire('selectNewNode', targetElement.nodeObj)
   } else {
-    this.bus.fire('selectNode', targetElement.nodeObj)
+    // the variable e indicates that the action is triggered by a click
+    this.bus.fire('selectNode', targetElement.nodeObj, e)
   }
   console.timeEnd('selectNode')
 }

@@ -30,7 +30,7 @@ type LinkDiv = (this: MindElixirInstance, mainNode?: Wrapper) => void
 type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj) => void
 
 type ExpandNode = (this: MindElixirInstance, el: Topic, isExpand: boolean) => void
-type SelectNode = (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean) => void
+type SelectNodeFunc = (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent) => void
 type CommonSelectFunc = (this: MindElixirInstance) => void
 type SiblingSelectFunc = (this: MindElixirInstance) => boolean
 
