@@ -29,7 +29,7 @@ interface MindElixirInstance {
   // wip
   bus: {
     addListener: (type: string, handler) => void
-    fire: (type: string, data?) => void
+    fire: (type: string, ...payload) => void
   }
 
   // wip
@@ -80,7 +80,7 @@ interface MindElixirInstance {
   createInputDiv: CreateInputDiv
   layoutChildren: LayoutChildren
 
-  selectNode: SelectNode
+  selectNode: SelectNodeFunc
   unselectNode: CommonSelectFunc
   selectNextSibling: SiblingSelectFunc
   selectPrevSibling: SiblingSelectFunc
