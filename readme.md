@@ -67,11 +67,11 @@ https://mind-elixir.com/
 
 #### Vanilla JS
 
-https://codepen.io/ssshooter/pen/GVQRYK
+https://codepen.io/ssshooter/pen/rNqGpwW
 
 #### Use with React
 
-https://codesandbox.io/s/mind-elixir-react-9sisb
+https://codesandbox.io/s/mind-elixir-2-x-react-q9glxt
 
 #### Use with Vue
 
@@ -290,6 +290,7 @@ const options = {
 
 ## Not only core
 
+- [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
 - [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)
