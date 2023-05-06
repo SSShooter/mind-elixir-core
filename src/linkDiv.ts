@@ -163,7 +163,7 @@ export default function linkDiv(mainNode: Wrapper) {
 }
 
 // core function of generate subLines
-function traverseChildren(children: HTMLCollection, parent: Parent, isFirst?: boolean): string {
+const traverseChildren: TraverseChildrenFunc = function (children, parent, isFirst) {
   let path = ''
   const pT = parent.offsetTop
   const pL = parent.offsetLeft
@@ -184,9 +184,9 @@ function traverseChildren(children: HTMLCollection, parent: Parent, isFirst?: bo
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
       if (direction === 'lhs') {
-        expander.style.left = -10 + 'px'
+        expander.style.left = 0 + 'px'
       } else if (direction === 'rhs') {
-        expander.style.left = childT.offsetWidth - 10 + 'px'
+        expander.style.left = childT.offsetWidth + 'px'
       }
       // this property is added in the layout phase
       if (!expander.expanded) continue

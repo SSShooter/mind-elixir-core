@@ -31,6 +31,15 @@
     width: 0px;
     height: 0px;
   }
+  .selected {
+    box-shadow: 0 0 0 2px #4dc4ff;
+  }
+  .lhs {
+    direction: rtl;
+    me-tpc {
+      direction: ltr;
+    }
+  }
   .map-canvas {
     height: 20000px;
     width: 20000px;
@@ -39,9 +48,6 @@
     transition: all 0.3s;
     transform: scale(1);
     background-color: var(--bgcolor);
-    .selected {
-      outline: 2px solid #4dc4ff;
-    }
     me-root {
       position: absolute;
       padding: 10px var(--gap);
@@ -59,118 +65,118 @@
     }
   }
   .box {
+    // main node
     & > me-wrapper {
-      // for main node
       position: absolute;
       & > me-parent {
         margin: var(--gap);
         background-color: var(--main-bgcolor);
         border: 1px solid var(--main-color);
-        padding: 8px var(--gap);
         border-radius: var(--main-radius);
+        padding: 0;
         & > me-tpc {
+          border-radius: var(--main-radius);
           color: var(--main-color);
-        }
-      }
-    }
-    .lhs {
-      direction: rtl;
-      me-tpc {
-        direction: ltr;
-      }
-    }
-    me-wrapper {
-      display: block;
-      pointer-events: none;
-    }
-    me-children,
-    me-parent {
-      display: inline-block;
-      vertical-align: middle;
-    }
-    me-parent {
-      position: relative;
-      cursor: pointer;
-      padding: 6px var(--gap);
-      margin-top: 10px;
-      me-tpc {
-        position: relative;
-        display: block;
-        border-radius: 3px;
-        color: var(--color);
-        pointer-events: all;
-        max-width: 800px;
-        white-space: pre-wrap;
-        line-height: 1.2; // assure the line-height consistency between different languages
-        .tags {
-          direction: ltr;
-          span {
-            display: inline-block;
-            border-radius: 3px;
-            padding: 2px 4px;
-            background: #d6f0f8;
-            color: #276f86;
-            margin: 0px;
-            font-size: 12px;
-            height: 16px;
-            line-height: 16px;
-            margin-right: 3px;
-            margin-top: 2px;
-          }
-        }
-        .icons {
-          display: inline-block;
-          direction: ltr;
-          margin-right: 10px;
-        }
-        // drag preview
-        .insert-preview {
-          position: absolute;
-          width: 100%;
-          left: 0px;
-          z-index: 9;
-        }
-        .show {
-          background: #7ad5ff;
-          pointer-events: none; // 不加会识别为不可移动
-          opacity: 0.7;
-        }
-        .before {
-          height: 14px;
-          top: -14px;
-        }
-        .in {
-          height: 100%;
-          top: 0px;
-        }
-        .after {
-          height: 14px;
-          bottom: -14px;
-        }
-      }
-      me-epd {
-        position: absolute;
-        height: 18px;
-        width: 18px;
-        opacity: 0.8;
-        background-image: url('./icons/add-circle.svg');
-        background-repeat: no-repeat;
-        background-size: contain;
-        background-position: center;
-
-        pointer-events: all;
-        z-index: 9;
-        &.minus {
-          background-image: url('./icons/minus-circle.svg') !important;
-          transition: all 0.3s;
-          opacity: 0;
-          &:hover {
-            opacity: 0.8;
+          padding: 8px var(--gap);
+          #input-box {
+            padding: 8px var(--gap);
           }
         }
       }
     }
   }
+  me-wrapper {
+    display: block;
+    pointer-events: none;
+  }
+  me-children,
+  me-parent {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  me-parent {
+    position: relative;
+    cursor: pointer;
+    padding: 6px var(--gap);
+    margin-top: 10px;
+    me-tpc {
+      position: relative;
+      display: block;
+      border-radius: 3px;
+      color: var(--color);
+      pointer-events: all;
+      max-width: 800px;
+      white-space: pre-wrap;
+      line-height: 1.2; // assure the line-height consistency between different languages
+      .tags {
+        direction: ltr;
+        span {
+          display: inline-block;
+          border-radius: 3px;
+          padding: 2px 4px;
+          background: #d6f0f8;
+          color: #276f86;
+          margin: 0px;
+          font-size: 12px;
+          height: 16px;
+          line-height: 16px;
+          margin-right: 3px;
+          margin-top: 2px;
+        }
+      }
+      .icons {
+        display: inline-block;
+        direction: ltr;
+        margin-right: 10px;
+      }
+      // drag preview
+      .insert-preview {
+        position: absolute;
+        width: 100%;
+        left: 0px;
+        z-index: 9;
+      }
+      .show {
+        background: #7ad5ff;
+        pointer-events: none; // 不加会识别为不可移动
+        opacity: 0.7;
+      }
+      .before {
+        height: 14px;
+        top: -14px;
+      }
+      .in {
+        height: 100%;
+        top: 0px;
+      }
+      .after {
+        height: 14px;
+        bottom: -14px;
+      }
+    }
+    me-epd {
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      opacity: 0.8;
+      background-image: url('./icons/add-circle.svg');
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+
+      pointer-events: all;
+      z-index: 9;
+      &.minus {
+        background-image: url('./icons/minus-circle.svg') !important;
+        transition: all 0.3s;
+        opacity: 0;
+        &:hover {
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
   // iconfont
   .icon {
     width: 1em;
@@ -225,20 +231,21 @@
     direction: ltr;
     user-select: auto;
   }
-}
 
-me-tpc > img {
-  pointer-events: none;
-  display: block;
-}
+  me-tpc > img {
+    pointer-events: none;
+    display: block;
+    margin-top: 8px;
+  }
 
-.circle {
-  position: absolute;
-  height: 10px;
-  width: 10px;
-  margin-top: -5px;
-  margin-left: -5px;
-  border-radius: 100%;
-  background: #aaa;
-  cursor: pointer;
+  .circle {
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    margin-top: -5px;
+    margin-left: -5px;
+    border-radius: 100%;
+    background: #aaa;
+    cursor: pointer;
+  }
 }
