@@ -7,7 +7,7 @@ const $d = document
 export const layout = function () {
   console.time('layout')
   this.root.innerHTML = ''
-  this.box.innerHTML = ''
+  this.mainNodes.innerHTML = ''
   const tpc = this.createTopic(this.nodeData)
   shapeTpc(tpc, this.nodeData) // shape root tpc
   tpc.draggable = false
@@ -35,7 +35,7 @@ export const layout = function () {
       }
     })
   }
-  this.layoutChildren(this.nodeData.children, this.box, this.direction)
+  this.layoutChildren(this.nodeData.children, this.mainNodes, this.direction)
   console.timeEnd('layout')
 }
 

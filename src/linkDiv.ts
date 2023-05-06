@@ -19,7 +19,7 @@ export default function linkDiv(mainNode: Wrapper) {
   console.time('linkDiv')
   const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
-  const mainNodeList = this.box.children
+  const mainNodeList = this.mainNodes.children
   this.lines.innerHTML = ''
 
   // 1. calculate position of main nodes
