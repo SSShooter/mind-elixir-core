@@ -258,15 +258,15 @@ function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
   const y2 = cT + cH
   let x1: number, x2: number, xMid: number
   if (direction === 'lhs') {
-    xMid = pL - 10
+    xMid = pL
     x1 = xMid + GAP
     x2 = xMid - GAP
-    end = cL + GAP - 10
+    end = cL + GAP
   } else if (direction === 'rhs') {
-    xMid = pL + pW + 10
+    xMid = pL + pW
     x1 = xMid - GAP
     x2 = xMid + GAP
-    end = cL + cW - GAP + 10
+    end = cL + cW - GAP
   }
   return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid} ${y2} ${x2} ${y2} H ${end}`
 }

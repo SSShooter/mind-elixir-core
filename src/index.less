@@ -8,6 +8,7 @@
   --root-bgcolor: #4c4f69;
   --main-color: #444446;
   --main-bgcolor: #ffffff;
+  --topic-padding: 3px;
   --color: #777777;
   --bgcolor: #f6f6f6;
   // ---
@@ -107,6 +108,7 @@
       pointer-events: all;
       max-width: 800px;
       white-space: pre-wrap;
+      padding: var(--topic-padding);
       line-height: 1.2; // assure the line-height consistency between different languages
       .tags {
         direction: ltr;
@@ -223,6 +225,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    padding: var(--topic-padding);
     background-color: #fff;
     color: #666666;
     width: max-content; // let words expand the div and keep max length at the same time
