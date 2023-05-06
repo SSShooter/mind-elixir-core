@@ -337,7 +337,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '2.0.0'
+MindElixir.version = '2.0.2'
 MindElixir.E = findEle
 
 /**
