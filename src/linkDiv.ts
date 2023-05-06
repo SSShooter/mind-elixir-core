@@ -19,7 +19,7 @@ export default function linkDiv(mainNode: Wrapper) {
   console.time('linkDiv')
   const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
-  const mainNodeList = this.box.children
+  const mainNodeList = this.mainNodes.children
   this.lines.innerHTML = ''
 
   // 1. calculate position of main nodes
@@ -163,7 +163,7 @@ export default function linkDiv(mainNode: Wrapper) {
 }
 
 // core function of generate subLines
-function traverseChildren(children: HTMLCollection, parent: Parent, isFirst?: boolean): string {
+const traverseChildren: TraverseChildrenFunc = function (children, parent, isFirst) {
   let path = ''
   const pT = parent.offsetTop
   const pL = parent.offsetLeft
@@ -184,9 +184,9 @@ function traverseChildren(children: HTMLCollection, parent: Parent, isFirst?: bo
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
       if (direction === 'lhs') {
-        expander.style.left = -10 + 'px'
+        expander.style.left = 0 + 'px'
       } else if (direction === 'rhs') {
-        expander.style.left = childT.offsetWidth - 10 + 'px'
+        expander.style.left = childT.offsetWidth + 'px'
       }
       // this property is added in the layout phase
       if (!expander.expanded) continue
@@ -258,15 +258,15 @@ function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
   const y2 = cT + cH
   let x1: number, x2: number, xMid: number
   if (direction === 'lhs') {
-    xMid = pL - 10
+    xMid = pL
     x1 = xMid + GAP
     x2 = xMid - GAP
-    end = cL + GAP - 10
+    end = cL + GAP
   } else if (direction === 'rhs') {
-    xMid = pL + pW + 10
+    xMid = pL + pW
     x1 = xMid - GAP
     x2 = xMid + GAP
-    end = cL + cW - GAP + 10
+    end = cL + cW - GAP
   }
   return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid} ${y2} ${x2} ${y2} H ${end}`
 }

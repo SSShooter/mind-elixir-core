@@ -58,7 +58,7 @@ interface MindElixirInstance {
   container: HTMLElement
   map: HTMLElement
   root: HTMLElement
-  box: HTMLElement
+  mainNodes: HTMLElement
   lines: SVGElement
   linkController: SVGElement
   P2: HTMLElement

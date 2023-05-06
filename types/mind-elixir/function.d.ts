@@ -27,6 +27,7 @@ type ReshapeNode = (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) =>
 type Layout = (this: MindElixirInstance) => void
 type LayoutChildren = (this: MindElixirInstance, data: NodeObj[], container?: Children, direction?) => Children
 type LinkDiv = (this: MindElixirInstance, mainNode?: Wrapper) => void
+type TraverseChildrenFunc = (children: HTMLCollection, parent: Parent, isFirst?: boolean) => string
 type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj) => void
 
 type ExpandNode = (this: MindElixirInstance, el: Topic, isExpand: boolean) => void
