@@ -22,7 +22,7 @@ Mind elixir 是一个无框架依赖的思维导图内核
 
 ## 立即尝试
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
 
 https://mind-elixir.com/#/
 

@@ -59,7 +59,7 @@ https://doc.mind-elixir.com/
 
 ## Try now
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
 
 https://mind-elixir.com/
 
