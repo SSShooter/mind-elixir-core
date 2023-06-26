@@ -180,6 +180,7 @@ const nodeData = {
   topic: 'node topic',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
+  expanded: true,
   parent: null,
   tags: ['Tag'],
   icons: ['😀'],
