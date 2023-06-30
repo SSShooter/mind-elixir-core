@@ -16,6 +16,15 @@ interface Theme {
   }
 }
 
+interface LinkDragMoveHelperInstance {
+  dom: HTMLElement
+  mousedown: false
+  lastX: null
+  lastY: null
+  init: (map: HTMLElement, cb: (deltaX: number, deltaY: number) => void) => void
+  destory: (map: HTMLElement) => void
+}
+
 interface MindElixirInstance {
   mindElixirBox: HTMLElement
   nodeData: NodeObj
@@ -108,6 +117,8 @@ interface MindElixirInstance {
   layout: Layout
   removeLink
   addParentLink
+  helper1: LinkDragMoveHelperInstance
+  helper2: LinkDragMoveHelperInstance
 }
 
 interface Options {
@@ -131,9 +142,10 @@ interface Options {
   mobileMenu?: boolean
   theme?: Theme
 }
+type Uid = string
 interface NodeObj {
   topic: string
-  id: string
+  id: Uid
   style?: {
     fontSize?: string
     color?: string
@@ -156,7 +168,6 @@ interface NodeObj {
   // main node specific properties
   branchColor?: string
 }
-type Uid = string
 type LinkItem = {
   id: string
   label: string

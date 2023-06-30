@@ -44,7 +44,7 @@ type ShowLinkController = (
   p2y: number,
   p3x: number,
   p3y: number,
-  linkObj: LinkObj,
+  linkItem: LinkItem,
   fromData: LinkControllerData,
   toData: LinkControllerData
 ) => void

@@ -170,7 +170,7 @@ export const hideLinkController = function () {
   this.P2.style.display = 'none'
   this.P3.style.display = 'none'
 }
-export const showLinkController = function (p2x, p2y, p3x, p3y, linkObj, fromData, toData) {
+export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p3y, linkObj, fromData, toData) {
   this.linkController.style.display = 'initial'
   this.P2.style.display = 'initial'
   this.P3.style.display = 'initial'

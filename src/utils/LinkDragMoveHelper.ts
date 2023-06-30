@@ -1,3 +1,4 @@
+// helper for custom link
 export default function LinkDragMoveHelper(dom) {
   this.dom = dom
   this.mousedown = false
