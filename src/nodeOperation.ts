@@ -371,7 +371,7 @@ export const removeNode: TNodeOperation = function (el: Topic) {
   for (const prop in this.linkData) {
     // MAYBEBUG should traverse all children node
     const link = this.linkData[prop]
-    if (link.from === t.firstChild || link.to === t.firstChild) {
+    if (link.from === nodeObj.id || link.to === nodeObj.id) {
       this.removeLink(this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`))
     }
   }

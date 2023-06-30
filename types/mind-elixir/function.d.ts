@@ -30,6 +30,25 @@ type LinkDiv = (this: MindElixirInstance, mainNode?: Wrapper) => void
 type TraverseChildrenFunc = (children: HTMLCollection, parent: Parent, isFirst?: boolean) => string
 type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj) => void
 
+type CreateLink = (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, linkObj?: LinkItem) => void
+
+type LinkControllerData = {
+  cx: number
+  cy: number
+  w: any
+  h: any
+}
+type ShowLinkController = (
+  this: MindElixirInstance,
+  p2x: number,
+  p2y: number,
+  p3x: number,
+  p3y: number,
+  linkObj: LinkObj,
+  fromData: LinkControllerData,
+  toData: LinkControllerData
+) => void
+
 type ExpandNode = (this: MindElixirInstance, el: Topic, isExpand: boolean) => void
 type SelectNodeFunc = (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent) => void
 type CommonSelectFunc = (this: MindElixirInstance) => void

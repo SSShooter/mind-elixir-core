@@ -3,7 +3,7 @@ import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { createSvgGroup } from './utils/svg'
 
 // TODO Link label
-export const createLink = function (from, to, isInitPaint, obj) {
+export const createLink: CreateLink = function (from, to, isInitPaint, obj) {
   const map = this.map.getBoundingClientRect()
   if (!from || !to) {
     return // not expand

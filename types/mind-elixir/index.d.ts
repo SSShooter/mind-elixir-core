@@ -76,6 +76,9 @@ interface MindElixirInstance {
   linkDiv: LinkDiv
   judgeDirection: JudgeDirection
 
+  createLink: CreateLink
+  showLinkController: ShowLinkController
+
   addChild: TNodeOperation
   createInputDiv: CreateInputDiv
   layoutChildren: LayoutChildren
@@ -153,8 +156,22 @@ interface NodeObj {
   // main node specific properties
   branchColor?: string
 }
-
-type LinkObj = object
+type Uid = string
+type LinkItem = {
+  id: string
+  label: string
+  from: Uid
+  to: Uid
+  delta1: {
+    x: number
+    y: number
+  }
+  delta2: {
+    x: number
+    y: number
+  }
+}
+type LinkObj = Record<string, LinkItem>
 
 interface MindElixirData {
   nodeData: NodeObj
