@@ -1,3 +1,13 @@
+import {
+  CommonSelectFunc,
+  ExpandNode,
+  GetDataFunc,
+  GetDataStringFunc,
+  RefreshFunc,
+  SelectNodeFunc,
+  SiblingSelectFunc,
+  Topic
+} from './interface'
 import { findEle } from './utils/dom'
 /**
  * @exports -
@@ -48,7 +58,7 @@ export const unselectNode: CommonSelectFunc = function () {
   this.currentNode = null
   this.bus.fire('unselectNode')
 }
-export const selectNextSibling: SiblingSelectFunc = function () {
+export const selectNextSibling = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.nextSibling
@@ -70,7 +80,7 @@ export const selectNextSibling: SiblingSelectFunc = function () {
   this.selectNode(target)
   return true
 }
-export const selectPrevSibling: SiblingSelectFunc = function () {
+export const selectPrevSibling = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
@@ -96,14 +106,14 @@ export const selectFirstChild: CommonSelectFunc = function () {
   if (!this.currentNode) return
   const children = this.currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
-    const target = children.firstChild.firstChild.firstChild as Topic
+    const target = children.firstChild.firstChild?.firstChild as Topic
     this.selectNode(target)
   }
 }
 export const selectParent: CommonSelectFunc = function () {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
-  const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
+  const parent = this.currentNode?.parentElement?.parentElement?.parentElement?.previousSibling
   if (parent) {
     const target = parent.firstChild as Topic
     this.selectNode(target)
@@ -226,10 +236,14 @@ export const install = function (plugin) {
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
 export const focusNode = function (el: Topic) {
-  if (el.nodeObj.root) return
+  if (el.nodeObj?.root) {
+    return
+  }
+
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
   }
+
   if (!this.isFocusMode) {
     this.nodeDataBackup = this.nodeData // help reset focus mode
     this.isFocusMode = true
@@ -304,6 +318,10 @@ export const setLocale = function (locale) {
 
 export const expandNode: ExpandNode = function (el, isExpand) {
   const node = el.nodeObj
+  if (!node) {
+    return
+  }
+
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand
   } else if (node.expanded !== false) {

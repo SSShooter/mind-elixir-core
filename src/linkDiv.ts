@@ -1,6 +1,14 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
+import {
+  Expander,
+  LinkDiv,
+  Parent,
+  Topic,
+  TraverseChildrenFunc,
+  Wrapper
+} from './interface'
 
 /**
  * Link nodes with svg,
@@ -24,7 +32,7 @@ const linkDiv: LinkDiv = function (mainNode) {
 
   // 1. calculate position of main nodes
   let totalHeight = 0
-  let shortSide: string // l or r
+  let shortSide = '' // l or r
   let shortSideGap = 0 // balance heigt of two side
   let currentOffsetL = 0 // left side total offset
   let currentOffsetR = 0 // right side total offset
@@ -173,7 +181,7 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, isFir
     const cL = childT.offsetLeft
     const cW = childT.offsetWidth
     const cH = childT.offsetHeight
-    const direction = child.offsetParent.className
+    const direction = child.offsetParent?.className
 
     path += generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
 
@@ -217,7 +225,9 @@ function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
     y1 = pT + pH
   }
   const y2 = cT + cH
-  let x1: number, x2: number, xMiddle: number
+  let x1 = 0
+  let x2 = 0
+  let xMiddle = 0
   if (direction === 'lhs') {
     x1 = pL + GAP
     x2 = cL
@@ -233,27 +243,28 @@ function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
     return `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
   } else if (y2 >= y1) {
     // child bottom lower than parent
-    return `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 1 : 0} ${
-      x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
-    } ${y2} H ${x2}`
+    return `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 1 : 0} ${x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
+      } ${y2} H ${x2}`
   } else {
     // child bottom higher than parent
-    return `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 0 : 1} ${
-      x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
-    } ${y2} H ${x2}`
+    return `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 0 : 1} ${x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
+      } ${y2} H ${x2}`
   }
 }
 
 function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }) {
-  let y1: number
-  let end: number
+  let y1 = 0
+  let end = 0
+
   if (isFirst) {
     y1 = pT + pH / 2
   } else {
     y1 = pT + pH
   }
   const y2 = cT + cH
-  let x1: number, x2: number, xMid: number
+  let x1 = 0
+  let x2 = 0
+  let xMid = 0
   if (direction === 'lhs') {
     xMid = pL
     x1 = xMid + GAP
