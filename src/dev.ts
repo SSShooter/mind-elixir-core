@@ -2,7 +2,7 @@ import MindElixir, { E } from './index'
 import MindElixirLite from './index.lite'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
-import example3 from './exampleData/3'
+import { MindElixirData, MindElixirInstance, Options } from './interface'
 
 interface Window {
   currentOperation: any

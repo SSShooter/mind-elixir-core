@@ -1,6 +1,7 @@
 import { Topic, Wrapper, Parent, Children } from "./dom.interface"
-import { MindElixirData, MindElixirInstance, NodeObj } from "./mind-elixir.interface"
+import { MindElixirData, MindElixirInstance, NodeObj, Uid } from "./mind-elixir.interface"
 
+export type Init = (this: MindElixirInstance, data: MindElixirData) => void
 export type CreateInputDiv = (this: MindElixirInstance, el: Topic) => void
 export type CreateWrapper = (
   this: MindElixirInstance,
@@ -18,6 +19,21 @@ export type LinkControllerData = {
   cy: number
   w: any
   h: any
+}
+
+export type LinkItem = {
+  id: string
+  label: string
+  from: Uid
+  to: Uid
+  delta1: {
+    x: number
+    y: number
+  }
+  delta2: {
+    x: number
+    y: number
+  }
 }
 
 export type ShowLinkController = (

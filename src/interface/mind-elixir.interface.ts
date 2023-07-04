@@ -17,7 +17,8 @@ import {
   ExpandNode,
   Layout,
   CreateLink,
-  ShowLinkController
+  ShowLinkController,
+  Init
 } from "./function.interface"
 
 export type Operation = {
@@ -122,22 +123,24 @@ export interface MindElixirInstance {
   getDataString: GetDataStringFunc
   getData: GetDataFunc
   getDataMd: GetDataStringFunc
-  scale: any
-  toCenter: any
-  focusNode: any
-  cancelFocus: any
-  initLeft: any
-  initRight: any
-  initSide: any
-  setLocale: any
-  enableEdit: any
-  disableEdit: any
+  scale
+  toCenter
+  focusNode
+  cancelFocus
+  initLeft
+  initRight
+  initSide
+  setLocale
+  enableEdit
+  disableEdit
   expandNode: ExpandNode
-  refresh: any
+  refresh
 
   layout: Layout
-  removeLink: any
-  addParentLink: any
+  removeLink
+  addParentLink
+  helper1: LinkDragMoveHelperInstance
+  helper2: LinkDragMoveHelperInstance
 }
 
 export interface Options {
@@ -161,7 +164,8 @@ export interface Options {
   theme?: Theme
   nodeMenu?: boolean
 }
-type Uid = string
+
+export type Uid = string
 export interface NodeObj {
   topic: string
   id: Uid

@@ -83,7 +83,7 @@ const linkDiv: LinkDiv = function (mainNode) {
     let x2, y2
     const el = mainNodeList[i] as Wrapper
     const palette = this.theme.palette
-    const branchColor = el.querySelector<Topic>('me-tpc').nodeObj.branchColor || palette[i % palette.length]
+    const branchColor = el.querySelector<Topic>('me-tpc')?.nodeObj?.branchColor || palette[i % palette.length]
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
