@@ -108,7 +108,7 @@ function MindElixir(
     mobileMenu,
     theme,
   }: Options
-) {
+): void {
   console.log('ME_version ' + MindElixir.version, this)
   let ele
   const elType = Object.prototype.toString.call(el)
@@ -117,7 +117,7 @@ function MindElixir(
   } else if (elType === '[object String]') {
     ele = document.querySelector(el as string) as HTMLElement
   }
-  if (!ele) return new Error('MindElixir: el is not a valid element')
+  if (!ele) new Error('MindElixir: el is not a valid element')
 
   ele.className += ' mind-elixir'
   ele.innerHTML = ''

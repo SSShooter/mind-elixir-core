@@ -15,7 +15,7 @@ interface Window {
 
 declare let window: Window
 
-const options = {
+const options: Options = {
   el: '#map',
   newTopicName: '子节点',
   direction: MindElixir.SIDE,
@@ -60,12 +60,12 @@ const options = {
   mainNodeHorizontalGap: 65, // 65
 }
 
-const mind = new (MindElixir as any)(options)
+const mind: MindElixirInstance = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
-mind.init(example) // or try `example`
+mind.init(example as MindElixirData)
 function sleep() {
-  return new Promise<void>((res, rej) => {
+  return new Promise<void>(res => {
     setTimeout(() => res(), 1000)
   })
 }

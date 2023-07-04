@@ -1,3 +1,4 @@
+type Init = (this: MindElixirInstance, data: MindElixirData) => void
 type CreateInputDiv = (this: MindElixirInstance, el: Topic) => void
 type CreateWrapper = (
   this: MindElixirInstance,

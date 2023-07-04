@@ -76,6 +76,8 @@ interface MindElixirInstance {
   line2: SVGElement
   linkSvgGroup: SVGElement
 
+  init: Init
+
   generateNewObj: () => NodeObj
   createWrapper: CreateWrapper
   createParent: CreateParent
@@ -123,13 +125,12 @@ interface MindElixirInstance {
 
 interface Options {
   el: string | HTMLElement
-  data: MindElixirData
   direction?: number
   locale?: string
   draggable?: boolean
   editable?: boolean
   contextMenu?: boolean
-  contextMenuOption?: object
+  contextMenuOption?: any
   toolBar?: boolean
   keypress?: boolean
   before?: object
@@ -141,6 +142,7 @@ interface Options {
   mainNodeVerticalGap?: number
   mobileMenu?: boolean
   theme?: Theme
+  nodeMenu?: boolean
 }
 type Uid = string
 interface NodeObj {
