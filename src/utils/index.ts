@@ -1,8 +1,10 @@
+import { NodeObj } from "../interface"
+
 export function encodeHTML(s) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
 }
 
-export const isMobile = (): boolean => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+export const isMobile = () => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 export const getObjById = function (id: string, data: NodeObj) {
   data = data || this.nodeData
@@ -36,9 +38,9 @@ export function refreshIds(data: NodeObj) {
   }
 }
 
-export const throttle = (fn: (any) => void, wait: number) => {
+export const throttle = (fn: (...args: any[]) => void, wait: number) => {
   let pre = Date.now()
-  return function (...args) {
+  return function (...args: any[]) {
     const now = Date.now()
     if (now - pre >= wait) {
       fn.apply(this, args)
@@ -164,8 +166,12 @@ export function checkMoveValid(from: NodeObj, to: NodeObj) {
   return valid
 }
 
-export function getObjSibling(obj: NodeObj): NodeObj {
-  const childrenList = obj.parent.children
+export function getObjSibling(obj: NodeObj) {
+  const childrenList = obj.parent?.children
+  if (!childrenList) {
+    return null
+  }
+
   const index = childrenList.indexOf(obj)
   if (index + 1 >= childrenList.length) {
     // 最后一个
@@ -175,67 +181,99 @@ export function getObjSibling(obj: NodeObj): NodeObj {
   }
 }
 
-export function moveUpObj(obj: NodeObj) {
-  const childrenList = obj.parent.children
-  const index = childrenList.indexOf(obj)
-  const t = childrenList[index]
-  if (index === 0) {
-    childrenList[index] = childrenList[childrenList.length - 1]
-    childrenList[childrenList.length - 1] = t
-  } else {
-    childrenList[index] = childrenList[index - 1]
-    childrenList[index - 1] = t
+function moveObject(target: NodeObj, moveUp: boolean) {
+  const childrenList = target.parent?.children
+  if (!childrenList) {
+    return
   }
+
+  const index = childrenList.indexOf(target)
+  let anotherIndex = -1
+  if (moveUp) {
+    anotherIndex = index === 0 ? (childrenList.length - 1) : (index - 1)
+  } else {
+    anotherIndex = (index === childrenList.length - 1) ? 0 : (index + 1)
+  }
+
+  const temp = childrenList[index]
+  childrenList[index] = childrenList[anotherIndex]
+  childrenList[anotherIndex] = temp
+}
+
+export function moveUpObj(obj: NodeObj) {
+  moveObject(obj, true)
 }
 
 export function moveDownObj(obj: NodeObj) {
-  const childrenList = obj.parent.children
-  const index = childrenList.indexOf(obj)
-  const t = childrenList[index]
-  if (index === childrenList.length - 1) {
-    childrenList[index] = childrenList[0]
-    childrenList[0] = t
-  } else {
-    childrenList[index] = childrenList[index + 1]
-    childrenList[index + 1] = t
-  }
+  moveObject(obj, false)
 }
 
 export function removeNodeObj(obj: NodeObj) {
-  const childrenList = obj.parent.children
+  const childrenList = obj.parent?.children
+  if (!childrenList) {
+    return 0
+  }
+
   const index = childrenList.indexOf(obj)
   childrenList.splice(index, 1)
+
   return childrenList.length
 }
 
+/**
+ * 将目标对象插入到指定的对象的位置
+ * @param baseObject 
+ * @param targetObject 
+ * @param offset 偏移量，例如：-1 表示插入到指定对象的前一位
+ */
+function insertNodeObject(baseObject: NodeObj, targetObject: NodeObj, offset = 0) {
+  const childrenList = baseObject.parent?.children
+  if (!childrenList) {
+    return
+  }
+
+  const index = childrenList.indexOf(baseObject)
+  childrenList.splice(index + offset, 0, targetObject)
+}
+
 export function insertNodeObj(obj: NodeObj, newObj: NodeObj) {
-  const childrenList = obj.parent.children
-  const index = childrenList.indexOf(obj)
-  childrenList.splice(index + 1, 0, newObj)
+  insertNodeObject(obj, newObj, 1)
 }
 
 export function insertBeforeNodeObj(obj: NodeObj, newObj: NodeObj) {
-  const childrenList = obj.parent.children
-  const index = childrenList.indexOf(obj)
-  childrenList.splice(index, 0, newObj)
+  insertNodeObject(obj, newObj)
 }
 
 export function insertParentNodeObj(obj: NodeObj, newObj: NodeObj) {
-  const childrenList = obj.parent.children
+  const childrenList = obj.parent?.children
+  if (!childrenList) {
+    return
+  }
+
   const index = childrenList.indexOf(obj)
+
   childrenList[index] = newObj
   newObj.children = [obj]
 }
 
 export function moveNodeObj(from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
-  if (to.children) to.children.push(from)
-  else to.children = [from]
+
+  if (to.children) {
+    to.children.push(from)
+  } else {
+    to.children = [from]
+  }
 }
 
 export function moveNodeBeforeObj(from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
-  const childrenList = to.parent.children
+
+  const childrenList = to.parent?.children
+  if (!childrenList) {
+    return
+  }
+
   let toIndex = 0
   for (let i = 0; i < childrenList.length; i++) {
     if (childrenList[i] === to) {
@@ -243,12 +281,18 @@ export function moveNodeBeforeObj(from: NodeObj, to: NodeObj) {
       break
     }
   }
+
   childrenList.splice(toIndex, 0, from)
 }
 
 export function moveNodeAfterObj(from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
-  const childrenList = to.parent.children
+
+  const childrenList = to.parent?.children
+  if (!childrenList) {
+    return
+  }
+
   let toIndex = 0
   for (let i = 0; i < childrenList.length; i++) {
     if (childrenList[i] === to) {
@@ -256,15 +300,18 @@ export function moveNodeAfterObj(from: NodeObj, to: NodeObj) {
       break
     }
   }
+
   childrenList.splice(toIndex + 1, 0, from)
 }
 
 export function deepClone(obj) {
-  const deepCloneObj = JSON.parse(
+  return JSON.parse(
     JSON.stringify(obj, (k, v) => {
-      if (k === 'parent') return undefined
+      if (k === 'parent') {
+        return undefined
+      }
+
       return v
     })
   )
-  return deepCloneObj
 }

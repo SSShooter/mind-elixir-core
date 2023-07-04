@@ -1,3 +1,16 @@
+import {
+  Children,
+  CreateChildren,
+  CreateInputDiv,
+  CreateParent,
+  CreateTopic,
+  CreateWrapper,
+  Expander,
+  NodeObj,
+  Parent,
+  Topic,
+  Wrapper
+} from '../interface'
 import { LEFT } from '../const'
 import { encodeHTML } from '../utils/index'
 
@@ -12,8 +25,8 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.textContent = nodeObj.topic
 
   if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color || null
-    tpc.style.background = nodeObj.style.background || null
+    tpc.style.color = nodeObj.style.color || ''
+    tpc.style.background = nodeObj.style.background || ''
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
@@ -42,7 +55,7 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     console.log(linkContainer)
   } else if (tpc.linkContainer) {
     tpc.linkContainer.remove()
-    tpc.linkContainer = null
+    tpc.linkContainer = undefined
   }
   if (nodeObj.icons && nodeObj.icons.length) {
     const iconsContainer = $d.createElement('span')
@@ -111,16 +124,24 @@ export function selectText(div: HTMLElement) {
 
 export const createInputDiv: CreateInputDiv = function (tpc) {
   console.time('createInputDiv')
-  if (!tpc) return
-  let div = $d.createElement('div')
-  const origin = tpc.childNodes[0].textContent as string
+  if (!tpc) {
+    return
+  }
+
+  let div: HTMLDivElement | null = $d.createElement('div')
+  const origin = tpc.childNodes[0].textContent || ''
+
   tpc.appendChild(div)
   div.id = 'input-box'
   div.textContent = origin
   div.contentEditable = 'true'
   div.spellcheck = false
   div.style.cssText = `min-width:${tpc.offsetWidth - 8}px;`
-  if (this.direction === LEFT) div.style.right = '0'
+
+  if (this.direction === LEFT) {
+    div.style.right = '0'
+  }
+
   div.focus()
 
   selectText(div)
@@ -137,31 +158,44 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
 
     if (key === 'Enter' || key === 'Tab') {
       // keep wrap for shift enter
-      if (e.shiftKey) return
+      if (e.shiftKey || !this.inputDiv) {
+        return
+      }
 
       e.preventDefault()
+
       this.inputDiv.blur()
       this.map.focus()
     }
   })
+
   div.addEventListener('blur', () => {
-    if (!div) return
     const node = tpc.nodeObj
+    if (!div || !node) {
+      return
+    }
+
     const topic = div.textContent!.trim()
     console.log(topic)
-    if (topic === '') node.topic = origin
-    else node.topic = topic
+
+    node.topic = topic === '' ? origin : topic
+
     div.remove()
     this.inputDiv = div = null
-    if (topic === origin) return
+    if (topic === origin) {
+      return
+    }
+
     tpc.childNodes[0].textContent = node.topic
     this.linkDiv()
+
     this.bus.fire('operation', {
       name: 'finishEdit',
       obj: node,
       origin,
     })
   })
+
   console.timeEnd('createInputDiv')
 }
 

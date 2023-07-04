@@ -1,11 +1,31 @@
-/// <reference path="./dom.d.ts" />
-/// <reference path="./function.d.ts" />
+import { Topic } from "./dom.interface"
+import {
+  CreateWrapper,
+  CreateParent,
+  CreateChildren,
+  CreateTopic,
+  LinkDiv,
+  JudgeDirection,
+  TNodeOperation,
+  CreateInputDiv,
+  LayoutChildren,
+  SelectNodeFunc,
+  CommonSelectFunc,
+  SiblingSelectFunc,
+  GetDataStringFunc,
+  GetDataFunc,
+  ExpandNode,
+  Layout,
+  CreateLink,
+  ShowLinkController,
+  Init
+} from "./function.interface"
 
-type operation = {
+export type Operation = {
   name: string
 }
 
-interface Theme {
+export interface Theme {
   name: string
   palette: string[]
   cssVar: {
@@ -25,7 +45,7 @@ interface LinkDragMoveHelperInstance {
   destory: (map: HTMLElement) => void
 }
 
-interface MindElixirInstance {
+export interface MindElixirInstance {
   mindElixirBox: HTMLElement
   nodeData: NodeObj
   linkData: LinkObj
@@ -42,7 +62,7 @@ interface MindElixirInstance {
   }
 
   // wip
-  history: operation[]
+  history: Operation[]
   isUndo: boolean
   undo: () => void
 
@@ -123,7 +143,7 @@ interface MindElixirInstance {
   helper2: LinkDragMoveHelperInstance
 }
 
-interface Options {
+export interface Options {
   el: string | HTMLElement
   direction?: number
   locale?: string
@@ -144,8 +164,9 @@ interface Options {
   theme?: Theme
   nodeMenu?: boolean
 }
-type Uid = string
-interface NodeObj {
+
+export type Uid = string
+export interface NodeObj {
   topic: string
   id: Uid
   style?: {
@@ -170,23 +191,10 @@ interface NodeObj {
   // main node specific properties
   branchColor?: string
 }
-type LinkItem = {
-  id: string
-  label: string
-  from: Uid
-  to: Uid
-  delta1: {
-    x: number
-    y: number
-  }
-  delta2: {
-    x: number
-    y: number
-  }
-}
-type LinkObj = Record<string, LinkItem>
 
-interface MindElixirData {
+export type LinkObj = object
+
+export interface MindElixirData {
   nodeData: NodeObj
   linkData?: LinkObj
   direction?: number

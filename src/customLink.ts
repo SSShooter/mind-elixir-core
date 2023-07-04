@@ -1,9 +1,10 @@
+import { CreateLink, LinkItem, ShowLinkController, Topic } from './interface'
 import { generateUUID, getArrowPoints, calcP1, calcP4 } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { createSvgGroup } from './utils/svg'
 
 // TODO Link label
-export const createLink: CreateLink = function (from, to, isInitPaint, obj) {
+export const createLink = function (from: Topic, to: Topic, isInitPaint?: boolean, obj?: LinkItem) {
   const map = this.map.getBoundingClientRect()
   if (!from || !to) {
     return // not expand
@@ -16,7 +17,7 @@ export const createLink: CreateLink = function (from, to, isInitPaint, obj) {
   const toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
 
   let p2x, p2y, p3x, p3y
-  if (isInitPaint) {
+  if (isInitPaint && obj) {
     p2x = fromCenterX + obj.delta1.x
     p2y = fromCenterY + obj.delta1.y
     p3x = toCenterX + obj.delta2.x
@@ -70,8 +71,9 @@ export const createLink: CreateLink = function (from, to, isInitPaint, obj) {
 
   let newLinkObj
   if (isInitPaint) {
+    const objId = obj?.id || ''
     newLinkObj = {
-      id: obj.id,
+      id: objId,
       label: '',
       from,
       to,
@@ -85,9 +87,9 @@ export const createLink: CreateLink = function (from, to, isInitPaint, obj) {
       },
     }
     // overwrite
-    this.linkData[obj.id] = newLinkObj
+    this.linkData[objId] = newLinkObj
     newSvgGroup.linkObj = newLinkObj
-    newSvgGroup.dataset.linkid = obj.id
+    newSvgGroup.dataset.linkid = objId
   } else {
     newLinkObj = {
       id: generateUUID(),
@@ -176,8 +178,8 @@ export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p
   this.P3.style.display = 'initial'
 
   const p1 = calcP1(fromData, p2x, p2y)
-  let p1x = p1.x
-  let p1y = p1.y
+  let p1x = p1.x = 0
+  let p1y = p1.y = 0
 
   const p4 = calcP4(toData, p3x, p3y)
   let p4x = p4.x
@@ -185,14 +187,14 @@ export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p
 
   this.P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
   this.P3.style.cssText = `top:${p3y}px;left:${p3x}px;`
-  this.line1.setAttribute('x1', p1x)
-  this.line1.setAttribute('y1', p1y)
-  this.line1.setAttribute('x2', p2x)
-  this.line1.setAttribute('y2', p2y)
-  this.line2.setAttribute('x1', p3x)
-  this.line2.setAttribute('y1', p3y)
-  this.line2.setAttribute('x2', p4x)
-  this.line2.setAttribute('y2', p4y)
+  this.line1.setAttribute('x1', p1x.toString())
+  this.line1.setAttribute('y1', p1y.toString())
+  this.line1.setAttribute('x2', p2x.toString())
+  this.line1.setAttribute('y2', p2y.toString())
+  this.line2.setAttribute('x1', p3x.toString())
+  this.line2.setAttribute('y1', p3y.toString())
+  this.line2.setAttribute('x2', p4x.toString())
+  this.line2.setAttribute('y2', p4y.toString())
 
   if (this.helper1) {
     this.helper1.destory(this.map)
@@ -216,11 +218,11 @@ export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p
 
     this.P2.style.top = p2y + 'px'
     this.P2.style.left = p2x + 'px'
-    this.currentLink.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-    this.line1.setAttribute('x1', p1x)
-    this.line1.setAttribute('y1', p1y)
-    this.line1.setAttribute('x2', p2x)
-    this.line1.setAttribute('y2', p2y)
+    this.currentLink?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+    this.line1.setAttribute('x1', p1x.toString())
+    this.line1.setAttribute('y1', p1y.toString())
+    this.line1.setAttribute('x2', p2x.toString())
+    this.line1.setAttribute('y2', p2y.toString())
     linkObj.delta1.x = p2x - fromData.cx
     linkObj.delta1.y = p2y - fromData.cy
   })
@@ -236,10 +238,10 @@ export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p
 
     this.P3.style.top = p3y + 'px'
     this.P3.style.left = p3x + 'px'
-    this.currentLink.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-    this.currentLink.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
-    this.line2.setAttribute('x1', p3x)
-    this.line2.setAttribute('y1', p3y)
+    this.currentLink?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+    this.currentLink?.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+    this.line2.setAttribute('x1', p3x.toString())
+    this.line2.setAttribute('y1', p3y.toString())
     this.line2.setAttribute('x2', p4x)
     this.line2.setAttribute('y2', p4y)
     linkObj.delta2.x = p3x - toData.cx

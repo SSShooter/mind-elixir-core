@@ -14,6 +14,18 @@ import {
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
+import {
+  AddChildFunction,
+  Children,
+  MindElixirInstance,
+  NodeObj,
+  ReshapeNode,
+  TNodeCopy,
+  TNodeMove,
+  TNodeOperation,
+  Topic,
+  Wrapper
+} from './interface'
 
 /**
  * @exports NodeOperation
@@ -39,7 +51,8 @@ export const reshapeNode: ReshapeNode = function (tpc, patchData) {
   if (origin.style && patchData.style) {
     patchData.style = Object.assign(origin.style, patchData.style)
   }
-  const newObj = Object.assign(nodeObj, patchData)
+
+  const newObj = Object.assign(nodeObj || {}, patchData)
   shapeTpc(tpc, newObj)
   this.linkDiv()
   this.bus.fire('operation', {
@@ -62,15 +75,24 @@ export const reshapeNode: ReshapeNode = function (tpc, patchData) {
  */
 export const insertSibling: TNodeOperation = function (el, node) {
   const nodeEle = el || this.currentNode
-  if (!nodeEle) return
+  if (!nodeEle) {
+    return
+  }
+
   const nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
+  if (!nodeObj) {
+    return
+  }
+
+  if (nodeObj.root) {
     this.addChild()
     return
   }
+
   const newNodeObj = node || this.generateNewObj()
   insertNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
+
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
@@ -82,13 +104,16 @@ export const insertSibling: TNodeOperation = function (el, node) {
     this.judgeDirection(grp, newNodeObj)
     this.linkDiv()
   } else {
-    this.linkDiv(grp.offsetParent)
+    this.linkDiv(grp.offsetParent as Wrapper)
   }
+
   if (!node) {
     this.createInputDiv(top.children[0] as Topic)
   }
+
   this.selectNode(top.children[0] as Topic, true)
   console.timeEnd('insertSibling_DOM')
+
   this.bus.fire('operation', {
     name: 'insertSibling',
     obj: newNodeObj,
@@ -108,12 +133,20 @@ export const insertSibling: TNodeOperation = function (el, node) {
  */
 export const insertBefore: TNodeOperation = function (el, node) {
   const nodeEle = el || this.currentNode
-  if (!nodeEle) return
+  if (!nodeEle) {
+    return
+  }
+
   const nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
+  if (!nodeObj) {
+    return
+  }
+
+  if (nodeObj.root) {
     this.addChild()
     return
   }
+
   const newNodeObj = node || this.generateNewObj()
   insertBeforeNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
@@ -130,9 +163,11 @@ export const insertBefore: TNodeOperation = function (el, node) {
   } else {
     this.linkDiv(grp.offsetParent)
   }
+
   if (!node) {
     this.createInputDiv(top.children[0] as Topic)
   }
+
   this.selectNode(top.children[0] as Topic, true)
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
@@ -152,13 +187,17 @@ export const insertBefore: TNodeOperation = function (el, node) {
  * @example
  * insertParent(E('bd4313fbac40284b'))
  */
-export const insertParent: TNodeOperation = function (el, node) {
+export const insertParent: TNodeOperation = function (el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
-  if (!nodeEle) return
-  const nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
+  if (!nodeEle) {
     return
   }
+
+  const nodeObj = nodeEle.nodeObj
+  if (!nodeObj?.root) {
+    return
+  }
+
   const newNodeObj = node || this.generateNewObj()
   insertParentNodeObj(nodeObj, newNodeObj)
   addParentLink(this.nodeData)
@@ -175,10 +214,10 @@ export const insertParent: TNodeOperation = function (el, node) {
   // FIX: style wrong when adding main node parent
 
   // if it's a main node previously
-  if (grp0.parentNode.className === 'box') {
+  if ((grp0.parentNode as HTMLElement)?.className === 'box') {
     grp.className = grp0.className // l/rhs
     grp0.className = ''
-    grp0.querySelector('.subLines').remove()
+    grp0.querySelector('.subLines')?.remove()
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -195,17 +234,33 @@ export const insertParent: TNodeOperation = function (el, node) {
   })
 }
 
-export const addChildFunction: AddChildFunction = function (nodeEle, node) {
-  if (!nodeEle) return
-  const nodeObj = nodeEle.nodeObj as NodeObj
+export const addChildFunction = function (nodeEle: Topic, node: NodeObj) {
+  if (!nodeEle) {
+    return null
+  }
+
+  const nodeObj = nodeEle.nodeObj
+  if (!nodeObj) {
+    return null
+  }
+
   if (nodeObj.expanded === false) {
     this.expandNode(nodeEle, true)
     // dom had resetted
     nodeEle = findEle(nodeObj.id)
   }
+
+  if (!nodeEle) {
+    return null
+  }
+
   const newNodeObj = node || this.generateNewObj()
-  if (nodeObj.children) nodeObj.children.push(newNodeObj)
-  else nodeObj.children = [newNodeObj]
+  if (nodeObj.children) {
+    nodeObj.children.push(newNodeObj)
+  } else {
+    nodeObj.children = [newNodeObj]
+  }
+
   addParentLink(this.nodeData)
 
   const top = nodeEle.parentElement
@@ -225,6 +280,7 @@ export const addChildFunction: AddChildFunction = function (nodeEle, node) {
     top.nextSibling.appendChild(grp)
     this.linkDiv()
   }
+
   return { newTop, newNodeObj }
 }
 
@@ -239,19 +295,30 @@ export const addChildFunction: AddChildFunction = function (nodeEle, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild: TNodeOperation = function (el, node) {
+export const addChild = function (el?: Topic, node?: NodeObj) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
-  if (!nodeEle) return
-  const { newTop, newNodeObj } = addChildFunction.call(this, nodeEle, node)
+  if (!nodeEle || !node) {
+    return
+  }
+
+  const addResult = addChildFunction.call(this, nodeEle, node)
+  if (!addResult) {
+    return
+  }
+
+  const { newTop, newNodeObj } = addResult
   this.bus.fire('operation', {
     name: 'addChild',
     obj: newNodeObj,
   })
+
   console.timeEnd('addChild')
+
   if (!node) {
     this.createInputDiv(newTop.children[0])
   }
+
   this.selectNode(newTop.children[0], true)
 }
 // uncertain link disappear sometimes??
@@ -271,12 +338,19 @@ export const addChild: TNodeOperation = function (el, node) {
 export const copyNode: TNodeCopy = function (node: Topic, to: Topic) {
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
+
   refreshIds(deepCloneObj)
-  const { newNodeObj } = addChildFunction.call(this, to, deepCloneObj)
+
+  const addResult = addChildFunction.call(this, to, deepCloneObj)
+  if (!addResult) {
+    return
+  }
+
   console.timeEnd('copyNode')
+
   this.bus.fire('operation', {
     name: 'copyNode',
-    obj: newNodeObj,
+    obj: addResult.newNodeObj,
   })
 }
 
@@ -292,11 +366,19 @@ export const copyNode: TNodeCopy = function (node: Topic, to: Topic) {
  */
 export const moveUpNode: TNodeMove = function (el: Topic) {
   const nodeEle = el || this.currentNode
-  if (!nodeEle) return
+  if (!nodeEle) {
+    return
+  }
+
   const grp = nodeEle.parentNode.parentNode
   const obj = nodeEle.nodeObj
+  if (!obj) {
+    return
+  }
+
   moveUpObj(obj)
-  grp.parentNode.insertBefore(grp, grp.previousSibling)
+
+  grp.parentNode?.insertBefore(grp, grp.previousSibling)
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveUpNode',
@@ -316,15 +398,24 @@ export const moveUpNode: TNodeMove = function (el: Topic) {
  */
 export const moveDownNode: TNodeMove = function (el: Topic) {
   const nodeEle = el || this.currentNode
-  if (!nodeEle) return
+  if (!nodeEle) {
+    return
+  }
+
   const grp = nodeEle.parentNode.parentNode
   const obj = nodeEle.nodeObj
-  moveDownObj(obj)
-  if (grp.nextSibling) {
-    grp.insertAdjacentElement('afterend', grp.nextSibling)
-  } else {
-    grp.parentNode.prepend(grp)
+  if (!obj) {
+    return
   }
+
+  moveDownObj(obj)
+
+  if (grp.nextSibling) {
+    grp.insertAdjacentElement('afterend', grp.nextSibling as HTMLElement)
+  } else {
+    grp.parentNode?.prepend(grp)
+  }
+
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveDownNode',
@@ -342,27 +433,39 @@ export const moveDownNode: TNodeMove = function (el: Topic) {
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export const removeNode: TNodeOperation = function (el: Topic) {
+export const removeNode = function (el: Topic) {
   const nodeEle = el || this.currentNode
-  if (!nodeEle) return
+  if (!nodeEle) {
+    return
+  }
+
   console.log('removeNode', nodeEle)
+
   const nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
+  if (!nodeObj) {
+    return
+  }
+
+  if (nodeObj.root) {
     throw new Error('Can not remove root node')
   }
-  const index = nodeObj.parent.children.findIndex(node => node === nodeObj)
-  const next = nodeObj.parent.children[index + 1]
-  const originSiblingId = next && next.id
+
+  const children = nodeObj.parent?.children || []
+  const index = children.findIndex(node => node === nodeObj)
+
+  const next = children[index + 1]
+  const originSiblingId = next?.id || ''
 
   const childrenLength = removeNodeObj(nodeObj)
   const t = nodeEle.parentNode
   if (childrenLength === 0) {
     // remove epd when children length === 0
-    const parentT = t.parentNode.parentNode.previousSibling
+    const parentT = t.parentNode?.parentNode?.previousSibling as HTMLElement | null
     // root doesn't have epd
-    if (parentT.tagName !== 'ME-ROOT') {
-      parentT.children[1].remove()
+    if (parentT?.tagName !== 'ME-ROOT') {
+      parentT?.children[1].remove()
     }
+
     this.selectParent()
   } else {
     // select sibling automatically
@@ -382,7 +485,7 @@ export const removeNode: TNodeOperation = function (el: Topic) {
     name: 'removeNode',
     obj: nodeObj,
     originSiblingId,
-    originParentId: nodeObj.parent.id,
+    originParentId: nodeObj.parent?.id || '',
   })
 }
 
@@ -397,33 +500,43 @@ export const removeNode: TNodeOperation = function (el: Topic) {
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNode: TNodeMove = function (from: Topic, to: Topic) {
+export const moveNode = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent.id
+  if (!fromObj || !toObj) {
+    return
+  }
+
+  const originParentId = fromObj.parent?.id || ''
+
   if (toObj.expanded === false) {
     this.expandNode(to, true)
     from = findEle(fromObj.id)
     to = findEle(toObj.id)
   }
+
   if (!checkMoveValid(fromObj, toObj)) {
     console.warn('Invalid move')
     return
   }
+
   console.time('moveNode')
   moveNodeObj(fromObj, toObj)
   addParentLink(this.nodeData) // update parent property
+
   const fromTop = from.parentElement
-  const fromChilren = fromTop.parentElement.parentElement
+  const fromChildren = fromTop.parentElement.parentElement
   const toTop = to.parentElement
-  if (fromChilren.className === 'box') {
+
+  if (fromChildren?.className === 'box') {
     // clear svg group of main node
-    fromTop.parentElement.lastChild.remove()
+    fromTop?.parentElement?.lastChild?.remove()
   } else if (fromTop.parentElement.className === 'box') {
     fromTop.style.cssText = '' // clear style
   }
+
   if (toTop.tagName === 'ME-PARENT') {
-    if (fromChilren.className === 'box') {
+    if (fromChildren?.className === 'box') {
       // clear direaction class of main node
       fromTop.parentElement.className = ''
     }
@@ -440,11 +553,13 @@ export const moveNode: TNodeMove = function (from: Topic, to: Topic) {
     this.judgeDirection(fromTop.parentElement, fromObj)
     toTop.nextSibling.appendChild(fromTop.parentElement)
   }
+
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNode',
     obj: { fromObj, toObj, originParentId },
   })
+
   console.timeEnd('moveNode')
 }
 
@@ -459,19 +574,29 @@ export const moveNode: TNodeMove = function (from: Topic, to: Topic) {
  * @example
  * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeBefore: TNodeMove = function (from, to) {
+export const moveNodeBefore = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent.id
+  if (!fromObj || !toObj) {
+    return
+  }
+
+  const originParentId = fromObj.parent?.id || ''
+
   moveNodeBeforeObj(fromObj, toObj)
   addParentLink(this.nodeData)
+
   const fromTop = from.parentElement
   const fromGrp = fromTop.parentNode
   const toTop = to.parentElement
   const toGrp = toTop.parentNode
-  const toChilren = toTop.parentNode.parentNode
-  toChilren.insertBefore(fromGrp, toGrp)
-  if (toGrp.className) fromGrp.className = toGrp.className
+
+  toTop.parentNode?.parentNode?.insertBefore(fromGrp, toGrp)
+
+  if (toGrp.className) {
+    fromGrp.className = toGrp.className
+  }
+
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeBefore',
@@ -490,19 +615,29 @@ export const moveNodeBefore: TNodeMove = function (from, to) {
  * @example
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeAfter: TNodeMove = function (from: Topic, to: Topic) {
+export const moveNodeAfter = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent.id
+  if (!fromObj || !toObj) {
+    return
+  }
+
+  const originParentId = fromObj?.parent?.id || ''
+
   moveNodeAfterObj(fromObj, toObj)
   addParentLink(this.nodeData)
+
   const fromTop = from.parentElement
   const fromGrp = fromTop.parentElement
   const toTop = to.parentElement
   const toGrp = toTop.parentElement
-  const toChilren = toGrp.parentNode
-  toChilren.insertBefore(fromGrp, toGrp.nextSibling)
-  if (toGrp.className) fromGrp.className = toGrp.className
+
+  toGrp.parentNode?.insertBefore(fromGrp, toGrp.nextSibling)
+
+  if (toGrp.className) {
+    fromGrp.className = toGrp.className
+  }
+
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeAfter',

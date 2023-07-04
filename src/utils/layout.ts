@@ -1,4 +1,5 @@
 import { LEFT, RIGHT, SIDE } from '../const'
+import { Children, JudgeDirection, LayoutChildren, NodeObj } from '../interface'
 import { createExpander, shapeTpc } from './dom'
 
 const $d = document
@@ -48,12 +49,8 @@ export const layout = function () {
  * @return {ChildrenElement} children element.
  */
 export const layoutChildren: LayoutChildren = function (data, container, direction) {
-  let chldr: Children
-  if (container) {
-    chldr = container
-  } else {
-    chldr = $d.createElement('me-children') as Children
-  }
+  const children = container ? container : ($d.createElement('me-children') as Children)
+
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
     const grp = $d.createElement('me-wrapper')
@@ -69,6 +66,7 @@ export const layoutChildren: LayoutChildren = function (data, container, directi
         grp.className = 'rhs'
       }
     }
+
     const top = this.createParent(nodeObj)
     if (nodeObj.children && nodeObj.children.length > 0) {
       top.appendChild(createExpander(nodeObj.expanded))
@@ -80,9 +78,11 @@ export const layoutChildren: LayoutChildren = function (data, container, directi
     } else {
       grp.appendChild(top)
     }
-    chldr.appendChild(grp)
+
+    children.appendChild(grp)
   }
-  return chldr
+
+  return children
 }
 
 // Judge new added node L or R

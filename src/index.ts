@@ -42,7 +42,13 @@ import {
   moveNodeBefore,
   moveNodeAfter,
 } from './nodeOperation'
-import { createLink, removeLink, selectLink, hideLinkController, showLinkController } from './customLink'
+import {
+  createLink,
+  removeLink,
+  selectLink,
+  hideLinkController,
+  showLinkController
+} from './customLink'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
 
@@ -56,6 +62,7 @@ import Bus from './utils/pubsub'
 
 import './index.less'
 import './iconfont/iconfont.js'
+import { MindElixirData, MindElixirInstance, Operation, Options } from './interface'
 
 // TODO show up animation
 
@@ -124,16 +131,16 @@ function MindElixir(
   ele.style.setProperty('--gap', GAP + 'px')
   this.mindElixirBox = ele
   this.before = before || {}
-  this.locale = locale
-  this.contextMenuOption = contextMenuOption
+  this.locale = locale || ''
+  this.contextMenuOption = contextMenuOption || {}
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
-  this.mobileMenu = mobileMenu
+  this.mobileMenu = mobileMenu || false
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   this.direction = typeof direction === 'number' ? direction : 1
   this.draggable = draggable === undefined ? true : draggable
-  this.newTopicName = newTopicName
+  this.newTopicName = newTopicName || ''
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? true : allowUndo
   // this.parentMap = {} // deal with large amount of nodes
@@ -143,12 +150,12 @@ function MindElixir(
   this.scaleVal = 1
   this.tempDirection = null
   this.mainLinkStyle = mainLinkStyle || 0
-  this.overflowHidden = overflowHidden
-  this.mainNodeHorizontalGap = mainNodeHorizontalGap
-  this.mainNodeVerticalGap = mainNodeVerticalGap
+  this.overflowHidden = overflowHidden || false
+  this.mainNodeHorizontalGap = mainNodeHorizontalGap || 0
+  this.mainNodeVerticalGap = mainNodeVerticalGap || 0
 
   this.bus = new Bus()
-  this.bus.addListener('operation', (operation: operation) => {
+  this.bus.addListener('operation', (operation: Operation) => {
     if (this.isUndo) {
       this.isUndo = false
       return
@@ -226,9 +233,9 @@ function MindElixir(
 }
 
 function beforeHook(fn: (el: any, node?: any) => void, fnName: string) {
-  return async function (...args: unknown[]) {
+  return async function (...args: any[]) {
     if (!this.before[fnName] || (await this.before[fnName].apply(this, args))) {
-      fn.apply(this, args)
+      fn.apply(this, [args[0], args[1]])
     }
   }
 }

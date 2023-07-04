@@ -34,6 +34,7 @@ import mobileMenu from './plugin/mobileMenu'
 import Bus from './utils/pubsub'
 import './index.less'
 import './iconfont/iconfont.js'
+import { MindElixirData, MindElixirInstance, Options } from './interface'
 
 export const E = findEle
 
@@ -53,12 +54,12 @@ function MindElixir(
   this.mindElixirBox = box
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
-  this.mobileMenu = mobileMenu
+  this.mobileMenu = mobileMenu || false
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
   this.draggable = false
-  this.newTopicName = newTopicName
+  this.newTopicName = newTopicName || ''
   this.editable = false
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
@@ -67,9 +68,9 @@ function MindElixir(
   this.scaleVal = 1
   this.tempDirection = null
   this.mainLinkStyle = mainLinkStyle || 0
-  this.overflowHidden = overflowHidden
-  this.mainNodeHorizontalGap = mainNodeHorizontalGap
-  this.mainNodeVerticalGap = mainNodeVerticalGap
+  this.overflowHidden = overflowHidden || false
+  this.mainNodeHorizontalGap = mainNodeHorizontalGap || 0
+  this.mainNodeVerticalGap = mainNodeVerticalGap || 0
 
   this.bus = new Bus()
 
