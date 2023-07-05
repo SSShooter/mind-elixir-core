@@ -4,7 +4,7 @@ import { createExpander, shapeTpc } from './dom'
 const $d = document
 
 // Set main nodes' direction and invoke layoutChildren()
-export const layout = function () {
+export const layout: Layout = function () {
   console.time('layout')
   this.root.innerHTML = ''
   this.mainNodes.innerHTML = ''
@@ -13,7 +13,7 @@ export const layout = function () {
   tpc.draggable = false
   this.root.appendChild(tpc)
 
-  const mainNodes: NodeObj[] = this.nodeData.children
+  const mainNodes = this.nodeData.children
   if (!mainNodes || mainNodes.length === 0) return
   if (this.direction === SIDE) {
     // initiate direction of main nodes
@@ -35,7 +35,7 @@ export const layout = function () {
       }
     })
   }
-  this.layoutChildren(this.nodeData.children, this.mainNodes, this.direction)
+  this.layoutChildren(mainNodes, this.mainNodes, this.direction)
   console.timeEnd('layout')
 }
 

@@ -1,4 +1,4 @@
-export default function (mind) {
+export default function (mind: MindElixirInstance) {
   const key2func = {
     13: () => {
       // enter
@@ -46,13 +46,13 @@ export default function (mind) {
       // pageDown
       mind.moveDownNode()
     },
-    67(e) {
+    67: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         // ctrl c
         mind.waitCopy = mind.currentNode
       }
     },
-    86(e) {
+    86: (e: KeyboardEvent) => {
       if (!mind.waitCopy) return
       if (e.metaKey || e.ctrlKey) {
         // ctrl v
@@ -61,19 +61,19 @@ export default function (mind) {
       }
     },
     // ctrl z
-    90: e => {
+    90: (e: KeyboardEvent) => {
       if (!mind.allowUndo) return
       if (e.metaKey || e.ctrlKey) mind.undo()
     },
     // ctrl +
-    187: e => {
+    187: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal > 1.6) return
         mind.scale((mind.scaleVal += 0.2))
       }
     },
     // ctrl -
-    189: e => {
+    189: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal < 0.6) return
         mind.scale((mind.scaleVal -= 0.2))

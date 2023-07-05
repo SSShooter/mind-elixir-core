@@ -60,7 +60,7 @@ export const reshapeNode: ReshapeNode = function (tpc, patchData) {
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export const insertSibling: TNodeOperation = function (el, node) {
+export const insertSibling: InsertNodeCommon = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -106,7 +106,7 @@ export const insertSibling: TNodeOperation = function (el, node) {
  * @example
  * insertBefore(E('bd4313fbac40284b'))
  */
-export const insertBefore: TNodeOperation = function (el, node) {
+export const insertBefore: InsertNodeCommon = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -152,7 +152,7 @@ export const insertBefore: TNodeOperation = function (el, node) {
  * @example
  * insertParent(E('bd4313fbac40284b'))
  */
-export const insertParent: TNodeOperation = function (el, node) {
+export const insertParent: InsertNodeCommon = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -178,7 +178,7 @@ export const insertParent: TNodeOperation = function (el, node) {
   if (grp0.parentNode.className === 'box') {
     grp.className = grp0.className // l/rhs
     grp0.className = ''
-    grp0.querySelector('.subLines').remove()
+    grp0.querySelector('.subLines')?.remove()
     this.linkDiv()
   } else {
     this.linkDiv(grp.offsetParent)
@@ -196,12 +196,12 @@ export const insertParent: TNodeOperation = function (el, node) {
 }
 
 export const addChildFunction: AddChildFunction = function (nodeEle, node) {
-  if (!nodeEle) return
-  const nodeObj = nodeEle.nodeObj as NodeObj
+  if (!nodeEle) return null
+  const nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
     this.expandNode(nodeEle, true)
     // dom had resetted
-    nodeEle = findEle(nodeObj.id)
+    nodeEle = findEle(nodeObj.id) as Topic
   }
   const newNodeObj = node || this.generateNewObj()
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
@@ -239,20 +239,22 @@ export const addChildFunction: AddChildFunction = function (nodeEle, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild: TNodeOperation = function (el, node) {
+export const addChild: InsertNodeCommon = function (el, node) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  const { newTop, newNodeObj } = addChildFunction.call(this, nodeEle, node)
+  const res = addChildFunction.call(this, nodeEle, node)
+  if (!res) return
+  const { newTop, newNodeObj } = res
   this.bus.fire('operation', {
     name: 'addChild',
     obj: newNodeObj,
   })
   console.timeEnd('addChild')
   if (!node) {
-    this.createInputDiv(newTop.children[0])
+    this.createInputDiv(newTop.firstChild)
   }
-  this.selectNode(newTop.children[0], true)
+  this.selectNode(newTop.firstChild, true)
 }
 // uncertain link disappear sometimes??
 // TODO while direction = SIDE, move up won't change the direction of main node
@@ -272,7 +274,9 @@ export const copyNode: TNodeCopy = function (node: Topic, to: Topic) {
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)
-  const { newNodeObj } = addChildFunction.call(this, to, deepCloneObj)
+  const res = addChildFunction.call(this, to, deepCloneObj)
+  if (!res) return
+  const { newNodeObj } = res
   console.timeEnd('copyNode')
   this.bus.fire('operation', {
     name: 'copyNode',
@@ -290,7 +294,7 @@ export const copyNode: TNodeCopy = function (node: Topic, to: Topic) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export const moveUpNode: TNodeMove = function (el: Topic) {
+export const moveUpNode: MoveNodeCommon = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -314,7 +318,7 @@ export const moveUpNode: TNodeMove = function (el: Topic) {
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export const moveDownNode: TNodeMove = function (el: Topic) {
+export const moveDownNode: MoveNodeCommon = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -342,7 +346,7 @@ export const moveDownNode: TNodeMove = function (el: Topic) {
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export const removeNode: TNodeOperation = function (el: Topic) {
+export const removeNode: RemoveNode = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   console.log('removeNode', nodeEle)
@@ -350,8 +354,8 @@ export const removeNode: TNodeOperation = function (el: Topic) {
   if (nodeObj.root === true) {
     throw new Error('Can not remove root node')
   }
-  const index = nodeObj.parent.children.findIndex(node => node === nodeObj)
-  const next = nodeObj.parent.children[index + 1]
+  const index = nodeObj.parent.children!.findIndex(node => node === nodeObj)
+  const next: NodeObj | undefined = nodeObj.parent.children![index + 1]
   const originSiblingId = next && next.id
 
   const childrenLength = removeNodeObj(nodeObj)
@@ -397,14 +401,14 @@ export const removeNode: TNodeOperation = function (el: Topic) {
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNode: TNodeMove = function (from: Topic, to: Topic) {
+export const moveNode: MoveNodeToCommon = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
   if (toObj.expanded === false) {
     this.expandNode(to, true)
-    from = findEle(fromObj.id)
-    to = findEle(toObj.id)
+    from = findEle(fromObj.id) as Topic
+    to = findEle(toObj.id) as Topic
   }
   if (!checkMoveValid(fromObj, toObj)) {
     console.warn('Invalid move')
@@ -418,7 +422,7 @@ export const moveNode: TNodeMove = function (from: Topic, to: Topic) {
   const toTop = to.parentElement
   if (fromChilren.className === 'box') {
     // clear svg group of main node
-    fromTop.parentElement.lastChild.remove()
+    fromTop.parentElement.lastChild!.remove()
   } else if (fromTop.parentElement.className === 'box') {
     fromTop.style.cssText = '' // clear style
   }
@@ -459,7 +463,7 @@ export const moveNode: TNodeMove = function (from: Topic, to: Topic) {
  * @example
  * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeBefore: TNodeMove = function (from, to) {
+export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -490,7 +494,7 @@ export const moveNodeBefore: TNodeMove = function (from, to) {
  * @example
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeAfter: TNodeMove = function (from: Topic, to: Topic) {
+export const moveNodeAfter: MoveNodeToCommon = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = fromObj.parent.id
@@ -520,13 +524,13 @@ export const moveNodeAfter: TNodeMove = function (from: Topic, to: Topic) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-export const beginEdit: TNodeOperation = function (el) {
+export const beginEdit: InsertNodeCommon = function (el) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   this.createInputDiv(nodeEle)
 }
 
-export const setNodeTopic = function (tpc, topic) {
+export const setNodeTopic: SetNodeTopic = function (tpc, topic) {
   tpc.childNodes[0].textContent = topic
   tpc.nodeObj.topic = topic
   this.linkDiv()

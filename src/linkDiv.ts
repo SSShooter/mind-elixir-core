@@ -1,6 +1,6 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle } from './utils/dom'
-import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
+import { SIDE, GAP, TURNPOINT_R } from './const'
 
 /**
  * Link nodes with svg,
@@ -14,8 +14,8 @@ import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GA
  * @param {object} mainNode process the specific main node only
  */
 const linkDiv: LinkDiv = function (mainNode) {
-  const mainNodeHorizontalGap = this.mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
-  const mainNodeVerticalGap = this.mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
+  const mainNodeHorizontalGap = this.mainNodeHorizontalGap
+  const mainNodeVerticalGap = this.mainNodeVerticalGap
   console.time('linkDiv')
   const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
@@ -24,7 +24,7 @@ const linkDiv: LinkDiv = function (mainNode) {
 
   // 1. calculate position of main nodes
   let totalHeight = 0
-  let shortSide: string // l or r
+  let shortSide = '' // l or r
   let shortSideGap = 0 // balance heigt of two side
   let currentOffsetL = 0 // left side total offset
   let currentOffsetR = 0 // right side total offset
@@ -75,7 +75,7 @@ const linkDiv: LinkDiv = function (mainNode) {
     let x2, y2
     const el = mainNodeList[i] as Wrapper
     const palette = this.theme.palette
-    const branchColor = el.querySelector<Topic>('me-tpc').nodeObj.branchColor || palette[i % palette.length]
+    const branchColor = el.querySelector<Topic>('me-tpc')!.nodeObj.branchColor || palette[i % palette.length]
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'

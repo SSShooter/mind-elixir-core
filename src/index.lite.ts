@@ -58,7 +58,7 @@ function MindElixir(
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
   this.draggable = false
-  this.newTopicName = newTopicName
+  this.newTopicName = newTopicName || 'new node'
   this.editable = false
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element

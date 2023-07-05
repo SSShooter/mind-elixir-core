@@ -1,5 +1,6 @@
 /// <reference path="./dom.d.ts" />
 /// <reference path="./function.d.ts" />
+/// <reference path="./interact.d.ts" />
 
 type operation = {
   name: string
@@ -26,6 +27,8 @@ interface LinkDragMoveHelperInstance {
 }
 
 interface MindElixirInstance {
+  isFocusMode: boolean
+  nodeDataBackup: NodeObj
   mindElixirBox: HTMLElement
   nodeData: NodeObj
   linkData: LinkObj
@@ -67,7 +70,7 @@ interface MindElixirInstance {
   container: HTMLElement
   map: HTMLElement
   root: HTMLElement
-  mainNodes: HTMLElement
+  mainNodes: Children
   lines: SVGElement
   linkController: SVGElement
   P2: HTMLElement
@@ -90,9 +93,17 @@ interface MindElixirInstance {
   createLink: CreateLink
   showLinkController: ShowLinkController
 
-  addChild: TNodeOperation
+  addChild: InsertNodeCommon
   createInputDiv: CreateInputDiv
   layoutChildren: LayoutChildren
+
+  moveNode: MoveNodeCommon
+  moveUpNode: MoveNodeCommon
+  moveDownNode: MoveNodeCommon
+  moveNodeBefore: MoveNodeCommon
+  moveNodeAfter: MoveNodeCommon
+  removeNode: RemoveNode
+  setNodeTopic: SetNodeTopic
 
   selectNode: SelectNodeFunc
   unselectNode: CommonSelectFunc
@@ -103,16 +114,16 @@ interface MindElixirInstance {
   getDataString: GetDataStringFunc
   getData: GetDataFunc
   getDataMd: GetDataStringFunc
-  scale
-  toCenter
-  focusNode
-  cancelFocus
-  initLeft
-  initRight
-  initSide
-  setLocale
-  enableEdit
-  disableEdit
+  scale: Scale
+  toCenter: ToCenter
+  focusNode: FocusNode
+  cancelFocus: CancelFocus
+  initLeft: InitLeft
+  initRight: InitRight
+  initSide: InitSide
+  setLocale: SetLocale
+  enableEdit: EnableEdit
+  disableEdit: DisableEdit
   expandNode: ExpandNode
   refresh
 
@@ -154,7 +165,6 @@ interface NodeObj {
     background?: string
     fontWeight?: string
   }
-  parent?: NodeObj
   children?: NodeObj[]
   tags?: string[]
   icons?: string[]
@@ -169,6 +179,8 @@ interface NodeObj {
   }
   // main node specific properties
   branchColor?: string
+  // add programatically
+  parent: NodeObj
 }
 type LinkItem = {
   id: string

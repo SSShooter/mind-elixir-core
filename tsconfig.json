@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "strict": false,
+    "strict": true,
     "target": "es2017",
     "allowJs": true,
     "typeRoots": [

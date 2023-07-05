@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE, GAP, THEME } from './const'
+import { LEFT, RIGHT, SIDE, GAP, THEME, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
 import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
@@ -25,6 +25,7 @@ import {
   disableEdit,
   expandNode,
   refresh,
+  install,
 } from './interact'
 import {
   insertSibling,
@@ -110,30 +111,30 @@ function MindElixir(
   }: Options
 ): void {
   console.log('ME_version ' + MindElixir.version, this)
-  let ele
+  let ele: HTMLElement | null = null
   const elType = Object.prototype.toString.call(el)
   if (elType === '[object HTMLDivElement]') {
     ele = el as HTMLElement
   } else if (elType === '[object String]') {
     ele = document.querySelector(el as string) as HTMLElement
   }
-  if (!ele) new Error('MindElixir: el is not a valid element')
+  if (!ele) return new Error('MindElixir: el is not a valid element')
 
   ele.className += ' mind-elixir'
   ele.innerHTML = ''
   ele.style.setProperty('--gap', GAP + 'px')
   this.mindElixirBox = ele
   this.before = before || {}
-  this.locale = locale
+  this.locale = locale || 'en'
   this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
-  this.mobileMenu = mobileMenu
+  this.mobileMenu = mobileMenu || false
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   this.direction = typeof direction === 'number' ? direction : 1
   this.draggable = draggable === undefined ? true : draggable
-  this.newTopicName = newTopicName
+  this.newTopicName = newTopicName || 'new node'
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? true : allowUndo
   // this.parentMap = {} // deal with large amount of nodes
@@ -143,9 +144,9 @@ function MindElixir(
   this.scaleVal = 1
   this.tempDirection = null
   this.mainLinkStyle = mainLinkStyle || 0
-  this.overflowHidden = overflowHidden
-  this.mainNodeHorizontalGap = mainNodeHorizontalGap
-  this.mainNodeVerticalGap = mainNodeVerticalGap
+  this.overflowHidden = overflowHidden || false
+  this.mainNodeHorizontalGap = mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
+  this.mainNodeVerticalGap = mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
 
   this.bus = new Bus()
   this.bus.addListener('operation', (operation: operation) => {
@@ -194,7 +195,7 @@ function MindElixir(
   this.mindElixirBox.appendChild(this.container)
   this.root = $d.createElement('me-root')
 
-  this.mainNodes = $d.createElement('me-children')
+  this.mainNodes = $d.createElement('me-children') as Children
   this.mainNodes.className = 'box'
 
   // infrastructure
@@ -226,7 +227,7 @@ function MindElixir(
 }
 
 function beforeHook(fn: (el: any, node?: any) => void, fnName: string) {
-  return async function (...args: unknown[]) {
+  return async function (this: MindElixirInstance, ...args: unknown[]) {
     if (!this.before[fnName] || (await this.before[fnName].apply(this, args))) {
       fn.apply(this, args)
     }
@@ -292,9 +293,7 @@ MindElixir.prototype = {
   expandNode,
   refresh,
   findEle,
-  install(plugin) {
-    plugin(this)
-  },
+  install,
   init(data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction) {

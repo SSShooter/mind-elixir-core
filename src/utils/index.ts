@@ -135,7 +135,7 @@ export function generateUUID(): string {
 export function generateNewObj(): NodeObj {
   const id = generateUUID()
   return {
-    topic: this.newTopicName || 'new node',
+    topic: this.newTopicName,
     id,
   }
 }
