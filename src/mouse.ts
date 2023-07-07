@@ -8,7 +8,7 @@ export default function (mind: MindElixirInstance) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return
     // e.preventDefault() // can cause <a /> tags don't work
-    const target = e.target as HTMLElement
+    const target = e.target as any
     if (target.tagName === 'ME-EPD') {
       mind.expandNode((target as Expander).previousSibling)
     } else if (!mind.editable) {
@@ -16,8 +16,8 @@ export default function (mind: MindElixirInstance) {
     } else if (isTopic(target)) {
       mind.selectNode(target as Topic, false, e)
     } else if (target.tagName === 'path') {
-      if (target.parentElement.tagName === 'g') {
-        mind.selectLink(target.parentElement)
+      if (target?.parentElement?.tagName === 'g') {
+        mind.selectLink(target.parentElement as CustomSvg)
       }
     } else if (target.className === 'circle') {
       // skip circle
@@ -33,7 +33,7 @@ export default function (mind: MindElixirInstance) {
     if (!mind.editable) return
     const target = e.target as HTMLElement
     if (isTopic(target)) {
-      mind.beginEdit(e.target)
+      mind.beginEdit(target as Topic)
     }
   })
 

@@ -44,6 +44,9 @@ interface Expander extends HTMLElement {
   previousSibling: Topic
 }
 
-interface CustomSvg extends SVGElement {
-  linkObj?: object
+type CustomLine = SVGPathElement
+type CustomArrow = SVGPathElement
+interface CustomSvg extends SVGGElement {
+  linkObj?: LinkItem
+  // children: [CustomLine, CustomArrow]
 }

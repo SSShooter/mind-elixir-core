@@ -3,9 +3,11 @@ import { encodeHTML } from '../utils/index'
 
 // DOM manipulation
 const $d = document
-export const findEle = (id: string, instance?: MindElixirInstance): Topic | null => {
+export const findEle = (id: string, instance?: MindElixirInstance): Topic => {
   const scope = instance ? instance.mindElixirBox : $d
-  return scope.querySelector(`[data-nodeid=me${id}]`)
+  const ele = scope.querySelector<Topic>(`[data-nodeid=me${id}]`)
+  if (!ele) new Error(`findEle: ${id} not found`)
+  return ele as Topic
 }
 
 export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {

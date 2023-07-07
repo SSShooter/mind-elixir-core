@@ -34,6 +34,8 @@ type TraverseChildrenFunc = (children: HTMLCollection, parent: Parent, isFirst?:
 type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj) => void
 
 type CreateLink = (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, linkObj?: LinkItem) => void
+type RemoveLink = (this: MindElixirInstance, link?: CustomSvg) => void
+type SelectLink = (this: MindElixirInstance, link: CustomSvg) => void
 
 type LinkControllerData = {
   cx: number
@@ -51,6 +53,7 @@ type ShowLinkController = (
   fromData: LinkControllerData,
   toData: LinkControllerData
 ) => void
+type HideLinkController = (this: MindElixirInstance) => void
 
 type ExpandNode = (this: MindElixirInstance, el: Topic, isExpand?: boolean) => void
 type SelectNodeFunc = (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent) => void
@@ -60,5 +63,5 @@ type SiblingSelectFunc = (this: MindElixirInstance) => boolean
 type GetDataStringFunc = (this: MindElixirInstance) => string
 type GetDataFunc = (this: MindElixirInstance) => MindElixirData
 
-type RefreshFunc = (this: MindElixirInstance, data: MindElixirData) => void
+type RefreshFunc = (this: MindElixirInstance, data?: MindElixirData) => void
 type SetNodeTopic = (this: MindElixirInstance, el: Topic, topic: string) => void

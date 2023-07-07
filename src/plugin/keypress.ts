@@ -1,5 +1,5 @@
 export default function (mind: MindElixirInstance) {
-  const key2func = {
+  const key2func: Record<string, (e: KeyboardEvent) => void> = {
     13: () => {
       // enter
       mind.insertSibling()
@@ -53,7 +53,7 @@ export default function (mind: MindElixirInstance) {
       }
     },
     86: (e: KeyboardEvent) => {
-      if (!mind.waitCopy) return
+      if (!mind.waitCopy || !mind.currentNode) return
       if (e.metaKey || e.ctrlKey) {
         // ctrl v
         mind.copyNode(mind.waitCopy, mind.currentNode)
@@ -94,7 +94,8 @@ export default function (mind: MindElixirInstance) {
       if (mind.currentLink) mind.removeLink()
       else mind.removeNode()
     } else {
-      key2func[e.keyCode] && key2func[e.keyCode](e)
+      const keyHandler = key2func[e.keyCode]
+      keyHandler && keyHandler(e)
     }
   }
 }

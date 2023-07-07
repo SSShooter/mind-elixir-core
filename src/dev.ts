@@ -60,7 +60,7 @@ const options: Options = {
   mainNodeHorizontalGap: 65, // 65
 }
 
-const mind: MindElixirInstance = new MindElixir(options)
+const mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
 mind.init(example as MindElixirData)
@@ -79,7 +79,7 @@ const mind2 = new (MindElixirLite as any)({
 })
 mind2.init(example2)
 window.currentOperation = null
-mind.bus.addListener('operation', operation => {
+mind.bus.addListener('operation', (operation: Operation) => {
   console.log(operation)
   if (operation.name !== 'finishEdit') window.currentOperation = operation
   // return {
@@ -93,10 +93,10 @@ mind.bus.addListener('operation', operation => {
   // name: moveNode
   // obj: {from:target1,to:target2}
 })
-mind.bus.addListener('selectNode', node => {
+mind.bus.addListener('selectNode', (node: any) => {
   console.log(node)
 })
-mind.bus.addListener('expandNode', node => {
+mind.bus.addListener('expandNode', (node: any) => {
   console.log('expandNode: ', node)
 })
 window.m = mind

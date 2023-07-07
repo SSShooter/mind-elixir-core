@@ -334,7 +334,7 @@ export const refresh: RefreshFunc = function (data) {
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
   }
-  this.addParentLink(this.nodeData)
+  this.fillParent(this.nodeData)
   // create dom element for every node
   this.layout()
   // generate links between nodes

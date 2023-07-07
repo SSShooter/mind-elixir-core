@@ -2,19 +2,15 @@ import { throttle } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
 import { findEle as E } from '../utils/dom'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
-
-interface MeDragEvent extends DragEvent {
-  target: Topic
-}
-
+type InsertType = 'before' | 'after' | 'in' | null
 const $d = document
-const insertPreview = function (el: Element, insertLocation: string) {
-  if (!insertLocation) {
+const insertPreview = function (el: Element, insertTpye: InsertType) {
+  if (!insertTpye) {
     clearPreview(el)
     return el
   }
   const query = el.getElementsByClassName('insert-preview')
-  const className = `insert-preview ${insertLocation} show`
+  const className = `insert-preview ${insertTpye} show`
   if (query.length > 0) {
     query[0].className = className
   } else {
@@ -25,7 +21,7 @@ const insertPreview = function (el: Element, insertLocation: string) {
   return el
 }
 
-const clearPreview = function (el: Element) {
+const clearPreview = function (el: Element | null) {
   if (!el) return
   const query = el.getElementsByClassName('insert-preview')
   for (const queryElement of query || []) {
@@ -38,23 +34,25 @@ const canPreview = function (el: Element, dragged: Topic) {
   return el && el.tagName === 'ME-TPC' && el !== dragged && !isContain && (el as Topic).nodeObj.root !== true
 }
 
-export default function (mind) {
-  let dragged: Topic
-  let insertLocation: string
-  let meet: Element
+export default function (mind: MindElixirInstance) {
+  let dragged: Topic | null = null
+  let insertTpye: InsertType = null
+  let meet: Topic | null = null
   const threshold = 12
 
-  mind.map.addEventListener('dragstart', function (e: MeDragEvent) {
-    dragged = e.target
+  mind.map.addEventListener('dragstart', e => {
+    dragged = e.target as Topic
     dragged.parentElement.parentElement.style.opacity = '0.5'
     dragMoveHelper.clear()
   })
 
-  mind.map.addEventListener('dragend', async function (e: MeDragEvent) {
-    e.target.style.opacity = ''
+  mind.map.addEventListener('dragend', async e => {
+    if (!meet || !dragged) return
+    const target = e.target as Topic
+    target.style.opacity = ''
     clearPreview(meet)
     const obj = dragged.nodeObj
-    switch (insertLocation) {
+    switch (insertTpye) {
       case 'before':
         mind.moveNodeBefore(dragged, meet)
         mind.selectNode(E(obj.id))
@@ -73,33 +71,34 @@ export default function (mind) {
 
   mind.map.addEventListener(
     'dragover',
-    throttle(function (e: MeDragEvent) {
+    throttle(function (e: DragEvent) {
+      if (!meet || !dragged) return
       clearPreview(meet)
       // minus threshold infer that postion of the cursor is above topic
-      const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold)
+      const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
       if (canPreview(topMeet, dragged)) {
         meet = topMeet
         const y = topMeet.getBoundingClientRect().y
         if (e.clientY > y + topMeet.clientHeight) {
-          insertLocation = 'after'
+          insertTpye = 'after'
         } else if (e.clientY > y + topMeet.clientHeight / 2) {
-          insertLocation = 'in'
+          insertTpye = 'in'
         }
       } else {
-        const bottomMeet = $d.elementFromPoint(e.clientX, e.clientY + threshold)
+        const bottomMeet = $d.elementFromPoint(e.clientX, e.clientY + threshold) as Topic
         if (canPreview(bottomMeet, dragged)) {
           meet = bottomMeet
           const y = bottomMeet.getBoundingClientRect().y
           if (e.clientY < y) {
-            insertLocation = 'before'
+            insertTpye = 'before'
           } else if (e.clientY < y + bottomMeet.clientHeight / 2) {
-            insertLocation = 'in'
+            insertTpye = 'in'
           }
         } else {
-          insertLocation = meet = null
+          insertTpye = meet = null
         }
       }
-      if (meet) insertPreview(meet, insertLocation)
+      if (meet) insertPreview(meet, insertTpye)
     }, 200)
   )
 }

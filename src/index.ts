@@ -1,5 +1,5 @@
 import { LEFT, RIGHT, SIDE, GAP, THEME, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
-import { isMobile, addParentLink, getObjById, generateUUID, generateNewObj } from './utils/index'
+import { isMobile, fillParent, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
@@ -118,12 +118,12 @@ function MindElixir(
   } else if (elType === '[object String]') {
     ele = document.querySelector(el as string) as HTMLElement
   }
-  if (!ele) return new Error('MindElixir: el is not a valid element')
+  if (!ele) new Error('MindElixir: el is not a valid element')
 
-  ele.className += ' mind-elixir'
-  ele.innerHTML = ''
-  ele.style.setProperty('--gap', GAP + 'px')
-  this.mindElixirBox = ele
+  ele!.className += ' mind-elixir'
+  ele!.innerHTML = ''
+  ele!.style.setProperty('--gap', GAP + 'px')
+  this.mindElixirBox = ele as HTMLElement
   this.before = before || {}
   this.locale = locale || 'en'
   this.contextMenuOption = contextMenuOption
@@ -148,19 +148,10 @@ function MindElixir(
   this.mainNodeHorizontalGap = mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
   this.mainNodeVerticalGap = mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
 
-  this.bus = new Bus()
-  this.bus.addListener('operation', (operation: operation) => {
-    if (this.isUndo) {
-      this.isUndo = false
-      return
-    }
-    if (['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(operation.name)) {
-      this.history.push(operation)
-      // console.log(operation, this.history)
-    }
-  })
+  this.bus = Bus.create()
 
-  this.history = [] // TODO
+  // redo
+  this.history = []
   this.isUndo = false
   this.undo = function () {
     const operation = this.history.pop()
@@ -182,6 +173,17 @@ function MindElixir(
       this.isUndo = false
     }
   }
+  this.bus.addListener('operation', (operation: Operation) => {
+    if (this.isUndo) {
+      this.isUndo = false
+      return
+    }
+    if (['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(operation.name)) {
+      this.history.push(operation)
+      // console.log(operation, this.history)
+    }
+  })
+  // redo end
 
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
@@ -226,16 +228,18 @@ function MindElixir(
   } else initMouseEvent(this)
 }
 
-function beforeHook(fn: (el: any, node?: any) => void, fnName: string) {
+function beforeHook(fn: (...arg: any[]) => void, fnName: string) {
   return async function (this: MindElixirInstance, ...args: unknown[]) {
-    if (!this.before[fnName] || (await this.before[fnName].apply(this, args))) {
-      fn.apply(this, args)
+    const hook = this.before[fnName]
+    if (hook) {
+      await hook.apply(this, args)
     }
+    fn.apply(this, args)
   }
 }
 
 MindElixir.prototype = {
-  addParentLink,
+  fillParent,
   getObjById,
   generateNewObj,
   // node operation
@@ -294,7 +298,7 @@ MindElixir.prototype = {
   refresh,
   findEle,
   install,
-  init(data: MindElixirData) {
+  init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction) {
       this.direction = data.direction
@@ -322,7 +326,7 @@ MindElixir.prototype = {
       this.mindElixirBox.style.setProperty(key, cssVar[key])
     }
 
-    addParentLink(this.nodeData)
+    fillParent(this.nodeData)
     this.toCenter()
     this.layout()
     this.linkDiv()
@@ -355,4 +359,14 @@ MindElixir.new = (topic: string): MindElixirData => ({
   linkData: {},
 })
 
-export default MindElixir
+interface MindElixirCtor {
+  new (options: Options): MindElixirInstance
+  E: typeof findEle
+  new: typeof MindElixir.new
+  version: string
+  LEFT: typeof LEFT
+  RIGHT: typeof RIGHT
+  SIDE: typeof SIDE
+}
+
+export default MindElixir as any as MindElixirCtor

@@ -5,7 +5,7 @@ import {
   insertBeforeNodeObj,
   insertParentNodeObj,
   checkMoveValid,
-  addParentLink,
+  fillParent,
   moveUpObj,
   moveDownObj,
   moveNodeBeforeObj,
@@ -70,7 +70,7 @@ export const insertSibling: InsertNodeCommon = function (el, node) {
   }
   const newNodeObj = node || this.generateNewObj()
   insertNodeObj(nodeObj, newNodeObj)
-  addParentLink(this.nodeData)
+  fillParent(this.nodeData)
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
@@ -116,7 +116,7 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
   }
   const newNodeObj = node || this.generateNewObj()
   insertBeforeNodeObj(nodeObj, newNodeObj)
-  addParentLink(this.nodeData)
+  fillParent(this.nodeData)
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
@@ -161,7 +161,7 @@ export const insertParent: InsertNodeCommon = function (el, node) {
   }
   const newNodeObj = node || this.generateNewObj()
   insertParentNodeObj(nodeObj, newNodeObj)
-  addParentLink(this.nodeData)
+  fillParent(this.nodeData)
 
   // warning: the tricky part
   const grp0 = nodeEle.parentElement.parentElement
@@ -206,7 +206,7 @@ export const addChildFunction: AddChildFunction = function (nodeEle, node) {
   const newNodeObj = node || this.generateNewObj()
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
-  addParentLink(this.nodeData)
+  fillParent(this.nodeData)
 
   const top = nodeEle.parentElement
 
@@ -354,8 +354,9 @@ export const removeNode: RemoveNode = function (el) {
   if (nodeObj.root === true) {
     throw new Error('Can not remove root node')
   }
-  const index = nodeObj.parent.children!.findIndex(node => node === nodeObj)
-  const next: NodeObj | undefined = nodeObj.parent.children![index + 1]
+  const siblings = nodeObj.parent!.children!
+  const index = siblings.findIndex(node => node === nodeObj)
+  const next: NodeObj | undefined = siblings[index + 1]
   const originSiblingId = next && next.id
 
   const childrenLength = removeNodeObj(nodeObj)
@@ -376,7 +377,8 @@ export const removeNode: RemoveNode = function (el) {
     // MAYBEBUG should traverse all children node
     const link = this.linkData[prop]
     if (link.from === nodeObj.id || link.to === nodeObj.id) {
-      this.removeLink(this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`))
+      const linkEle = this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`) as CustomSvg
+      this.removeLink(linkEle)
     }
   }
   // remove GRP
@@ -386,7 +388,7 @@ export const removeNode: RemoveNode = function (el) {
     name: 'removeNode',
     obj: nodeObj,
     originSiblingId,
-    originParentId: nodeObj.parent.id,
+    originParentId: nodeObj?.parent?.id,
   })
 }
 
@@ -404,7 +406,7 @@ export const removeNode: RemoveNode = function (el) {
 export const moveNode: MoveNodeToCommon = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent.id
+  const originParentId = fromObj?.parent?.id
   if (toObj.expanded === false) {
     this.expandNode(to, true)
     from = findEle(fromObj.id) as Topic
@@ -416,7 +418,7 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
   }
   console.time('moveNode')
   moveNodeObj(fromObj, toObj)
-  addParentLink(this.nodeData) // update parent property
+  fillParent(this.nodeData) // update parent property
   const fromTop = from.parentElement
   const fromChilren = fromTop.parentElement.parentElement
   const toTop = to.parentElement
@@ -466,9 +468,9 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
 export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent.id
+  const originParentId = fromObj.parent!.id
   moveNodeBeforeObj(fromObj, toObj)
-  addParentLink(this.nodeData)
+  fillParent(this.nodeData)
   const fromTop = from.parentElement
   const fromGrp = fromTop.parentNode
   const toTop = to.parentElement
@@ -497,9 +499,9 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
 export const moveNodeAfter: MoveNodeToCommon = function (from: Topic, to: Topic) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent.id
+  const originParentId = fromObj.parent!.id
   moveNodeAfterObj(fromObj, toObj)
-  addParentLink(this.nodeData)
+  fillParent(this.nodeData)
   const fromTop = from.parentElement
   const fromGrp = fromTop.parentElement
   const toTop = to.parentElement

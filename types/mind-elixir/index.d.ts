@@ -1,29 +1,41 @@
 /// <reference path="./dom.d.ts" />
 /// <reference path="./function.d.ts" />
 /// <reference path="./interact.d.ts" />
+/// <reference path="./linkDiv.d.ts" />
 
-type operation = {
+type Operation = {
   name: string
+  obj: any
+  origin: any
+  originSiblingId: string
+  originParentId: string
 }
 
 interface Theme {
   name: string
   palette: string[]
-  cssVar: {
-    '--main-color': string
-    '--main-bgcolor': string
-    '--color': string
-    '--bgcolor': string
-  }
+  cssVar: Record<string, string>
+  // {
+  //   '--main-color': string
+  //   '--main-bgcolor': string
+  //   '--color': string
+  //   '--bgcolor': string
+  // }
 }
 
 interface LinkDragMoveHelperInstance {
   dom: HTMLElement
-  mousedown: false
-  lastX: null
-  lastY: null
+  mousedown: boolean
+  lastX: number
+  lastY: number
   init: (map: HTMLElement, cb: (deltaX: number, deltaY: number) => void) => void
   destory: (map: HTMLElement) => void
+  clear: () => void
+  handleMouseMove: (e: MouseEvent) => void
+  handleMouseDown: (e: MouseEvent) => void
+  handleClear: (e: MouseEvent) => void
+
+  cb: ((deltaX: number, deltaY: number) => void) | null
 }
 
 interface MindElixirInstance {
@@ -33,7 +45,8 @@ interface MindElixirInstance {
   nodeData: NodeObj
   linkData: LinkObj
   currentNode: Topic | null
-  currentLink: SVGElement | null
+  waitCopy: Topic | null
+  currentLink: CustomSvg | null
   inputDiv: HTMLElement | null
   scaleVal: number
   tempDirection: number | null
@@ -45,7 +58,7 @@ interface MindElixirInstance {
   }
 
   // wip
-  history: operation[]
+  history: Operation[]
   isUndo: boolean
   undo: () => void
 
@@ -58,7 +71,7 @@ interface MindElixirInstance {
   contextMenuOption: object
   toolBar: boolean
   keypress: boolean
-  before: object
+  before: Before
   newTopicName: string
   allowUndo: boolean
   overflowHidden: boolean
@@ -81,7 +94,7 @@ interface MindElixirInstance {
 
   init: Init
 
-  generateNewObj: () => NodeObj
+  generateNewObj: GenerateNewObj
   createWrapper: CreateWrapper
   createParent: CreateParent
   createChildren: CreateChildren
@@ -90,20 +103,22 @@ interface MindElixirInstance {
   linkDiv: LinkDiv
   judgeDirection: JudgeDirection
 
-  createLink: CreateLink
-  showLinkController: ShowLinkController
-
   addChild: InsertNodeCommon
   createInputDiv: CreateInputDiv
   layoutChildren: LayoutChildren
 
-  moveNode: MoveNodeCommon
+  moveNode: MoveNodeToCommon
   moveUpNode: MoveNodeCommon
   moveDownNode: MoveNodeCommon
-  moveNodeBefore: MoveNodeCommon
-  moveNodeAfter: MoveNodeCommon
+  moveNodeBefore: MoveNodeToCommon
+  moveNodeAfter: MoveNodeToCommon
   removeNode: RemoveNode
+  copyNode: TNodeCopy
   setNodeTopic: SetNodeTopic
+
+  insertParent: InsertNodeCommon
+  insertSibling: InsertNodeCommon
+  insertBefore: InsertNodeCommon
 
   selectNode: SelectNodeFunc
   unselectNode: CommonSelectFunc
@@ -125,14 +140,25 @@ interface MindElixirInstance {
   enableEdit: EnableEdit
   disableEdit: DisableEdit
   expandNode: ExpandNode
-  refresh
+  refresh: RefreshFunc
 
   layout: Layout
-  removeLink
-  addParentLink
+  beginEdit: InsertNodeCommon
+  fillParent: FillParent
+  getObjById: GetObjById
+  removeLink: RemoveLink
+  selectLink: SelectLink
+  hideLinkController: HideLinkController
+  createLink: CreateLink
+  showLinkController: ShowLinkController
   helper1: LinkDragMoveHelperInstance
   helper2: LinkDragMoveHelperInstance
 }
+
+type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
+type GenerateNewObj = (this: MindElixirInstance) => NodeObjExport
+type GetObjById = (id: string, data: NodeObj) => NodeObj | null
+type FillParent = (data: NodeObj, parent?: NodeObj) => void
 
 interface Options {
   el: string | HTMLElement
@@ -144,7 +170,7 @@ interface Options {
   contextMenuOption?: any
   toolBar?: boolean
   keypress?: boolean
-  before?: object
+  before?: Before
   newTopicName?: string
   allowUndo?: boolean
   overflowHidden?: boolean
@@ -180,8 +206,9 @@ interface NodeObj {
   // main node specific properties
   branchColor?: string
   // add programatically
-  parent: NodeObj
+  parent?: NodeObj // root node has no parent
 }
+type NodeObjExport = Omit<NodeObj, 'parent'>
 type LinkItem = {
   id: string
   label: string

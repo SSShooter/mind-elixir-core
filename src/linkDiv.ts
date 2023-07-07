@@ -201,15 +201,15 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, isFir
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
-function generateMainLine2({ x1, y1, x2, y2 }) {
+function generateMainLine2({ x1, y1, x2, y2 }: MainLineParams) {
   return `M ${x1} 10000 V ${y2 > y1 ? y2 - 20 : y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? x1 + 20 : x1 - 20} ${y2} H ${x2}`
 }
 
-function generateMainLine1({ x1, y1, x2, y2 }) {
+function generateMainLine1({ x1, y1, x2, y2 }: MainLineParams) {
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 
-function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }) {
+function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   let y1: number
   if (isFirst) {
     y1 = pT + pH / 2
@@ -217,7 +217,9 @@ function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
     y1 = pT + pH
   }
   const y2 = cT + cH
-  let x1: number, x2: number, xMiddle: number
+  let x1 = 0
+  let x2 = 0
+  let xMiddle = 0
   if (direction === 'lhs') {
     x1 = pL + GAP
     x2 = cL
@@ -244,16 +246,18 @@ function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
   }
 }
 
-function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }) {
-  let y1: number
-  let end: number
+function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+  let y1 = 0
+  let end = 0
   if (isFirst) {
     y1 = pT + pH / 2
   } else {
     y1 = pT + pH
   }
   const y2 = cT + cH
-  let x1: number, x2: number, xMid: number
+  let x1 = 0
+  let x2 = 0
+  let xMid = 0
   if (direction === 'lhs') {
     xMid = pL
     x1 = xMid + GAP
@@ -268,8 +272,8 @@ function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
   return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid} ${y2} ${x2} ${y2} H ${end}`
 }
 
-function generateSubLine3({ x1, y1, x2, y2, xMiddle }) {
-  return `M ${x1} ${y1} Q ${x1} ${y2} ${xMiddle} ${y2} H ${x2}`
-}
+// function generateSubLine3({ x1, y1, x2, y2, xMiddle }) {
+//   return `M ${x1} ${y1} Q ${x1} ${y2} ${xMiddle} ${y2} H ${x2}`
+// }
 
 export default linkDiv

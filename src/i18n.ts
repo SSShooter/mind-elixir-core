@@ -10,7 +10,7 @@ const cn = {
   link: '连接',
   clickTips: '请点击目标节点',
 }
-export default {
+const i18n: Record<string, object> = {
   cn,
   zh_CN: cn,
   zh_TW: {
@@ -74,3 +74,5 @@ export default {
     clickTips: 'Favor clicar no item alvo',
   },
 }
+
+export default i18n
