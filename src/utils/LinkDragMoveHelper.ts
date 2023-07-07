@@ -34,6 +34,9 @@ const create = function (dom: HTMLElement): LinkDragMoveHelperInstance {
     cb: null,
     init(map, cb) {
       this.cb = cb
+      this.handleClear = this.handleClear.bind(this)
+      this.handleMouseMove = this.handleMouseMove.bind(this)
+      this.handleMouseDown = this.handleMouseDown.bind(this)
       map.addEventListener('mousemove', this.handleMouseMove)
       map.addEventListener('mouseleave', this.handleClear)
       map.addEventListener('mouseup', this.handleClear)
