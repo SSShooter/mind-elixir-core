@@ -64,8 +64,8 @@ module.exports = (env, argv) => {
       entry: {
         MindElixir: './src/index.ts',
         MindElixirLite: './src/index.lite.ts',
-        example1: './src/exampleData/1.js',
-        example2: './src/exampleData/2.js',
+        example1: './src/exampleData/1.ts',
+        example2: './src/exampleData/2.ts',
       },
       output: {
         path: path.resolve(__dirname, 'dist'),

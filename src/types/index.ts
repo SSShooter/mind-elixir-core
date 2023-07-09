@@ -81,8 +81,8 @@ export interface MindElixirInstance {
 
   // wip
   bus: {
-    addListener: (type: string, handler) => void
-    fire: (type: string, ...payload) => void
+    addListener: (type: string, handler: any) => void
+    fire: (type: string, ...payload: any[]) => void
   }
 
   // wip
