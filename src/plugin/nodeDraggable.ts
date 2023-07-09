@@ -49,9 +49,11 @@ export default function (mind: MindElixirInstance) {
   })
 
   mind.map.addEventListener('dragend', async e => {
-    if (!meet || !dragged) return
+    if (!dragged) return
+    dragged.parentElement.parentElement.style.opacity = '1'
     const target = e.target as Topic
     target.style.opacity = ''
+    if (!meet) return
     clearPreview(meet)
     const obj = dragged.nodeObj
     switch (insertTpye) {
@@ -67,14 +69,13 @@ export default function (mind: MindElixirInstance) {
         mind.moveNode(dragged, meet)
         break
     }
-    dragged.parentElement.parentElement.style.opacity = '1'
     dragged = null
   })
 
   mind.map.addEventListener(
     'dragover',
     throttle(function (e: DragEvent) {
-      if (!meet || !dragged) return
+      if (!dragged) return
       clearPreview(meet)
       // minus threshold infer that postion of the cursor is above topic
       const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
