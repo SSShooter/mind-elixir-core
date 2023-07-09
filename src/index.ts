@@ -57,6 +57,8 @@ import Bus from './utils/pubsub'
 
 import './index.less'
 import './iconfont/iconfont.js'
+import type { MindElixirData, MindElixirInstance, Operation, Options } from './types/index'
+import type { Children } from './types/dom'
 
 // TODO show up animation
 

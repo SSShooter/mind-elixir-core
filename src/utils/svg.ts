@@ -1,3 +1,5 @@
+import type { CustomSvg } from '../types/dom'
+
 const $d = document
 const svgNS = 'http://www.w3.org/2000/svg'
 export const createMainPath = function (d: string, color: string) {
@@ -17,10 +19,10 @@ export const createLinkSvg = function (klass: string) {
 
 export const createLine = function (x1: number, y1: number, x2: number, y2: number) {
   const line = $d.createElementNS(svgNS, 'line')
-  line.setAttribute('x1', x1)
-  line.setAttribute('y1', y1)
-  line.setAttribute('x2', x2)
-  line.setAttribute('y2', y2)
+  line.setAttribute('x1', String(x1))
+  line.setAttribute('y1', String(y1))
+  line.setAttribute('x2', String(x2))
+  line.setAttribute('y2', String(y2))
   line.setAttribute('stroke', '#bbb')
   line.setAttribute('fill', 'none')
   line.setAttribute('stroke-width', '2')

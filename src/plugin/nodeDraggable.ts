@@ -1,6 +1,8 @@
 import { throttle } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
 import { findEle as E } from '../utils/dom'
+import type { Topic } from '../types/dom'
+import type { MindElixirInstance } from '../types/index'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
 type InsertType = 'before' | 'after' | 'in' | null
 const $d = document

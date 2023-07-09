@@ -1,3 +1,4 @@
+import type { MindElixirInstance, NodeObj } from '../types/index'
 import './mobileMenu.less'
 
 export default function (mind: MindElixirInstance, option?: any) {

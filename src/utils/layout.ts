@@ -1,4 +1,6 @@
 import { LEFT, RIGHT, SIDE } from '../const'
+import type { Children } from '../types/dom'
+import type { Layout, LayoutChildren, JudgeDirection } from '../types/function'
 import { createExpander, shapeTpc } from './dom'
 
 const $d = document

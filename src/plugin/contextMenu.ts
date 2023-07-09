@@ -1,4 +1,6 @@
 import i18n from '../i18n'
+import type { Topic } from '../types/dom'
+import type { MindElixirInstance } from '../types/index'
 import { encodeHTML } from '../utils/index'
 import './contextMenu.less'
 

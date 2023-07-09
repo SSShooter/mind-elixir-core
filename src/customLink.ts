@@ -2,6 +2,7 @@ import { generateUUID, getArrowPoints, calcP1, calcP4 } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { findEle } from './utils/dom'
 import { createSvgGroup } from './utils/svg'
+import type { CreateLink, RemoveLink, SelectLink, HideLinkController, ShowLinkController } from './types/function'
 
 // TODO Link label
 export const createLink: CreateLink = function (from, to, isInitPaint, obj) {

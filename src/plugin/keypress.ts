@@ -1,3 +1,5 @@
+import type { MindElixirInstance } from '../types/index'
+
 export default function (mind: MindElixirInstance) {
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
     13: () => {

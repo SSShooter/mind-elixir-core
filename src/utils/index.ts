@@ -1,3 +1,6 @@
+import type { LinkControllerData } from '../types/function'
+import type { GetObjById, FillParent, NodeObj, GenerateNewObj } from '../types/index'
+
 export function encodeHTML(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
 }

@@ -1,6 +1,9 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R } from './const'
+import type { Wrapper, Topic, Expander, Parent } from './types/dom'
+import type { LinkDiv, TraverseChildrenFunc } from './types/function'
+import type { MainLineParams, SubLineParams } from './types/linkDiv'
 
 /**
  * Link nodes with svg,

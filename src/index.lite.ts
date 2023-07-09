@@ -34,6 +34,8 @@ import mobileMenu from './plugin/mobileMenu'
 import Bus from './utils/pubsub'
 import './index.less'
 import './iconfont/iconfont.js'
+import type { Children } from './types/dom'
+import type { MindElixirInstance, Options, MindElixirData } from './types/index'
 
 export const E = findEle
 

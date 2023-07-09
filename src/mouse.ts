@@ -1,3 +1,5 @@
+import type { Topic, Expander, CustomSvg } from './types/dom'
+import type { MindElixirInstance } from './types/index'
 import dragMoveHelper from './utils/dragMoveHelper'
 
 const isTopic = (target: HTMLElement) => {

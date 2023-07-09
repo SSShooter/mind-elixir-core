@@ -1,3 +1,4 @@
+import type { MindElixirInstance } from '../types/index'
 import './toolBar.less'
 
 const createButton = (id: string, name: string) => {

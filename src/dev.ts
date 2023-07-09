@@ -3,6 +3,7 @@ import MindElixirLite from './index.lite'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
+import type { Options, MindElixirData, Operation } from './types/index'
 
 interface Window {
   currentOperation: any

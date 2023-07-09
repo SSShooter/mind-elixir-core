@@ -14,6 +14,18 @@ import {
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
+import type { Children, Topic, Wrapper, CustomSvg } from './types/dom'
+import type {
+  ReshapeNode,
+  InsertNodeCommon,
+  AddChildFunction,
+  TNodeCopy,
+  MoveNodeCommon,
+  RemoveNode,
+  MoveNodeToCommon,
+  SetNodeTopic,
+} from './types/function'
+import type { NodeObj } from './types/index'
 
 /**
  * @exports NodeOperation

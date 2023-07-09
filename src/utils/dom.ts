@@ -1,4 +1,7 @@
 import { LEFT } from '../const'
+import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
+import type { CreateWrapper, CreateParent, CreateChildren, CreateTopic, CreateInputDiv } from '../types/function'
+import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
 
 // DOM manipulation

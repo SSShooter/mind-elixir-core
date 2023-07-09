@@ -1,3 +1,19 @@
+import type { Topic, Wrapper } from './types/dom'
+import type { SelectNodeFunc, CommonSelectFunc, SiblingSelectFunc, GetDataStringFunc, GetDataFunc, ExpandNode, RefreshFunc } from './types/function'
+import type { MindElixirInstance, NodeObj } from './types/index'
+import type {
+  EnableEdit,
+  DisableEdit,
+  Scale,
+  ToCenter,
+  Install,
+  FocusNode,
+  CancelFocus,
+  InitLeft,
+  InitRight,
+  InitSide,
+  SetLocale,
+} from './types/interact'
 import { findEle } from './utils/dom'
 /**
  * @exports -

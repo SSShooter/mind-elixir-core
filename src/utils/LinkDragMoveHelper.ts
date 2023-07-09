@@ -1,5 +1,7 @@
 // helper for custom link
 
+import type { LinkDragMoveHelperInstance } from '../types/index'
+
 const create = function (dom: HTMLElement): LinkDragMoveHelperInstance {
   return {
     dom,
