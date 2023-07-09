@@ -1,14 +1,14 @@
-import MindElixir, { E } from '../dist/MindElixir'
-import example from '../dist/example1'
+import MindElixir, { E } from 'mind-elixir'
+import example from 'mind-elixir/dist/example1'
+import type { Options } from 'mind-elixir/dist/types/types'
 // import example2 from '../dist/example2'
 
-const mind = new MindElixir({
+const options: Options = {
   el: '#map',
   newTopicName: '子节点',
   // direction: MindElixir.LEFT,
   direction: MindElixir.RIGHT,
   // data: MindElixir.new('new topic'),
-  data: example,
   locale: 'en',
   draggable: true,
   editable: true,
@@ -45,10 +45,11 @@ const mind = new MindElixir({
   // mainLinkStyle: 2,
   mainNodeVerticalGap: 15, // 25
   mainNodeHorizontalGap: 15, // 65
-})
+}
+const mind = new MindElixir(options)
 mind.init(example)
 function sleep() {
-  return new Promise((res, rej) => {
+  return new Promise(res => {
     setTimeout(() => res(), 1000)
   })
 }

@@ -15,6 +15,7 @@
     "publish2": "npm run build && npm version patch -m \"build: release %s\" && npm publish",
     "beta": "npm run build && npm publish --tag beta"
   },
+  "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
