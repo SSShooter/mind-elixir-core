@@ -14,7 +14,7 @@ import type { MainLineParams, SubLineParams } from './types/linkDiv'
  * 2. layout main node, generate main link
  * 3. generate links inside main node
  * 4. generate custom link
- * @param {object} mainNode process the specific main node only
+ * @param mainNode process the specific main node only
  */
 const linkDiv: LinkDiv = function (mainNode) {
   const mainNodeHorizontalGap = this.mainNodeHorizontalGap
@@ -53,11 +53,13 @@ const linkDiv: LinkDiv = function (mainNode) {
       }
     }
     if (totalHeightL > totalHeightR) {
-      base = 10000 - Math.max(totalHeightL) / 2
+      this.mapHeight = totalHeightL
+      base = 10000 - totalHeightL / 2
       shortSide = 'r'
       shortSideGap = (totalHeightL - totalHeightRWithoutGap) / (countR - 1)
     } else {
-      base = 10000 - Math.max(totalHeightR) / 2
+      this.mapHeight = totalHeightR
+      base = 10000 - totalHeightR / 2
       shortSide = 'l'
       shortSideGap = (totalHeightR - totalHeightLWithoutGap) / (countL - 1)
     }
@@ -66,6 +68,7 @@ const linkDiv: LinkDiv = function (mainNode) {
       const el = mainNodeList[i] as HTMLElement
       totalHeight += el.offsetHeight + mainNodeVerticalGap
     }
+    this.mapHeight = totalHeight
     base = 10000 - totalHeight / 2
   }
 
@@ -261,19 +264,22 @@ function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
   let x1 = 0
   let x2 = 0
   let xMid = 0
+  const offset = Math.min(Math.abs(y1 - y2) / 800, 1.2) * GAP
   if (direction === 'lhs') {
     xMid = pL
     x1 = xMid + GAP
     x2 = xMid - GAP
     end = cL + GAP
+    // TODO: optimize control point
+    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
   } else if (direction === 'rhs') {
     xMid = pL + pW
     x1 = xMid - GAP
     x2 = xMid + GAP
     end = cL + cW - GAP
+    // TODO: optimize control point
+    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
   }
-  // TODO: optimize control point
-  return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid} ${y2} ${x2} ${y2} H ${end}`
 }
 
 // function generateSubLine3({ x1, y1, x2, y2, xMiddle }) {

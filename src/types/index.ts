@@ -116,6 +116,8 @@ export interface MindElixirInstance {
   line2: SVGElement
   linkSvgGroup: SVGElement
 
+  mapHeight: number
+
   init: Init
 
   generateNewObj: GenerateNewObj
@@ -201,6 +203,7 @@ export interface Options {
   mainLinkStyle?: number
   mainNodeHorizontalGap?: number
   mainNodeVerticalGap?: number
+  subLinkStyle?: number
   mobileMenu?: boolean
   theme?: Theme
   nodeMenu?: boolean
