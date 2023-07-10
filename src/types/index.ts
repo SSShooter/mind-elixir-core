@@ -1,3 +1,4 @@
+import type Bus from '../utils/pubsub'
 import type { Topic, CustomSvg, Children } from './dom'
 import type {
   Init,
@@ -79,13 +80,8 @@ export interface MindElixirInstance {
   scaleVal: number
   tempDirection: number | null
 
-  // wip
-  bus: {
-    addListener: (type: string, handler: any) => void
-    fire: (type: string, ...payload: any[]) => void
-  }
+  bus: ReturnType<typeof Bus.create>
 
-  // wip
   history: Operation[]
   isUndo: boolean
   undo: () => void
