@@ -110,27 +110,7 @@
       white-space: pre-wrap;
       padding: var(--topic-padding);
       line-height: 1.2; // assure the line-height consistency between different languages
-      .tags {
-        direction: ltr;
-        span {
-          display: inline-block;
-          border-radius: 3px;
-          padding: 2px 4px;
-          background: #d6f0f8;
-          color: #276f86;
-          margin: 0px;
-          font-size: 12px;
-          height: 16px;
-          line-height: 16px;
-          margin-right: 3px;
-          margin-top: 2px;
-        }
-      }
-      .icons {
-        display: inline-block;
-        direction: ltr;
-        margin-right: 10px;
-      }
+
       // drag preview
       .insert-preview {
         position: absolute;
@@ -250,5 +230,27 @@
     border-radius: 100%;
     background: #aaa;
     cursor: pointer;
+  }
+
+  .tags {
+    direction: ltr;
+    span {
+      display: inline-block;
+      border-radius: 3px;
+      padding: 2px 4px;
+      background: #d6f0f8;
+      color: #276f86;
+      margin: 0px;
+      font-size: 12px;
+      height: 16px;
+      line-height: 16px;
+      margin-right: 3px;
+      margin-top: 2px;
+    }
+  }
+  .icons {
+    display: inline-block;
+    direction: ltr;
+    margin-right: 10px;
   }
 }

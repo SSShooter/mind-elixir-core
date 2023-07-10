@@ -14,6 +14,7 @@ export default {
     id: 'me-root',
     topic: 'Mind Elixir',
     root: true,
+    tags: ['Mind Map Core'],
     children: [
       {
         topic: 'logo2',
@@ -42,7 +43,7 @@ export default {
           { topic: 'Free', id: 'c1f068377de9f3a0' },
           { topic: 'Open-Source', id: 'c1f06d38a09f23ca' },
           {
-            topic: 'Use without JavaScript framework',
+            topic: 'Use without JavaScript framework',
             id: 'c1f06e4cbcf16463',
             expanded: true,
             children: [],
