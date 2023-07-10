@@ -270,14 +270,12 @@ function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
     x1 = xMid + GAP
     x2 = xMid - GAP
     end = cL + GAP
-    // TODO: optimize control point
     return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
   } else if (direction === 'rhs') {
     xMid = pL + pW
     x1 = xMid - GAP
     x2 = xMid + GAP
     end = cL + cW - GAP
-    // TODO: optimize control point
     return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
   }
 }

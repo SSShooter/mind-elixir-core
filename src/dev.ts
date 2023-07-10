@@ -64,7 +64,7 @@ const options: Options = {
 const mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
-mind.init(example as MindElixirData)
+mind.init(example)
 function sleep() {
   return new Promise<void>(res => {
     setTimeout(() => res(), 1000)

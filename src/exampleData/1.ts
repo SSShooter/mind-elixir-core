@@ -1,4 +1,6 @@
-export default {
+import type { MindElixirData } from '../index'
+
+const aboutMindElixir: MindElixirData = {
   direction: 0,
   theme: {
     name: 'Dark',
@@ -23,6 +25,7 @@ export default {
         expanded: true,
         children: [
           {
+            id: 'use-image',
             topic: 'mind-elixir',
             image: {
               url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png',
@@ -244,3 +247,5 @@ export default {
   },
   linkData: {},
 }
+
+export default aboutMindElixir

@@ -1,4 +1,6 @@
-export default {
+import type { MindElixirData } from '../index'
+
+const mindElixirStruct: MindElixirData = {
   direction: 1,
   nodeData: {
     id: 'me-root',
@@ -107,3 +109,5 @@ export default {
   },
   linkData: {},
 }
+
+export default mindElixirStruct
