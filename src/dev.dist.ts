@@ -1,7 +1,17 @@
 import MindElixir, { E } from 'mind-elixir'
 import example from 'mind-elixir/dist/example1'
-import type { Options } from 'mind-elixir/dist/types/types'
+import type { Options } from 'mind-elixir'
 // import example2 from '../dist/example2'
+
+interface Window {
+  currentOperation: any
+  m: any
+  M: any
+  E: any
+  exportSvg: any
+  exportPng: any
+}
+declare let window: Window
 
 const options: Options = {
   el: '#map',
@@ -49,7 +59,7 @@ const options: Options = {
 const mind = new MindElixir(options)
 mind.init(example)
 function sleep() {
-  return new Promise(res => {
+  return new Promise<void>(res => {
     setTimeout(() => res(), 1000)
   })
 }

@@ -60,6 +60,8 @@ import './iconfont/iconfont.js'
 import type { MindElixirData, MindElixirInstance, Operation, Options } from './types/index'
 import type { Children } from './types/dom'
 
+export * from './types/index'
+
 // TODO show up animation
 
 /**
