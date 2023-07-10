@@ -50,6 +50,7 @@ Mind elixir is a free open source mind map core.
   - [Operation Guards](#operation-guards)
 - [Theme](#theme)
 - [Not only core](#not-only-core)
+- [Development](#development)
 
 </details>
 
@@ -296,3 +297,17 @@ const options = {
 - [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)
 - [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
+
+## Development
+
+```
+yarn
+npm start
+```
+
+Test generated files with `dev.dist.ts`:
+
+```
+npm link
+npm link mind-elixir
+```
