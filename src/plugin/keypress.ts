@@ -62,11 +62,6 @@ export default function (mind: MindElixirInstance) {
         mind.waitCopy = null
       }
     },
-    // ctrl z
-    90: (e: KeyboardEvent) => {
-      if (!mind.allowUndo) return
-      if (e.metaKey || e.ctrlKey) mind.undo()
-    },
     // ctrl +
     187: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {

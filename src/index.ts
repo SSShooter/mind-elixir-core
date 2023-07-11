@@ -52,12 +52,13 @@ import toolBar from './plugin/toolBar'
 import nodeDraggable from './plugin/nodeDraggable'
 import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
+import operationHistory from './plugin/operationHistory'
 
 import Bus from './utils/pubsub'
 
 import './index.less'
 import './iconfont/iconfont.js'
-import type { MindElixirData, MindElixirInstance, Operation, Options } from './types/index'
+import type { MindElixirData, MindElixirInstance, Options } from './types/index'
 import type { Children } from './types/dom'
 
 export * from './types/index'
@@ -107,6 +108,7 @@ function MindElixir(
     newTopicName,
     allowUndo,
     mainLinkStyle,
+    subLinkStyle,
     overflowHidden,
     mainNodeHorizontalGap,
     mainNodeVerticalGap,
@@ -148,46 +150,12 @@ function MindElixir(
   this.scaleVal = 1
   this.tempDirection = null
   this.mainLinkStyle = mainLinkStyle || 0
+  this.subLinkStyle = subLinkStyle || 0
   this.overflowHidden = overflowHidden || false
   this.mainNodeHorizontalGap = mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
   this.mainNodeVerticalGap = mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
 
   this.bus = Bus.create()
-
-  // redo
-  this.history = []
-  this.isUndo = false
-  this.undo = function () {
-    const operation = this.history.pop()
-    if (!operation) return
-    this.isUndo = true
-    if (operation.name === 'moveNode') {
-      this.moveNode(E(operation.obj.fromObj.id), E(operation.obj.originParentId))
-    } else if (operation.name === 'removeNode') {
-      if (operation.originSiblingId) {
-        this.insertBefore(E(operation.originSiblingId), operation.obj)
-      } else {
-        this.addChild(E(operation.originParentId), operation.obj)
-      }
-    } else if (operation.name === 'addChild' || operation.name === 'copyNode') {
-      this.removeNode(E(operation.obj.id))
-    } else if (operation.name === 'finishEdit') {
-      this.setNodeTopic(E(operation.obj.id), operation.origin)
-    } else {
-      this.isUndo = false
-    }
-  }
-  this.bus.addListener('operation', (operation: Operation) => {
-    if (this.isUndo) {
-      this.isUndo = false
-      return
-    }
-    if (['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(operation.name)) {
-      this.history.push(operation)
-      // console.log(operation, this.history)
-    }
-  })
-  // redo end
 
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
@@ -315,6 +283,7 @@ MindElixir.prototype = {
     // plugin
     this.toolBar && toolBar(this)
     this.keypress && keypress(this)
+    operationHistory(this)
 
     if (isMobile() && this.mobileMenu) {
       mobileMenu(this)

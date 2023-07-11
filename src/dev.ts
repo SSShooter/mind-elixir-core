@@ -41,7 +41,7 @@ const options: Options = {
   toolBar: true,
   nodeMenu: true,
   keypress: true,
-  allowUndo: false,
+  // allowUndo: false,
   before: {
     moveDownNode() {
       return false
@@ -57,6 +57,7 @@ const options: Options = {
     },
   },
   mainLinkStyle: 1,
+  subLinkStyle: 1,
   mainNodeVerticalGap: 25, // 25
   mainNodeHorizontalGap: 65, // 65
 }
@@ -77,6 +78,7 @@ const mind2 = new (MindElixirLite as any)({
   draggable: false,
   // overflowHidden: true,
   nodeMenu: true,
+  subLinkStyle: 2,
 })
 mind2.init(example2)
 window.currentOperation = null
