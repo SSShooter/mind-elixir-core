@@ -36,15 +36,25 @@ const canPreview = function (el: Element, dragged: Topic) {
   return el && el.tagName === 'ME-TPC' && el !== dragged && !isContain && (el as Topic).nodeObj.root !== true
 }
 
+const createGhost = function (mei: MindElixirInstance) {
+  const ghost = document.createElement('div')
+  ghost.className = 'mind-elixir-ghost'
+  mei.map.appendChild(ghost)
+  return ghost
+}
+
 export default function (mind: MindElixirInstance) {
   let dragged: Topic | null = null
   let insertTpye: InsertType = null
   let meet: Topic | null = null
+  const ghost = createGhost(mind)
   const threshold = 12
 
   mind.map.addEventListener('dragstart', e => {
     dragged = e.target as Topic
     dragged.parentElement.parentElement.style.opacity = '0.5'
+    ghost.innerHTML = dragged.innerHTML
+    e.dataTransfer?.setDragImage(ghost, 0, 0)
     dragMoveHelper.clear()
   })
 
