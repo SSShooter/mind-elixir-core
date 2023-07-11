@@ -4,7 +4,7 @@ import { SIDE, GAP, TURNPOINT_R } from './const'
 import type { Wrapper, Topic, Expander, Parent } from './types/dom'
 import type { LinkDiv, TraverseChildrenFunc } from './types/function'
 import type { MainLineParams, SubLineParams } from './types/linkDiv'
-
+let genPath: typeof generateSubLine1 = generateSubLine1
 /**
  * Link nodes with svg,
  * only link specific node if `mainNode` is present
@@ -16,6 +16,7 @@ import type { MainLineParams, SubLineParams } from './types/linkDiv'
  * 4. generate custom link
  * @param mainNode process the specific main node only
  */
+// TODO: use flexbox
 const linkDiv: LinkDiv = function (mainNode) {
   const mainNodeHorizontalGap = this.mainNodeHorizontalGap
   const mainNodeVerticalGap = this.mainNodeVerticalGap
@@ -24,6 +25,7 @@ const linkDiv: LinkDiv = function (mainNode) {
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
   const mainNodeList = this.mainNodes.children
   this.lines.innerHTML = ''
+  genPath = this.subLinkStyle === 2 ? generateSubLine2 : generateSubLine1
 
   // 1. calculate position of main nodes
   let totalHeight = 0
@@ -181,7 +183,7 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, isFir
     const cH = childT.offsetHeight
     const direction = child.offsetParent.className
 
-    path += generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
+    path += genPath({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
 
     const expander = childT.children[1] as Expander
     if (expander) {
@@ -215,7 +217,7 @@ function generateMainLine1({ x1, y1, x2, y2 }: MainLineParams) {
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 
-function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   let y1: number
   if (isFirst) {
     y1 = pT + pH / 2
@@ -252,7 +254,7 @@ function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }:
   }
 }
 
-function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+function generateSubLine1({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   let y1 = 0
   let end = 0
   if (isFirst) {
@@ -271,7 +273,7 @@ function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
     x2 = xMid - GAP
     end = cL + GAP
     return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
-  } else if (direction === 'rhs') {
+  } else {
     xMid = pL + pW
     x1 = xMid - GAP
     x2 = xMid + GAP

@@ -102,6 +102,7 @@ export interface MindElixirInstance {
   mainLinkStyle: number
   mainNodeHorizontalGap: number
   mainNodeVerticalGap: number
+  subLinkStyle: number
   mobileMenu: boolean
 
   container: HTMLElement
