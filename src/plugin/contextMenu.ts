@@ -1,31 +1,33 @@
 import i18n from '../i18n'
+import type { Topic } from '../types/dom'
+import type { MindElixirInstance } from '../types/index'
 import { encodeHTML } from '../utils/index'
 import './contextMenu.less'
 
-export default function (mind, option) {
-  const createTips = words => {
+export default function (mind: MindElixirInstance, option: any) {
+  const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words
     div.style.cssText = 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);'
     return div
   }
-  const createLi = (id, name, keyname) => {
+  const createLi = (id: string, name: string, keyname: string) => {
     const li = document.createElement('li')
     li.id = id
     li.innerHTML = `<span>${encodeHTML(name)}</span><span>${encodeHTML(keyname)}</span>`
     return li
   }
   const locale = i18n[mind.locale] ? mind.locale : 'en'
-
-  const add_child = createLi('cm-add_child', i18n[locale].addChild, 'tab')
-  const add_parent = createLi('cm-add_parent', i18n[locale].addParent, '')
-  const add_sibling = createLi('cm-add_sibling', i18n[locale].addSibling, 'enter')
-  const remove_child = createLi('cm-remove_child', i18n[locale].removeNode, 'delete')
-  const focus = createLi('cm-fucus', i18n[locale].focus, '')
-  const unfocus = createLi('cm-unfucus', i18n[locale].cancelFocus, '')
-  const up = createLi('cm-up', i18n[locale].moveUp, 'PgUp')
-  const down = createLi('cm-down', i18n[locale].moveDown, 'Pgdn')
-  const link = createLi('cm-down', i18n[locale].link, '')
+  const lang = i18n[locale] as any
+  const add_child = createLi('cm-add_child', lang.addChild, 'tab')
+  const add_parent = createLi('cm-add_parent', lang.addParent, '')
+  const add_sibling = createLi('cm-add_sibling', lang.addSibling, 'enter')
+  const remove_child = createLi('cm-remove_child', lang.removeNode, 'delete')
+  const focus = createLi('cm-fucus', lang.focus, '')
+  const unfocus = createLi('cm-unfucus', lang.cancelFocus, '')
+  const up = createLi('cm-up', lang.moveUp, 'PgUp')
+  const down = createLi('cm-down', lang.moveDown, 'Pgdn')
+  const link = createLi('cm-down', lang.link, '')
 
   const menuUl = document.createElement('ul')
   menuUl.className = 'menu-list'
@@ -63,7 +65,7 @@ export default function (mind, option) {
     e.preventDefault()
     if (!mind.editable) return
     // console.log(e.pageY, e.screenY, e.clientY)
-    const target = e.target
+    const target = e.target as Topic
     if (target.tagName === 'ME-TPC') {
       if (target.parentElement.tagName === 'ME-ROOT') {
         isRoot = true
@@ -128,7 +130,7 @@ export default function (mind, option) {
   }
   focus.onclick = () => {
     if (isRoot) return
-    mind.focusNode(mind.currentNode)
+    mind.focusNode(mind.currentNode as Topic)
     menuContainer.hidden = true
   }
   unfocus.onclick = () => {
@@ -147,16 +149,17 @@ export default function (mind, option) {
   }
   link.onclick = () => {
     menuContainer.hidden = true
-    const from = mind.currentNode
-    const tips = createTips(i18n[locale].clickTips)
+    const from = mind.currentNode as Topic
+    const tips = createTips(lang.clickTips)
     mind.container.appendChild(tips)
     mind.map.addEventListener(
       'click',
       e => {
         e.preventDefault()
         tips.remove()
-        if (e.target.parentElement.tagName === 'ME-PARENT' || e.target.parentElement.tagName === 'ME-ROOT') {
-          mind.createLink(from, mind.currentNode)
+        const target = e.target as Topic
+        if (target.parentElement.tagName === 'ME-PARENT' || target.parentElement.tagName === 'ME-ROOT') {
+          mind.createLink(from, mind.currentNode as Topic)
         } else {
           console.log('link cancel')
         }

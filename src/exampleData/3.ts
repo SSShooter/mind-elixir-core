@@ -1,4 +1,6 @@
-export default {
+import type { MindElixirData } from '../index'
+
+const frontEndSkill: MindElixirData = {
   nodeData: {
     topic: 'web前端能力地图',
     id: 'me-root',
@@ -2135,10 +2137,6 @@ export default {
                   },
                 ],
               },
-              {
-                topic: '',
-                id: 'a24cb14463f40b39482021f195d90c3b',
-              },
             ],
           },
           {
@@ -2644,3 +2642,5 @@ export default {
     ],
   },
 }
+
+export default frontEndSkill

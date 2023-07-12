@@ -1,7 +1,10 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle } from './utils/dom'
-import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
-
+import { SIDE, GAP, TURNPOINT_R } from './const'
+import type { Wrapper, Topic, Expander, Parent } from './types/dom'
+import type { LinkDiv, TraverseChildrenFunc } from './types/function'
+import type { MainLineParams, SubLineParams } from './types/linkDiv'
+let genPath: typeof generateSubLine1 = generateSubLine1
 /**
  * Link nodes with svg,
  * only link specific node if `mainNode` is present
@@ -11,20 +14,22 @@ import { SIDE, GAP, TURNPOINT_R, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GA
  * 2. layout main node, generate main link
  * 3. generate links inside main node
  * 4. generate custom link
- * @param {object} mainNode process the specific main node only
+ * @param mainNode process the specific main node only
  */
-export default function linkDiv(mainNode: Wrapper) {
-  const mainNodeHorizontalGap = this.mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
-  const mainNodeVerticalGap = this.mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
+// TODO: use flexbox
+const linkDiv: LinkDiv = function (mainNode) {
+  const mainNodeHorizontalGap = this.mainNodeHorizontalGap
+  const mainNodeVerticalGap = this.mainNodeVerticalGap
   console.time('linkDiv')
   const root = this.root
   root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
   const mainNodeList = this.mainNodes.children
   this.lines.innerHTML = ''
+  genPath = this.subLinkStyle === 2 ? generateSubLine2 : generateSubLine1
 
   // 1. calculate position of main nodes
   let totalHeight = 0
-  let shortSide: string // l or r
+  let shortSide = '' // l or r
   let shortSideGap = 0 // balance heigt of two side
   let currentOffsetL = 0 // left side total offset
   let currentOffsetR = 0 // right side total offset
@@ -38,7 +43,7 @@ export default function linkDiv(mainNode: Wrapper) {
     let totalHeightLWithoutGap = 0
     let totalHeightRWithoutGap = 0
     for (let i = 0; i < mainNodeList.length; i++) {
-      const el = mainNodeList[i]
+      const el = mainNodeList[i] as HTMLElement
       if (el.className === 'lhs') {
         totalHeightL += el.offsetHeight + mainNodeVerticalGap
         totalHeightLWithoutGap += el.offsetHeight
@@ -50,19 +55,22 @@ export default function linkDiv(mainNode: Wrapper) {
       }
     }
     if (totalHeightL > totalHeightR) {
-      base = 10000 - Math.max(totalHeightL) / 2
+      this.mapHeight = totalHeightL
+      base = 10000 - totalHeightL / 2
       shortSide = 'r'
       shortSideGap = (totalHeightL - totalHeightRWithoutGap) / (countR - 1)
     } else {
-      base = 10000 - Math.max(totalHeightR) / 2
+      this.mapHeight = totalHeightR
+      base = 10000 - totalHeightR / 2
       shortSide = 'l'
       shortSideGap = (totalHeightR - totalHeightLWithoutGap) / (countL - 1)
     }
   } else {
     for (let i = 0; i < mainNodeList.length; i++) {
-      const el = mainNodeList[i]
+      const el = mainNodeList[i] as HTMLElement
       totalHeight += el.offsetHeight + mainNodeVerticalGap
     }
+    this.mapHeight = totalHeight
     base = 10000 - totalHeight / 2
   }
 
@@ -73,9 +81,9 @@ export default function linkDiv(mainNode: Wrapper) {
     let x1 = 10000
     const y1 = 10000
     let x2, y2
-    const el = mainNodeList[i]
+    const el = mainNodeList[i] as Wrapper
     const palette = this.theme.palette
-    const branchColor = el.querySelector('me-tpc').nodeObj.branchColor || palette[i % palette.length]
+    const branchColor = el.querySelector<Topic>('me-tpc')!.nodeObj.branchColor || palette[i % palette.length]
     const elOffsetH = el.offsetHeight
     if (el.className === 'lhs') {
       el.style.top = base + currentOffsetL + 'px'
@@ -123,7 +131,7 @@ export default function linkDiv(mainNode: Wrapper) {
     this.lines.appendChild(createMainPath(mainPath, branchColor))
 
     // set position of expander
-    const expander = el.children[0].children[1]
+    const expander = el.children[0].children[1] as Expander
     if (expander) {
       expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
       if (el.className === 'lhs') {
@@ -140,9 +148,10 @@ export default function linkDiv(mainNode: Wrapper) {
     if (el.childElementCount) {
       const svg = createLinkSvg('subLines')
       // svg tag name is lower case
-      if (el.lastChild.tagName === 'svg') el.lastChild.remove()
+      const svgLine = el.lastChild as SVGSVGElement
+      if (svgLine.tagName === 'svg') svgLine.remove()
       el.appendChild(svg)
-      const parent = el.children[0]
+      const parent = el.children[0] as Parent
       const children = el.children[1].children
       const path = traverseChildren(children, parent, true)
       svg.appendChild(createPath(path, branchColor))
@@ -153,11 +162,7 @@ export default function linkDiv(mainNode: Wrapper) {
   this.linkSvgGroup.innerHTML = ''
   for (const prop in this.linkData) {
     const link = this.linkData[prop]
-    if (typeof link.from === 'string') {
-      this.createLink(findEle(link.from), findEle(link.to), true, link)
-    } else {
-      this.createLink(findEle(link.from.nodeObj.id), findEle(link.to.nodeObj.id), true, link)
-    }
+    this.createLink(findEle(link.from), findEle(link.to), true, link)
   }
   console.timeEnd('linkDiv')
 }
@@ -178,7 +183,7 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, isFir
     const cH = childT.offsetHeight
     const direction = child.offsetParent.className
 
-    path += generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
+    path += genPath({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
 
     const expander = childT.children[1] as Expander
     if (expander) {
@@ -204,15 +209,15 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, isFir
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
-function generateMainLine2({ x1, y1, x2, y2 }) {
+function generateMainLine2({ x1, y1, x2, y2 }: MainLineParams) {
   return `M ${x1} 10000 V ${y2 > y1 ? y2 - 20 : y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? x1 + 20 : x1 - 20} ${y2} H ${x2}`
 }
 
-function generateMainLine1({ x1, y1, x2, y2 }) {
+function generateMainLine1({ x1, y1, x2, y2 }: MainLineParams) {
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 
-function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }) {
+function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   let y1: number
   if (isFirst) {
     y1 = pT + pH / 2
@@ -220,7 +225,9 @@ function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
     y1 = pT + pH
   }
   const y2 = cT + cH
-  let x1: number, x2: number, xMiddle: number
+  let x1 = 0
+  let x2 = 0
+  let xMiddle = 0
   if (direction === 'lhs') {
     x1 = pL + GAP
     x2 = cL
@@ -247,30 +254,36 @@ function generateSubLine({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
   }
 }
 
-function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }) {
-  let y1: number
-  let end: number
+function generateSubLine1({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+  let y1 = 0
+  let end = 0
   if (isFirst) {
     y1 = pT + pH / 2
   } else {
     y1 = pT + pH
   }
   const y2 = cT + cH
-  let x1: number, x2: number, xMid: number
+  let x1 = 0
+  let x2 = 0
+  let xMid = 0
+  const offset = Math.min(Math.abs(y1 - y2) / 800, 1.2) * GAP
   if (direction === 'lhs') {
     xMid = pL
     x1 = xMid + GAP
     x2 = xMid - GAP
     end = cL + GAP
-  } else if (direction === 'rhs') {
+    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
+  } else {
     xMid = pL + pW
     x1 = xMid - GAP
     x2 = xMid + GAP
     end = cL + cW - GAP
+    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
   }
-  return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid} ${y2} ${x2} ${y2} H ${end}`
 }
 
-function generateSubLine3({ x1, y1, x2, y2, xMiddle }) {
-  return `M ${x1} ${y1} Q ${x1} ${y2} ${xMiddle} ${y2} H ${x2}`
-}
+// function generateSubLine3({ x1, y1, x2, y2, xMiddle }) {
+//   return `M ${x1} ${y1} Q ${x1} ${y2} ${xMiddle} ${y2} H ${x2}`
+// }
+
+export default linkDiv

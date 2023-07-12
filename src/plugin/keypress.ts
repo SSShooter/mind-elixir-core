@@ -1,5 +1,7 @@
-export default function (mind) {
-  const key2func = {
+import type { MindElixirInstance } from '../types/index'
+
+export default function (mind: MindElixirInstance) {
+  const key2func: Record<string, (e: KeyboardEvent) => void> = {
     13: () => {
       // enter
       mind.insertSibling()
@@ -46,34 +48,29 @@ export default function (mind) {
       // pageDown
       mind.moveDownNode()
     },
-    67(e) {
+    67: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         // ctrl c
         mind.waitCopy = mind.currentNode
       }
     },
-    86(e) {
-      if (!mind.waitCopy) return
+    86: (e: KeyboardEvent) => {
+      if (!mind.waitCopy || !mind.currentNode) return
       if (e.metaKey || e.ctrlKey) {
         // ctrl v
         mind.copyNode(mind.waitCopy, mind.currentNode)
         mind.waitCopy = null
       }
     },
-    // ctrl z
-    90: e => {
-      if (!mind.allowUndo) return
-      if (e.metaKey || e.ctrlKey) mind.undo()
-    },
     // ctrl +
-    187: e => {
+    187: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal > 1.6) return
         mind.scale((mind.scaleVal += 0.2))
       }
     },
     // ctrl -
-    189: e => {
+    189: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal < 0.6) return
         mind.scale((mind.scaleVal -= 0.2))
@@ -94,7 +91,8 @@ export default function (mind) {
       if (mind.currentLink) mind.removeLink()
       else mind.removeNode()
     } else {
-      key2func[e.keyCode] && key2func[e.keyCode](e)
+      const keyHandler = key2func[e.keyCode]
+      keyHandler && keyHandler(e)
     }
   }
 }

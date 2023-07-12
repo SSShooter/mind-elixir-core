@@ -1,6 +1,7 @@
+import type { MindElixirInstance } from '../types/index'
 import './toolBar.less'
 
-const createButton = (id, name) => {
+const createButton = (id: string, name: string) => {
   const button = document.createElement('span')
   button.id = id
   button.innerHTML = `<svg class="icon" aria-hidden="true">
@@ -9,7 +10,7 @@ const createButton = (id, name) => {
   return button
 }
 
-function createToolBarRBContainer(mind) {
+function createToolBarRBContainer(mind: MindElixirInstance) {
   const toolBarRBContainer = document.createElement('div')
   const fc = createButton('fullscreen', 'full')
   const gc = createButton('toCenter', 'living')
@@ -39,7 +40,7 @@ function createToolBarRBContainer(mind) {
   }
   return toolBarRBContainer
 }
-function createToolBarLTContainer(mind) {
+function createToolBarLTContainer(mind: MindElixirInstance) {
   const toolBarLTContainer = document.createElement('div')
   const l = createButton('tbltl', 'left')
   const r = createButton('tbltr', 'right')
@@ -61,7 +62,7 @@ function createToolBarLTContainer(mind) {
   return toolBarLTContainer
 }
 
-export default function (mind) {
+export default function (mind: MindElixirInstance) {
   mind.container.append(createToolBarRBContainer(mind))
   mind.container.append(createToolBarLTContainer(mind))
 }

@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Mind elixir is a free open source mind map core.",
   "main": "dist/MindElixir.js",
   "scripts": {
@@ -14,6 +14,19 @@
     "md": "./node_modules/.bin/jsdoc2md 'src/*.js' > api.md",
     "publish2": "npm run build && npm version patch -m \"build: release %s\" && npm publish",
     "beta": "npm run build && npm publish --tag beta"
+  },
+  "types": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/MindElixir.js",
+      "require": "./dist/MindElixir.js"
+    },
+    "./dist/example1": {
+      "types": "./dist/types/exampleData/1.d.ts",
+      "import": "./dist/example1.js",
+      "require": "./dist/example1.js"
+    }
   },
   "lint-staged": {
     "src/**/*.{ts,js}": [

@@ -10,4 +10,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
+  rules: {
+    '@typescript-eslint/consistent-type-imports': 'error',
+  },
 }

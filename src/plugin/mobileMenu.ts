@@ -1,7 +1,8 @@
+import type { MindElixirInstance, NodeObj } from '../types/index'
 import './mobileMenu.less'
 
-export default function (mind, option?) {
-  const createLi = (id, name) => {
+export default function (mind: MindElixirInstance, option?: any) {
+  const createLi = (id: string, name: string) => {
     const div = document.createElement('div')
     div.id = id
     div.innerHTML = `<svg class="icon" aria-hidden="true">
@@ -88,7 +89,7 @@ export default function (mind, option?) {
   mind.bus.addListener('unselectNode', function () {
     menuContainer.hidden = true
   })
-  mind.bus.addListener('selectNode', function (nodeObj) {
+  mind.bus.addListener('selectNode', function (nodeObj: NodeObj) {
     menuContainer.hidden = false
     if (nodeObj.root) {
       isRoot = true
@@ -100,14 +101,14 @@ export default function (mind, option?) {
     if (e.target === menuContainer) menuContainer.hidden = true
   }
 
-  add_child.onclick = e => {
+  add_child.onclick = () => {
     mind.addChild()
   }
-  add_sibling.onclick = e => {
+  add_sibling.onclick = () => {
     if (isRoot) return
     mind.insertSibling()
   }
-  remove_child.onclick = e => {
+  remove_child.onclick = () => {
     if (isRoot) return
     mind.removeNode()
   }

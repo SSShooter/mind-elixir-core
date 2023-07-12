@@ -3,6 +3,7 @@ import MindElixirLite from './index.lite'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
+import type { Options, MindElixirData, Operation } from './types/index'
 
 interface Window {
   currentOperation: any
@@ -15,7 +16,7 @@ interface Window {
 
 declare let window: Window
 
-const options = {
+const options: Options = {
   el: '#map',
   newTopicName: '子节点',
   direction: MindElixir.SIDE,
@@ -40,7 +41,7 @@ const options = {
   toolBar: true,
   nodeMenu: true,
   keypress: true,
-  allowUndo: false,
+  // allowUndo: false,
   before: {
     moveDownNode() {
       return false
@@ -56,16 +57,17 @@ const options = {
     },
   },
   mainLinkStyle: 1,
+  subLinkStyle: 1,
   mainNodeVerticalGap: 25, // 25
   mainNodeHorizontalGap: 65, // 65
 }
 
-const mind = new (MindElixir as any)(options)
+const mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
-mind.init(example) // or try `example`
+mind.init(example)
 function sleep() {
-  return new Promise<void>((res, rej) => {
+  return new Promise<void>(res => {
     setTimeout(() => res(), 1000)
   })
 }
@@ -76,10 +78,11 @@ const mind2 = new (MindElixirLite as any)({
   draggable: false,
   // overflowHidden: true,
   nodeMenu: true,
+  subLinkStyle: 2,
 })
 mind2.init(example2)
 window.currentOperation = null
-mind.bus.addListener('operation', operation => {
+mind.bus.addListener('operation', (operation: Operation) => {
   console.log(operation)
   if (operation.name !== 'finishEdit') window.currentOperation = operation
   // return {
@@ -93,10 +96,10 @@ mind.bus.addListener('operation', operation => {
   // name: moveNode
   // obj: {from:target1,to:target2}
 })
-mind.bus.addListener('selectNode', node => {
+mind.bus.addListener('selectNode', (node: any) => {
   console.log(node)
 })
-mind.bus.addListener('expandNode', node => {
+mind.bus.addListener('expandNode', (node: any) => {
   console.log('expandNode: ', node)
 })
 window.m = mind

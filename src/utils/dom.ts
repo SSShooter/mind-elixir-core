@@ -1,19 +1,24 @@
 import { LEFT } from '../const'
+import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
+import type { CreateWrapper, CreateParent, CreateChildren, CreateTopic, CreateInputDiv } from '../types/function'
+import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
 
 // DOM manipulation
 const $d = document
-export const findEle = (id: string, instance?) => {
+export const findEle = (id: string, instance?: MindElixirInstance): Topic => {
   const scope = instance ? instance.mindElixirBox : $d
-  return scope.querySelector(`[data-nodeid=me${id}]`)
+  const ele = scope.querySelector<Topic>(`[data-nodeid=me${id}]`)
+  if (!ele) new Error(`findEle: ${id} not found`)
+  return ele as Topic
 }
 
 export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.textContent = nodeObj.topic
 
   if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color || null
-    tpc.style.background = nodeObj.style.background || null
+    tpc.style.color = nodeObj.style.color || ''
+    tpc.style.background = nodeObj.style.background || ''
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
@@ -112,7 +117,7 @@ export function selectText(div: HTMLElement) {
 export const createInputDiv: CreateInputDiv = function (tpc) {
   console.time('createInputDiv')
   if (!tpc) return
-  let div = $d.createElement('div')
+  const div = $d.createElement('div')
   const origin = tpc.childNodes[0].textContent as string
   tpc.appendChild(div)
   div.id = 'input-box'
@@ -140,19 +145,20 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
       if (e.shiftKey) return
 
       e.preventDefault()
-      this.inputDiv.blur()
+      this.inputDiv?.blur()
       this.map.focus()
     }
   })
   div.addEventListener('blur', () => {
     if (!div) return
     const node = tpc.nodeObj
-    const topic = div.textContent!.trim()
+    const topic = div.textContent?.trim() || ''
     console.log(topic)
     if (topic === '') node.topic = origin
     else node.topic = topic
     div.remove()
-    this.inputDiv = div = null
+    // memory leak?
+    this.inputDiv = null
     if (topic === origin) return
     tpc.childNodes[0].textContent = node.topic
     this.linkDiv()

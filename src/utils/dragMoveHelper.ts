@@ -1,9 +1,9 @@
 export default {
   afterMoving: false, // 区别click事件
   mousedown: false,
-  lastX: null,
-  lastY: null,
-  onMove(e, container) {
+  lastX: 0,
+  lastY: 0,
+  onMove(e: MouseEvent, container: HTMLElement) {
     if (this.mousedown) {
       this.afterMoving = true
       if (!this.lastX) {
@@ -21,7 +21,7 @@ export default {
   clear() {
     this.afterMoving = false
     this.mousedown = false
-    this.lastX = null
-    this.lastY = null
+    this.lastX = 0
+    this.lastY = 0
   },
 }

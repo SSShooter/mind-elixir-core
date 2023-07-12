@@ -1,20 +1,27 @@
+import type { Topic, Expander, CustomSvg } from './types/dom'
+import type { MindElixirInstance } from './types/index'
 import dragMoveHelper from './utils/dragMoveHelper'
 
-export default function (mind) {
+const isTopic = (target: HTMLElement) => {
+  return (target as Topic).parentElement.tagName === 'ME-PARENT' || (target as Topic).parentElement.tagName === 'ME-ROOT'
+}
+
+export default function (mind: MindElixirInstance) {
   mind.map.addEventListener('click', e => {
     // if (dragMoveHelper.afterMoving) return
     // e.preventDefault() // can cause <a /> tags don't work
-    if (e.target.tagName === 'ME-EPD') {
-      mind.expandNode(e.target.previousSibling)
+    const target = e.target as any
+    if (target.tagName === 'ME-EPD') {
+      mind.expandNode((target as Expander).previousSibling)
     } else if (!mind.editable) {
       return
-    } else if (e.target.parentElement.tagName === 'ME-PARENT' || e.target.parentElement.tagName === 'ME-ROOT') {
-      mind.selectNode(e.target, false, e)
-    } else if (e.target.tagName === 'path') {
-      if (e.target.parentElement.tagName === 'g') {
-        mind.selectLink(e.target.parentElement)
+    } else if (isTopic(target)) {
+      mind.selectNode(target as Topic, false, e)
+    } else if (target.tagName === 'path') {
+      if (target?.parentElement?.tagName === 'g') {
+        mind.selectLink(target.parentElement as CustomSvg)
       }
-    } else if (e.target.className === 'circle') {
+    } else if (target.className === 'circle') {
       // skip circle
     } else {
       mind.unselectNode()
@@ -26,8 +33,9 @@ export default function (mind) {
   mind.map.addEventListener('dblclick', e => {
     e.preventDefault()
     if (!mind.editable) return
-    if (e.target.parentElement.tagName === 'ME-PARENT' || e.target.parentElement.tagName === 'ME-ROOT') {
-      mind.beginEdit(e.target)
+    const target = e.target as HTMLElement
+    if (isTopic(target)) {
+      mind.beginEdit(target as Topic)
     }
   })
 
@@ -37,20 +45,20 @@ export default function (mind) {
   mind.map.addEventListener('mousemove', e => {
     // click trigger mousemove in windows chrome
     // the 'true' is a string
-    if (e.target.contentEditable !== 'true') {
+    if ((e.target as HTMLElement).contentEditable !== 'true') {
       dragMoveHelper.onMove(e, mind.container)
     }
   })
   mind.map.addEventListener('mousedown', e => {
-    if (e.target.contentEditable !== 'true') {
+    if ((e.target as HTMLElement).contentEditable !== 'true') {
       dragMoveHelper.afterMoving = false
       dragMoveHelper.mousedown = true
     }
   })
-  mind.map.addEventListener('mouseleave', e => {
+  mind.map.addEventListener('mouseleave', () => {
     dragMoveHelper.clear()
   })
-  mind.map.addEventListener('mouseup', e => {
+  mind.map.addEventListener('mouseup', () => {
     dragMoveHelper.clear()
   })
 }

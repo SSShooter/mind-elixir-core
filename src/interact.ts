@@ -1,3 +1,19 @@
+import type { Topic, Wrapper } from './types/dom'
+import type { SelectNodeFunc, CommonSelectFunc, SiblingSelectFunc, GetDataStringFunc, GetDataFunc, ExpandNode, RefreshFunc } from './types/function'
+import type { MindElixirInstance, NodeObj } from './types/index'
+import type {
+  EnableEdit,
+  DisableEdit,
+  Scale,
+  ToCenter,
+  Install,
+  FocusNode,
+  CancelFocus,
+  InitLeft,
+  InitRight,
+  InitSide,
+  SetLocale,
+} from './types/interact'
 import { findEle } from './utils/dom'
 /**
  * @exports -
@@ -7,7 +23,7 @@ import { findEle } from './utils/dom'
  * @exports MapInteraction
  * @namespace MapInteraction
  */
-function collectData(instance) {
+function collectData(instance: MindElixirInstance) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
     linkData: instance.linkData,
@@ -27,7 +43,9 @@ export const selectNode: SelectNodeFunc = function (targetElement, isNewNode, e)
   if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
-    return this.selectNode(findEle(targetElement))
+    const el = findEle(targetElement)
+    if (!el) return
+    return this.selectNode(el)
   }
   if (this.currentNode) this.currentNode.className = ''
   targetElement.className = 'selected'
@@ -49,21 +67,21 @@ export const unselectNode: CommonSelectFunc = function () {
   this.bus.fire('unselectNode')
 }
 export const selectNextSibling: SiblingSelectFunc = function () {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
+  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
 
   const sibling = this.currentNode.parentElement.parentElement.nextSibling
   let target: Topic
   const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
-    const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
+    const siblingList = this.mindElixirBox.querySelectorAll<Wrapper>('.' + grp.className)
     const i = Array.from(siblingList).indexOf(grp)
     if (i + 1 < siblingList.length) {
-      target = siblingList[i + 1].firstChild.firstChild as Topic
+      target = siblingList[i + 1].firstChild.firstChild
     } else {
       return false
     }
   } else if (sibling) {
-    target = sibling.firstChild.firstChild as Topic
+    target = sibling.firstChild.firstChild
   } else {
     return false
   }
@@ -71,13 +89,13 @@ export const selectNextSibling: SiblingSelectFunc = function () {
   return true
 }
 export const selectPrevSibling: SiblingSelectFunc = function () {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
+  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
   let target: Topic
   const grp = this.currentNode.parentElement.parentElement
   if (grp.className === 'rhs' || grp.className === 'lhs') {
-    const siblingList = this.mindElixirBox.querySelectorAll('.' + grp.className)
+    const siblingList = this.mindElixirBox.querySelectorAll<Wrapper>('.' + grp.className)
     const i = Array.from(siblingList).indexOf(grp)
     if (i - 1 >= 0) {
       target = siblingList[i - 1].firstChild.firstChild as Topic
@@ -96,7 +114,7 @@ export const selectFirstChild: CommonSelectFunc = function () {
   if (!this.currentNode) return
   const children = this.currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
-    const target = children.firstChild.firstChild.firstChild as Topic
+    const target = children.firstChild.firstChild.firstChild
     this.selectNode(target)
   }
 }
@@ -149,7 +167,7 @@ export const getData: GetDataFunc = function () {
 export const getDataMd: GetDataStringFunc = function () {
   const data = collectData(this).nodeData
   let mdString = '# ' + data.topic + '\n\n'
-  function writeMd(children, deep) {
+  function writeMd(children: NodeObj[], deep: number) {
     for (let i = 0; i < children.length; i++) {
       if (deep <= 6) {
         mdString += ''.padStart(deep, '#') + ' ' + children[i].topic + '\n\n'
@@ -157,11 +175,11 @@ export const getDataMd: GetDataStringFunc = function () {
         mdString += ''.padStart(deep - 7, '\t') + '- ' + children[i].topic + '\n'
       }
       if (children[i].children) {
-        writeMd(children[i].children, deep + 1)
+        writeMd(children[i].children || [], deep + 1)
       }
     }
   }
-  writeMd(data.children, 2)
+  writeMd(data.children || [], 2)
   return mdString
 }
 
@@ -171,7 +189,7 @@ export const getDataMd: GetDataStringFunc = function () {
  * @name enableEdit
  * @memberof MapInteraction
  */
-export const enableEdit = function () {
+export const enableEdit: EnableEdit = function () {
   this.editable = true
 }
 
@@ -181,7 +199,7 @@ export const enableEdit = function () {
  * @name disableEdit
  * @memberof MapInteraction
  */
-export const disableEdit = function () {
+export const disableEdit: DisableEdit = function () {
   this.editable = false
 }
 
@@ -193,7 +211,7 @@ export const disableEdit = function () {
  * @memberof MapInteraction
  * @param {number}
  */
-export const scale = function (scaleVal) {
+export const scale: Scale = function (scaleVal) {
   this.scaleVal = scaleVal
   this.map.style.transform = 'scale(' + scaleVal + ')'
 }
@@ -204,7 +222,7 @@ export const scale = function (scaleVal) {
  * @description Reset position of the map to center.
  * @memberof MapInteraction
  */
-export const toCenter = function () {
+export const toCenter: ToCenter = function () {
   this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
 }
 /**
@@ -214,7 +232,7 @@ export const toCenter = function () {
  * @description Install plugin.
  * @memberof MapInteraction
  */
-export const install = function (plugin) {
+export const install: Install = function (plugin) {
   plugin(this)
 }
 /**
@@ -225,7 +243,7 @@ export const install = function (plugin) {
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const focusNode = function (el: Topic) {
+export const focusNode: FocusNode = function (el: Topic) {
   if (el.nodeObj.root) return
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
@@ -246,7 +264,7 @@ export const focusNode = function (el: Topic) {
  * @description Exit focus mode.
  * @memberof MapInteraction
  */
-export const cancelFocus = function () {
+export const cancelFocus: CancelFocus = function () {
   this.isFocusMode = false
   if (this.tempDirection !== null) {
     delete this.nodeData.root
@@ -264,7 +282,7 @@ export const cancelFocus = function () {
  * @description Child nodes will distribute on the left side of the root node.
  * @memberof MapInteraction
  */
-export const initLeft = function () {
+export const initLeft: InitLeft = function () {
   this.direction = 0
   this.refresh()
 }
@@ -275,7 +293,7 @@ export const initLeft = function () {
  * @description Child nodes will distribute on the right side of the root node.
  * @memberof MapInteraction
  */
-export const initRight = function () {
+export const initRight: InitRight = function () {
   this.direction = 1
   this.refresh()
 }
@@ -286,7 +304,7 @@ export const initRight = function () {
  * @description Child nodes will distribute on both left and right side of the root node.
  * @memberof MapInteraction
  */
-export const initSide = function () {
+export const initSide: InitSide = function () {
   this.direction = 2
   this.refresh()
 }
@@ -297,7 +315,7 @@ export const initSide = function () {
  * @name setLocale
  * @memberof MapInteraction
  */
-export const setLocale = function (locale) {
+export const setLocale: SetLocale = function (locale) {
   this.locale = locale
   this.refresh()
 }
@@ -332,7 +350,7 @@ export const refresh: RefreshFunc = function (data) {
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
   }
-  this.addParentLink(this.nodeData)
+  this.fillParent(this.nodeData)
   // create dom element for every node
   this.layout()
   // generate links between nodes

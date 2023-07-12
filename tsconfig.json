@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "strict": false,
+    "strict": true,
     "target": "es2017",
-    "allowJs": true,
-    "typeRoots": [
-      "./types"
-    ]
+    "allowJs": false,
+    
+    "declaration": true,
+    "outDir": "dist/types",
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["src/dev.dist.ts"]
 }

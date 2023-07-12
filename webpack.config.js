@@ -48,7 +48,7 @@ module.exports = (env, argv) => {
     console.log('development', env)
     config = {
       ...config,
-      entry: env.dist !== '0' ? './src/dev.dist.js' : './src/dev.ts',
+      entry: env.dist !== '0' ? './src/dev.dist.ts' : './src/dev.ts',
       plugins: [
         new HtmlWebpackPlugin({
           title: 'MindElixir',
@@ -64,8 +64,8 @@ module.exports = (env, argv) => {
       entry: {
         MindElixir: './src/index.ts',
         MindElixirLite: './src/index.lite.ts',
-        example1: './src/exampleData/1.js',
-        example2: './src/exampleData/2.js',
+        example1: './src/exampleData/1.ts',
+        example2: './src/exampleData/2.ts',
       },
       output: {
         path: path.resolve(__dirname, 'dist'),

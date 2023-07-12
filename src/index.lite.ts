@@ -1,5 +1,5 @@
-import { LEFT, RIGHT, SIDE, THEME } from './const'
-import { isMobile, addParentLink, getObjById } from './utils/index'
+import { LEFT, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP, RIGHT, SIDE, THEME } from './const'
+import { isMobile, fillParent, getObjById } from './utils/index'
 import { findEle, createWrapper, createParent, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
@@ -34,6 +34,8 @@ import mobileMenu from './plugin/mobileMenu'
 import Bus from './utils/pubsub'
 import './index.less'
 import './iconfont/iconfont.js'
+import type { Children } from './types/dom'
+import type { MindElixirInstance, Options, MindElixirData } from './types/index'
 
 export const E = findEle
 
@@ -53,12 +55,12 @@ function MindElixir(
   this.mindElixirBox = box
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
-  this.mobileMenu = mobileMenu
+  this.mobileMenu = mobileMenu || false
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   // todo move direction to data
   this.direction = typeof direction === 'number' ? direction : 1
   this.draggable = false
-  this.newTopicName = newTopicName
+  this.newTopicName = newTopicName || 'new node'
   this.editable = false
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
@@ -67,11 +69,11 @@ function MindElixir(
   this.scaleVal = 1
   this.tempDirection = null
   this.mainLinkStyle = mainLinkStyle || 0
-  this.overflowHidden = overflowHidden
-  this.mainNodeHorizontalGap = mainNodeHorizontalGap
-  this.mainNodeVerticalGap = mainNodeVerticalGap
+  this.overflowHidden = overflowHidden || false
+  this.mainNodeHorizontalGap = mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
+  this.mainNodeVerticalGap = mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
 
-  this.bus = new Bus()
+  this.bus = Bus.create()
 
   console.log('ME_version ' + MindElixir.version)
   this.mindElixirBox.className += ' mind-elixir'
@@ -90,8 +92,8 @@ function MindElixir(
   this.mindElixirBox.appendChild(this.container)
   this.root = $d.createElement('me-root')
 
-  this.mainNodes = $d.createElement('me-children')
-  this.mainNodes.className = 'box'
+  this.mainNodes = $d.createElement('me-children') as Children
+  this.mainNodes.className = 'main-node-container'
 
   // infrastructure
 
@@ -122,7 +124,7 @@ function MindElixir(
 }
 
 MindElixir.prototype = {
-  addParentLink,
+  fillParent,
   getObjById,
   // node operation
   judgeDirection,
@@ -178,7 +180,7 @@ MindElixir.prototype = {
       this.mindElixirBox.style.setProperty(key, cssVar[key])
     }
 
-    addParentLink(this.nodeData)
+    fillParent(this.nodeData)
     this.toCenter()
     this.layout()
     this.linkDiv()
@@ -192,7 +194,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '2.0.2'
+MindElixir.version = '2.0.3'
 MindElixir.E = findEle
 
 export default MindElixir
