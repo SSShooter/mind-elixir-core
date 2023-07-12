@@ -93,7 +93,7 @@ function MindElixir(
   this.root = $d.createElement('me-root')
 
   this.mainNodes = $d.createElement('me-children') as Children
-  this.mainNodes.className = 'box'
+  this.mainNodes.className = 'main-node-container'
 
   // infrastructure
 

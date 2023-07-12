@@ -32,8 +32,26 @@ import type {
 } from './function'
 import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit } from './interact'
 
+export enum OperationType {
+  moveNode = 'moveNode',
+  moveNodeAfter = 'moveNodeAfter',
+  moveNodeBefore = 'moveNodeBefore',
+  removeNode = 'removeNode',
+  addChild = 'addChild',
+  copyNode = 'copyNode',
+  reshapeNode = 'reshapeNode',
+  insertSibling = 'insertSibling',
+  insertBefore = 'insertBefore',
+  insertParent = 'insertParent',
+  moveUpNode = 'moveUpNode',
+  moveDownNode = 'moveDownNode',
+
+  beginEdit = 'beginEdit',
+  finishEdit = 'finishEdit',
+}
+
 export type Operation = {
-  name: string
+  name: OperationType
   obj: any
   origin: any
   originSiblingId: string

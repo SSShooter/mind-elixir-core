@@ -308,6 +308,8 @@ npm start
 Test generated files with `dev.dist.ts`:
 
 ```
+npm run build
 npm link
 npm link mind-elixir
+npm run startd
 ```

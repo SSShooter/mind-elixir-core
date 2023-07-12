@@ -1,26 +1,49 @@
-import type { Operation } from '../index'
+import type { Operation, OperationType } from '../index'
 import { E, type MindElixirInstance } from '../index'
+
+const noop = function (mei: MindElixirInstance, operation: Operation) {
+  // noop
+}
+const redoHandlerMap: Record<OperationType, (mei: MindElixirInstance, operation: Operation) => void> = {
+  moveNode(mei, operation) {
+    mei.moveNode(E(operation.obj.fromObj.id), E(operation.obj.originParentId))
+  },
+  moveNodeAfter: noop,
+  moveNodeBefore: noop,
+  removeNode(mei, operation) {
+    if (operation.originSiblingId) {
+      mei.insertBefore(E(operation.originSiblingId), operation.obj)
+    } else {
+      mei.addChild(E(operation.originParentId), operation.obj)
+    }
+  },
+  addChild(mei, operation) {
+    mei.removeNode(E(operation.obj.id))
+  },
+  copyNode(mei, operation) {
+    mei.removeNode(E(operation.obj.id))
+  },
+  reshapeNode: noop,
+  insertSibling: noop,
+  insertBefore: noop,
+  insertParent: noop,
+  moveUpNode: noop,
+  moveDownNode: noop,
+  beginEdit: noop,
+  finishEdit(mei, operation) {
+    mei.setNodeTopic(E(operation.obj.id), operation.origin)
+  },
+}
 
 export default function (mei: MindElixirInstance) {
   mei.history = []
   mei.isUndo = false
   mei.undo = function () {
-    console.log('undo')
     const operation = mei.history.pop()
     if (!operation) return
     mei.isUndo = true
-    if (operation.name === 'moveNode') {
-      mei.moveNode(E(operation.obj.fromObj.id), E(operation.obj.originParentId))
-    } else if (operation.name === 'removeNode') {
-      if (operation.originSiblingId) {
-        mei.insertBefore(E(operation.originSiblingId), operation.obj)
-      } else {
-        mei.addChild(E(operation.originParentId), operation.obj)
-      }
-    } else if (operation.name === 'addChild' || operation.name === 'copyNode') {
-      mei.removeNode(E(operation.obj.id))
-    } else if (operation.name === 'finishEdit') {
-      mei.setNodeTopic(E(operation.obj.id), operation.origin)
+    if (redoHandlerMap[operation.name]) {
+      redoHandlerMap[operation.name](mei, operation)
     } else {
       mei.isUndo = false
     }
@@ -32,7 +55,6 @@ export default function (mei: MindElixirInstance) {
     }
     if (['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(operation.name)) {
       mei.history.push(operation)
-      // console.log(operation, mei.history)
     }
   })
   mei.map.addEventListener('keydown', (e: KeyboardEvent) => {

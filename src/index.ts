@@ -142,7 +142,7 @@ function MindElixir(
   this.draggable = draggable === undefined ? true : draggable
   this.newTopicName = newTopicName || 'new node'
   this.editable = editable === undefined ? true : editable
-  this.allowUndo = allowUndo === undefined ? true : allowUndo
+  this.allowUndo = allowUndo === undefined ? false : allowUndo
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
   this.currentLink = null // the selected link svg element
@@ -170,7 +170,7 @@ function MindElixir(
   this.root = $d.createElement('me-root')
 
   this.mainNodes = $d.createElement('me-children') as Children
-  this.mainNodes.className = 'box'
+  this.mainNodes.className = 'main-node-container'
 
   // infrastructure
 
@@ -283,7 +283,7 @@ MindElixir.prototype = {
     // plugin
     this.toolBar && toolBar(this)
     this.keypress && keypress(this)
-    operationHistory(this)
+    this.allowUndo && operationHistory(this)
 
     if (isMobile() && this.mobileMenu) {
       mobileMenu(this)
