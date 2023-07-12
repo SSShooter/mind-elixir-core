@@ -27,6 +27,14 @@ import type {
 } from './types/function'
 import type { NodeObj } from './types/index'
 
+const mainToSub = function (tpc: Topic) {
+  const mainNode = tpc.parentElement.parentElement
+  if (mainNode.parentElement.className !== 'main-node-container') return
+  mainNode.lastChild?.remove() // clear svg group of main node
+  mainNode.style.cssText = '' // clear position
+  mainNode.className = ''
+}
+
 /**
  * @exports NodeOperation
  * @namespace NodeOperation
@@ -90,7 +98,7 @@ export const insertSibling: InsertNodeCommon = function (el, node) {
 
   const children = t.parentNode.parentNode as Children
   children.insertBefore(grp, t.parentNode.nextSibling)
-  if (children.className === 'box') {
+  if (children.className === 'main-node-container') {
     this.judgeDirection(grp, newNodeObj)
     this.linkDiv()
   } else {
@@ -136,7 +144,7 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
 
   const children = t.parentNode.parentNode as Children
   children.insertBefore(grp, t.parentNode)
-  if (children.className === 'box') {
+  if (children.className === 'main-node-container') {
     this.judgeDirection(grp, newNodeObj)
     this.linkDiv()
   } else {
@@ -147,7 +155,7 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
   }
   this.selectNode(top.children[0] as Topic, true)
   console.timeEnd('insertSibling_DOM')
-  this.bus.fire('operation', {
+  this.bus.fire('insertBefore', {
     name: 'insertSibling',
     obj: newNodeObj,
   })
@@ -187,7 +195,7 @@ export const insertParent: InsertNodeCommon = function (el, node) {
   // FIX: style wrong when adding main node parent
 
   // if it's a main node previously
-  if (grp0.parentNode.className === 'box') {
+  if (grp0.parentNode.className === 'main-node-container') {
     grp.className = grp0.className // l/rhs
     grp0.className = ''
     grp0.querySelector('.subLines')?.remove()
@@ -432,19 +440,9 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
   moveNodeObj(fromObj, toObj)
   fillParent(this.nodeData) // update parent property
   const fromTop = from.parentElement
-  const fromChilren = fromTop.parentElement.parentElement
   const toTop = to.parentElement
-  if (fromChilren.className === 'box') {
-    // clear svg group of main node
-    fromTop.parentElement.lastChild!.remove()
-  } else if (fromTop.parentElement.className === 'box') {
-    fromTop.style.cssText = '' // clear style
-  }
   if (toTop.tagName === 'ME-PARENT') {
-    if (fromChilren.className === 'box') {
-      // clear direaction class of main node
-      fromTop.parentElement.className = ''
-    }
+    mainToSub(from)
     if (toTop.children[1]) {
       // expander exist
       toTop.nextSibling.appendChild(fromTop.parentElement)
@@ -483,6 +481,7 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
   const originParentId = fromObj.parent!.id
   moveNodeBeforeObj(fromObj, toObj)
   fillParent(this.nodeData)
+  mainToSub(from)
   const fromTop = from.parentElement
   const fromGrp = fromTop.parentNode
   const toTop = to.parentElement
@@ -514,6 +513,7 @@ export const moveNodeAfter: MoveNodeToCommon = function (from: Topic, to: Topic)
   const originParentId = fromObj.parent!.id
   moveNodeAfterObj(fromObj, toObj)
   fillParent(this.nodeData)
+  mainToSub(from)
   const fromTop = from.parentElement
   const fromGrp = fromTop.parentElement
   const toTop = to.parentElement
