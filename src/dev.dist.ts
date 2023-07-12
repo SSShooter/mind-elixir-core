@@ -1,17 +1,8 @@
 import MindElixir, { E } from 'mind-elixir'
 import example from 'mind-elixir/dist/example1'
 import type { Options } from 'mind-elixir'
+import type { Topic } from '../dist/types/types/dom'
 // import example2 from '../dist/example2'
-
-interface Window {
-  currentOperation: any
-  m: any
-  M: any
-  E: any
-  exportSvg: any
-  exportPng: any
-}
-declare let window: Window
 
 const options: Options = {
   el: '#map',
@@ -73,24 +64,10 @@ console.log('test E function', E('bd4313fbac40284b'))
 //   nodeMenu: true,
 // })
 // mind2.init()
-window.currentOperation = null
-mind.bus.addListener('operation', operation => {
+
+mind.bus.addListener('operation', (operation: any) => {
   console.log(operation)
-  if (operation.name !== 'finishEdit') window.currentOperation = operation
-  // return {
-  //   name: action name,
-  //   obj: target object
-  // }
-
-  // name: [insertSibling|addChild|removeNode|beginEdit|finishEdit]
-  // obj: target
-
-  // name: moveNode
-  // obj: {from:target1,to:target2}
 })
-mind.bus.addListener('selectNode', node => {
+mind.bus.addListener('selectNode', (node: any) => {
   console.log(node)
 })
-window.m = mind
-// window.m2 = mind2
-window.M = MindElixir

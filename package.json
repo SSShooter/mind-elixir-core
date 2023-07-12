@@ -21,6 +21,11 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/MindElixir.js",
       "require": "./dist/MindElixir.js"
+    },
+    "./dist/example1": {
+      "types": "./dist/types/exampleData/1.d.ts",
+      "import": "./dist/example1.js",
+      "require": "./dist/example1.js"
     }
   },
   "lint-staged": {

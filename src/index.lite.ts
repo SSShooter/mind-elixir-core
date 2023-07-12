@@ -194,7 +194,7 @@ MindElixir.SIDE = SIDE
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '2.0.2'
+MindElixir.version = '2.0.3'
 MindElixir.E = findEle
 
 export default MindElixir
