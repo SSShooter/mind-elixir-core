@@ -2,6 +2,12 @@
   "name": "mind-elixir",
   "version": "2.0.3",
   "description": "Mind elixir is a free open source mind map core.",
+  "keywords": [
+    "mind-elixir",
+    "mindmap",
+    "dom",
+    "visualization"
+  ],
   "main": "dist/MindElixir.js",
   "scripts": {
     "prepare": "husky install",
