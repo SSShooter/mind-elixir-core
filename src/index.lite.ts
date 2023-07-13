@@ -159,7 +159,7 @@ MindElixir.prototype = {
   refresh,
 
   init: function (data: MindElixirData) {
-    if (data.direction) {
+    if (data.direction !== undefined) {
       this.direction = data.direction
     }
     this.nodeData = data.nodeData

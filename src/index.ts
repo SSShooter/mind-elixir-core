@@ -272,7 +272,7 @@ MindElixir.prototype = {
   install,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
-    if (data.direction) {
+    if (data.direction !== undefined) {
       this.direction = data.direction
     }
     if (data.theme) {
