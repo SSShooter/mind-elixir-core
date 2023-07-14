@@ -345,7 +345,7 @@ export const moveDownNode: MoveNodeCommon = function (el) {
   const obj = nodeEle.nodeObj
   moveDownObj(obj)
   if (grp.nextSibling) {
-    grp.insertAdjacentElement('afterend', grp.nextSibling)
+    grp.nextSibling.insertAdjacentElement('afterend', grp)
   } else {
     grp.parentNode.prepend(grp)
   }
@@ -486,9 +486,8 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
   const fromGrp = fromTop.parentNode
   const toTop = to.parentElement
   const toGrp = toTop.parentNode
-  const toChilren = toTop.parentNode.parentNode
-  toChilren.insertBefore(fromGrp, toGrp)
-  if (toGrp.className) fromGrp.className = toGrp.className
+  toGrp.insertAdjacentElement('beforebegin', fromGrp)
+  if (toGrp.className) fromGrp.className = toGrp.className // l/rhs
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeBefore',
@@ -518,8 +517,7 @@ export const moveNodeAfter: MoveNodeToCommon = function (from: Topic, to: Topic)
   const fromGrp = fromTop.parentElement
   const toTop = to.parentElement
   const toGrp = toTop.parentElement
-  const toChilren = toGrp.parentNode
-  toChilren.insertBefore(fromGrp, toGrp.nextSibling)
+  toGrp.insertAdjacentElement('afterend', fromGrp)
   if (toGrp.className) fromGrp.className = toGrp.className
   this.linkDiv()
   this.bus.fire('operation', {

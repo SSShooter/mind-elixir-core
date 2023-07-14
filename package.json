@@ -32,6 +32,10 @@
       "types": "./dist/types/exampleData/1.d.ts",
       "import": "./dist/example1.js",
       "require": "./dist/example1.js"
+    },
+    "./readme.md": { 
+      "import": "./readme.md",
+      "require": "./readme.md"
     }
   },
   "lint-staged": {
