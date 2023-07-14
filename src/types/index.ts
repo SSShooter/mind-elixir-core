@@ -30,7 +30,7 @@ import type {
   CreateLink,
   ShowLinkController,
 } from './function'
-import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit } from './interact'
+import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit, Install } from './interact'
 
 export enum OperationType {
   moveNode = 'moveNode',
@@ -103,6 +103,7 @@ export interface MindElixirInstance {
   history: Operation[]
   isUndo: boolean
   undo: () => void
+  install: Install
 
   theme: Theme
   direction: number
