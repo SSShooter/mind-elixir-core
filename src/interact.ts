@@ -215,6 +215,7 @@ export const scale: Scale = function (scaleVal) {
   // TODO: recalculate the position of the map
   // plan A: use transform-origin
   // plan B: use transform: translate
+  // https://github.com/markmap/markmap/blob/e3071bc34da850ed7283b7d5b1a79b6c9b631a0e/packages/markmap-view/src/view.tsx#L640
   this.scaleVal = scaleVal
   this.map.style.transform = 'scale(' + scaleVal + ')'
 }
