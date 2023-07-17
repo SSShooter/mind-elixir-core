@@ -43,8 +43,8 @@ export type SelectLink = (this: MindElixirInstance, link: CustomSvg) => void
 export type LinkControllerData = {
   cx: number
   cy: number
-  w: any
-  h: any
+  w: number
+  h: number
 }
 export type ShowLinkController = (
   this: MindElixirInstance,

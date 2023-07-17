@@ -212,6 +212,9 @@ export const disableEdit: DisableEdit = function () {
  * @param {number}
  */
 export const scale: Scale = function (scaleVal) {
+  // TODO: recalculate the position of the map
+  // plan A: use transform-origin
+  // plan B: use transform: translate
   this.scaleVal = scaleVal
   this.map.style.transform = 'scale(' + scaleVal + ')'
 }
