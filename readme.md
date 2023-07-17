@@ -1,10 +1,17 @@
-<p align="center"><a href="mind-elixir.com" target="_blank" rel="noopener noreferrer"><img width="150" src="https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png" alt="mindelixir logo2"></a><h1 align="center">Mind Elixir</h1></p>
+<p align="center">
+  <a href="mind-elixir.com" target="_blank" rel="noopener noreferrer">
+    <img width="150" src="https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png" alt="mindelixir logo2">
+  </a>
+  <h1 align="center">Mind Elixir</h1>
+</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
-  <img src="https://img.shields.io/npm/l/mind-elixir" alt="license">
+  <a href="https://github.com/ssshooter/mind-elixir-core/blob/master/LICENSE">
+    <img src="https://img.shields.io/npm/l/mind-elixir" alt="license">
+  </a>
   <a href="https://app.codacy.com/gh/ssshooter/mind-elixir-core?utm_source=github.com&utm_medium=referral&utm_content=ssshooter/mind-elixir-core&utm_campaign=Badge_Grade_Settings">
     <img src="https://api.codacy.com/project/badge/Grade/09fadec5bf094886b30cea6aabf3a88b" alt="code quality">
   </a>
@@ -12,7 +19,7 @@
     <img src="https://badgen.net/bundlephobia/dependency-count/mind-elixir" alt="dependency-count">
   </a>
   <a href="https://packagephobia.com/result?p=mind-elixir">
-    <img src="https://packagephobia.com/badge?p=mind-elixir" alt="dependency-count">
+    <img src="https://packagephobia.com/badge?p=mind-elixir" alt="package size">
   </a>
 </p>
 
@@ -147,7 +154,6 @@ let options = {
       },
     ],
   },
-  allowUndo: false,
   before: {
     insertSibling(el, obj) {
       return true
