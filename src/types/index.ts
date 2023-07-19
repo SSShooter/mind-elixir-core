@@ -1,4 +1,5 @@
 import type Bus from '../utils/pubsub'
+import type { changeTheme } from '../utils/theme'
 import type { Topic, CustomSvg, Children } from './dom'
 import type {
   Init,
@@ -106,6 +107,7 @@ export interface MindElixirInstance {
   install: Install
 
   theme: Theme
+  userTheme?: Theme
   direction: number
   locale: string
   draggable: boolean
@@ -199,6 +201,8 @@ export interface MindElixirInstance {
   showLinkController: ShowLinkController
   helper1: LinkDragMoveHelperInstance
   helper2: LinkDragMoveHelperInstance
+
+  changeTheme: typeof changeTheme
 }
 
 export type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>

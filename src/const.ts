@@ -17,3 +17,14 @@ export const THEME = {
     '--bgcolor': '#f6f6f6',
   },
 }
+
+export const DARK_THEME = {
+  name: 'Dark',
+  palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
+  cssVar: {
+    '--main-color': '#ffffff',
+    '--main-bgcolor': '#4c4f69',
+    '--color': '#cccccc',
+    '--bgcolor': '#252526',
+  },
+}

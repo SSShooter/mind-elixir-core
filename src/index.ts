@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE, GAP, THEME, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP } from './const'
+import { LEFT, RIGHT, SIDE, GAP, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP, DARK_THEME, THEME } from './const'
 import { isMobile, fillParent, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
 import { layout, layoutChildren, judgeDirection } from './utils/layout'
@@ -60,6 +60,7 @@ import './index.less'
 import './iconfont/iconfont.js'
 import type { MindElixirData, MindElixirInstance, Options } from './types/index'
 import type { Children } from './types/dom'
+import { changeTheme } from './utils/theme'
 
 export * from './types/index'
 
@@ -160,7 +161,9 @@ function MindElixir(
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
 
-  this.theme = theme || THEME
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  this.theme = theme || (mediaQuery.matches ? DARK_THEME : THEME)
+
   const canvas = $d.createElement('div') // map-canvas Element
   canvas.className = 'map-canvas'
   this.map = canvas
@@ -270,14 +273,13 @@ MindElixir.prototype = {
   refresh,
   findEle,
   install,
+  changeTheme,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
       this.direction = data.direction
     }
-    if (data.theme) {
-      this.theme = data.theme
-    }
+    this.changeTheme(data.theme || this.theme, false)
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
     // plugin
@@ -292,13 +294,6 @@ MindElixir.prototype = {
     }
     this.draggable && nodeDraggable(this)
 
-    const cssVar = this.theme.cssVar
-    const keys = Object.keys(cssVar)
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i]
-      this.mindElixirBox.style.setProperty(key, cssVar[key])
-    }
-
     fillParent(this.nodeData)
     this.toCenter()
     this.layout()
@@ -309,11 +304,15 @@ MindElixir.prototype = {
 MindElixir.LEFT = LEFT
 MindElixir.RIGHT = RIGHT
 MindElixir.SIDE = SIDE
+
+MindElixir.THEME = THEME
+MindElixir.DARK_THEME = DARK_THEME
+
 /**
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '2.0.6'
+MindElixir.version = '2.1.0'
 MindElixir.E = findEle
 
 /**
@@ -340,6 +339,8 @@ interface MindElixirCtor {
   LEFT: typeof LEFT
   RIGHT: typeof RIGHT
   SIDE: typeof SIDE
+  THEME: typeof THEME
+  DARK_THEME: typeof DARK_THEME
 }
 
 export default MindElixir as any as MindElixirCtor

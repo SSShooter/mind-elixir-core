@@ -294,7 +294,22 @@ const options = {
   },
   // ...
 }
+
+// ...
+
+mind.changeTheme({
+  name: 'Latte',
+  palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],
+  cssVar: {
+    '--main-color': '#444446',
+    '--main-bgcolor': '#ffffff',
+    '--color': '#777777',
+    '--bgcolor': '#f6f6f6',
+  },
+})
 ```
+
+Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`. Please change the theme manually when the scheme changes.
 
 ## Not only core
 

@@ -32,6 +32,10 @@ export interface Topic extends HTMLElement {
   parentNode: Parent
   parentElement: Parent
   offsetParent: Parent
+
+  image: HTMLImageElement | null
+  icons: HTMLSpanElement[] | null
+  tags: HTMLDivElement | null
 }
 
 export interface Expander extends HTMLElement {
