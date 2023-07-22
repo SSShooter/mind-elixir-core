@@ -49,8 +49,15 @@
     transition: transform 0.3s;
     transform: scale(1);
     background-color: var(--bgcolor);
+    me-nodes {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: fit-content;
+      width: fit-content;
+    }
     me-root {
-      position: absolute;
       padding: 10px var(--gap);
       color: var(--root-color);
       background-color: var(--root-bgcolor);
@@ -65,10 +72,10 @@
       }
     }
   }
-  .main-node-container {
+  me-main {
     // main node
     & > me-wrapper {
-      position: absolute;
+      position: relative; // make subline svg's offsetParent to be the main node
       & > me-parent {
         margin: var(--gap);
         background-color: var(--main-bgcolor);
@@ -89,6 +96,7 @@
   me-wrapper {
     display: block;
     pointer-events: none;
+    // position: relative;
   }
   me-children,
   me-parent {
@@ -254,6 +262,9 @@
   }
 
   .mind-elixir-ghost {
+    position: fixed;
+    top: -100%;
+    left: -100%;
     box-sizing: content-box;
     opacity: 0.5;
     background-color: #f6f6f6;

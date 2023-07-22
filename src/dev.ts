@@ -72,15 +72,15 @@ function sleep() {
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
-const mind2 = new (MindElixirLite as any)({
-  el: document.querySelector('#map2'),
-  direction: 2,
-  draggable: false,
-  // overflowHidden: true,
-  nodeMenu: true,
-  subLinkStyle: 2,
-})
-mind2.init(example2)
+// const mind2 = new (MindElixirLite as any)({
+//   el: document.querySelector('#map2'),
+//   direction: 2,
+//   draggable: false,
+//   // overflowHidden: true,
+//   nodeMenu: true,
+//   subLinkStyle: 2,
+// })
+// mind2.init(example2)
 window.currentOperation = null
 mind.bus.addListener('operation', (operation: Operation) => {
   console.log(operation)

@@ -170,10 +170,9 @@ function MindElixir(
   this.map.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.mindElixirBox.appendChild(this.container)
-  this.root = $d.createElement('me-root')
 
-  this.mainNodes = $d.createElement('me-children') as Children
-  this.mainNodes.className = 'main-node-container'
+  this.nodes = $d.createElement('me-nodes') as Children
+  this.nodes.className = 'main-node-container'
 
   // infrastructure
 
@@ -183,6 +182,7 @@ function MindElixir(
   this.P2 = $d.createElement('div') // bezier P2
   this.P3 = $d.createElement('div') // bezier P3
   this.P2.className = this.P3.className = 'circle'
+  this.P2.style.display = this.P3.style.display = 'none'
   this.line1 = createLine(0, 0, 0, 0) // bezier auxiliary line1
   this.line2 = createLine(0, 0, 0, 0) // bezier auxiliary line2
   this.linkController.appendChild(this.line1)
@@ -190,9 +190,7 @@ function MindElixir(
 
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
 
-  this.map.appendChild(this.root)
-  this.map.appendChild(this.mainNodes)
-  this.map.appendChild(this.lines)
+  this.map.appendChild(this.nodes)
   this.map.appendChild(this.linkController)
   this.map.appendChild(this.linkSvgGroup)
   this.map.appendChild(this.P2)

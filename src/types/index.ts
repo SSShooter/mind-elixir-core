@@ -129,7 +129,7 @@ export interface MindElixirInstance {
   container: HTMLElement
   map: HTMLElement
   root: HTMLElement
-  mainNodes: Children
+  nodes: HTMLElement
   lines: SVGElement
   linkController: SVGElement
   P2: HTMLElement

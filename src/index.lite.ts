@@ -92,8 +92,8 @@ function MindElixir(
   this.mindElixirBox.appendChild(this.container)
   this.root = $d.createElement('me-root')
 
-  this.mainNodes = $d.createElement('me-children') as Children
-  this.mainNodes.className = 'main-node-container'
+  this.nodes = $d.createElement('me-children') as Children
+  this.nodes.className = 'main-node-container'
 
   // infrastructure
 
@@ -111,7 +111,7 @@ function MindElixir(
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
 
   this.map.appendChild(this.root)
-  this.map.appendChild(this.mainNodes)
+  this.map.appendChild(this.nodes)
   this.map.appendChild(this.lines)
   this.map.appendChild(this.linkController)
   this.map.appendChild(this.linkSvgGroup)

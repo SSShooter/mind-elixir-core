@@ -33,7 +33,7 @@ export type ReshapeNode = (this: MindElixirInstance, tpc: Topic, patchData: Node
 export type Layout = (this: MindElixirInstance) => void
 export type LayoutChildren = (this: MindElixirInstance, data: NodeObj[], container?: Children, direction?: number) => Children
 export type LinkDiv = (this: MindElixirInstance, mainNode?: Wrapper) => void
-export type TraverseChildrenFunc = (children: HTMLCollection, parent: Parent, isFirst?: boolean) => string
+export type TraverseChildrenFunc = (children: Wrapper[], parent: Parent, direction: 'lhs' | 'rhs', isFirst?: boolean) => string
 export type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj) => void
 
 export type CreateLink = (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, linkObj?: LinkItem) => void
