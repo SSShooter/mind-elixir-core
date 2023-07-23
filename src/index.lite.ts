@@ -1,4 +1,4 @@
-import { LEFT, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP, RIGHT, SIDE, THEME } from './const'
+import { LEFT, RIGHT, SIDE, THEME } from './const'
 import { isMobile, fillParent, getObjById } from './utils/index'
 import { findEle, createWrapper, createParent, createTopic } from './utils/dom'
 import { layout, layoutChildren } from './utils/layout'
@@ -42,7 +42,7 @@ export const E = findEle
 const $d = document
 function MindElixir(
   this: MindElixirInstance,
-  { el, direction, toolBar, keypress, newTopicName, mainLinkStyle, overflowHidden, mainNodeHorizontalGap, mainNodeVerticalGap, mobileMenu }: Options
+  { el, direction, toolBar, keypress, newTopicName, mainLinkStyle, overflowHidden, mobileMenu }: Options
 ) {
   let box
   const elType = Object.prototype.toString.call(el)
@@ -70,8 +70,6 @@ function MindElixir(
   this.tempDirection = null
   this.mainLinkStyle = mainLinkStyle || 0
   this.overflowHidden = overflowHidden || false
-  this.mainNodeHorizontalGap = mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
-  this.mainNodeVerticalGap = mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
 
   this.bus = Bus.create()
 

@@ -119,8 +119,6 @@ export interface MindElixirInstance {
   allowUndo: boolean
   overflowHidden: boolean
   mainLinkStyle: number
-  mainNodeHorizontalGap: number
-  mainNodeVerticalGap: number
   subLinkStyle: number
   mobileMenu: boolean
 
@@ -222,8 +220,6 @@ export interface Options {
   allowUndo?: boolean
   overflowHidden?: boolean
   mainLinkStyle?: number
-  mainNodeHorizontalGap?: number // deprecated
-  mainNodeVerticalGap?: number // deprecated
   subLinkStyle?: number
   mobileMenu?: boolean
   theme?: Theme

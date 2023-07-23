@@ -184,12 +184,11 @@ function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
     x1 = pL + GAP
     x2 = cL
     xMiddle = cL + cW
+  } else if (direction === 'rhs') {
+    x1 = pL + pW - GAP
+    x2 = cL + cW
+    xMiddle = cL
   }
-  // else if (direction === 'rhs') {
-  //   x1 = pL + pW - GAP
-  //   x2 = cL + cW
-  //   xMiddle = cL
-  // }
 
   if (y2 < y1 + 50 && y2 > y1 - 50) {
     // draw straight line if the distance is between +-50

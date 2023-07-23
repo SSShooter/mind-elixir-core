@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE, GAP, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP, DARK_THEME, THEME } from './const'
+import { LEFT, RIGHT, SIDE, GAP, DARK_THEME, THEME } from './const'
 import { isMobile, fillParent, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
 import { layout, layoutChildren } from './utils/layout'
@@ -111,8 +111,6 @@ function MindElixir(
     mainLinkStyle,
     subLinkStyle,
     overflowHidden,
-    mainNodeHorizontalGap,
-    mainNodeVerticalGap,
     mobileMenu,
     theme,
   }: Options
@@ -153,8 +151,6 @@ function MindElixir(
   this.mainLinkStyle = mainLinkStyle || 0
   this.subLinkStyle = subLinkStyle || 0
   this.overflowHidden = overflowHidden || false
-  this.mainNodeHorizontalGap = mainNodeHorizontalGap || MAIN_NODE_HORIZONTAL_GAP
-  this.mainNodeVerticalGap = mainNodeVerticalGap || MAIN_NODE_VERTICAL_GAP
 
   this.bus = Bus.create()
 

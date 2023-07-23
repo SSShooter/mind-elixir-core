@@ -44,8 +44,6 @@ const options: Options = {
     },
   },
   // mainLinkStyle: 2,
-  mainNodeVerticalGap: 15, // 25
-  mainNodeHorizontalGap: 15, // 65
 }
 const mind = new MindElixir(options)
 mind.init(example)
