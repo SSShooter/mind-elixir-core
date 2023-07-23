@@ -103,7 +103,7 @@ const linkDiv: LinkDiv = function (mainNode) {
       const svgLine = el.lastChild as SVGSVGElement
       if (svgLine.tagName === 'svg') svgLine.remove()
       el.appendChild(svg)
-      const parent = el.children[0] as Parent
+      const parent = el.firstChild
       const children = el.children[1].children as unknown as Wrapper[]
       const path = traverseChildren(children, parent, direction, true)
       svg.appendChild(createPath(path, branchColor))

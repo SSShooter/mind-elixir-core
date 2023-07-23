@@ -120,9 +120,9 @@ export const insertSibling: InsertNodeCommon = function (el, node) {
   this.linkDiv(grp.offsetParent)
 
   if (!node) {
-    this.createInputDiv(top.children[0] as Topic)
+    this.createInputDiv(top.firstChild)
   }
-  this.selectNode(top.children[0] as Topic, true)
+  this.selectNode(top.firstChild, true)
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
@@ -163,9 +163,9 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
   this.linkDiv(grp.offsetParent)
 
   if (!node) {
-    this.createInputDiv(top.children[0] as Topic)
+    this.createInputDiv(top.firstChild)
   }
-  this.selectNode(top.children[0] as Topic, true)
+  this.selectNode(top.firstChild, true)
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('insertBefore', {
     name: 'insertSibling',
@@ -209,9 +209,9 @@ export const insertParent: InsertNodeCommon = function (el, node) {
   this.linkDiv()
 
   if (!node) {
-    this.createInputDiv(top.children[0] as Topic)
+    this.createInputDiv(top.firstChild)
   }
-  this.selectNode(top.children[0] as Topic, true)
+  this.selectNode(top.firstChild, true)
   console.timeEnd('insertParent_DOM')
   this.bus.fire('operation', {
     name: 'insertParent',
