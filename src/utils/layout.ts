@@ -40,8 +40,6 @@ export const layout: Layout = function () {
     })
   }
   layoutMainNode(this, mainNodes, root)
-  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
-  this.nodes.style.left = `${10000 - root.offsetLeft - root.offsetWidth / 2}px`
   console.timeEnd('layout')
 }
 

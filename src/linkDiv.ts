@@ -31,6 +31,10 @@ const linkDiv: LinkDiv = function (mainNode) {
   console.time('linkDiv')
 
   const root = this.map.querySelector('me-root') as HTMLElement
+  // pin center
+  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
+  this.nodes.style.left = `${10000 - root.offsetLeft - root.offsetWidth / 2}px`
+
   const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
   this.lines.innerHTML = ''
 
