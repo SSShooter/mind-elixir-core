@@ -1,9 +1,20 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R } from './const'
-import type { Wrapper, Topic, Expander, Parent, Children } from './types/dom'
+import type { Wrapper, Topic, Expander, Parent } from './types/dom'
 import type { LinkDiv, TraverseChildrenFunc } from './types/function'
 import type { MainLineParams, SubLineParams } from './types/linkDiv'
+
+const getOffsetLT = (parent: HTMLElement, child: HTMLElement) => {
+  let offsetLeft = 0
+  let offsetTop = 0
+  while (child && child !== parent) {
+    offsetLeft += child.offsetLeft
+    offsetTop += child.offsetTop
+    child = child.offsetParent as HTMLElement
+  }
+  return { offsetLeft, offsetTop }
+}
 let genPath: typeof generateSubLine1 = generateSubLine1
 /**
  * Link nodes with svg,
@@ -16,7 +27,6 @@ let genPath: typeof generateSubLine1 = generateSubLine1
  * 4. generate custom link
  * @param mainNode process the specific main node only
  */
-// TODO: use flexbox
 const linkDiv: LinkDiv = function (mainNode) {
   console.time('linkDiv')
 
@@ -37,18 +47,15 @@ const linkDiv: LinkDiv = function (mainNode) {
     let x2
     const palette = this.theme.palette
     const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
-    const childRect = p.getBoundingClientRect()
-    const parentRect = this.nodes.getBoundingClientRect()
-    // scale 时计算出错
-    const relativeL = childRect.left - parentRect.left
-    const relativeT = childRect.top - parentRect.top
+
+    const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, p)
     if (direction === 'lhs') {
-      x2 = relativeL + childRect.width
+      x2 = offsetLeft + p.offsetWidth
     } else {
-      x2 = relativeL
+      x2 = offsetLeft
     }
     // ↓ here will get the wrong value if parentRect is calculated outside the loop
-    const y2 = relativeT + childRect.height / 2
+    const y2 = offsetTop + p.offsetHeight / 2
     // console.log(x1, y1, x2, y2)
     let mainPath = ''
     if (this.mainLinkStyle === 2) {
