@@ -2,6 +2,7 @@ import type { createParent, createWrapper } from '../utils/dom'
 import type Bus from '../utils/pubsub'
 import type { changeTheme } from '../utils/theme'
 import type { Topic, CustomSvg } from './dom'
+import type { EventMap } from '../utils/pubsub'
 import type {
   Init,
   CreateChildren,
@@ -97,7 +98,7 @@ export interface MindElixirInstance {
   scaleVal: number
   tempDirection: number | null
 
-  bus: ReturnType<typeof Bus.create>
+  bus: ReturnType<typeof Bus.create<EventMap>>
 
   history: Operation[]
   isUndo: boolean

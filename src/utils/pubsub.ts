@@ -1,15 +1,26 @@
+import type { Operation, OperationType } from '../index'
+import type { NodeObj } from '../types/index'
+
+export type EventMap = {
+  operation: (info: Operation) => void
+  selectNode: (nodeObj: NodeObj, e?: MouseEvent) => void
+  selectNewNode: (nodeObj: NodeObj) => void
+  unselectNode: () => void
+  expandNode: (nodeObj: NodeObj) => void
+}
+
 const Bus = {
-  create() {
+  create<T extends Record<string, (...args: any[]) => void> = EventMap>() {
     return {
-      handlers: {} as Record<string, ((...arg: any[]) => void)[]>,
+      handlers: {} as Record<keyof T, ((...arg: any[]) => void)[]>,
       showHandler: function () {
         console.log(this.handlers)
       },
-      addListener: function (type: string, handler: (...arg: any[]) => void) {
+      addListener: function <K extends keyof T>(type: K, handler: T[K]) {
         if (this.handlers[type] === undefined) this.handlers[type] = []
         this.handlers[type].push(handler)
       },
-      fire: function (type: string, ...payload: any[]) {
+      fire: function <K extends keyof T>(type: K, ...payload: Parameters<T[K]>) {
         if (this.handlers[type] instanceof Array) {
           const handlers = this.handlers[type]
           for (let i = 0; i < handlers.length; i++) {
@@ -17,7 +28,7 @@ const Bus = {
           }
         }
       },
-      removeListener: function (type: string, handler: (...arg: any[]) => void) {
+      removeListener: function <K extends keyof T>(type: K, handler: T[K]) {
         if (!this.handlers[type]) return
         const handlers = this.handlers[type]
         if (!handler) {

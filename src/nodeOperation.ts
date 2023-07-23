@@ -167,8 +167,8 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
   }
   this.selectNode(top.firstChild, true)
   console.timeEnd('insertSibling_DOM')
-  this.bus.fire('insertBefore', {
-    name: 'insertSibling',
+  this.bus.fire('operation', {
+    name: 'insertBefore',
     obj: newNodeObj,
   })
 }

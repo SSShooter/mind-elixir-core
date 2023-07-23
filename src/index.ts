@@ -54,6 +54,7 @@ import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
 import operationHistory from './plugin/operationHistory'
 
+import type { EventMap } from './utils/pubsub'
 import Bus from './utils/pubsub'
 
 import './index.less'
@@ -152,7 +153,8 @@ function MindElixir(
   this.subLinkStyle = subLinkStyle || 0
   this.overflowHidden = overflowHidden || false
 
-  this.bus = Bus.create()
+  const bus = Bus.create()
+  this.bus = bus
 
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
