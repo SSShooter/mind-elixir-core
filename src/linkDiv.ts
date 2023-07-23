@@ -18,8 +18,6 @@ let genPath: typeof generateSubLine1 = generateSubLine1
  */
 // TODO: use flexbox
 const linkDiv: LinkDiv = function (mainNode) {
-  const mainNodeHorizontalGap = this.mainNodeHorizontalGap
-  const mainNodeVerticalGap = this.mainNodeVerticalGap
   console.time('linkDiv')
 
   const root = this.map.querySelector('me-root') as HTMLElement
@@ -28,12 +26,9 @@ const linkDiv: LinkDiv = function (mainNode) {
 
   genPath = this.subLinkStyle === 2 ? generateSubLine2 : generateSubLine1
 
-  // 2. layout main node, generate main link
-  // const alignRight = 10000 - root.offsetWidth / 2 - mainNodeHorizontalGap
-  // const alignLeft = 10000 + root.offsetWidth / 2 + mainNodeHorizontalGap
-  const parentRect = this.nodes.getBoundingClientRect()
   for (let i = 0; i < mainNodeList.length; i++) {
     const el = mainNodeList[i] as Wrapper
+    const tpc = el.querySelector<Topic>('me-tpc') as Topic
     const p = el.firstChild
     const direction = el.parentNode.className as 'lhs' | 'rhs'
     let x1 = root.offsetLeft + root.offsetWidth / 2
@@ -41,8 +36,10 @@ const linkDiv: LinkDiv = function (mainNode) {
 
     let x2
     const palette = this.theme.palette
-    const branchColor = el.querySelector<Topic>('me-tpc')!.nodeObj.branchColor || palette[i % palette.length]
+    const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
     const childRect = p.getBoundingClientRect()
+    const parentRect = this.nodes.getBoundingClientRect()
+    // scale 时计算出错
     const relativeL = childRect.left - parentRect.left
     const relativeT = childRect.top - parentRect.top
     if (direction === 'lhs') {
@@ -50,8 +47,9 @@ const linkDiv: LinkDiv = function (mainNode) {
     } else {
       x2 = relativeL
     }
+    // ↓ here will get the wrong value if parentRect is calculated outside the loop
     const y2 = relativeT + childRect.height / 2
-
+    // console.log(x1, y1, x2, y2)
     let mainPath = ''
     if (this.mainLinkStyle === 2) {
       if (this.direction === SIDE) {
@@ -74,14 +72,14 @@ const linkDiv: LinkDiv = function (mainNode) {
     }
     this.lines.appendChild(createMainPath(mainPath, branchColor))
 
-    // set position of expander
+    // set position of main node expander
     const expander = el.children[0].children[1] as Expander
     if (expander) {
       expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
       if (direction === 'lhs') {
-        expander.style.left = -10 - GAP + 'px'
+        expander.style.left = -10 + 'px'
       } else {
-        expander.style.right = -10 - GAP + 'px'
+        expander.style.right = -10 + 'px'
       }
     }
 

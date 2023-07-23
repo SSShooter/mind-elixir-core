@@ -3,16 +3,8 @@ import type { MindElixirInstance, MindElixirData, NodeObj, LinkItem } from './in
 
 export type Init = (this: MindElixirInstance, data: MindElixirData) => void
 export type CreateInputDiv = (this: MindElixirInstance, el: Topic) => void
-export type CreateWrapper = (
-  this: MindElixirInstance,
-  nodeObj: NodeObj,
-  omitChildren?: boolean
-) => {
-  grp: Wrapper
-  top: Parent
-}
+
 export type CreateChildren = (this: MindElixirInstance, wrappers: Wrapper[]) => Children
-export type CreateParent = (this: MindElixirInstance, nodeObj: NodeObj) => Parent
 export type CreateTopic = (this: MindElixirInstance, nodeObj: NodeObj) => Topic
 
 export type InsertNodeCommon = (this: MindElixirInstance, el?: Topic, node?: NodeObj) => void

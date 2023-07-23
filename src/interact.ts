@@ -227,7 +227,7 @@ export const scale: Scale = function (scaleVal) {
  * @memberof MapInteraction
  */
 export const toCenter: ToCenter = function () {
-  this.container.scrollTo(0, 0)
+  this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
 }
 /**
  * @function

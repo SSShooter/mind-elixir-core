@@ -1,8 +1,8 @@
 import { LEFT, RIGHT, SIDE } from '../const'
 import type { Children } from '../types/dom'
-import type { Layout, LayoutChildren, JudgeDirection } from '../types/function'
+import type { Layout, LayoutChildren } from '../types/function'
 import type { MindElixirInstance, NodeObj } from '../types/index'
-import { createExpander, shapeTpc } from './dom'
+import { shapeTpc } from './dom'
 
 const $d = document
 
@@ -40,6 +40,8 @@ export const layout: Layout = function () {
     })
   }
   layoutMainNode(this, mainNodes, root)
+  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
+  this.nodes.style.left = `${10000 - root.offsetLeft - root.offsetWidth / 2}px`
   console.timeEnd('layout')
 }
 
@@ -50,22 +52,17 @@ const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root:
   rightPart.className = 'rhs'
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
-    const grp = $d.createElement('me-wrapper')
-    const top = mei.createParent(nodeObj)
-    if (nodeObj.children && nodeObj.children.length > 0) {
-      top.appendChild(createExpander(nodeObj.expanded))
-      grp.appendChild(top)
-      if (nodeObj.expanded !== false) {
-        const children = mei.layoutChildren(nodeObj.children)
-        grp.appendChild(children)
+    const { grp: w } = mei.createWrapper(nodeObj)
+    if (mei.direction === SIDE) {
+      if (nodeObj.direction === LEFT) {
+        leftPart.appendChild(w)
+      } else {
+        rightPart.appendChild(w)
       }
+    } else if (mei.direction === LEFT) {
+      leftPart.appendChild(w)
     } else {
-      grp.appendChild(top)
-    }
-    if (nodeObj.direction === LEFT) {
-      leftPart.appendChild(grp)
-    } else {
-      rightPart.appendChild(grp)
+      rightPart.appendChild(w)
     }
   }
 
@@ -89,39 +86,8 @@ export const layoutChildren: LayoutChildren = function (data) {
 
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
-    const grp = $d.createElement('me-wrapper')
-    const top = this.createParent(nodeObj)
-
-    if (nodeObj.children && nodeObj.children.length > 0) {
-      top.appendChild(createExpander(nodeObj.expanded))
-      grp.appendChild(top)
-      if (nodeObj.expanded !== false) {
-        const children = this.layoutChildren(nodeObj.children)
-        grp.appendChild(children)
-      }
-    } else {
-      grp.appendChild(top)
-    }
+    const { grp } = this.createWrapper(nodeObj)
     chldr.appendChild(grp)
   }
   return chldr
-}
-
-// Judge new added node L or R
-export const judgeDirection: JudgeDirection = function (mainNode, obj) {
-  if (this.direction === LEFT) {
-    mainNode.className = 'lhs'
-  } else if (this.direction === RIGHT) {
-    mainNode.className = 'rhs'
-  } else if (this.direction === SIDE) {
-    const l = $d.querySelectorAll('.lhs').length
-    const r = $d.querySelectorAll('.rhs').length
-    if (l <= r) {
-      mainNode.className = 'lhs'
-      obj.direction = LEFT
-    } else {
-      mainNode.className = 'rhs'
-      obj.direction = RIGHT
-    }
-  }
 }

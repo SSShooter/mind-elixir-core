@@ -26,13 +26,31 @@ import type {
   SetNodeTopic,
 } from './types/function'
 import type { NodeObj } from './types/index'
+import { LEFT, RIGHT, SIDE } from './const'
 
 const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
-  if (mainNode.parentElement.className !== 'main-node-container') return
-  mainNode.lastChild?.remove() // clear svg group of main node
-  mainNode.style.cssText = '' // clear position
-  mainNode.className = ''
+  const lc = mainNode.lastElementChild
+  if (lc?.tagName === 'svg') lc?.remove() // clear svg group of main node
+}
+
+// Judge new added node L or R
+const judgeDirection = function (direction: number, obj: NodeObj) {
+  if (direction === LEFT) {
+    return LEFT
+  } else if (direction === RIGHT) {
+    return RIGHT
+  } else if (direction === SIDE) {
+    const l = document.querySelector('.lhs')?.childElementCount || 0
+    const r = document.querySelector('.rhs')?.childElementCount || 0
+    if (l <= r) {
+      obj.direction = LEFT
+      return LEFT
+    } else {
+      obj.direction = RIGHT
+      return RIGHT
+    }
+  }
 }
 
 /**
@@ -98,12 +116,9 @@ export const insertSibling: InsertNodeCommon = function (el, node) {
 
   const children = t.parentNode.parentNode as Children
   children.insertBefore(grp, t.parentNode.nextSibling)
-  if (children.className === 'main-node-container') {
-    this.judgeDirection(grp, newNodeObj)
-    this.linkDiv()
-  } else {
-    this.linkDiv(grp.offsetParent)
-  }
+
+  this.linkDiv(grp.offsetParent)
+
   if (!node) {
     this.createInputDiv(top.children[0] as Topic)
   }
@@ -144,12 +159,9 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
 
   const children = t.parentNode.parentNode as Children
   children.insertBefore(grp, t.parentNode)
-  if (children.className === 'main-node-container') {
-    this.judgeDirection(grp, newNodeObj)
-    this.linkDiv()
-  } else {
-    this.linkDiv(grp.offsetParent)
-  }
+
+  this.linkDiv(grp.offsetParent)
+
   if (!node) {
     this.createInputDiv(top.children[0] as Topic)
   }
@@ -175,6 +187,7 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
 export const insertParent: InsertNodeCommon = function (el, node) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
+  mainToSub(nodeEle)
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     return
@@ -192,17 +205,8 @@ export const insertParent: InsertNodeCommon = function (el, node) {
 
   const c = this.createChildren([grp0])
   top.insertAdjacentElement('afterend', c)
-  // FIX: style wrong when adding main node parent
 
-  // if it's a main node previously
-  if (grp0.parentNode.className === 'main-node-container') {
-    grp.className = grp0.className // l/rhs
-    grp0.className = ''
-    grp0.querySelector('.subLines')?.remove()
-    this.linkDiv()
-  } else {
-    this.linkDiv(grp.offsetParent)
-  }
+  this.linkDiv()
 
   if (!node) {
     this.createInputDiv(top.children[0] as Topic)
@@ -241,8 +245,12 @@ export const addChildFunction: AddChildFunction = function (nodeEle, node) {
     }
     this.linkDiv(grp.offsetParent as Wrapper)
   } else if (top.tagName === 'ME-ROOT') {
-    this.judgeDirection(grp, newNodeObj)
-    top.nextSibling.appendChild(grp)
+    const direction = judgeDirection(this.direction, newNodeObj)
+    if (direction === LEFT) {
+      document.querySelector('.lhs')?.appendChild(grp)
+    } else {
+      document.querySelector('.rhs')?.appendChild(grp)
+    }
     this.linkDiv()
   }
   return { newTop, newNodeObj }
@@ -383,10 +391,12 @@ export const removeNode: RemoveNode = function (el) {
   const t = nodeEle.parentNode
   if (childrenLength === 0) {
     // remove epd when children length === 0
-    const parentT = t.parentNode.parentNode.previousSibling
+    const c = t.parentNode.parentNode
+    console.log(c, t)
     // root doesn't have epd
-    if (parentT.tagName !== 'ME-ROOT') {
-      parentT.children[1].remove()
+    if (c.tagName !== 'ME-MAIN') {
+      // BUG !!
+      c.previousSibling.children[1].remove()
     }
     this.selectParent()
   } else {
@@ -453,7 +463,7 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }
   } else if (toTop.tagName === 'ME-ROOT') {
-    this.judgeDirection(fromTop.parentElement, fromObj)
+    judgeDirection(this.direction, fromObj)
     toTop.nextSibling.appendChild(fromTop.parentElement)
   }
   this.linkDiv()

@@ -1,7 +1,7 @@
 import { LEFT, RIGHT, SIDE, GAP, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP, DARK_THEME, THEME } from './const'
 import { isMobile, fillParent, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
-import { layout, layoutChildren, judgeDirection } from './utils/layout'
+import { layout, layoutChildren } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -229,7 +229,6 @@ MindElixir.prototype = {
   moveNodeBefore: beforeHook(moveNodeBefore, 'moveNodeBefore'),
   moveNodeAfter: beforeHook(moveNodeAfter, 'moveNodeAfter'),
   reshapeNode,
-  judgeDirection,
   setNodeTopic,
 
   createLink,

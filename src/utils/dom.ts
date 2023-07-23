@@ -1,6 +1,6 @@
 import { LEFT } from '../const'
 import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
-import type { CreateWrapper, CreateParent, CreateChildren, CreateTopic, CreateInputDiv } from '../types/function'
+import type { CreateChildren, CreateTopic, CreateInputDiv } from '../types/function'
 import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
 
@@ -31,6 +31,7 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
       imgContainer.style.width = img.width + 'px'
       imgContainer.style.height = img.height + 'px'
       tpc.appendChild(imgContainer)
+      tpc.image = imgContainer
     } else {
       console.warn('image url/width/height are required')
     }
@@ -54,12 +55,14 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     iconsContainer.className = 'icons'
     iconsContainer.innerHTML = nodeObj.icons.map(icon => `<span>${encodeHTML(icon)}</span>`).join('')
     tpc.appendChild(iconsContainer)
+    tpc.icons = iconsContainer
   }
   if (nodeObj.tags && nodeObj.tags.length) {
     const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
     tagsContainer.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
     tpc.appendChild(tagsContainer)
+    tpc.tags = tagsContainer
   }
 
   if (nodeObj.branchColor) {
@@ -67,27 +70,29 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
-// everything is staring from `Wrapper`
-export const createWrapper: CreateWrapper = function (nodeObj, omitChildren) {
+// everything start from `Wrapper`
+export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean) {
   const grp = $d.createElement('me-wrapper') as Wrapper
-  const top = this.createParent(nodeObj)
-  grp.appendChild(top)
+  const { p, tpc } = this.createParent(nodeObj)
+  grp.appendChild(p)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
-    top.appendChild(createExpander(nodeObj.expanded))
+    const expander = createExpander(nodeObj.expanded)
+    p.appendChild(expander)
+    // tpc.expander = expander
     if (nodeObj.expanded !== false) {
       const children = this.layoutChildren(nodeObj.children)
       grp.appendChild(children)
     }
   }
-  return { grp, top }
+  return { grp, top: p, tpc }
 }
 
-export const createParent: CreateParent = function (nodeObj: NodeObj): Parent {
-  const top = $d.createElement('me-parent') as Parent
+export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj) {
+  const p = $d.createElement('me-parent') as Parent
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
-  top.appendChild(tpc)
-  return top
+  p.appendChild(tpc)
+  return { p, tpc }
 }
 
 export const createChildren: CreateChildren = function (wrappers) {
@@ -173,7 +178,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
 
 export const createExpander = function (expanded: boolean | undefined): Expander {
   const expander = $d.createElement('me-epd') as Expander
-  // 包含未定义 expanded 的情况，未定义视为展开
+  // if expanded is undefined, treat as expanded
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''
   return expander

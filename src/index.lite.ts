@@ -1,7 +1,7 @@
 import { LEFT, MAIN_NODE_HORIZONTAL_GAP, MAIN_NODE_VERTICAL_GAP, RIGHT, SIDE, THEME } from './const'
 import { isMobile, fillParent, getObjById } from './utils/index'
 import { findEle, createWrapper, createParent, createTopic } from './utils/dom'
-import { layout, layoutChildren, judgeDirection } from './utils/layout'
+import { layout, layoutChildren } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
 import {
   selectNode,
@@ -127,7 +127,6 @@ MindElixir.prototype = {
   fillParent,
   getObjById,
   // node operation
-  judgeDirection,
   setNodeTopic,
   createLink,
   layout,

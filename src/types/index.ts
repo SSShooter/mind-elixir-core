@@ -1,14 +1,12 @@
+import type { createParent, createWrapper } from '../utils/dom'
 import type Bus from '../utils/pubsub'
 import type { changeTheme } from '../utils/theme'
-import type { Topic, CustomSvg, Children } from './dom'
+import type { Topic, CustomSvg } from './dom'
 import type {
   Init,
-  CreateWrapper,
-  CreateParent,
   CreateChildren,
   CreateTopic,
   LinkDiv,
-  JudgeDirection,
   InsertNodeCommon,
   CreateInputDiv,
   LayoutChildren,
@@ -143,13 +141,12 @@ export interface MindElixirInstance {
   init: Init
 
   generateNewObj: GenerateNewObj
-  createWrapper: CreateWrapper
-  createParent: CreateParent
+  createWrapper: typeof createWrapper
+  createParent: typeof createParent
   createChildren: CreateChildren
   createTopic: CreateTopic
 
   linkDiv: LinkDiv
-  judgeDirection: JudgeDirection
 
   addChild: InsertNodeCommon
   createInputDiv: CreateInputDiv
@@ -225,8 +222,8 @@ export interface Options {
   allowUndo?: boolean
   overflowHidden?: boolean
   mainLinkStyle?: number
-  mainNodeHorizontalGap?: number
-  mainNodeVerticalGap?: number
+  mainNodeHorizontalGap?: number // deprecated
+  mainNodeVerticalGap?: number // deprecated
   subLinkStyle?: number
   mobileMenu?: boolean
   theme?: Theme
