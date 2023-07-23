@@ -21,10 +21,9 @@ let genPath: typeof generateSubLine1 = generateSubLine1
  * only link specific node if `mainNode` is present
  *
  * procedure:
- * 1. calculate position of main nodes
- * 2. layout main node, generate main link
- * 3. generate links inside main node
- * 4. generate custom link
+ * 1. layout main node, generate main link
+ * 2. generate links inside main node
+ * 3. generate custom link
  * @param mainNode process the specific main node only
  */
 const linkDiv: LinkDiv = function (mainNode) {
@@ -141,9 +140,9 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, direc
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
       if (direction === 'lhs') {
-        expander.style.left = 0 + 'px'
+        expander.style.left = 10 + 'px'
       } else if (direction === 'rhs') {
-        expander.style.left = childT.offsetWidth + 'px'
+        expander.style.right = 10 + 'px'
       }
       // this property is added in the layout phase
       if (!expander.expanded) continue

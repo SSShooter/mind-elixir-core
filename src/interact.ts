@@ -71,16 +71,7 @@ export const selectNextSibling: SiblingSelectFunc = function () {
 
   const sibling = this.currentNode.parentElement.parentElement.nextSibling
   let target: Topic
-  const grp = this.currentNode.parentElement.parentElement
-  if (grp.className === 'rhs' || grp.className === 'lhs') {
-    const siblingList = this.mindElixirBox.querySelectorAll<Wrapper>('.' + grp.className)
-    const i = Array.from(siblingList).indexOf(grp)
-    if (i + 1 < siblingList.length) {
-      target = siblingList[i + 1].firstChild.firstChild
-    } else {
-      return false
-    }
-  } else if (sibling) {
+  if (sibling) {
     target = sibling.firstChild.firstChild
   } else {
     return false
@@ -93,16 +84,7 @@ export const selectPrevSibling: SiblingSelectFunc = function () {
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
   let target: Topic
-  const grp = this.currentNode.parentElement.parentElement
-  if (grp.className === 'rhs' || grp.className === 'lhs') {
-    const siblingList = this.mindElixirBox.querySelectorAll<Wrapper>('.' + grp.className)
-    const i = Array.from(siblingList).indexOf(grp)
-    if (i - 1 >= 0) {
-      target = siblingList[i - 1].firstChild.firstChild as Topic
-    } else {
-      return false
-    }
-  } else if (sibling) {
+  if (sibling) {
     target = sibling.firstChild.firstChild as Topic
   } else {
     return false
@@ -123,7 +105,7 @@ export const selectParent: CommonSelectFunc = function () {
 
   const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
   if (parent) {
-    const target = parent.firstChild as Topic
+    const target = parent.firstChild
     this.selectNode(target)
   }
 }

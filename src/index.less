@@ -76,6 +76,7 @@
     // main node
     & > me-wrapper {
       position: relative; // make subline svg's offsetParent to be the main node
+      margin: 20px 65px;
       & > me-parent {
         margin: var(--gap);
         background-color: var(--main-bgcolor);
@@ -104,7 +105,7 @@
     vertical-align: middle;
   }
   me-parent {
-    position: relative;
+    position: relative; // for locating expand button
     cursor: pointer;
     padding: 6px var(--gap);
     margin-top: 10px;

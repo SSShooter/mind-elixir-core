@@ -392,10 +392,8 @@ export const removeNode: RemoveNode = function (el) {
   if (childrenLength === 0) {
     // remove epd when children length === 0
     const c = t.parentNode.parentNode
-    console.log(c, t)
     // root doesn't have epd
     if (c.tagName !== 'ME-MAIN') {
-      // BUG !!
       c.previousSibling.children[1].remove()
     }
     this.selectParent()
@@ -488,7 +486,7 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
 export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent!.id
+  const originParentId = fromObj.parent?.id
   moveNodeBeforeObj(fromObj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
@@ -497,7 +495,6 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
   const toTop = to.parentElement
   const toGrp = toTop.parentNode
   toGrp.insertAdjacentElement('beforebegin', fromGrp)
-  if (toGrp.className) fromGrp.className = toGrp.className // l/rhs
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeBefore',
@@ -516,10 +513,10 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
  * @example
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeAfter: MoveNodeToCommon = function (from: Topic, to: Topic) {
+export const moveNodeAfter: MoveNodeToCommon = function (from, to) {
   const fromObj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent!.id
+  const originParentId = fromObj.parent?.id
   moveNodeAfterObj(fromObj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
@@ -528,7 +525,6 @@ export const moveNodeAfter: MoveNodeToCommon = function (from: Topic, to: Topic)
   const toTop = to.parentElement
   const toGrp = toTop.parentElement
   toGrp.insertAdjacentElement('afterend', fromGrp)
-  if (toGrp.className) fromGrp.className = toGrp.className
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeAfter',
