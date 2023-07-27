@@ -22,9 +22,9 @@ let genPath: typeof generateSubLine1 = generateSubLine1
  *
  * procedure:
  * 1. layout main node, generate main link
- * 2. generate links inside main node
+ * 2. generate links inside main node, if `mainNode` is present, only generate the link of the specific main node
  * 3. generate custom link
- * @param mainNode process the specific main node only
+ * @param mainNode regenerate sublink of the specific main node
  */
 const linkDiv: LinkDiv = function (mainNode) {
   console.time('linkDiv')
@@ -57,7 +57,6 @@ const linkDiv: LinkDiv = function (mainNode) {
     } else {
       x2 = offsetLeft
     }
-    // ↓ here will get the wrong value if parentRect is calculated outside the loop
     const y2 = offsetTop + p.offsetHeight / 2
     // console.log(x1, y1, x2, y2)
     let mainPath = ''
