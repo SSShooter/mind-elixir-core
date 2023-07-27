@@ -331,6 +331,7 @@ export const expandNode: ExpandNode = function (el, isExpand) {
  * @param {TargetElement} data mind elixir data
  */
 export const refresh: RefreshFunc = function (data) {
+  data = JSON.parse(JSON.stringify(data)) // it shouldn't contanimate the original data
   // add parent property to every node
   if (data) {
     this.nodeData = data.nodeData

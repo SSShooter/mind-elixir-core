@@ -2,7 +2,7 @@ import type { createParent, createWrapper } from '../utils/dom'
 import type Bus from '../utils/pubsub'
 import type { changeTheme } from '../utils/theme'
 import type { Topic, CustomSvg } from './dom'
-import type { EventMap } from '../utils/pubsub'
+import type { EventMap, Operation } from '../utils/pubsub'
 import type {
   Init,
   CreateChildren,
@@ -31,32 +31,6 @@ import type {
   ShowLinkController,
 } from './function'
 import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit, Install } from './interact'
-
-export enum OperationType {
-  moveNode = 'moveNode',
-  moveNodeAfter = 'moveNodeAfter',
-  moveNodeBefore = 'moveNodeBefore',
-  removeNode = 'removeNode',
-  addChild = 'addChild',
-  copyNode = 'copyNode',
-  reshapeNode = 'reshapeNode',
-  insertSibling = 'insertSibling',
-  insertBefore = 'insertBefore',
-  insertParent = 'insertParent',
-  moveUpNode = 'moveUpNode',
-  moveDownNode = 'moveDownNode',
-
-  beginEdit = 'beginEdit',
-  finishEdit = 'finishEdit',
-}
-
-export type Operation = {
-  name: OperationType
-  obj: any
-  origin: any
-  originSiblingId: string
-  originParentId: string
-}
 
 export interface Theme {
   name: string
@@ -101,8 +75,9 @@ export interface MindElixirInstance {
   bus: ReturnType<typeof Bus.create<EventMap>>
 
   history: Operation[]
-  isUndo: boolean
   undo: () => void
+  redo: () => void
+
   install: Install
 
   theme: Theme

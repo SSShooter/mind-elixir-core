@@ -1,64 +1,48 @@
-import type { Operation, OperationType } from '../index'
+import type { MindElixirData } from '../index'
 import { E, type MindElixirInstance } from '../index'
+import { findEle } from '../utils/dom'
+import type { Operation } from '../utils/pubsub'
 
-const noop = function (mei: MindElixirInstance, operation: Operation) {
-  // noop
-}
-const redoHandlerMap: Record<OperationType, (mei: MindElixirInstance, operation: Operation) => void> = {
-  moveNode(mei, operation) {
-    mei.moveNode(E(operation.obj.fromObj.id), E(operation.obj.originParentId))
-  },
-  moveNodeAfter: noop,
-  moveNodeBefore: noop,
-  removeNode(mei, operation) {
-    if (operation.originSiblingId) {
-      mei.insertBefore(E(operation.originSiblingId), operation.obj)
-    } else {
-      mei.addChild(E(operation.originParentId), operation.obj)
-    }
-  },
-  addChild(mei, operation) {
-    mei.removeNode(E(operation.obj.id))
-  },
-  copyNode(mei, operation) {
-    mei.removeNode(E(operation.obj.id))
-  },
-  reshapeNode: noop,
-  insertSibling: noop,
-  insertBefore: noop,
-  insertParent: noop,
-  moveUpNode: noop,
-  moveDownNode: noop,
-  beginEdit: noop,
-  finishEdit(mei, operation) {
-    mei.setNodeTopic(E(operation.obj.id), operation.origin)
-  },
+type History = {
+  prev: MindElixirData
+  currentNodeId: string
+  next: MindElixirData
 }
 
 export default function (mei: MindElixirInstance) {
-  mei.history = []
-  mei.isUndo = false
+  let history = [] as History[]
+  let currentIndex = -1
+  let current = mei.getData()
+  mei.bus.addListener('operation', (operation: Operation) => {
+    if (operation.name === 'beginEdit') return
+    history = history.slice(0, currentIndex + 1)
+    const next = mei.getData()
+    history.push({ prev: current, currentNodeId: operation.obj.id, next })
+    current = next
+    currentIndex = history.length - 1
+    console.log('operation', operation.obj.id, history)
+  })
   mei.undo = function () {
-    const operation = mei.history.pop()
-    if (!operation) return
-    mei.isUndo = true
-    if (redoHandlerMap[operation.name]) {
-      redoHandlerMap[operation.name](mei, operation)
-    } else {
-      mei.isUndo = false
+    if (currentIndex > -1) {
+      const h = history[currentIndex]
+      current = h.prev
+      mei.refresh(h.prev)
+      mei.selectNode(findEle(h.currentNodeId))
+      currentIndex--
+      console.log('current', current)
     }
   }
-  mei.bus.addListener('operation', (operation: Operation) => {
-    if (mei.isUndo) {
-      mei.isUndo = false
-      return
+  mei.redo = function () {
+    if (currentIndex < history.length - 1) {
+      currentIndex++
+      const h = history[currentIndex]
+      current = h.next
+      mei.refresh(h.next)
+      mei.selectNode(findEle(h.currentNodeId))
     }
-    if (['moveNode', 'removeNode', 'addChild', 'finishEdit', 'editStyle', 'editTags', 'editIcons'].includes(operation.name)) {
-      mei.history.push(operation)
-    }
-  })
+  }
   mei.map.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (!mei.allowUndo) return
-    if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
+    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'Z') mei.redo()
+    else if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
   })
 }

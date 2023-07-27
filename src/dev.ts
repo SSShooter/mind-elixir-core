@@ -3,7 +3,8 @@ import MindElixirLite from './index.lite'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
-import type { Options, MindElixirData, Operation } from './types/index'
+import type { Options, MindElixirData } from './types/index'
+import type { Operation } from './utils/pubsub'
 
 interface Window {
   currentOperation: any
@@ -41,7 +42,7 @@ const options: Options = {
   toolBar: true,
   nodeMenu: true,
   keypress: true,
-  // allowUndo: false,
+  allowUndo: true,
   before: {
     moveDownNode() {
       return false
@@ -63,7 +64,8 @@ const options: Options = {
 const mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
-mind.init(example)
+console.log(data)
+mind.init(data)
 function sleep() {
   return new Promise<void>(res => {
     setTimeout(() => res(), 1000)

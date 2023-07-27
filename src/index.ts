@@ -280,7 +280,6 @@ MindElixir.prototype = {
     // plugin
     this.toolBar && toolBar(this)
     this.keypress && keypress(this)
-    this.allowUndo && operationHistory(this)
 
     if (isMobile() && this.mobileMenu) {
       mobileMenu(this)
@@ -293,6 +292,7 @@ MindElixir.prototype = {
     this.toCenter()
     this.layout()
     this.linkDiv()
+    this.allowUndo && operationHistory(this)
   },
 }
 

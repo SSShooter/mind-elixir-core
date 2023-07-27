@@ -1,5 +1,47 @@
-import type { Operation, OperationType } from '../index'
 import type { NodeObj } from '../types/index'
+export type OperationType =
+  | 'moveNode'
+  | 'moveNodeAfter'
+  | 'moveNodeBefore'
+  | 'removeNode'
+  | 'addChild'
+  | 'copyNode'
+  | 'reshapeNode'
+  | 'insertSibling'
+  | 'insertBefore'
+  | 'insertParent'
+  | 'moveUpNode'
+  | 'moveDownNode'
+  | 'beginEdit'
+  | 'finishEdit'
+
+export type Operation =
+  | {
+      name: 'moveNode' | 'moveDownNode' | 'moveUpNode' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'insertSibling' | 'beginEdit'
+      obj: NodeObj
+    }
+  | {
+      name: 'reshapeNode'
+      obj: NodeObj
+      origin: NodeObj
+    }
+  | {
+      name: 'finishEdit'
+      obj: NodeObj
+      origin: string
+    }
+  | {
+      name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNode'
+      obj: NodeObj
+      toObj: NodeObj
+      originParentId?: string
+    }
+  | {
+      name: 'removeNode'
+      obj: NodeObj
+      originSiblingId?: string
+      originParentId?: string
+    }
 
 export type EventMap = {
   operation: (info: Operation) => void

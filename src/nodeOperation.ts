@@ -27,6 +27,7 @@ import type {
 } from './types/function'
 import type { NodeObj } from './types/index'
 import { LEFT, RIGHT, SIDE } from './const'
+import type { Operation } from './utils/pubsub'
 
 const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
@@ -432,20 +433,20 @@ export const removeNode: RemoveNode = function (el) {
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
 export const moveNode: MoveNodeToCommon = function (from, to) {
-  const fromObj = from.nodeObj
+  const obj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj?.parent?.id
+  const originParentId = obj?.parent?.id
   if (toObj.expanded === false) {
     this.expandNode(to, true)
-    from = findEle(fromObj.id) as Topic
+    from = findEle(obj.id) as Topic
     to = findEle(toObj.id) as Topic
   }
-  if (!checkMoveValid(fromObj, toObj)) {
+  if (!checkMoveValid(obj, toObj)) {
     console.warn('Invalid move')
     return
   }
   console.time('moveNode')
-  moveNodeObj(fromObj, toObj)
+  moveNodeObj(obj, toObj)
   fillParent(this.nodeData) // update parent property
   const fromTop = from.parentElement
   const toTop = to.parentElement
@@ -461,13 +462,15 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
       toTop.parentElement.insertBefore(c, toTop.nextSibling)
     }
   } else if (toTop.tagName === 'ME-ROOT') {
-    judgeDirection(this.direction, fromObj)
+    judgeDirection(this.direction, obj)
     toTop.nextSibling.appendChild(fromTop.parentElement)
   }
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNode',
-    obj: { fromObj, toObj, originParentId },
+    obj,
+    toObj,
+    originParentId,
   })
   console.timeEnd('moveNode')
 }
@@ -484,10 +487,10 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
  * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
 export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
-  const fromObj = from.nodeObj
+  const obj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent?.id
-  moveNodeBeforeObj(fromObj, toObj)
+  const originParentId = obj.parent?.id
+  moveNodeBeforeObj(obj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
   const fromTop = from.parentElement
@@ -498,7 +501,9 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeBefore',
-    obj: { fromObj, toObj, originParentId },
+    obj,
+    toObj,
+    originParentId,
   })
 }
 
@@ -514,10 +519,10 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
 export const moveNodeAfter: MoveNodeToCommon = function (from, to) {
-  const fromObj = from.nodeObj
+  const obj = from.nodeObj
   const toObj = to.nodeObj
-  const originParentId = fromObj.parent?.id
-  moveNodeAfterObj(fromObj, toObj)
+  const originParentId = obj.parent?.id
+  moveNodeAfterObj(obj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
   const fromTop = from.parentElement
@@ -528,7 +533,9 @@ export const moveNodeAfter: MoveNodeToCommon = function (from, to) {
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeAfter',
-    obj: { fromObj, toObj, originParentId },
+    obj,
+    toObj,
+    originParentId,
   })
 }
 
