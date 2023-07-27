@@ -17,8 +17,7 @@ export const layout: Layout = function () {
   const root = $d.createElement('me-root')
   root.appendChild(tpc)
 
-  const mainNodes = this.nodeData.children
-  if (!mainNodes || mainNodes.length === 0) return
+  const mainNodes = this.nodeData.children || []
   if (this.direction === SIDE) {
     // initiate direction of main nodes
     let lcount = 0
