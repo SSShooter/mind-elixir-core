@@ -152,19 +152,9 @@ export function checkMoveValid(from: NodeObj, to: NodeObj) {
 }
 
 const getSibling = (obj: NodeObj): { siblings: NodeObj[]; index: number } => {
-  const siblings = obj.parent!.children as NodeObj[]
+  const siblings = obj.parent?.children as NodeObj[]
   const index = siblings.indexOf(obj)
   return { siblings, index }
-}
-
-export function getObjSibling(obj: NodeObj): NodeObj | null {
-  const { siblings, index } = getSibling(obj)
-  if (index + 1 >= siblings.length) {
-    // 最后一个
-    return null
-  } else {
-    return siblings[index + 1]
-  }
 }
 
 export function moveUpObj(obj: NodeObj) {

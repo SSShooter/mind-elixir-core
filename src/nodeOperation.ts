@@ -400,7 +400,7 @@ export const removeNode: RemoveNode = function (el) {
     this.selectParent()
   } else {
     // select sibling automatically
-    this.selectPrevSibling() || this.selectNextSibling() || this.selectParent()
+    this.selectPrevSibling() || this.selectNextSibling()
   }
   for (const prop in this.linkData) {
     // MAYBEBUG should traverse all children node

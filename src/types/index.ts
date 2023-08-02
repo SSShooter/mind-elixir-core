@@ -31,6 +31,7 @@ import type {
   ShowLinkController,
 } from './function'
 import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit, Install } from './interact'
+import type { reshapeNode } from '../nodeOperation'
 
 export interface Theme {
   name: string
@@ -174,6 +175,7 @@ export interface MindElixirInstance {
   helper2: LinkDragMoveHelperInstance
 
   changeTheme: typeof changeTheme
+  reshapeNode: typeof reshapeNode
 }
 
 export type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
