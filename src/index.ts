@@ -124,11 +124,11 @@ function MindElixir(
   } else if (elType === '[object String]') {
     ele = document.querySelector(el as string) as HTMLElement
   }
-  if (!ele) new Error('MindElixir: el is not a valid element')
+  if (!ele) throw new Error('MindElixir: el is not a valid element')
 
-  ele!.className += ' mind-elixir'
-  ele!.innerHTML = ''
-  ele!.style.setProperty('--gap', GAP + 'px')
+  ele.className += ' mind-elixir'
+  ele.innerHTML = ''
+  ele.style.setProperty('--gap', GAP + 'px')
   this.mindElixirBox = ele as HTMLElement
   this.before = before || {}
   this.locale = locale || 'en'
