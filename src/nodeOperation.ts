@@ -219,7 +219,7 @@ export const insertParent: InsertNodeCommon = function (el, node) {
   })
 }
 
-export const addChildFunction: AddChildFunction = function (nodeEle, node) {
+const addChildFunction: AddChildFunction = function (nodeEle, node) {
   if (!nodeEle) return null
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {

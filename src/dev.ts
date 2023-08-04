@@ -1,5 +1,4 @@
 import MindElixir from './index'
-import MindElixirLite from './index.lite'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
@@ -66,7 +65,7 @@ const mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
 console.log(data)
-mind.init(data)
+mind.init(example)
 function sleep() {
   return new Promise<void>(res => {
     setTimeout(() => res(), 1000)

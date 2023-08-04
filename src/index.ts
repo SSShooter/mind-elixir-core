@@ -3,46 +3,8 @@ import { isMobile, fillParent, getObjById, generateUUID, generateNewObj } from '
 import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
 import { layout, layoutChildren } from './utils/layout'
 import { createLinkSvg, createLine } from './utils/svg'
-import {
-  selectNode,
-  unselectNode,
-  selectNextSibling,
-  selectPrevSibling,
-  selectFirstChild,
-  selectParent,
-  getDataString,
-  getData,
-  getDataMd,
-  scale,
-  toCenter,
-  focusNode,
-  cancelFocus,
-  initLeft,
-  initRight,
-  initSide,
-  setLocale,
-  enableEdit,
-  disableEdit,
-  expandNode,
-  refresh,
-  install,
-} from './interact'
-import {
-  insertSibling,
-  insertBefore,
-  insertParent,
-  addChild,
-  copyNode,
-  moveNode,
-  removeNode,
-  moveUpNode,
-  moveDownNode,
-  beginEdit,
-  reshapeNode,
-  setNodeTopic,
-  moveNodeBefore,
-  moveNodeAfter,
-} from './nodeOperation'
+import * as interact from './interact'
+import * as nodeOperation from './nodeOperation'
 import { createLink, removeLink, selectLink, hideLinkController, showLinkController } from './customLink'
 import linkDiv from './linkDiv'
 import initMouseEvent from './mouse'
@@ -197,25 +159,21 @@ function beforeHook(fn: (...arg: any[]) => void, fnName: string) {
   }
 }
 
+type NodeOperation = Partial<Record<keyof typeof nodeOperation, ReturnType<typeof beforeHook>>>
+const operations = Object.keys(nodeOperation) as Array<keyof typeof nodeOperation>
+const nodeOperationHooked: NodeOperation = {}
+if (import.meta.env.MODE !== 'lite') {
+  for (let i = 0; i < operations.length; i++) {
+    const operation = operations[i]
+    nodeOperationHooked[operation] = beforeHook(nodeOperation[operation], operation)
+  }
+}
+
 MindElixir.prototype = {
   fillParent,
   getObjById,
   generateNewObj,
-  // node operation
-  insertSibling: beforeHook(insertSibling, 'insertSibling'),
-  insertBefore: beforeHook(insertBefore, 'insertBefore'),
-  insertParent: beforeHook(insertParent, 'insertParent'),
-  addChild: beforeHook(addChild, 'addChild'),
-  copyNode: beforeHook(copyNode, 'copyNode'),
-  moveNode: beforeHook(moveNode, 'moveNode'),
-  removeNode: beforeHook(removeNode, 'removeNode'),
-  moveUpNode: beforeHook(moveUpNode, 'moveUpNode'),
-  moveDownNode: beforeHook(moveDownNode, 'moveDownNode'),
-  beginEdit: beforeHook(beginEdit, 'beginEdit'),
-  moveNodeBefore: beforeHook(moveNodeBefore, 'moveNodeBefore'),
-  moveNodeAfter: beforeHook(moveNodeAfter, 'moveNodeAfter'),
-  reshapeNode,
-  setNodeTopic,
+  ...nodeOperationHooked,
 
   createLink,
   removeLink,
@@ -233,29 +191,9 @@ MindElixir.prototype = {
   createChildren,
   createTopic,
 
-  selectNode,
-  unselectNode,
-  selectNextSibling,
-  selectPrevSibling,
-  selectFirstChild,
-  selectParent,
-  getDataString,
-  getData,
-  getDataMd,
-  scale,
-  toCenter,
-  focusNode,
-  cancelFocus,
-  initLeft,
-  initRight,
-  initSide,
-  setLocale,
-  enableEdit,
-  disableEdit,
-  expandNode,
-  refresh,
+  ...interact,
   findEle,
-  install,
+
   changeTheme,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
@@ -264,23 +202,24 @@ MindElixir.prototype = {
     }
     this.changeTheme(data.theme || this.theme, false)
     this.nodeData = data.nodeData
-    this.linkData = data.linkData || {}
-    // plugin
-    this.toolBar && toolBar(this)
-    this.keypress && keypress(this)
-
-    if (isMobile() && this.mobileMenu) {
-      mobileMenu(this)
-    } else {
-      this.contextMenu && contextMenu(this, this.contextMenuOption)
-    }
-    this.draggable && nodeDraggable(this)
-
     fillParent(this.nodeData)
+    this.linkData = data.linkData || {}
+    // plugins
+    this.toolBar && toolBar(this)
+    if (import.meta.env.MODE !== 'lite') {
+      this.keypress && keypress(this)
+
+      if (isMobile() && this.mobileMenu) {
+        mobileMenu(this)
+      } else {
+        this.contextMenu && contextMenu(this, this.contextMenuOption)
+      }
+      this.draggable && nodeDraggable(this)
+      this.allowUndo && operationHistory(this)
+    }
     this.toCenter()
     this.layout()
     this.linkDiv()
-    this.allowUndo && operationHistory(this)
   },
 }
 
@@ -314,15 +253,17 @@ MindElixir.E = findEle
  * @static
  * @param {String} topic root topic
  */
-MindElixir.new = (topic: string): MindElixirData => ({
-  nodeData: {
-    id: generateUUID(),
-    topic: topic || 'new topic',
-    root: true,
-    children: [],
-  },
-  linkData: {},
-})
+if (import.meta.env.MODE !== 'lite') {
+  MindElixir.new = (topic: string): MindElixirData => ({
+    nodeData: {
+      id: generateUUID(),
+      topic: topic || 'new topic',
+      root: true,
+      children: [],
+    },
+    linkData: {},
+  })
+}
 
 interface MindElixirCtor {
   new (options: Options): MindElixirInstance

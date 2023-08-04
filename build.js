@@ -11,11 +11,12 @@ const buildList = [
   {
     name: 'MindElixir',
     fileName: 'MindElixirLite',
-    enrty: __dirname + './src/index.lite.ts',
+    enrty: __dirname + './src/index.ts',
+    mode: 'lite',
   },
   {
-    name: 'example1',
-    fileName: 'example1',
+    name: 'example',
+    fileName: 'example',
     enrty: __dirname + './src/exampleData/1.ts',
   },
 ]
@@ -32,5 +33,6 @@ for (let i = 0; i < buildList.length; i++) {
         formats: ['iife', 'es'],
       },
     },
+    mode: info.mode,
   })
 }
