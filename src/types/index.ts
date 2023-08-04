@@ -204,6 +204,10 @@ export interface Options {
   nodeMenu?: boolean
 }
 export type Uid = string
+
+/**
+ * MindElixir node object
+ */
 export interface NodeObj {
   topic: string
   id: Uid

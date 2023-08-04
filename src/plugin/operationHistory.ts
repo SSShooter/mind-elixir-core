@@ -1,5 +1,5 @@
 import type { MindElixirData } from '../index'
-import { E, type MindElixirInstance } from '../index'
+import { type MindElixirInstance } from '../index'
 import { findEle } from '../utils/dom'
 import type { Operation } from '../utils/pubsub'
 

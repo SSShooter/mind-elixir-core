@@ -54,7 +54,6 @@ import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
 import operationHistory from './plugin/operationHistory'
 
-import type { EventMap } from './utils/pubsub'
 import Bus from './utils/pubsub'
 
 import './index.less'
@@ -66,17 +65,6 @@ import { changeTheme } from './utils/theme'
 export * from './types/index'
 
 // TODO show up animation
-
-/**
- * @function
- * @global
- * @name E
- * @param {string} id Node id.
- * @return {TargetElement} Target element.
- * @example
- * E('bd4313fbac40284b')
- */
-export const E = findEle
 const $d = document
 /**
  * @export MindElixir
@@ -308,6 +296,16 @@ MindElixir.DARK_THEME = DARK_THEME
  * @static
  */
 MindElixir.version = '2.1.0'
+/**
+ * @function
+ * @memberof MindElixir
+ * @static
+ * @name E
+ * @param {string} id Node id.
+ * @return {TargetElement} Target element.
+ * @example
+ * E('bd4313fbac40284b')
+ */
 MindElixir.E = findEle
 
 /**
@@ -338,4 +336,4 @@ interface MindElixirCtor {
   DARK_THEME: typeof DARK_THEME
 }
 
-export default MindElixir as any as MindElixirCtor
+export default MindElixir as unknown as MindElixirCtor

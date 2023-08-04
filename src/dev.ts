@@ -1,4 +1,4 @@
-import MindElixir, { E } from './index'
+import MindElixir from './index'
 import MindElixirLite from './index.lite'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
@@ -17,6 +17,7 @@ interface Window {
 
 declare let window: Window
 
+const E = MindElixir.E
 const options: Options = {
   el: '#map',
   newTopicName: '子节点',

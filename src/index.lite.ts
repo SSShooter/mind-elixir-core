@@ -38,8 +38,6 @@ import './iconfont/iconfont.js'
 import type { Children } from './types/dom'
 import type { MindElixirInstance, Options, MindElixirData } from './types/index'
 
-export const E = findEle
-
 const $d = document
 function MindElixir(
   this: MindElixirInstance,

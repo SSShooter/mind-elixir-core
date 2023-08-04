@@ -1,4 +1,4 @@
-import type { Topic, Wrapper } from './types/dom'
+import type { Topic } from './types/dom'
 import type { SelectNodeFunc, CommonSelectFunc, SiblingSelectFunc, GetDataStringFunc, GetDataFunc, ExpandNode, RefreshFunc } from './types/function'
 import type { MindElixirInstance, NodeObj } from './types/index'
 import type {

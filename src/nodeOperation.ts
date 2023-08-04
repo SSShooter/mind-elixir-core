@@ -27,7 +27,6 @@ import type {
 } from './types/function'
 import type { NodeObj } from './types/index'
 import { LEFT, RIGHT, SIDE } from './const'
-import type { Operation } from './utils/pubsub'
 
 const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
