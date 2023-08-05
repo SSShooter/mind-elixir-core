@@ -23,6 +23,7 @@ import './iconfont/iconfont.js'
 import type { MindElixirData, MindElixirInstance, Options } from './types/index'
 import type { Children } from './types/dom'
 import { changeTheme } from './utils/theme'
+import beforeHook from './utils/beforeHook'
 
 export * from './types/index'
 
@@ -149,16 +150,6 @@ function MindElixir(
   } else initMouseEvent(this)
 }
 
-function beforeHook(fn: (...arg: any[]) => void, fnName: string) {
-  return async function (this: MindElixirInstance, ...args: unknown[]) {
-    const hook = this.before[fnName]
-    if (hook) {
-      await hook.apply(this, args)
-    }
-    fn.apply(this, args)
-  }
-}
-
 type NodeOperation = Partial<Record<keyof typeof nodeOperation, ReturnType<typeof beforeHook>>>
 const operations = Object.keys(nodeOperation) as Array<keyof typeof nodeOperation>
 const nodeOperationHooked: NodeOperation = {}
@@ -170,7 +161,6 @@ if (import.meta.env.MODE !== 'lite') {
 }
 
 MindElixir.prototype = {
-  fillParent,
   getObjById,
   generateNewObj,
   ...nodeOperationHooked,
