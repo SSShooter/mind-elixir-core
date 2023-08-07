@@ -2,8 +2,8 @@ import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R } from './const'
 import type { Wrapper, Topic, Expander, Parent } from './types/dom'
-import type { LinkDiv, TraverseChildrenFunc } from './types/function'
 import type { MainLineParams, SubLineParams } from './types/linkDiv'
+import type { MindElixirInstance } from './types/index'
 
 const getOffsetLT = (parent: HTMLElement, child: HTMLElement) => {
   let offsetLeft = 0
@@ -26,7 +26,7 @@ let genPath: typeof generateSubLine1 = generateSubLine1
  * 3. generate custom link
  * @param mainNode regenerate sublink of the specific main node
  */
-const linkDiv: LinkDiv = function (mainNode) {
+const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   console.time('linkDiv')
 
   const root = this.map.querySelector('me-root') as HTMLElement
@@ -119,7 +119,7 @@ const linkDiv: LinkDiv = function (mainNode) {
 }
 
 // core function of generate subLines
-const traverseChildren: TraverseChildrenFunc = function (children, parent, direction, isFirst) {
+const traverseChildren = function (children: Wrapper[], parent: Parent, direction: 'lhs' | 'rhs', isFirst?: boolean) {
   let path = ''
   const pT = parent.offsetTop
   const pL = parent.offsetLeft

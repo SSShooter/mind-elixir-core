@@ -1,14 +1,20 @@
+import './index.less'
+import './iconfont/iconfont.js'
 import { LEFT, RIGHT, SIDE, GAP, DARK_THEME, THEME } from './const'
 import { isMobile, fillParent, getObjById, generateUUID, generateNewObj } from './utils/index'
 import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
-import { layout, layoutChildren } from './utils/layout'
+import { layout } from './utils/layout'
+import linkDiv from './linkDiv'
 import { createLinkSvg, createLine } from './utils/svg'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
-import { createLink, removeLink, selectLink, hideLinkController, showLinkController } from './customLink'
-import linkDiv from './linkDiv'
+import * as customLink from './customLink'
 import initMouseEvent from './mouse'
+import Bus from './utils/pubsub'
+import { changeTheme } from './utils/theme'
+import beforeHook from './utils/beforeHook'
 
+// plugins
 import contextMenu from './plugin/contextMenu'
 import toolBar from './plugin/toolBar'
 import nodeDraggable from './plugin/nodeDraggable'
@@ -16,16 +22,10 @@ import keypress from './plugin/keypress'
 import mobileMenu from './plugin/mobileMenu'
 import operationHistory from './plugin/operationHistory'
 
-import Bus from './utils/pubsub'
-
-import './index.less'
-import './iconfont/iconfont.js'
+// types
+export * from './types/index'
 import type { MindElixirData, MindElixirInstance, Options } from './types/index'
 import type { Children } from './types/dom'
-import { changeTheme } from './utils/theme'
-import beforeHook from './utils/beforeHook'
-
-export * from './types/index'
 
 // TODO show up animation
 const $d = document
@@ -104,8 +104,7 @@ function MindElixir(
   this.subLinkStyle = subLinkStyle || 0
   this.overflowHidden = overflowHidden || false
 
-  const bus = Bus.create()
-  this.bus = bus
+  this.bus = Bus.create()
 
   this.container = $d.createElement('div') // map container
   this.container.className = 'map-container'
@@ -113,6 +112,7 @@ function MindElixir(
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
   this.theme = theme || (mediaQuery.matches ? DARK_THEME : THEME)
 
+  // infrastructure
   const canvas = $d.createElement('div') // map-canvas Element
   canvas.className = 'map-canvas'
   this.map = canvas
@@ -122,8 +122,6 @@ function MindElixir(
 
   this.nodes = $d.createElement('me-nodes') as Children
   this.nodes.className = 'main-node-container'
-
-  // infrastructure
 
   this.lines = createLinkSvg('lines') // main link container
 
@@ -136,7 +134,6 @@ function MindElixir(
   this.line2 = createLine(0, 0, 0, 0) // bezier auxiliary line2
   this.linkController.appendChild(this.line1)
   this.linkController.appendChild(this.line2)
-
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
 
   this.map.appendChild(this.nodes)
@@ -160,31 +157,21 @@ if (import.meta.env.MODE !== 'lite') {
   }
 }
 
-MindElixir.prototype = {
+const methods = {
   getObjById,
   generateNewObj,
-  ...nodeOperationHooked,
-
-  createLink,
-  removeLink,
-  selectLink,
-  hideLinkController,
-  showLinkController,
-
   layout,
   linkDiv,
   createInputDiv,
-
-  layoutChildren,
   createWrapper,
   createParent,
   createChildren,
   createTopic,
-
-  ...interact,
   findEle,
-
   changeTheme,
+  ...interact,
+  ...nodeOperationHooked,
+  ...customLink,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
@@ -212,6 +199,8 @@ MindElixir.prototype = {
     this.linkDiv()
   },
 }
+
+MindElixir.prototype = methods
 
 MindElixir.LEFT = LEFT
 MindElixir.RIGHT = RIGHT

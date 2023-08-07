@@ -1,13 +1,12 @@
 import { LEFT, RIGHT, SIDE } from '../const'
 import type { Children } from '../types/dom'
-import type { Layout, LayoutChildren } from '../types/function'
 import type { MindElixirInstance, NodeObj } from '../types/index'
 import { shapeTpc } from './dom'
 
 const $d = document
 
 // Set main nodes' direction and invoke layoutChildren()
-export const layout: Layout = function () {
+export const layout = function (this: MindElixirInstance) {
   console.time('layout')
   this.nodes.innerHTML = ''
 
@@ -70,20 +69,11 @@ const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root:
   mei.nodes.appendChild(mei.lines)
 }
 
-/**
- * traversal data and generate dom structure of mind map
- * @ignore
- * @param {object} data node data object
- * @param {object} container node container(optional)
- * @param {number} direction main node direction(optional)
- * @return {ChildrenElement} children element.
- */
-export const layoutChildren: LayoutChildren = function (data) {
+export const layoutChildren = function (mei: MindElixirInstance, data: NodeObj[]) {
   const chldr = $d.createElement('me-children') as Children
-
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
-    const { grp } = this.createWrapper(nodeObj)
+    const { grp } = mei.createWrapper(nodeObj)
     chldr.appendChild(grp)
   }
   return chldr

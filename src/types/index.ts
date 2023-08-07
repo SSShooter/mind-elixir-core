@@ -7,10 +7,8 @@ import type {
   Init,
   CreateChildren,
   CreateTopic,
-  LinkDiv,
   InsertNodeCommon,
   CreateInputDiv,
-  LayoutChildren,
   MoveNodeToCommon,
   MoveNodeCommon,
   RemoveNode,
@@ -23,7 +21,6 @@ import type {
   GetDataFunc,
   ExpandNode,
   RefreshFunc,
-  Layout,
   RemoveLink,
   SelectLink,
   HideLinkController,
@@ -32,6 +29,8 @@ import type {
 } from './function'
 import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit, Install } from './interact'
 import type { reshapeNode } from '../nodeOperation'
+import type linkDiv from '../linkDiv'
+import type { layout } from '../utils/layout'
 
 export interface Theme {
   name: string
@@ -121,11 +120,10 @@ export interface MindElixirInstance {
   createChildren: CreateChildren
   createTopic: CreateTopic
 
-  linkDiv: LinkDiv
+  linkDiv: typeof linkDiv
 
   addChild: InsertNodeCommon
   createInputDiv: CreateInputDiv
-  layoutChildren: LayoutChildren
 
   moveNode: MoveNodeToCommon
   moveUpNode: MoveNodeCommon
@@ -162,7 +160,7 @@ export interface MindElixirInstance {
   expandNode: ExpandNode
   refresh: RefreshFunc
 
-  layout: Layout
+  layout: typeof layout
   beginEdit: InsertNodeCommon
   fillParent: FillParent
   getObjById: GetObjById

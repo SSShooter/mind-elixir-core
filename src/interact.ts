@@ -15,6 +15,7 @@ import type {
   SetLocale,
 } from './types/interact'
 import { findEle } from './utils/dom'
+import { fillParent } from './utils/index'
 /**
  * @exports -
  * workaround for jsdoc
@@ -337,7 +338,7 @@ export const refresh: RefreshFunc = function (data) {
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
   }
-  this.fillParent(this.nodeData)
+  fillParent(this.nodeData)
   // create dom element for every node
   this.layout()
   // generate links between nodes

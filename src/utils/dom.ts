@@ -3,6 +3,7 @@ import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
 import type { CreateChildren, CreateTopic, CreateInputDiv } from '../types/function'
 import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
+import { layoutChildren } from './layout'
 
 // DOM manipulation
 const $d = document
@@ -80,7 +81,7 @@ export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeOb
     p.appendChild(expander)
     // tpc.expander = expander
     if (nodeObj.expanded !== false) {
-      const children = this.layoutChildren(nodeObj.children)
+      const children = layoutChildren(this, nodeObj.children)
       grp.appendChild(children)
     }
   }
