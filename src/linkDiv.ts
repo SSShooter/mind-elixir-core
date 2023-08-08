@@ -82,7 +82,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     this.lines.appendChild(createMainPath(mainPath, branchColor))
 
     // set position of main node expander
-    const expander = el.children[0].children[1] as Expander
+    const expander = el.children[0].children[1]
     if (expander) {
       expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
       if (direction === 'lhs') {
@@ -103,7 +103,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
       if (svgLine.tagName === 'svg') svgLine.remove()
       el.appendChild(svg)
       const parent = el.firstChild
-      const children = el.children[1].children as unknown as Wrapper[]
+      const children = el.children[1].children
       const path = traverseChildren(children, parent, direction, true)
       svg.appendChild(createPath(path, branchColor))
     }
@@ -135,7 +135,7 @@ const traverseChildren = function (children: Wrapper[], parent: Parent, directio
 
     path += genPath({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
 
-    const expander = childT.children[1] as Expander
+    const expander = childT.children[1]
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
       if (direction === 'lhs') {
@@ -150,7 +150,7 @@ const traverseChildren = function (children: Wrapper[], parent: Parent, directio
       continue
     }
 
-    const nextChildren = child.children[1].children as unknown as Wrapper[]
+    const nextChildren = child.children[1].children
     if (nextChildren.length > 0) {
       path += traverseChildren(nextChildren, childT, direction)
     }

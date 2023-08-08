@@ -2,6 +2,7 @@ import type { NodeObj, LinkItem } from './index'
 
 export interface Wrapper extends HTMLElement {
   firstChild: Parent
+  children: HTMLCollection & [Parent, Children]
   parentNode: Children
   parentElement: Children
   offsetParent: Wrapper
@@ -11,16 +12,16 @@ export interface Wrapper extends HTMLElement {
 
 export interface Parent extends HTMLElement {
   firstChild: Topic
+  children: HTMLCollection & [Topic, Expander]
   parentNode: Wrapper
   parentElement: Wrapper
   nextSibling: Children
   offsetParent: Wrapper
 }
 
-export type Root = Parent
-
 export interface Children extends HTMLElement {
   parentNode: Wrapper
+  children: HTMLCollection & Wrapper[]
   parentElement: Wrapper
   firstChild: Wrapper
   previousSibling: Parent

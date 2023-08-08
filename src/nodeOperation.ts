@@ -114,7 +114,7 @@ export const insertSibling: InsertNodeCommon = function (el, node) {
 
   const { grp, top } = this.createWrapper(newNodeObj)
 
-  const children = t.parentNode.parentNode as Children
+  const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode.nextSibling)
 
   this.linkDiv(grp.offsetParent)
@@ -157,7 +157,7 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
 
   const { grp, top } = this.createWrapper(newNodeObj)
 
-  const children = t.parentNode.parentNode as Children
+  const children = t.parentNode.parentNode
   children.insertBefore(grp, t.parentNode)
 
   this.linkDiv(grp.offsetParent)
