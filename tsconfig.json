@@ -17,9 +17,10 @@
 
     /* Linting */
     "strict": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    
+    "noFallthroughCasesInSwitch": true,
+    "noErrorTruncation": true,
+    // "moduleResolution": "nodenext"
   },
   "include": ["src"],
   "exclude": ["src/dev.dist.ts"]

@@ -1,9 +1,8 @@
-import MindElixir, { E } from 'mind-elixir'
-import example from 'mind-elixir/dist/example1'
+import MindElixir from 'mind-elixir'
+import example from 'mind-elixir/example'
 import type { Options } from 'mind-elixir'
-import type { Topic } from '../dist/types/types/dom'
-// import example2 from '../dist/example2'
 
+const E = MindElixir.E
 const options: Options = {
   el: '#map',
   newTopicName: '子节点',

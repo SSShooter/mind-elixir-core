@@ -9,7 +9,6 @@
     "dom",
     "visualization"
   ],
-  "main": "dist/MindElixir.js",
   "scripts": {
     "prepare": "husky install",
     "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,json,ts}\" --fix",
@@ -22,23 +21,29 @@
     "publish2": "npm run build && npm version patch -m \"build: release %s\" && npm publish",
     "beta": "npm run build && npm publish --tag beta"
   },
-  "types": "dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/MindElixir.js",
       "require": "./dist/MindElixir.js"
     },
-    "./dist/example1": {
+    "./example": {
       "types": "./dist/types/exampleData/1.d.ts",
-      "import": "./dist/example1.js",
-      "require": "./dist/example1.js"
+      "import": "./dist/example.js",
+      "require": "./dist/example.js"
     },
-    "./readme.md": {
-      "import": "./readme.md",
-      "require": "./readme.md"
+    "./readme.md": "./readme.md",
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "example": [
+        "./dist/types/exampleData/1.d.ts"
+      ]
     }
   },
+  "main": "dist/MindElixir.js",
+  "types": "dist/types/index.d.ts",
   "lint-staged": {
     "src/**/*.{ts,js}": [
       "eslint --cache --fix"

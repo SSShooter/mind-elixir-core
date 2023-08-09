@@ -1,31 +1,15 @@
 import './index.less'
 import './iconfont/iconfont.js'
 import { LEFT, RIGHT, SIDE, GAP, DARK_THEME, THEME } from './const'
-import { isMobile, fillParent, getObjById, generateUUID, generateNewObj } from './utils/index'
-import { findEle, createInputDiv, createWrapper, createParent, createChildren, createTopic } from './utils/dom'
-import { layout } from './utils/layout'
-import linkDiv from './linkDiv'
-import { createLinkSvg, createLine } from './utils/svg'
-import * as interact from './interact'
-import * as nodeOperation from './nodeOperation'
-import * as customLink from './customLink'
+import { generateUUID } from './utils/index'
 import initMouseEvent from './mouse'
 import Bus from './utils/pubsub'
-import { changeTheme } from './utils/theme'
-import beforeHook from './utils/beforeHook'
-
-// plugins
-import contextMenu from './plugin/contextMenu'
-import toolBar from './plugin/toolBar'
-import nodeDraggable from './plugin/nodeDraggable'
-import keypress from './plugin/keypress'
-import mobileMenu from './plugin/mobileMenu'
-import operationHistory from './plugin/operationHistory'
-
+import { findEle } from './utils/dom'
+import { createLinkSvg, createLine } from './utils/svg'
 // types
 export * from './types/index'
 import type { MindElixirData, MindElixirInstance, Options } from './types/index'
-import type { Children } from './types/dom'
+import methods from './methods'
 
 // TODO show up animation
 const $d = document
@@ -120,7 +104,7 @@ function MindElixir(
   this.container.appendChild(this.map)
   this.mindElixirBox.appendChild(this.container)
 
-  this.nodes = $d.createElement('me-nodes') as Children
+  this.nodes = $d.createElement('me-nodes')
   this.nodes.className = 'main-node-container'
 
   this.lines = createLinkSvg('lines') // main link container
@@ -145,59 +129,6 @@ function MindElixir(
   if (this.overflowHidden) {
     this.container.style.overflow = 'hidden'
   } else initMouseEvent(this)
-}
-
-type NodeOperation = Partial<Record<keyof typeof nodeOperation, ReturnType<typeof beforeHook>>>
-const operations = Object.keys(nodeOperation) as Array<keyof typeof nodeOperation>
-const nodeOperationHooked: NodeOperation = {}
-if (import.meta.env.MODE !== 'lite') {
-  for (let i = 0; i < operations.length; i++) {
-    const operation = operations[i]
-    nodeOperationHooked[operation] = beforeHook(nodeOperation[operation], operation)
-  }
-}
-
-const methods = {
-  getObjById,
-  generateNewObj,
-  layout,
-  linkDiv,
-  createInputDiv,
-  createWrapper,
-  createParent,
-  createChildren,
-  createTopic,
-  findEle,
-  changeTheme,
-  ...interact,
-  ...nodeOperationHooked,
-  ...customLink,
-  init(this: MindElixirInstance, data: MindElixirData) {
-    if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
-    if (data.direction !== undefined) {
-      this.direction = data.direction
-    }
-    this.changeTheme(data.theme || this.theme, false)
-    this.nodeData = data.nodeData
-    fillParent(this.nodeData)
-    this.linkData = data.linkData || {}
-    // plugins
-    this.toolBar && toolBar(this)
-    if (import.meta.env.MODE !== 'lite') {
-      this.keypress && keypress(this)
-
-      if (isMobile() && this.mobileMenu) {
-        mobileMenu(this)
-      } else {
-        this.contextMenu && contextMenu(this, this.contextMenuOption)
-      }
-      this.draggable && nodeDraggable(this)
-      this.allowUndo && operationHistory(this)
-    }
-    this.toCenter()
-    this.layout()
-    this.linkDiv()
-  },
 }
 
 MindElixir.prototype = methods

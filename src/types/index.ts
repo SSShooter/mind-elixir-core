@@ -1,47 +1,17 @@
-import type { createParent, createWrapper } from '../utils/dom'
 import type Bus from '../utils/pubsub'
-import type { changeTheme } from '../utils/theme'
 import type { Topic, CustomSvg } from './dom'
 import type { EventMap, Operation } from '../utils/pubsub'
-import type {
-  Init,
-  CreateChildren,
-  CreateTopic,
-  InsertNodeCommon,
-  CreateInputDiv,
-  MoveNodeToCommon,
-  MoveNodeCommon,
-  RemoveNode,
-  TNodeCopy,
-  SetNodeTopic,
-  SelectNodeFunc,
-  CommonSelectFunc,
-  SiblingSelectFunc,
-  GetDataStringFunc,
-  GetDataFunc,
-  ExpandNode,
-  RefreshFunc,
-  RemoveLink,
-  SelectLink,
-  HideLinkController,
-  ShowLinkController,
-} from './function'
-import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit, Install } from './interact'
-import type { reshapeNode } from '../nodeOperation'
-import type linkDiv from '../linkDiv'
-import type { layout } from '../utils/layout'
-import type { createLink } from '../customLink'
+import type methods from '../methods'
 
 export interface Theme {
   name: string
   palette: string[]
-  cssVar: Record<string, string>
-  // {
-  //   '--main-color': string
-  //   '--main-bgcolor': string
-  //   '--color': string
-  //   '--bgcolor': string
-  // }
+  cssVar: {
+    '--main-color': string
+    '--main-bgcolor': string
+    '--color': string
+    '--bgcolor': string
+  }
 }
 
 export interface LinkDragMoveHelperInstance {
@@ -59,7 +29,8 @@ export interface LinkDragMoveHelperInstance {
   cb: ((deltaX: number, deltaY: number) => void) | null
 }
 
-export interface MindElixirInstance {
+type MindElixirMethods = typeof methods
+export interface MindElixirInstance extends MindElixirMethods {
   isFocusMode: boolean
   nodeDataBackup: NodeObj
   mindElixirBox: HTMLElement
@@ -71,15 +42,6 @@ export interface MindElixirInstance {
   inputDiv: HTMLElement | null
   scaleVal: number
   tempDirection: number | null
-
-  bus: ReturnType<typeof Bus.create<EventMap>>
-
-  history: Operation[]
-  undo: () => void
-  redo: () => void
-
-  install: Install
-
   theme: Theme
   userTheme?: Theme
   direction: number
@@ -109,71 +71,13 @@ export interface MindElixirInstance {
   line1: SVGElement
   line2: SVGElement
   linkSvgGroup: SVGElement
-
-  mapHeight: number
-
-  init: Init
-
-  generateNewObj: GenerateNewObj
-  createWrapper: typeof createWrapper
-  createParent: typeof createParent
-  createChildren: CreateChildren
-  createTopic: CreateTopic
-
-  linkDiv: typeof linkDiv
-
-  addChild: InsertNodeCommon
-  createInputDiv: CreateInputDiv
-
-  moveNode: MoveNodeToCommon
-  moveUpNode: MoveNodeCommon
-  moveDownNode: MoveNodeCommon
-  moveNodeBefore: MoveNodeToCommon
-  moveNodeAfter: MoveNodeToCommon
-  removeNode: RemoveNode
-  copyNode: TNodeCopy
-  setNodeTopic: SetNodeTopic
-
-  insertParent: InsertNodeCommon
-  insertSibling: InsertNodeCommon
-  insertBefore: InsertNodeCommon
-
-  selectNode: SelectNodeFunc
-  unselectNode: CommonSelectFunc
-  selectNextSibling: SiblingSelectFunc
-  selectPrevSibling: SiblingSelectFunc
-  selectFirstChild: CommonSelectFunc
-  selectParent: CommonSelectFunc
-  getDataString: GetDataStringFunc
-  getData: GetDataFunc
-  getDataMd: GetDataStringFunc
-  scale: Scale
-  toCenter: ToCenter
-  focusNode: FocusNode
-  cancelFocus: CancelFocus
-  initLeft: InitLeft
-  initRight: InitRight
-  initSide: InitSide
-  setLocale: SetLocale
-  enableEdit: EnableEdit
-  disableEdit: DisableEdit
-  expandNode: ExpandNode
-  refresh: RefreshFunc
-
-  layout: typeof layout
-  beginEdit: InsertNodeCommon
-  fillParent: FillParent
-  getObjById: GetObjById
-  removeLink: RemoveLink
-  selectLink: SelectLink
-  hideLinkController: HideLinkController
-  createLink: typeof createLink
-  showLinkController: ShowLinkController
   helper1: LinkDragMoveHelperInstance
   helper2: LinkDragMoveHelperInstance
 
-  changeTheme: typeof changeTheme
-  reshapeNode: typeof reshapeNode
+  bus: ReturnType<typeof Bus.create<EventMap>>
+  history: Operation[]
+  undo: () => void
+  redo: () => void
 }
 
 export type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
