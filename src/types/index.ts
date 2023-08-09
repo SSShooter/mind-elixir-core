@@ -24,13 +24,13 @@ import type {
   RemoveLink,
   SelectLink,
   HideLinkController,
-  CreateLink,
   ShowLinkController,
 } from './function'
 import type { Scale, ToCenter, FocusNode, CancelFocus, InitLeft, InitRight, InitSide, SetLocale, EnableEdit, DisableEdit, Install } from './interact'
 import type { reshapeNode } from '../nodeOperation'
 import type linkDiv from '../linkDiv'
 import type { layout } from '../utils/layout'
+import type { createLink } from '../customLink'
 
 export interface Theme {
   name: string
@@ -167,7 +167,7 @@ export interface MindElixirInstance {
   removeLink: RemoveLink
   selectLink: SelectLink
   hideLinkController: HideLinkController
-  createLink: CreateLink
+  createLink: typeof createLink
   showLinkController: ShowLinkController
   helper1: LinkDragMoveHelperInstance
   helper2: LinkDragMoveHelperInstance

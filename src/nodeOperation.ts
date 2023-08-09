@@ -14,18 +14,9 @@ import {
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
-import type { Children, Topic, Wrapper, CustomSvg } from './types/dom'
-import type {
-  ReshapeNode,
-  InsertNodeCommon,
-  AddChildFunction,
-  TNodeCopy,
-  MoveNodeCommon,
-  RemoveNode,
-  MoveNodeToCommon,
-  SetNodeTopic,
-} from './types/function'
-import type { NodeObj } from './types/index'
+import type { Topic, Wrapper, CustomSvg } from './types/dom'
+import type { InsertNodeCommon, AddChildFunction, TNodeCopy, MoveNodeCommon, RemoveNode, MoveNodeToCommon, SetNodeTopic } from './types/function'
+import type { MindElixirInstance, NodeObj } from './types/index'
 import { LEFT, RIGHT, SIDE } from './const'
 
 const mainToSub = function (tpc: Topic) {
@@ -69,7 +60,7 @@ const judgeDirection = function (direction: number, obj: NodeObj) {
  * @example
  * reshapeNode(E('bd4313fbac40284b'),{tags:['A', 'B'], style:{color:'#000'}})
  */
-export const reshapeNode: ReshapeNode = function (tpc, patchData) {
+export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) {
   console.log(patchData)
   const nodeObj = tpc.nodeObj
   const origin = deepClone(nodeObj)

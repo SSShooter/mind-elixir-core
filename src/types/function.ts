@@ -20,11 +20,7 @@ export type AddChildFunction = (
   newTop: Parent
   newNodeObj: NodeObj
 } | null
-export type ReshapeNode = (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) => void
 
-export type JudgeDirection = (this: MindElixirInstance, mainNode: Wrapper, obj: NodeObj) => void
-
-export type CreateLink = (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, linkObj?: LinkItem) => void
 export type RemoveLink = (this: MindElixirInstance, link?: CustomSvg) => void
 export type SelectLink = (this: MindElixirInstance, link: CustomSvg) => void
 
