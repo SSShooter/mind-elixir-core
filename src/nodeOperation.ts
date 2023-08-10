@@ -15,7 +15,6 @@ import {
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Topic, Wrapper, CustomSvg } from './types/dom'
-import type { InsertNodeCommon, AddChildFunction, TNodeCopy, MoveNodeCommon, RemoveNode, MoveNodeToCommon, SetNodeTopic } from './types/function'
 import type { MindElixirInstance, NodeObj } from './types/index'
 import { LEFT, RIGHT, SIDE } from './const'
 
@@ -43,11 +42,6 @@ const judgeDirection = function (direction: number, obj: NodeObj) {
     }
   }
 }
-
-/**
- * @exports NodeOperation
- * @namespace NodeOperation
- */
 
 /**
  * @function
@@ -89,7 +83,7 @@ export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patch
  * @example
  * insertSibling(E('bd4313fbac40284b'))
  */
-export const insertSibling: InsertNodeCommon = function (el, node) {
+export const insertSibling = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -132,7 +126,7 @@ export const insertSibling: InsertNodeCommon = function (el, node) {
  * @example
  * insertBefore(E('bd4313fbac40284b'))
  */
-export const insertBefore: InsertNodeCommon = function (el, node) {
+export const insertBefore = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -175,7 +169,7 @@ export const insertBefore: InsertNodeCommon = function (el, node) {
  * @example
  * insertParent(E('bd4313fbac40284b'))
  */
-export const insertParent: InsertNodeCommon = function (el, node) {
+export const insertParent = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   mainToSub(nodeEle)
@@ -210,7 +204,7 @@ export const insertParent: InsertNodeCommon = function (el, node) {
   })
 }
 
-const addChildFunction: AddChildFunction = function (nodeEle, node) {
+const addChildFunction = function (this: MindElixirInstance, nodeEle: Topic, node?: NodeObj) {
   if (!nodeEle) return null
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.expanded === false) {
@@ -258,7 +252,7 @@ const addChildFunction: AddChildFunction = function (nodeEle, node) {
  * @example
  * addChild(E('bd4313fbac40284b'))
  */
-export const addChild: InsertNodeCommon = function (el, node) {
+export const addChild = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -289,7 +283,7 @@ export const addChild: InsertNodeCommon = function (el, node) {
  * @example
  * copyNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const copyNode: TNodeCopy = function (node: Topic, to: Topic) {
+export const copyNode = function (this: MindElixirInstance, node: Topic, to: Topic) {
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)
@@ -313,7 +307,7 @@ export const copyNode: TNodeCopy = function (node: Topic, to: Topic) {
  * @example
  * moveUpNode(E('bd4313fbac40284b'))
  */
-export const moveUpNode: MoveNodeCommon = function (el) {
+export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -337,7 +331,7 @@ export const moveUpNode: MoveNodeCommon = function (el) {
  * @example
  * moveDownNode(E('bd4313fbac40284b'))
  */
-export const moveDownNode: MoveNodeCommon = function (el) {
+export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const grp = nodeEle.parentNode.parentNode
@@ -365,7 +359,7 @@ export const moveDownNode: MoveNodeCommon = function (el) {
  * @example
  * removeNode(E('bd4313fbac40284b'))
  */
-export const removeNode: RemoveNode = function (el) {
+export const removeNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   console.log('removeNode', nodeEle)
@@ -422,7 +416,7 @@ export const removeNode: RemoveNode = function (el) {
  * @example
  * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNode: MoveNodeToCommon = function (from, to) {
+export const moveNode = function (this: MindElixirInstance, from: Topic, to: Topic) {
   const obj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = obj?.parent?.id
@@ -476,7 +470,7 @@ export const moveNode: MoveNodeToCommon = function (from, to) {
  * @example
  * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
+export const moveNodeBefore = function (this: MindElixirInstance, from: Topic, to: Topic) {
   const obj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = obj.parent?.id
@@ -508,7 +502,7 @@ export const moveNodeBefore: MoveNodeToCommon = function (from, to) {
  * @example
  * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNodeAfter: MoveNodeToCommon = function (from, to) {
+export const moveNodeAfter = function (this: MindElixirInstance, from: Topic, to: Topic) {
   const obj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = obj.parent?.id
@@ -539,14 +533,14 @@ export const moveNodeAfter: MoveNodeToCommon = function (from, to) {
  * @example
  * beginEdit(E('bd4313fbac40284b'))
  */
-export const beginEdit: InsertNodeCommon = function (el) {
+export const beginEdit = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   this.createInputDiv(nodeEle)
 }
 
-export const setNodeTopic: SetNodeTopic = function (tpc, topic) {
-  tpc.childNodes[0].textContent = topic
-  tpc.nodeObj.topic = topic
+export const setNodeTopic = function (this: MindElixirInstance, el: Topic, topic: string) {
+  el.childNodes[0].textContent = topic
+  el.nodeObj.topic = topic
   this.linkDiv()
 }

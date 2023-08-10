@@ -1,6 +1,5 @@
 import { LEFT } from '../const'
 import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
-import type { CreateChildren, CreateTopic, CreateInputDiv } from '../types/function'
 import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
 import { layoutChildren } from './layout'
@@ -96,13 +95,13 @@ export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj
   return { p, tpc }
 }
 
-export const createChildren: CreateChildren = function (wrappers) {
+export const createChildren = function (this: MindElixirInstance, wrappers: Wrapper[]) {
   const children = $d.createElement('me-children') as Children
   children.append(...wrappers)
   return children
 }
 
-export const createTopic: CreateTopic = function (nodeObj) {
+export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj) {
   const topic = $d.createElement('me-tpc') as Topic
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
@@ -120,17 +119,17 @@ export function selectText(div: HTMLElement) {
   }
 }
 
-export const createInputDiv: CreateInputDiv = function (tpc) {
+export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
   console.time('createInputDiv')
-  if (!tpc) return
+  if (!el) return
   const div = $d.createElement('div')
-  const origin = tpc.childNodes[0].textContent as string
-  tpc.appendChild(div)
+  const origin = el.childNodes[0].textContent as string
+  el.appendChild(div)
   div.id = 'input-box'
   div.textContent = origin
   div.contentEditable = 'true'
   div.spellcheck = false
-  div.style.cssText = `min-width:${tpc.offsetWidth - 8}px;`
+  div.style.cssText = `min-width:${el.offsetWidth - 8}px;`
   if (this.direction === LEFT) div.style.right = '0'
   div.focus()
 
@@ -139,7 +138,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
 
   this.bus.fire('operation', {
     name: 'beginEdit',
-    obj: tpc.nodeObj,
+    obj: el.nodeObj,
   })
 
   div.addEventListener('keydown', e => {
@@ -157,7 +156,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
   })
   div.addEventListener('blur', () => {
     if (!div) return
-    const node = tpc.nodeObj
+    const node = el.nodeObj
     const topic = div.textContent?.trim() || ''
     console.log(topic)
     if (topic === '') node.topic = origin
@@ -166,7 +165,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
     // memory leak?
     this.inputDiv = null
     if (topic === origin) return
-    tpc.childNodes[0].textContent = node.topic
+    el.childNodes[0].textContent = node.topic
     this.linkDiv()
     this.bus.fire('operation', {
       name: 'finishEdit',

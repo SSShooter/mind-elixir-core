@@ -8,27 +8,12 @@ import { findEle } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 // types
 export * from './types/index'
-import type { MindElixirData, MindElixirInstance, Options } from './types/index'
+import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
 
 // TODO show up animation
 const $d = document
-/**
- * @export MindElixir
- * @example
- * let mind = new MindElixir({
-  el: '#map',
-  direction: 2,
-  data: data,
-  draggable: true,
-  editable: true,
-  contextMenu: true,
-  toolBar: true, 
-  keypress: true,
-})
-mind.init()
- *
- */
+
 function MindElixir(
   this: MindElixirInstance,
   {
@@ -185,6 +170,7 @@ interface MindElixirCtor {
   SIDE: typeof SIDE
   THEME: typeof THEME
   DARK_THEME: typeof DARK_THEME
+  prototype: MindElixirMethods
 }
 
 export default MindElixir as unknown as MindElixirCtor

@@ -25,7 +25,8 @@ if (import.meta.env.MODE !== 'lite') {
   }
 }
 
-const methods = {
+export type MindElixirMethods = typeof methods
+export const methods = {
   getObjById,
   generateNewObj,
   layout,

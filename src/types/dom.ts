@@ -1,4 +1,5 @@
-import type { NodeObj, LinkItem } from './index'
+import type { LinkItem } from '../customLink'
+import type { NodeObj } from './index'
 
 export interface Wrapper extends HTMLElement {
   firstChild: Parent
@@ -51,5 +52,5 @@ export type CustomLine = SVGPathElement
 export type CustomArrow = SVGPathElement
 export interface CustomSvg extends SVGGElement {
   linkObj?: LinkItem
-  // children: [CustomLine, CustomArrow]
+  children: HTMLCollection & [CustomLine, CustomArrow]
 }

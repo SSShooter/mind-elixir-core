@@ -2,10 +2,29 @@ import { generateUUID, getArrowPoints, calcP1, calcP4 } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { findEle } from './utils/dom'
 import { createSvgGroup } from './utils/svg'
-import type { RemoveLink, SelectLink, HideLinkController, ShowLinkController } from './types/function'
-import type { Topic } from './types/dom'
-import type { MindElixirInstance, LinkItem } from './index'
+import type { CustomSvg, Topic } from './types/dom'
+import type { MindElixirInstance, Uid } from './index'
 
+export type LinkItem = {
+  id: string
+  label: string
+  from: Uid
+  to: Uid
+  delta1: {
+    x: number
+    y: number
+  }
+  delta2: {
+    x: number
+    y: number
+  }
+}
+export type LinkControllerData = {
+  cx: number
+  cy: number
+  w: number
+  h: number
+}
 export const createLink = function (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, obj?: LinkItem) {
   const map = this.map.getBoundingClientRect()
   if (!from || !to) {
@@ -103,7 +122,7 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
   }
 }
 
-export const removeLink: RemoveLink = function (linkSvg) {
+export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSvg) {
   let link
   if (linkSvg) {
     link = linkSvg
@@ -119,9 +138,9 @@ export const removeLink: RemoveLink = function (linkSvg) {
   link.remove()
   link = null
 }
-export const selectLink: SelectLink = function (targetElement) {
-  this.currentLink = targetElement
-  const obj = targetElement.linkObj
+export const selectLink = function (this: MindElixirInstance, link: CustomSvg) {
+  this.currentLink = link
+  const obj = link.linkObj
   if (!obj) return
   const from = obj.from
   const to = obj.to
@@ -154,12 +173,21 @@ export const selectLink: SelectLink = function (targetElement) {
 
   this.showLinkController(p2x, p2y, p3x, p3y, obj, fromData, toData)
 }
-export const hideLinkController: HideLinkController = function () {
+export const hideLinkController = function (this: MindElixirInstance) {
   this.linkController.style.display = 'none'
   this.P2.style.display = 'none'
   this.P3.style.display = 'none'
 }
-export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p3y, linkObj, fromData, toData) {
+export const showLinkController = function (
+  this: MindElixirInstance,
+  p2x: number,
+  p2y: number,
+  p3x: number,
+  p3y: number,
+  linkItem: LinkItem,
+  fromData: LinkControllerData,
+  toData: LinkControllerData
+) {
   this.linkController.style.display = 'initial'
   this.P2.style.display = 'initial'
   this.P3.style.display = 'initial'
@@ -210,8 +238,8 @@ export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p
     this.line1.setAttribute('y1', p1y)
     this.line1.setAttribute('x2', p2x)
     this.line1.setAttribute('y2', p2y)
-    linkObj.delta1.x = p2x - fromData.cx
-    linkObj.delta1.y = p2y - fromData.cy
+    linkItem.delta1.x = p2x - fromData.cx
+    linkItem.delta1.y = p2y - fromData.cy
   })
 
   this.helper2.init(this.map, (deltaX, deltaY) => {
@@ -231,7 +259,7 @@ export const showLinkController: ShowLinkController = function (p2x, p2y, p3x, p
     this.line2.setAttribute('y1', p3y)
     this.line2.setAttribute('x2', p4x)
     this.line2.setAttribute('y2', p4y)
-    linkObj.delta2.x = p3x - toData.cx
-    linkObj.delta2.y = p3y - toData.cy
+    linkItem.delta2.x = p3x - toData.cx
+    linkItem.delta2.y = p3y - toData.cy
   })
 }

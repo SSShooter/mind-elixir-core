@@ -1,7 +1,12 @@
 import type Bus from '../utils/pubsub'
 import type { Topic, CustomSvg } from './dom'
 import type { EventMap, Operation } from '../utils/pubsub'
-import type methods from '../methods'
+import type { MindElixirMethods } from '../methods'
+import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
+import type { LinkItem } from '../customLink'
+export * from '../methods'
+
+type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
 
 export interface Theme {
   name: string
@@ -14,22 +19,11 @@ export interface Theme {
   }
 }
 
-export interface LinkDragMoveHelperInstance {
-  dom: HTMLElement
-  mousedown: boolean
-  lastX: number
-  lastY: number
-  init: (map: HTMLElement, cb: (deltaX: number, deltaY: number) => void) => void
-  destory: (map: HTMLElement) => void
-  clear: () => void
-  handleMouseMove: (e: MouseEvent) => void
-  handleMouseDown: (e: MouseEvent) => void
-  handleClear: (e: MouseEvent) => void
-
-  cb: ((deltaX: number, deltaY: number) => void) | null
-}
-
-type MindElixirMethods = typeof methods
+/**
+ * The MindElixir instance
+ *
+ * @public
+ */
 export interface MindElixirInstance extends MindElixirMethods {
   isFocusMode: boolean
   nodeDataBackup: NodeObj
@@ -71,7 +65,13 @@ export interface MindElixirInstance extends MindElixirMethods {
   line1: SVGElement
   line2: SVGElement
   linkSvgGroup: SVGElement
+  /**
+   * @internal
+   */
   helper1: LinkDragMoveHelperInstance
+  /**
+   * @internal
+   */
   helper2: LinkDragMoveHelperInstance
 
   bus: ReturnType<typeof Bus.create<EventMap>>
@@ -80,11 +80,11 @@ export interface MindElixirInstance extends MindElixirMethods {
   redo: () => void
 }
 
-export type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
-export type GenerateNewObj = (this: MindElixirInstance) => NodeObjExport
-export type GetObjById = (id: string, data: NodeObj) => NodeObj | null
-export type FillParent = (data: NodeObj, parent?: NodeObj) => void
-
+/**
+ * The MindElixir options
+ *
+ * @public
+ */
 export interface Options {
   el: string | HTMLElement
   direction?: number
@@ -105,10 +105,13 @@ export interface Options {
   theme?: Theme
   nodeMenu?: boolean
 }
+
 export type Uid = string
 
 /**
  * MindElixir node object
+ *
+ * @public
  */
 export interface NodeObj {
   topic: string
@@ -137,22 +140,14 @@ export interface NodeObj {
   parent?: NodeObj // root node has no parent
 }
 export type NodeObjExport = Omit<NodeObj, 'parent'>
-export type LinkItem = {
-  id: string
-  label: string
-  from: Uid
-  to: Uid
-  delta1: {
-    x: number
-    y: number
-  }
-  delta2: {
-    x: number
-    y: number
-  }
-}
+
 export type LinkObj = Record<string, LinkItem>
 
+/**
+ * The exported data of MindElixir
+ *
+ * @public
+ */
 export interface MindElixirData {
   nodeData: NodeObj
   linkData?: LinkObj

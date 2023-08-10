@@ -1,5 +1,5 @@
-import type { LinkControllerData } from '../types/function'
-import type { GetObjById, FillParent, NodeObj, GenerateNewObj } from '../types/index'
+import type { LinkControllerData } from '../customLink'
+import type { NodeObj, MindElixirInstance, NodeObjExport } from '../types/index'
 
 export function encodeHTML(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
@@ -7,7 +7,7 @@ export function encodeHTML(s: string) {
 
 export const isMobile = (): boolean => /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
-export const getObjById: GetObjById = function (id, data) {
+export const getObjById = function (id: string, data: NodeObj): NodeObj | null {
   if (data.id === id) {
     return data
   } else if (data.children && data.children.length) {
@@ -21,7 +21,7 @@ export const getObjById: GetObjById = function (id, data) {
   }
 }
 
-export const fillParent: FillParent = (data: NodeObj, parent?: NodeObj) => {
+export const fillParent = (data: NodeObj, parent?: NodeObj) => {
   data.parent = parent
   if (data.children) {
     for (let i = 0; i < data.children.length; i++) {
@@ -131,7 +131,7 @@ export function generateUUID(): string {
   return (new Date().getTime().toString(16) + Math.random().toString(16).substr(2)).substr(2, 16)
 }
 
-export const generateNewObj: GenerateNewObj = function () {
+export const generateNewObj = function (this: MindElixirInstance): NodeObjExport {
   const id = generateUUID()
   return {
     topic: this.newTopicName,
