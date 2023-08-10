@@ -62,9 +62,9 @@ console.log('test E function', E('bd4313fbac40284b'))
 // })
 // mind2.init()
 
-mind.bus.addListener('operation', (operation: any) => {
+mind.bus.addListener('operation', operation => {
   console.log(operation)
 })
-mind.bus.addListener('selectNode', (node: any) => {
+mind.bus.addListener('selectNode', node => {
   console.log(node)
 })

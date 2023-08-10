@@ -1,17 +1,15 @@
+import type { MindElixirCtor } from './index'
 import MindElixir from './index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
-import type { Options, MindElixirData } from './types/index'
+import type { Options, MindElixirData, MindElixirInstance } from './types/index'
 import type { Operation } from './utils/pubsub'
 
 interface Window {
-  currentOperation: any
-  m: any
-  M: any
-  E: any
-  exportSvg: any
-  exportPng: any
+  m: MindElixirInstance
+  M: MindElixirCtor
+  E: typeof MindElixir.E
 }
 
 declare let window: Window
@@ -81,10 +79,8 @@ console.log('test E function', E('bd4313fbac40284b'))
 //   subLinkStyle: 2,
 // })
 // mind2.init(example2)
-window.currentOperation = null
 mind.bus.addListener('operation', (operation: Operation) => {
   console.log(operation)
-  if (operation.name !== 'finishEdit') window.currentOperation = operation
   // return {
   //   name: action name,
   //   obj: target object
@@ -96,10 +92,10 @@ mind.bus.addListener('operation', (operation: Operation) => {
   // name: moveNode
   // obj: {from:target1,to:target2}
 })
-mind.bus.addListener('selectNode', (node: any) => {
+mind.bus.addListener('selectNode', node => {
   console.log(node)
 })
-mind.bus.addListener('expandNode', (node: any) => {
+mind.bus.addListener('expandNode', node => {
   console.log('expandNode: ', node)
 })
 window.m = mind

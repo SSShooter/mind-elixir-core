@@ -160,7 +160,7 @@ if (import.meta.env.MODE !== 'lite') {
   })
 }
 
-interface MindElixirCtor {
+export interface MindElixirCtor {
   new (options: Options): MindElixirInstance
   E: typeof findEle
   new: typeof MindElixir.new

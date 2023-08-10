@@ -13,10 +13,21 @@ import changeTheme from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
 import * as customLink from './customLink'
-import beforeHook from './utils/beforeHook'
 
-type NodeOperation = Record<keyof typeof nodeOperation, ReturnType<typeof beforeHook>>
-const operations = Object.keys(nodeOperation) as Array<keyof typeof nodeOperation>
+type Operations = keyof typeof nodeOperation
+type NodeOperation = Record<Operations, ReturnType<typeof beforeHook>>
+
+function beforeHook(fn: (...arg: any[]) => void, fnName: Operations) {
+  return async function (this: MindElixirInstance, ...args: unknown[]) {
+    const hook = this.before[fnName]
+    if (hook) {
+      await hook.apply(this, args)
+    }
+    fn.apply(this, args)
+  }
+}
+
+const operations = Object.keys(nodeOperation) as Array<Operations>
 const nodeOperationHooked: Partial<NodeOperation> = {}
 if (import.meta.env.MODE !== 'lite') {
   for (let i = 0; i < operations.length; i++) {
