@@ -37,6 +37,12 @@ if (import.meta.env.MODE !== 'lite') {
 }
 
 export type MindElixirMethods = typeof methods
+
+/**
+ * Methods that mind-elixir instance can use
+ *
+ * @public
+ */
 export const methods = {
   getObjById,
   generateNewObj,

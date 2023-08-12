@@ -16,7 +16,7 @@
     "build": "node build.js && tsc",
     "preview": "vite preview",
     "test": "jest --runInBand",
-    "doc": "tsc && npx api-extractor run --local --verbose",
+    "doc": "tsc && api-extractor run --local --verbose",
     "beta": "npm run build && npm publish --tag beta"
   },
   "exports": {

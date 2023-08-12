@@ -8,6 +8,7 @@ import { findEle } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 // types
 export * from './types/index'
+export * from './types/dom'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
 
