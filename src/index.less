@@ -119,7 +119,11 @@
       white-space: pre-wrap;
       padding: var(--topic-padding);
       line-height: 1.2; // assure the line-height consistency between different languages
-
+      & > div,
+      & > span,
+      & > img {
+        pointer-events: none;
+      }
       // drag preview
       .insert-preview {
         position: absolute;

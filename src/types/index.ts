@@ -138,6 +138,8 @@ export interface NodeObj {
   branchColor?: string
   // add programatically
   parent?: NodeObj // root node has no parent
+  // TODO: checkbox
+  // checkbox?: boolean | undefined
 }
 export type NodeObjExport = Omit<NodeObj, 'parent'>
 
