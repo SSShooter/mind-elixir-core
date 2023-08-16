@@ -21,7 +21,8 @@ function beforeHook(fn: (...arg: any[]) => void, fnName: Operations) {
   return async function (this: MindElixirInstance, ...args: unknown[]) {
     const hook = this.before[fnName]
     if (hook) {
-      await hook.apply(this, args)
+      const res = await hook.apply(this, args)
+      if (!res) return
     }
     fn.apply(this, args)
   }
