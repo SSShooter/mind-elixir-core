@@ -76,9 +76,7 @@
     "lint-staged": "^13.2.3",
     "prettier": "2.8.4",
     "typescript": "^5.1.6",
-    "vite": "^4.4.8"
-  },
-  "dependencies": {
+    "vite": "^4.4.8",
     "vite-plugin-css-injected-by-js": "^3.2.1"
   }
 }
