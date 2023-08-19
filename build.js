@@ -5,18 +5,15 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url))
 const buildList = [
   {
     name: 'MindElixir',
-    fileName: 'MindElixir',
     enrty: __dirname + './src/index.ts',
   },
   {
-    name: 'MindElixir',
-    fileName: 'MindElixirLite',
+    name: 'MindElixirLite',
     enrty: __dirname + './src/index.ts',
     mode: 'lite',
   },
   {
     name: 'example',
-    fileName: 'example',
     enrty: __dirname + './src/exampleData/1.ts',
   },
 ]
@@ -28,7 +25,7 @@ for (let i = 0; i < buildList.length; i++) {
       emptyOutDir: i === 0,
       lib: {
         entry: info.enrty,
-        fileName: info.fileName,
+        fileName: info.name,
         name: info.name,
         formats: ['iife', 'es'],
       },

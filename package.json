@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "type": "module",
   "description": "Mind elixir is a free open source mind map core.",
   "keywords": [
@@ -24,6 +24,9 @@
       "types": "./dist/types/index.d.ts",
       "import": "./dist/MindElixir.js",
       "require": "./dist/MindElixir.js"
+    },
+    "./lite": {
+      "import": "./dist/MindElixirLite.iife.js"
     },
     "./example": {
       "types": "./dist/types/exampleData/1.d.ts",
