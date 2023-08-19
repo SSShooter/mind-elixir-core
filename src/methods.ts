@@ -44,7 +44,7 @@ export type MindElixirMethods = typeof methods
  *
  * @public
  */
-export const methods = {
+const methods = {
   getObjById,
   generateNewObj,
   layout,
