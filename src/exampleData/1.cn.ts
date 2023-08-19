@@ -5,7 +5,7 @@ export default {
     root: true,
     children: [
       {
-        topic: '什么是 Minde Elixir',
+        topic: '什么是 Mind Elixir',
         id: 'bd4313fbac40284b',
         direction: 0,
         expanded: true,

@@ -1,148 +1,112 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R } from './const'
-import type { Wrapper, Topic, Expander, Parent } from './types/dom'
-import type { LinkDiv, TraverseChildrenFunc } from './types/function'
-import type { MainLineParams, SubLineParams } from './types/linkDiv'
+import type { Wrapper, Topic, Parent } from './types/dom'
+import type { MindElixirInstance } from './types/index'
+
+type MainLineParams = { x1: number; y1: number; x2: number; y2: number }
+type SubLineParams = {
+  pT: number
+  pL: number
+  pW: number
+  pH: number
+  cT: number
+  cL: number
+  cW: number
+  cH: number
+  direction: string // 'lhs' | 'rhs'
+  isFirst: boolean | undefined
+}
+
+const getOffsetLT = (parent: HTMLElement, child: HTMLElement) => {
+  let offsetLeft = 0
+  let offsetTop = 0
+  while (child && child !== parent) {
+    offsetLeft += child.offsetLeft
+    offsetTop += child.offsetTop
+    child = child.offsetParent as HTMLElement
+  }
+  return { offsetLeft, offsetTop }
+}
 let genPath: typeof generateSubLine1 = generateSubLine1
 /**
  * Link nodes with svg,
  * only link specific node if `mainNode` is present
  *
  * procedure:
- * 1. calculate position of main nodes
- * 2. layout main node, generate main link
- * 3. generate links inside main node
- * 4. generate custom link
- * @param mainNode process the specific main node only
+ * 1. layout main node, generate main link
+ * 2. generate links inside main node, if `mainNode` is present, only generate the link of the specific main node
+ * 3. generate custom link
+ * @param mainNode regenerate sublink of the specific main node
  */
-// TODO: use flexbox
-const linkDiv: LinkDiv = function (mainNode) {
-  const mainNodeHorizontalGap = this.mainNodeHorizontalGap
-  const mainNodeVerticalGap = this.mainNodeVerticalGap
+const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   console.time('linkDiv')
-  const root = this.root
-  root.style.cssText = `top:${10000 - root.offsetHeight / 2}px;left:${10000 - root.offsetWidth / 2}px;`
-  const mainNodeList = this.mainNodes.children
+
+  const root = this.map.querySelector('me-root') as HTMLElement
+  // pin center
+  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
+  this.nodes.style.left = `${10000 - root.offsetLeft - root.offsetWidth / 2}px`
+
+  const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
   this.lines.innerHTML = ''
+
   genPath = this.subLinkStyle === 2 ? generateSubLine2 : generateSubLine1
 
-  // 1. calculate position of main nodes
-  let totalHeight = 0
-  let shortSide = '' // l or r
-  let shortSideGap = 0 // balance heigt of two side
-  let currentOffsetL = 0 // left side total offset
-  let currentOffsetR = 0 // right side total offset
-  let totalHeightL = 0
-  let totalHeightR = 0
-  let base: number // start offset
-
-  if (this.direction === SIDE) {
-    let countL = 0
-    let countR = 0
-    let totalHeightLWithoutGap = 0
-    let totalHeightRWithoutGap = 0
-    for (let i = 0; i < mainNodeList.length; i++) {
-      const el = mainNodeList[i] as HTMLElement
-      if (el.className === 'lhs') {
-        totalHeightL += el.offsetHeight + mainNodeVerticalGap
-        totalHeightLWithoutGap += el.offsetHeight
-        countL += 1
-      } else {
-        totalHeightR += el.offsetHeight + mainNodeVerticalGap
-        totalHeightRWithoutGap += el.offsetHeight
-        countR += 1
-      }
-    }
-    if (totalHeightL > totalHeightR) {
-      this.mapHeight = totalHeightL
-      base = 10000 - totalHeightL / 2
-      shortSide = 'r'
-      shortSideGap = (totalHeightL - totalHeightRWithoutGap) / (countR - 1)
-    } else {
-      this.mapHeight = totalHeightR
-      base = 10000 - totalHeightR / 2
-      shortSide = 'l'
-      shortSideGap = (totalHeightR - totalHeightLWithoutGap) / (countL - 1)
-    }
-  } else {
-    for (let i = 0; i < mainNodeList.length; i++) {
-      const el = mainNodeList[i] as HTMLElement
-      totalHeight += el.offsetHeight + mainNodeVerticalGap
-    }
-    this.mapHeight = totalHeight
-    base = 10000 - totalHeight / 2
-  }
-
-  // 2. layout main node, generate main link
-  const alignRight = 10000 - root.offsetWidth / 2 - mainNodeHorizontalGap
-  const alignLeft = 10000 + root.offsetWidth / 2 + mainNodeHorizontalGap
   for (let i = 0; i < mainNodeList.length; i++) {
-    let x1 = 10000
-    const y1 = 10000
-    let x2, y2
     const el = mainNodeList[i] as Wrapper
+    const tpc = el.querySelector<Topic>('me-tpc') as Topic
+    const p = el.firstChild
+    const direction = el.parentNode.className as 'lhs' | 'rhs'
+    let x1 = root.offsetLeft + root.offsetWidth / 2
+    const y1 = root.offsetTop + root.offsetHeight / 2
+
+    let x2
     const palette = this.theme.palette
-    const branchColor = el.querySelector<Topic>('me-tpc')!.nodeObj.branchColor || palette[i % palette.length]
-    const elOffsetH = el.offsetHeight
-    if (el.className === 'lhs') {
-      el.style.top = base + currentOffsetL + 'px'
-      el.style.left = alignRight - el.offsetWidth + 'px'
-      x2 = alignRight - GAP
-      y2 = base + currentOffsetL + elOffsetH / 2
+    const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
 
-      if (shortSide === 'l') {
-        currentOffsetL += elOffsetH + shortSideGap
-      } else {
-        currentOffsetL += elOffsetH + mainNodeVerticalGap
-      }
+    const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, p)
+    if (direction === 'lhs') {
+      x2 = offsetLeft + p.offsetWidth
     } else {
-      el.style.top = base + currentOffsetR + 'px'
-      el.style.left = alignLeft + 'px'
-      x2 = alignLeft + GAP
-      y2 = base + currentOffsetR + elOffsetH / 2
-
-      if (shortSide === 'r') {
-        currentOffsetR += elOffsetH + shortSideGap
-      } else {
-        currentOffsetR += elOffsetH + mainNodeVerticalGap
-      }
+      x2 = offsetLeft
     }
-
+    const y2 = offsetTop + p.offsetHeight / 2
+    // console.log(x1, y1, x2, y2)
     let mainPath = ''
     if (this.mainLinkStyle === 2) {
       if (this.direction === SIDE) {
-        if (el.className === 'lhs') {
-          x1 = 10000 - root.offsetWidth / 6
+        if (direction === 'lhs') {
+          x1 = x1 - root.offsetWidth / 6
         } else {
-          x1 = 10000 + root.offsetWidth / 6
+          x1 = x1 + root.offsetWidth / 6
         }
       }
       mainPath = generateMainLine2({ x1, y1, x2, y2 })
     } else {
-      const pct = Math.abs(y2 - 10000) / (10000 - base)
-      if (el.className === 'lhs') {
-        x1 = 10000 - root.offsetWidth / 10 - (1 - pct) * 0.25 * (root.offsetWidth / 2)
+      const pct = Math.abs(y2 - el.parentElement.offsetTop - el.parentElement.offsetHeight / 2) / el.parentElement.offsetHeight
+      const offset = (1 - pct) * 0.25 * (root.offsetWidth / 2)
+      if (direction === 'lhs') {
+        x1 = x1 - root.offsetWidth / 10 - offset
       } else {
-        x1 = 10000 + root.offsetWidth / 10 + (1 - pct) * 0.25 * (root.offsetWidth / 2)
+        x1 = x1 + root.offsetWidth / 10 + offset
       }
       mainPath = generateMainLine1({ x1, y1, x2, y2 })
     }
     this.lines.appendChild(createMainPath(mainPath, branchColor))
 
-    // set position of expander
-    const expander = el.children[0].children[1] as Expander
+    // set position of main node expander
+    const expander = el.children[0].children[1]
     if (expander) {
       expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
-      if (el.className === 'lhs') {
-        expander.style.left = -10 - GAP + 'px'
+      if (direction === 'lhs') {
+        expander.style.left = -10 + 'px'
       } else {
-        expander.style.right = -10 - GAP + 'px'
+        expander.style.right = -10 + 'px'
       }
     }
 
     // 3. generate link inside main node
-    if (mainNode && mainNode !== mainNodeList[i]) {
+    if (mainNode && mainNode !== el) {
       continue
     }
     if (el.childElementCount) {
@@ -151,9 +115,9 @@ const linkDiv: LinkDiv = function (mainNode) {
       const svgLine = el.lastChild as SVGSVGElement
       if (svgLine.tagName === 'svg') svgLine.remove()
       el.appendChild(svg)
-      const parent = el.children[0] as Parent
+      const parent = el.firstChild
       const children = el.children[1].children
-      const path = traverseChildren(children, parent, true)
+      const path = traverseChildren(children, parent, direction, true)
       svg.appendChild(createPath(path, branchColor))
     }
   }
@@ -168,30 +132,29 @@ const linkDiv: LinkDiv = function (mainNode) {
 }
 
 // core function of generate subLines
-const traverseChildren: TraverseChildrenFunc = function (children, parent, isFirst) {
+const traverseChildren = function (children: Wrapper[], parent: Parent, direction: 'lhs' | 'rhs', isFirst?: boolean) {
   let path = ''
   const pT = parent.offsetTop
   const pL = parent.offsetLeft
   const pW = parent.offsetWidth
   const pH = parent.offsetHeight
   for (let i = 0; i < children.length; i++) {
-    const child = children[i] as Wrapper
-    const childT = child.children[0] as Parent
+    const child = children[i]
+    const childT = child.firstChild
     const cT = childT.offsetTop
     const cL = childT.offsetLeft
     const cW = childT.offsetWidth
     const cH = childT.offsetHeight
-    const direction = child.offsetParent.className
 
     path += genPath({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
 
-    const expander = childT.children[1] as Expander
+    const expander = childT.children[1]
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
       if (direction === 'lhs') {
-        expander.style.left = 0 + 'px'
+        expander.style.left = 10 + 'px'
       } else if (direction === 'rhs') {
-        expander.style.left = childT.offsetWidth + 'px'
+        expander.style.right = 10 + 'px'
       }
       // this property is added in the layout phase
       if (!expander.expanded) continue
@@ -202,7 +165,7 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, isFir
 
     const nextChildren = child.children[1].children
     if (nextChildren.length > 0) {
-      path += traverseChildren(nextChildren, childT)
+      path += traverseChildren(nextChildren, childT, direction)
     }
   }
   return path
@@ -210,7 +173,7 @@ const traverseChildren: TraverseChildrenFunc = function (children, parent, isFir
 
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
 function generateMainLine2({ x1, y1, x2, y2 }: MainLineParams) {
-  return `M ${x1} 10000 V ${y2 > y1 ? y2 - 20 : y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? x1 + 20 : x1 - 20} ${y2} H ${x2}`
+  return `M ${x1} ${y1} V ${y2 > y1 ? y2 - 20 : y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? x1 + 20 : x1 - 20} ${y2} H ${x2}`
 }
 
 function generateMainLine1({ x1, y1, x2, y2 }: MainLineParams) {

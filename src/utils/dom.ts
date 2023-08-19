@@ -1,8 +1,8 @@
 import { LEFT } from '../const'
 import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
-import type { CreateWrapper, CreateParent, CreateChildren, CreateTopic, CreateInputDiv } from '../types/function'
 import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
+import { layoutChildren } from './layout'
 
 // DOM manipulation
 const $d = document
@@ -31,6 +31,7 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
       imgContainer.style.width = img.width + 'px'
       imgContainer.style.height = img.height + 'px'
       tpc.appendChild(imgContainer)
+      tpc.image = imgContainer
     } else {
       console.warn('image url/width/height are required')
     }
@@ -54,12 +55,14 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     iconsContainer.className = 'icons'
     iconsContainer.innerHTML = nodeObj.icons.map(icon => `<span>${encodeHTML(icon)}</span>`).join('')
     tpc.appendChild(iconsContainer)
+    tpc.icons = iconsContainer
   }
   if (nodeObj.tags && nodeObj.tags.length) {
     const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
     tagsContainer.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
     tpc.appendChild(tagsContainer)
+    tpc.tags = tagsContainer
   }
 
   if (nodeObj.branchColor) {
@@ -67,36 +70,38 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   }
 }
 
-// everything is staring from `Wrapper`
-export const createWrapper: CreateWrapper = function (nodeObj, omitChildren) {
+// everything start from `Wrapper`
+export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean) {
   const grp = $d.createElement('me-wrapper') as Wrapper
-  const top = this.createParent(nodeObj)
-  grp.appendChild(top)
+  const { p, tpc } = this.createParent(nodeObj)
+  grp.appendChild(p)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
-    top.appendChild(createExpander(nodeObj.expanded))
+    const expander = createExpander(nodeObj.expanded)
+    p.appendChild(expander)
+    // tpc.expander = expander
     if (nodeObj.expanded !== false) {
-      const children = this.layoutChildren(nodeObj.children)
+      const children = layoutChildren(this, nodeObj.children)
       grp.appendChild(children)
     }
   }
-  return { grp, top }
+  return { grp, top: p, tpc }
 }
 
-export const createParent: CreateParent = function (nodeObj: NodeObj): Parent {
-  const top = $d.createElement('me-parent') as Parent
+export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj) {
+  const p = $d.createElement('me-parent') as Parent
   const tpc = this.createTopic(nodeObj)
   shapeTpc(tpc, nodeObj)
-  top.appendChild(tpc)
-  return top
+  p.appendChild(tpc)
+  return { p, tpc }
 }
 
-export const createChildren: CreateChildren = function (wrappers) {
+export const createChildren = function (this: MindElixirInstance, wrappers: Wrapper[]) {
   const children = $d.createElement('me-children') as Children
   children.append(...wrappers)
   return children
 }
 
-export const createTopic: CreateTopic = function (nodeObj) {
+export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj) {
   const topic = $d.createElement('me-tpc') as Topic
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
@@ -114,17 +119,17 @@ export function selectText(div: HTMLElement) {
   }
 }
 
-export const createInputDiv: CreateInputDiv = function (tpc) {
+export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
   console.time('createInputDiv')
-  if (!tpc) return
+  if (!el) return
   const div = $d.createElement('div')
-  const origin = tpc.childNodes[0].textContent as string
-  tpc.appendChild(div)
+  const origin = el.childNodes[0].textContent as string
+  el.appendChild(div)
   div.id = 'input-box'
   div.textContent = origin
   div.contentEditable = 'true'
   div.spellcheck = false
-  div.style.cssText = `min-width:${tpc.offsetWidth - 8}px;`
+  div.style.cssText = `min-width:${el.offsetWidth - 8}px;`
   if (this.direction === LEFT) div.style.right = '0'
   div.focus()
 
@@ -133,7 +138,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
 
   this.bus.fire('operation', {
     name: 'beginEdit',
-    obj: tpc.nodeObj,
+    obj: el.nodeObj,
   })
 
   div.addEventListener('keydown', e => {
@@ -151,7 +156,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
   })
   div.addEventListener('blur', () => {
     if (!div) return
-    const node = tpc.nodeObj
+    const node = el.nodeObj
     const topic = div.textContent?.trim() || ''
     console.log(topic)
     if (topic === '') node.topic = origin
@@ -160,7 +165,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
     // memory leak?
     this.inputDiv = null
     if (topic === origin) return
-    tpc.childNodes[0].textContent = node.topic
+    el.childNodes[0].textContent = node.topic
     this.linkDiv()
     this.bus.fire('operation', {
       name: 'finishEdit',
@@ -173,7 +178,7 @@ export const createInputDiv: CreateInputDiv = function (tpc) {
 
 export const createExpander = function (expanded: boolean | undefined): Expander {
   const expander = $d.createElement('me-epd') as Expander
-  // 包含未定义 expanded 的情况，未定义视为展开
+  // if expanded is undefined, treat as expanded
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''
   return expander

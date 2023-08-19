@@ -4,8 +4,7 @@ export const SIDE = 2
 export const DOWN = 3
 
 export const GAP = 30 // must sync with --gap in index.less
-export const MAIN_NODE_HORIZONTAL_GAP = 65
-export const MAIN_NODE_VERTICAL_GAP = 25
+
 export const TURNPOINT_R = 8
 export const THEME = {
   name: 'Latte',

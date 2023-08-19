@@ -1,9 +1,8 @@
-import MindElixir, { E } from 'mind-elixir'
-import example from 'mind-elixir/dist/example1'
+import MindElixir from 'mind-elixir'
+import example from 'mind-elixir/example'
 import type { Options } from 'mind-elixir'
-import type { Topic } from '../dist/types/types/dom'
-// import example2 from '../dist/example2'
 
+const E = MindElixir.E
 const options: Options = {
   el: '#map',
   newTopicName: '子节点',
@@ -44,8 +43,6 @@ const options: Options = {
     },
   },
   // mainLinkStyle: 2,
-  mainNodeVerticalGap: 15, // 25
-  mainNodeHorizontalGap: 15, // 65
 }
 const mind = new MindElixir(options)
 mind.init(example)
@@ -65,9 +62,9 @@ console.log('test E function', E('bd4313fbac40284b'))
 // })
 // mind2.init()
 
-mind.bus.addListener('operation', (operation: any) => {
+mind.bus.addListener('operation', operation => {
   console.log(operation)
 })
-mind.bus.addListener('selectNode', (node: any) => {
+mind.bus.addListener('selectNode', node => {
   console.log(node)
 })

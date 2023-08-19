@@ -140,8 +140,6 @@ let options = {
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
   overflowHidden: false, // default false
   mainLinkStyle: 2, // [1,2] default 1
-  mainNodeVerticalGap: 15, // default 25
-  mainNodeHorizontalGap: 15, // default 65
   contextMenuOption: {
     focus: true,
     link: true,

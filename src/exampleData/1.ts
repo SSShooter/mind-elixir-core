@@ -26,7 +26,7 @@ const aboutMindElixir: MindElixirData = {
         ],
       },
       {
-        topic: 'What is Minde Elixir',
+        topic: 'What is Mind Elixir',
         id: 'bd4313fbac40284b',
         direction: 0,
         expanded: true,

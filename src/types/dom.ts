@@ -1,7 +1,9 @@
-import type { NodeObj, LinkItem } from './index'
+import type { LinkItem } from '../customLink'
+import type { NodeObj } from './index'
 
 export interface Wrapper extends HTMLElement {
   firstChild: Parent
+  children: HTMLCollection & [Parent, Children]
   parentNode: Children
   parentElement: Children
   offsetParent: Wrapper
@@ -11,16 +13,16 @@ export interface Wrapper extends HTMLElement {
 
 export interface Parent extends HTMLElement {
   firstChild: Topic
+  children: HTMLCollection & [Topic, Expander]
   parentNode: Wrapper
   parentElement: Wrapper
   nextSibling: Children
   offsetParent: Wrapper
 }
 
-export type Root = Parent
-
 export interface Children extends HTMLElement {
   parentNode: Wrapper
+  children: HTMLCollection & Wrapper[]
   parentElement: Wrapper
   firstChild: Wrapper
   previousSibling: Parent
@@ -33,9 +35,10 @@ export interface Topic extends HTMLElement {
   parentElement: Parent
   offsetParent: Parent
 
-  image: HTMLImageElement | null
-  icons: HTMLSpanElement[] | null
-  tags: HTMLDivElement | null
+  expander?: Expander
+  image?: HTMLImageElement
+  icons?: HTMLSpanElement
+  tags?: HTMLDivElement
 }
 
 export interface Expander extends HTMLElement {
@@ -49,5 +52,5 @@ export type CustomLine = SVGPathElement
 export type CustomArrow = SVGPathElement
 export interface CustomSvg extends SVGGElement {
   linkObj?: LinkItem
-  // children: [CustomLine, CustomArrow]
+  children: HTMLCollection & [CustomLine, CustomArrow]
 }

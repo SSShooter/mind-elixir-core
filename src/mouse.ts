@@ -3,7 +3,7 @@ import type { MindElixirInstance } from './types/index'
 import dragMoveHelper from './utils/dragMoveHelper'
 
 const isTopic = (target: HTMLElement) => {
-  return (target as Topic).parentElement.tagName === 'ME-PARENT' || (target as Topic).parentElement.tagName === 'ME-ROOT'
+  return target.tagName === 'ME-TPC'
 }
 
 export default function (mind: MindElixirInstance) {

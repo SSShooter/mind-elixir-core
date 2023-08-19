@@ -1,20 +1,7 @@
-import type { Topic, Wrapper } from './types/dom'
-import type { SelectNodeFunc, CommonSelectFunc, SiblingSelectFunc, GetDataStringFunc, GetDataFunc, ExpandNode, RefreshFunc } from './types/function'
-import type { MindElixirInstance, NodeObj } from './types/index'
-import type {
-  EnableEdit,
-  DisableEdit,
-  Scale,
-  ToCenter,
-  Install,
-  FocusNode,
-  CancelFocus,
-  InitLeft,
-  InitRight,
-  InitSide,
-  SetLocale,
-} from './types/interact'
+import type { Topic } from './types/dom'
+import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
 import { findEle } from './utils/dom'
+import { fillParent } from './utils/index'
 /**
  * @exports -
  * workaround for jsdoc
@@ -39,7 +26,7 @@ function collectData(instance: MindElixirInstance) {
  * @description Select a node and add solid border to it.
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const selectNode: SelectNodeFunc = function (targetElement, isNewNode, e) {
+export const selectNode = function (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   if (!targetElement) return
   console.time('selectNode')
   if (typeof targetElement === 'string') {
@@ -59,28 +46,19 @@ export const selectNode: SelectNodeFunc = function (targetElement, isNewNode, e)
   }
   console.timeEnd('selectNode')
 }
-export const unselectNode: CommonSelectFunc = function () {
+export const unselectNode = function (this: MindElixirInstance) {
   if (this.currentNode) {
     this.currentNode.className = ''
   }
   this.currentNode = null
   this.bus.fire('unselectNode')
 }
-export const selectNextSibling: SiblingSelectFunc = function () {
+export const selectNextSibling = function (this: MindElixirInstance) {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
 
   const sibling = this.currentNode.parentElement.parentElement.nextSibling
   let target: Topic
-  const grp = this.currentNode.parentElement.parentElement
-  if (grp.className === 'rhs' || grp.className === 'lhs') {
-    const siblingList = this.mindElixirBox.querySelectorAll<Wrapper>('.' + grp.className)
-    const i = Array.from(siblingList).indexOf(grp)
-    if (i + 1 < siblingList.length) {
-      target = siblingList[i + 1].firstChild.firstChild
-    } else {
-      return false
-    }
-  } else if (sibling) {
+  if (sibling) {
     target = sibling.firstChild.firstChild
   } else {
     return false
@@ -88,21 +66,12 @@ export const selectNextSibling: SiblingSelectFunc = function () {
   this.selectNode(target)
   return true
 }
-export const selectPrevSibling: SiblingSelectFunc = function () {
+export const selectPrevSibling = function (this: MindElixirInstance) {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
 
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
   let target: Topic
-  const grp = this.currentNode.parentElement.parentElement
-  if (grp.className === 'rhs' || grp.className === 'lhs') {
-    const siblingList = this.mindElixirBox.querySelectorAll<Wrapper>('.' + grp.className)
-    const i = Array.from(siblingList).indexOf(grp)
-    if (i - 1 >= 0) {
-      target = siblingList[i - 1].firstChild.firstChild as Topic
-    } else {
-      return false
-    }
-  } else if (sibling) {
+  if (sibling) {
     target = sibling.firstChild.firstChild as Topic
   } else {
     return false
@@ -110,7 +79,7 @@ export const selectPrevSibling: SiblingSelectFunc = function () {
   this.selectNode(target)
   return true
 }
-export const selectFirstChild: CommonSelectFunc = function () {
+export const selectFirstChild = function (this: MindElixirInstance) {
   if (!this.currentNode) return
   const children = this.currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
@@ -118,12 +87,12 @@ export const selectFirstChild: CommonSelectFunc = function () {
     this.selectNode(target)
   }
 }
-export const selectParent: CommonSelectFunc = function () {
+export const selectParent = function (this: MindElixirInstance) {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
   const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
   if (parent) {
-    const target = parent.firstChild as Topic
+    const target = parent.firstChild
     this.selectNode(target)
   }
 }
@@ -135,7 +104,7 @@ export const selectParent: CommonSelectFunc = function () {
  * @memberof MapInteraction
  * @return {string}
  */
-export const getDataString: GetDataStringFunc = function () {
+export const getDataString = function (this: MindElixirInstance) {
   const data = collectData(this)
   return JSON.stringify(data, (k, v) => {
     if (k === 'parent') return undefined
@@ -152,8 +121,8 @@ export const getDataString: GetDataStringFunc = function () {
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getData: GetDataFunc = function () {
-  return JSON.parse(this.getDataString())
+export const getData = function (this: MindElixirInstance) {
+  return JSON.parse(this.getDataString()) as MindElixirData
 }
 
 /**
@@ -164,7 +133,7 @@ export const getData: GetDataFunc = function () {
  * @memberof MapInteraction
  * @return {String}
  */
-export const getDataMd: GetDataStringFunc = function () {
+export const getDataMd = function (this: MindElixirInstance) {
   const data = collectData(this).nodeData
   let mdString = '# ' + data.topic + '\n\n'
   function writeMd(children: NodeObj[], deep: number) {
@@ -189,7 +158,7 @@ export const getDataMd: GetDataStringFunc = function () {
  * @name enableEdit
  * @memberof MapInteraction
  */
-export const enableEdit: EnableEdit = function () {
+export const enableEdit = function (this: MindElixirInstance) {
   this.editable = true
 }
 
@@ -199,7 +168,7 @@ export const enableEdit: EnableEdit = function () {
  * @name disableEdit
  * @memberof MapInteraction
  */
-export const disableEdit: DisableEdit = function () {
+export const disableEdit = function (this: MindElixirInstance) {
   this.editable = false
 }
 
@@ -211,7 +180,7 @@ export const disableEdit: DisableEdit = function () {
  * @memberof MapInteraction
  * @param {number}
  */
-export const scale: Scale = function (scaleVal) {
+export const scale = function (this: MindElixirInstance, scaleVal: number) {
   // TODO: recalculate the position of the map
   // plan A: use transform-origin
   // plan B: use transform: translate
@@ -226,9 +195,10 @@ export const scale: Scale = function (scaleVal) {
  * @description Reset position of the map to center.
  * @memberof MapInteraction
  */
-export const toCenter: ToCenter = function () {
+export const toCenter = function (this: MindElixirInstance) {
   this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
 }
+
 /**
  * @function
  * @instance
@@ -236,7 +206,7 @@ export const toCenter: ToCenter = function () {
  * @description Install plugin.
  * @memberof MapInteraction
  */
-export const install: Install = function (plugin) {
+export const install = function (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) {
   plugin(this)
 }
 /**
@@ -247,7 +217,7 @@ export const install: Install = function (plugin) {
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const focusNode: FocusNode = function (el: Topic) {
+export const focusNode = function (this: MindElixirInstance, el: Topic) {
   if (el.nodeObj.root) return
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
@@ -268,7 +238,7 @@ export const focusNode: FocusNode = function (el: Topic) {
  * @description Exit focus mode.
  * @memberof MapInteraction
  */
-export const cancelFocus: CancelFocus = function () {
+export const cancelFocus = function (this: MindElixirInstance) {
   this.isFocusMode = false
   if (this.tempDirection !== null) {
     delete this.nodeData.root
@@ -286,7 +256,7 @@ export const cancelFocus: CancelFocus = function () {
  * @description Child nodes will distribute on the left side of the root node.
  * @memberof MapInteraction
  */
-export const initLeft: InitLeft = function () {
+export const initLeft = function (this: MindElixirInstance) {
   this.direction = 0
   this.refresh()
 }
@@ -297,7 +267,7 @@ export const initLeft: InitLeft = function () {
  * @description Child nodes will distribute on the right side of the root node.
  * @memberof MapInteraction
  */
-export const initRight: InitRight = function () {
+export const initRight = function (this: MindElixirInstance) {
   this.direction = 1
   this.refresh()
 }
@@ -308,7 +278,7 @@ export const initRight: InitRight = function () {
  * @description Child nodes will distribute on both left and right side of the root node.
  * @memberof MapInteraction
  */
-export const initSide: InitSide = function () {
+export const initSide = function (this: MindElixirInstance) {
   this.direction = 2
   this.refresh()
 }
@@ -319,12 +289,12 @@ export const initSide: InitSide = function () {
  * @name setLocale
  * @memberof MapInteraction
  */
-export const setLocale: SetLocale = function (locale) {
+export const setLocale = function (this: MindElixirInstance, locale: string) {
   this.locale = locale
   this.refresh()
 }
 
-export const expandNode: ExpandNode = function (el, isExpand) {
+export const expandNode = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
   const node = el.nodeObj
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand
@@ -348,13 +318,14 @@ export const expandNode: ExpandNode = function (el, isExpand) {
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */
-export const refresh: RefreshFunc = function (data) {
+export const refresh = function (this: MindElixirInstance, data?: MindElixirData) {
+  data = JSON.parse(JSON.stringify(data)) // it shouldn't contanimate the original data
   // add parent property to every node
   if (data) {
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
   }
-  this.fillParent(this.nodeData)
+  fillParent(this.nodeData)
   // create dom element for every node
   this.layout()
   // generate links between nodes

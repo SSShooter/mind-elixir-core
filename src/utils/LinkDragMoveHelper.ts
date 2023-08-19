@@ -1,14 +1,10 @@
-// helper for custom link
-
-import type { LinkDragMoveHelperInstance } from '../types/index'
-
-const create = function (dom: HTMLElement): LinkDragMoveHelperInstance {
+const create = function (dom: HTMLElement) {
   return {
     dom,
     mousedown: false,
     lastX: 0,
     lastY: 0,
-    handleMouseMove(e) {
+    handleMouseMove(e: MouseEvent) {
       e.stopPropagation()
       if (this.mousedown) {
         if (!this.lastX) {
@@ -23,16 +19,16 @@ const create = function (dom: HTMLElement): LinkDragMoveHelperInstance {
         this.lastY = e.pageY
       }
     },
-    handleMouseDown(e) {
+    handleMouseDown(e: MouseEvent) {
       e.stopPropagation()
       this.mousedown = true
     },
-    handleClear(e) {
+    handleClear(e: MouseEvent) {
       e.stopPropagation()
       this.clear()
     },
-    cb: null,
-    init(map, cb) {
+    cb: null as ((deltaX: number, deltaY: number) => void) | null,
+    init(map: HTMLElement, cb: (deltaX: number, deltaY: number) => void) {
       this.cb = cb
       this.handleClear = this.handleClear.bind(this)
       this.handleMouseMove = this.handleMouseMove.bind(this)
@@ -42,7 +38,7 @@ const create = function (dom: HTMLElement): LinkDragMoveHelperInstance {
       map.addEventListener('mouseup', this.handleClear)
       this.dom.addEventListener('mousedown', this.handleMouseDown)
     },
-    destory(map) {
+    destory(map: HTMLElement) {
       map.removeEventListener('mousemove', this.handleMouseMove)
       map.removeEventListener('mouseleave', this.handleClear)
       map.removeEventListener('mouseup', this.handleClear)
@@ -59,4 +55,5 @@ const LinkDragMoveHelper = {
   create,
 }
 
+export type LinkDragMoveHelperInstance = ReturnType<typeof create>
 export default LinkDragMoveHelper

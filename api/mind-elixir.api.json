@@ -1,0 +1,5247 @@
+{
+  "metadata": {
+    "toolPackage": "@microsoft/api-extractor",
+    "toolVersion": "7.36.4",
+    "schemaVersion": 1011,
+    "oldestForwardsCompatibleVersion": 1001,
+    "tsdocConfig": {
+      "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+      "noStandardTags": true,
+      "tagDefinitions": [
+        {
+          "tagName": "@alpha",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@beta",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@defaultValue",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@decorator",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@deprecated",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@eventProperty",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@example",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@experimental",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@inheritDoc",
+          "syntaxKind": "inline"
+        },
+        {
+          "tagName": "@internal",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@label",
+          "syntaxKind": "inline"
+        },
+        {
+          "tagName": "@link",
+          "syntaxKind": "inline",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@override",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@packageDocumentation",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@param",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@privateRemarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@public",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@readonly",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@remarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@returns",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@sealed",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@see",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@throws",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@typeParam",
+          "syntaxKind": "block",
+          "allowMultiple": true
+        },
+        {
+          "tagName": "@virtual",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@betaDocumentation",
+          "syntaxKind": "modifier"
+        },
+        {
+          "tagName": "@internalRemarks",
+          "syntaxKind": "block"
+        },
+        {
+          "tagName": "@preapproved",
+          "syntaxKind": "modifier"
+        }
+      ],
+      "supportForTags": {
+        "@alpha": true,
+        "@beta": true,
+        "@defaultValue": true,
+        "@decorator": true,
+        "@deprecated": true,
+        "@eventProperty": true,
+        "@example": true,
+        "@experimental": true,
+        "@inheritDoc": true,
+        "@internal": true,
+        "@label": true,
+        "@link": true,
+        "@override": true,
+        "@packageDocumentation": true,
+        "@param": true,
+        "@privateRemarks": true,
+        "@public": true,
+        "@readonly": true,
+        "@remarks": true,
+        "@returns": true,
+        "@sealed": true,
+        "@see": true,
+        "@throws": true,
+        "@typeParam": true,
+        "@virtual": true,
+        "@betaDocumentation": true,
+        "@internalRemarks": true,
+        "@preapproved": true
+      },
+      "reportUnsupportedHtmlElements": false
+    }
+  },
+  "kind": "Package",
+  "canonicalReference": "mind-elixir!",
+  "docComment": "",
+  "name": "mind-elixir",
+  "preserveMemberOrder": false,
+  "members": [
+    {
+      "kind": "EntryPoint",
+      "canonicalReference": "mind-elixir!",
+      "name": "",
+      "preserveMemberOrder": false,
+      "members": [
+        {
+          "kind": "Variable",
+          "canonicalReference": "mind-elixir!_default:var",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "_default: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirCtor",
+              "canonicalReference": "mind-elixir!MindElixirCtor:interface"
+            }
+          ],
+          "fileUrlPath": "dist/types/index.d.ts",
+          "isReadonly": true,
+          "releaseTag": "Public",
+          "name": "_default",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Children:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Children extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "HTMLElement",
+              "canonicalReference": "!HTMLElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "Children",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Children#children:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "children: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLCollection",
+                  "canonicalReference": "!HTMLCollection:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " & "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "children",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 5
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Children#firstChild:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "firstChild: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "firstChild",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Children#parentElement:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentElement: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentElement",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Children#parentNode:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentNode: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentNode",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Children#previousSibling:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "previousSibling: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "previousSibling",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 2
+            }
+          ]
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!CustomArrow:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type CustomArrow = "
+            },
+            {
+              "kind": "Reference",
+              "text": "SVGPathElement",
+              "canonicalReference": "!SVGPathElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "CustomArrow",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!CustomLine:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type CustomLine = "
+            },
+            {
+              "kind": "Reference",
+              "text": "SVGPathElement",
+              "canonicalReference": "!SVGPathElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "CustomLine",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!CustomSvg:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface CustomSvg extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "SVGGElement",
+              "canonicalReference": "!SVGGElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "CustomSvg",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!CustomSvg#children:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "children: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLCollection",
+                  "canonicalReference": "!HTMLCollection:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " & ["
+                },
+                {
+                  "kind": "Reference",
+                  "text": "CustomLine",
+                  "canonicalReference": "mind-elixir!CustomLine:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "CustomArrow",
+                  "canonicalReference": "mind-elixir!CustomArrow:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "children",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 7
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!CustomSvg#linkObj:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "linkObj?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "LinkItem",
+                  "canonicalReference": "mind-elixir!~LinkItem:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "linkObj",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 2
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Expander:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Expander extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "HTMLElement",
+              "canonicalReference": "!HTMLElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "Expander",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Expander#expanded:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "expanded?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "expanded",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Expander#parentElement:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentElement: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentElement",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Expander#parentNode:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentNode: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentNode",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Expander#previousSibling:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "previousSibling: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Topic",
+                  "canonicalReference": "mind-elixir!Topic:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "previousSibling",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 2
+            }
+          ]
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!LinkObj:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type LinkObj = "
+            },
+            {
+              "kind": "Reference",
+              "text": "Record",
+              "canonicalReference": "!Record:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<string, "
+            },
+            {
+              "kind": "Reference",
+              "text": "LinkItem",
+              "canonicalReference": "mind-elixir!~LinkItem:type"
+            },
+            {
+              "kind": "Content",
+              "text": ">"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "LinkObj",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 5
+          }
+        },
+        {
+          "kind": "Variable",
+          "canonicalReference": "mind-elixir!methods:var",
+          "docComment": "/**\n * Methods that mind-elixir instance can use\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "methods: "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    init(this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", data: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirData",
+              "canonicalReference": "mind-elixir!MindElixirData:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "Error",
+              "canonicalReference": "!Error:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined;\n    createLink: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", from: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", to: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", isInitPaint?: boolean | undefined, obj?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "customLink.LinkItem",
+              "canonicalReference": "mind-elixir!~LinkItem:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => void;\n    removeLink: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", linkSvg?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CustomSvg",
+              "canonicalReference": "mind-elixir!CustomSvg:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => void;\n    selectLink: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", link: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "CustomSvg",
+              "canonicalReference": "mind-elixir!CustomSvg:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    hideLinkController: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    showLinkController: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", p2x: number, p2y: number, p3x: number, p3y: number, linkItem: "
+            },
+            {
+              "kind": "Reference",
+              "text": "customLink.LinkItem",
+              "canonicalReference": "mind-elixir!~LinkItem:type"
+            },
+            {
+              "kind": "Content",
+              "text": ", fromData: "
+            },
+            {
+              "kind": "Reference",
+              "text": "customLink.LinkControllerData",
+              "canonicalReference": "mind-elixir!~LinkControllerData:type"
+            },
+            {
+              "kind": "Content",
+              "text": ", toData: "
+            },
+            {
+              "kind": "Reference",
+              "text": "customLink.LinkControllerData",
+              "canonicalReference": "mind-elixir!~LinkControllerData:type"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    moveNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    moveNodeAfter: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    moveNodeBefore: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    removeNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    addChild: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    copyNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    reshapeNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    insertSibling: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    insertBefore: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    insertParent: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    moveUpNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    moveDownNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    beginEdit: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    setNodeTopic: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", ...args: unknown[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    selectNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", targetElement: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", isNewNode?: boolean | undefined, e?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MouseEvent",
+              "canonicalReference": "!MouseEvent:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => void;\n    unselectNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    selectNextSibling: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => boolean;\n    selectPrevSibling: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => boolean;\n    selectFirstChild: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    selectParent: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    getDataString: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => string;\n    getData: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirData",
+              "canonicalReference": "mind-elixir!MindElixirData:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    getDataMd: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => string;\n    enableEdit: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    disableEdit: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    scale: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", scaleVal: number) => void;\n    toCenter: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    install: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", plugin: (instance: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void) => void;\n    focusNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", el: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    cancelFocus: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    initLeft: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    initRight: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    initSide: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    setLocale: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", locale: string) => void;\n    expandNode: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", el: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", isExpand?: boolean | undefined) => void;\n    refresh: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", data?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirData",
+              "canonicalReference": "mind-elixir!MindElixirData:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => void;\n    getObjById: (id: string, data: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | null;\n    generateNewObj: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObjExport",
+              "canonicalReference": "mind-elixir!NodeObjExport:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    layout: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    linkDiv: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", mainNode?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Wrapper",
+              "canonicalReference": "mind-elixir!Wrapper:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => void;\n    createInputDiv: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", el: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    createWrapper: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", nodeObj: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", omitChildren?: boolean | undefined) => {\n        grp: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Wrapper",
+              "canonicalReference": "mind-elixir!Wrapper:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n        top: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Parent",
+              "canonicalReference": "mind-elixir!Parent:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n        tpc: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    };\n    createParent: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", nodeObj: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => {\n        p: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Parent",
+              "canonicalReference": "mind-elixir!Parent:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n        tpc: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    };\n    createChildren: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", wrappers: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Wrapper",
+              "canonicalReference": "mind-elixir!Wrapper:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[]) => import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Children",
+              "canonicalReference": "mind-elixir!Children:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    createTopic: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", nodeObj: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    findEle: (id: string, instance?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    changeTheme: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", theme: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Theme",
+              "canonicalReference": "mind-elixir!Theme:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", shouldRefresh?: boolean) => void;\n}"
+            }
+          ],
+          "fileUrlPath": "dist/types/methods.d.ts",
+          "isReadonly": true,
+          "releaseTag": "Public",
+          "name": "methods",
+          "variableTypeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 204
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!MindElixirCtor:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface MindElixirCtor "
+            }
+          ],
+          "fileUrlPath": "dist/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "MindElixirCtor",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "ConstructSignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor:new(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "new (options: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Options",
+                  "canonicalReference": "mind-elixir!Options:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "MindElixirInstance",
+                  "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "returnTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 4
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "options",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  },
+                  "isOptional": false
+                }
+              ]
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#DARK_THEME:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "DARK_THEME: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "DARK_THEME",
+                  "canonicalReference": "mind-elixir!~DARK_THEME:var"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "DARK_THEME",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#E:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "E: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "findEle",
+                  "canonicalReference": "mind-elixir!~findEle:var"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "E",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#LEFT:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "LEFT: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "LEFT",
+                  "canonicalReference": "mind-elixir!~LEFT:var"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "LEFT",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#new:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "new: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "MindElixir.new",
+                  "canonicalReference": "mind-elixir!~_a:var"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "new",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#prototype:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "prototype: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "MindElixirMethods",
+                  "canonicalReference": "mind-elixir!MindElixirMethods:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "prototype",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#RIGHT:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "RIGHT: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "RIGHT",
+                  "canonicalReference": "mind-elixir!~RIGHT:var"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "RIGHT",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#SIDE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "SIDE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SIDE",
+                  "canonicalReference": "mind-elixir!~SIDE:var"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "SIDE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#THEME:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "THEME: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "THEME",
+                  "canonicalReference": "mind-elixir!~THEME:var"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "THEME",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirCtor#version:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "version: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "version",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!MindElixirData:interface",
+          "docComment": "/**\n * The exported data of MindElixir\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface MindElixirData "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "MindElixirData",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirData#direction:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "direction?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "direction",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirData#linkData:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "linkData?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "LinkObj",
+                  "canonicalReference": "mind-elixir!LinkObj:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "linkData",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirData#nodeData:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nodeData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "NodeObj",
+                  "canonicalReference": "mind-elixir!NodeObj:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "nodeData",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirData#theme:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "theme?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Theme",
+                  "canonicalReference": "mind-elixir!Theme:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "theme",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!MindElixirInstance:interface",
+          "docComment": "/**\n * The MindElixir instance\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface MindElixirInstance extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirMethods",
+              "canonicalReference": "mind-elixir!MindElixirMethods:type"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "MindElixirInstance",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#allowUndo:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "allowUndo: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "allowUndo",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#before:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "before: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Before",
+                  "canonicalReference": "mind-elixir!~Before:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "before",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#bus:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "bus: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "ReturnType",
+                  "canonicalReference": "!ReturnType:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<typeof "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Bus.create",
+                  "canonicalReference": "mind-elixir!~__type#create:member"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<"
+                },
+                {
+                  "kind": "Reference",
+                  "text": "EventMap",
+                  "canonicalReference": "mind-elixir!~EventMap:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ">>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "bus",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 7
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#container:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "container: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "container",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#contextMenu:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "contextMenu: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "contextMenu",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#contextMenuOption:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "contextMenuOption: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "object"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "contextMenuOption",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#currentLink:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "currentLink: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "CustomSvg",
+                  "canonicalReference": "mind-elixir!CustomSvg:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "currentLink",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#currentNode:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "currentNode: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Topic",
+                  "canonicalReference": "mind-elixir!Topic:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "currentNode",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#direction:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "direction: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "direction",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#draggable:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "draggable: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "draggable",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#editable:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "editable: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "editable",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#history:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "history: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Operation",
+                  "canonicalReference": "mind-elixir!~Operation:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "history",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#inputDiv:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "inputDiv: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "inputDiv",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#isFocusMode:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "isFocusMode: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "isFocusMode",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#keypress:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "keypress: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "keypress",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#line1:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "line1: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SVGElement",
+                  "canonicalReference": "!SVGElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "line1",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#line2:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "line2: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SVGElement",
+                  "canonicalReference": "!SVGElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "line2",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#lines:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "lines: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SVGElement",
+                  "canonicalReference": "!SVGElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "lines",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#linkController:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "linkController: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SVGElement",
+                  "canonicalReference": "!SVGElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "linkController",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#linkData:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "linkData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "LinkObj",
+                  "canonicalReference": "mind-elixir!LinkObj:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "linkData",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#linkSvgGroup:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "linkSvgGroup: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SVGElement",
+                  "canonicalReference": "!SVGElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "linkSvgGroup",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#locale:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "locale: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "locale",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#mainLinkStyle:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "mainLinkStyle: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "mainLinkStyle",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#map:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "map: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "map",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#mindElixirBox:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "mindElixirBox: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "mindElixirBox",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#mobileMenu:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "mobileMenu: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "mobileMenu",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#newTopicName:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "newTopicName: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "newTopicName",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#nodeData:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nodeData: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "NodeObj",
+                  "canonicalReference": "mind-elixir!NodeObj:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "nodeData",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#nodeDataBackup:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nodeDataBackup: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "NodeObj",
+                  "canonicalReference": "mind-elixir!NodeObj:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "nodeDataBackup",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#nodes:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nodes: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "nodes",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#overflowHidden:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "overflowHidden: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "overflowHidden",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#P2:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "P2: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "P2",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#P3:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "P3: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "P3",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#redo:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "redo: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "redo",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#root:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "root: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "root",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#scaleVal:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "scaleVal: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "scaleVal",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#subLinkStyle:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "subLinkStyle: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "subLinkStyle",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#tempDirection:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "tempDirection: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "tempDirection",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#theme:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "theme: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Theme",
+                  "canonicalReference": "mind-elixir!Theme:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "theme",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#toolBar:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "toolBar: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "toolBar",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#undo:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "undo: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "() => void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "undo",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#userTheme:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "userTheme?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Theme",
+                  "canonicalReference": "mind-elixir!Theme:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "userTheme",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#waitCopy:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "waitCopy: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Topic",
+                  "canonicalReference": "mind-elixir!Topic:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "waitCopy",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 2
+            }
+          ]
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!MindElixirMethods:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type MindElixirMethods = "
+            },
+            {
+              "kind": "Content",
+              "text": "typeof "
+            },
+            {
+              "kind": "Reference",
+              "text": "methods",
+              "canonicalReference": "mind-elixir!methods:var"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/methods.d.ts",
+          "releaseTag": "Public",
+          "name": "MindElixirMethods",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 3
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!NodeObj:interface",
+          "docComment": "/**\n * MindElixir node object\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface NodeObj "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "NodeObj",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#branchColor:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "branchColor?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "branchColor",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#children:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "children?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "NodeObj",
+                  "canonicalReference": "mind-elixir!NodeObj:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "children",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#direction:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "direction?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "direction",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#expanded:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "expanded?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "expanded",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#hyperLink:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "hyperLink?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "hyperLink",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#icons:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "icons?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "icons",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#id:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "id: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Uid",
+                  "canonicalReference": "mind-elixir!Uid:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "id",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#image:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "image?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "{\n        url: string;\n        width: number;\n        height: number;\n    }"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "image",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#parent:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parent?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "NodeObj",
+                  "canonicalReference": "mind-elixir!NodeObj:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "parent",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#root:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "root?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "root",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#style:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "style?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "{\n        fontSize?: string;\n        color?: string;\n        background?: string;\n        fontWeight?: string;\n    }"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "style",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#tags:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "tags?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "tags",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#topic:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "topic: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "topic",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!NodeObjExport:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type NodeObjExport = "
+            },
+            {
+              "kind": "Reference",
+              "text": "Omit",
+              "canonicalReference": "!Omit:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", 'parent'>"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "NodeObjExport",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 5
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Options:interface",
+          "docComment": "/**\n * The MindElixir options\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Options "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "Options",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#allowUndo:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "allowUndo?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "allowUndo",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#before:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "before?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Before",
+                  "canonicalReference": "mind-elixir!~Before:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "before",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#contextMenu:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "contextMenu?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "contextMenu",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#contextMenuOption:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "contextMenuOption?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "any"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "contextMenuOption",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#direction:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "direction?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "direction",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#draggable:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "draggable?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "draggable",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#editable:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "editable?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "editable",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#el:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "el: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "el",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#keypress:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "keypress?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "keypress",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#locale:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "locale?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "locale",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#mainLinkStyle:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "mainLinkStyle?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "mainLinkStyle",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#mobileMenu:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "mobileMenu?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "mobileMenu",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#newTopicName:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "newTopicName?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "newTopicName",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#nodeMenu:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nodeMenu?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "nodeMenu",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#overflowHidden:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "overflowHidden?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "overflowHidden",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#subLinkStyle:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "subLinkStyle?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "subLinkStyle",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#theme:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "theme?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Theme",
+                  "canonicalReference": "mind-elixir!Theme:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "theme",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Options#toolBar:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "toolBar?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "toolBar",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Parent:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Parent extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "HTMLElement",
+              "canonicalReference": "!HTMLElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "Parent",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Parent#children:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "children: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLCollection",
+                  "canonicalReference": "!HTMLCollection:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " & ["
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Topic",
+                  "canonicalReference": "mind-elixir!Topic:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expander",
+                  "canonicalReference": "mind-elixir!Expander:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "children",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 7
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Parent#firstChild:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "firstChild: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Topic",
+                  "canonicalReference": "mind-elixir!Topic:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "firstChild",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Parent#nextSibling:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nextSibling: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Children",
+                  "canonicalReference": "mind-elixir!Children:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "nextSibling",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Parent#offsetParent:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "offsetParent: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "offsetParent",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Parent#parentElement:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentElement: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentElement",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Parent#parentNode:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentNode: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentNode",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 2
+            }
+          ]
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Theme:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Theme "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "Theme",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Theme#cssVar:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "cssVar: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "{\n        '--main-color': string;\n        '--main-bgcolor': string;\n        '--color': string;\n        '--bgcolor': string;\n    }"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "cssVar",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Theme#name:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "name: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "name",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Theme#palette:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "palette: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "palette",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Topic:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Topic extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "HTMLElement",
+              "canonicalReference": "!HTMLElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "Topic",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#expander:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "expander?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Expander",
+                  "canonicalReference": "mind-elixir!Expander:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "expander",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#icons:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "icons?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLSpanElement",
+                  "canonicalReference": "!HTMLSpanElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "icons",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#image:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "image?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLImageElement",
+                  "canonicalReference": "!HTMLImageElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "image",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#linkContainer:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "linkContainer: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "linkContainer",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#nodeObj:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nodeObj: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "NodeObj",
+                  "canonicalReference": "mind-elixir!NodeObj:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "nodeObj",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#offsetParent:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "offsetParent: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "offsetParent",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#parentElement:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentElement: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentElement",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#parentNode:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentNode: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentNode",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Topic#tags:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "tags?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLDivElement",
+                  "canonicalReference": "!HTMLDivElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "tags",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 2
+            }
+          ]
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!Uid:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type Uid = "
+            },
+            {
+              "kind": "Content",
+              "text": "string"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "Uid",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Wrapper:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Wrapper extends "
+            },
+            {
+              "kind": "Reference",
+              "text": "HTMLElement",
+              "canonicalReference": "!HTMLElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/dom.d.ts",
+          "releaseTag": "Public",
+          "name": "Wrapper",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Wrapper#children:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "children: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLCollection",
+                  "canonicalReference": "!HTMLCollection:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " & ["
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Children",
+                  "canonicalReference": "mind-elixir!Children:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "children",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 7
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Wrapper#firstChild:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "firstChild: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Parent",
+                  "canonicalReference": "mind-elixir!Parent:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "firstChild",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Wrapper#nextSibling:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "nextSibling: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "nextSibling",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Wrapper#offsetParent:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "offsetParent: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "offsetParent",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Wrapper#parentElement:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentElement: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Children",
+                  "canonicalReference": "mind-elixir!Children:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentElement",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Wrapper#parentNode:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "parentNode: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Children",
+                  "canonicalReference": "mind-elixir!Children:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "parentNode",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Wrapper#previousSibling:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "previousSibling: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Wrapper",
+                  "canonicalReference": "mind-elixir!Wrapper:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "previousSibling",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            }
+          ],
+          "extendsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 2
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,17 @@
+import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
+
+const selectLeft = (mei: MindElixirInstance) => {
+  const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
+  mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
+}
+const selectRight = (mei: MindElixirInstance) => {
+  const tpcs = mei.map.querySelectorAll('.rhs>me-wrapper>me-parent>me-tpc')
+  mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
+}
+const selectRoot = (mei: MindElixirInstance) => {
+  mei.selectNode(mei.map.querySelector('me-root>me-tpc') as Topic)
+}
 
 export default function (mind: MindElixirInstance) {
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
@@ -25,19 +38,35 @@ export default function (mind: MindElixirInstance) {
     37: () => {
       // left
       if (!mind.currentNode) return
-      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs') {
-        mind.selectParent()
-      } else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs' || mind.currentNode.nodeObj.root) {
+      const nodeObj = mind.currentNode.nodeObj
+      const main = mind.currentNode.offsetParent.offsetParent.parentElement
+      if (mind.currentNode.nodeObj.root) {
+        selectLeft(mind)
+      } else if (main.className === 'rhs') {
+        if (nodeObj.parent?.root) {
+          selectRoot(mind)
+        } else {
+          mind.selectParent()
+        }
+      } else if (main.className === 'lhs') {
         mind.selectFirstChild()
       }
     },
     39: () => {
       // right
       if (!mind.currentNode) return
-      if (mind.currentNode.offsetParent.offsetParent.className === 'rhs' || mind.currentNode.nodeObj.root) {
+      const nodeObj = mind.currentNode.nodeObj
+      const main = mind.currentNode.offsetParent.offsetParent.parentElement
+      if (nodeObj.root) {
+        selectRight(mind)
+      } else if (main.className === 'lhs') {
+        if (nodeObj.parent?.root) {
+          selectRoot(mind)
+        } else {
+          mind.selectParent()
+        }
+      } else if (main.className === 'rhs') {
         mind.selectFirstChild()
-      } else if (mind.currentNode.offsetParent.offsetParent.className === 'lhs') {
-        mind.selectParent()
       }
     },
     33() {

@@ -1,21 +1,20 @@
-import MindElixir, { E } from './index'
-import MindElixirLite from './index.lite'
+import type { MindElixirCtor } from './index'
+import MindElixir from './index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
-import type { Options, MindElixirData, Operation } from './types/index'
+import type { Options, MindElixirData, MindElixirInstance } from './types/index'
+import type { Operation } from './utils/pubsub'
 
 interface Window {
-  currentOperation: any
-  m: any
-  M: any
-  E: any
-  exportSvg: any
-  exportPng: any
+  m: MindElixirInstance
+  M: MindElixirCtor
+  E: typeof MindElixir.E
 }
 
 declare let window: Window
 
+const E = MindElixir.E
 const options: Options = {
   el: '#map',
   newTopicName: '子节点',
@@ -41,7 +40,7 @@ const options: Options = {
   toolBar: true,
   nodeMenu: true,
   keypress: true,
-  // allowUndo: false,
+  allowUndo: true,
   before: {
     moveDownNode() {
       return false
@@ -58,13 +57,12 @@ const options: Options = {
   },
   mainLinkStyle: 1,
   subLinkStyle: 1,
-  mainNodeVerticalGap: 25, // 25
-  mainNodeHorizontalGap: 65, // 65
 }
 
 const mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
+console.log(data)
 mind.init(example)
 function sleep() {
   return new Promise<void>(res => {
@@ -72,19 +70,17 @@ function sleep() {
   })
 }
 console.log('test E function', E('bd4313fbac40284b'))
-const mind2 = new (MindElixirLite as any)({
-  el: document.querySelector('#map2'),
-  direction: 2,
-  draggable: false,
-  // overflowHidden: true,
-  nodeMenu: true,
-  subLinkStyle: 2,
-})
-mind2.init(example2)
-window.currentOperation = null
+// const mind2 = new (MindElixirLite as any)({
+//   el: document.querySelector('#map2'),
+//   direction: 2,
+//   draggable: false,
+//   // overflowHidden: true,
+//   nodeMenu: true,
+//   subLinkStyle: 2,
+// })
+// mind2.init(example2)
 mind.bus.addListener('operation', (operation: Operation) => {
   console.log(operation)
-  if (operation.name !== 'finishEdit') window.currentOperation = operation
   // return {
   //   name: action name,
   //   obj: target object
@@ -96,10 +92,10 @@ mind.bus.addListener('operation', (operation: Operation) => {
   // name: moveNode
   // obj: {from:target1,to:target2}
 })
-mind.bus.addListener('selectNode', (node: any) => {
+mind.bus.addListener('selectNode', node => {
   console.log(node)
 })
-mind.bus.addListener('expandNode', (node: any) => {
+mind.bus.addListener('expandNode', node => {
   console.log('expandNode: ', node)
 })
 window.m = mind

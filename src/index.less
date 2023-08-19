@@ -49,8 +49,15 @@
     transition: transform 0.3s;
     transform: scale(1);
     background-color: var(--bgcolor);
-    me-root {
+    me-nodes {
       position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: fit-content;
+      width: fit-content;
+    }
+    me-root {
       padding: 10px var(--gap);
       color: var(--root-color);
       background-color: var(--root-bgcolor);
@@ -65,10 +72,11 @@
       }
     }
   }
-  .main-node-container {
+  me-main {
     // main node
     & > me-wrapper {
-      position: absolute;
+      position: relative; // make subline svg's offsetParent to be the main node
+      margin: 20px 65px;
       & > me-parent {
         margin: var(--gap);
         background-color: var(--main-bgcolor);
@@ -89,6 +97,7 @@
   me-wrapper {
     display: block;
     pointer-events: none;
+    // position: relative;
   }
   me-children,
   me-parent {
@@ -96,7 +105,7 @@
     vertical-align: middle;
   }
   me-parent {
-    position: relative;
+    position: relative; // for locating expand button
     cursor: pointer;
     padding: 6px var(--gap);
     margin-top: 10px;
@@ -110,7 +119,11 @@
       white-space: pre-wrap;
       padding: var(--topic-padding);
       line-height: 1.2; // assure the line-height consistency between different languages
-
+      & > div,
+      & > span,
+      & > img {
+        pointer-events: none;
+      }
       // drag preview
       .insert-preview {
         position: absolute;
@@ -254,6 +267,9 @@
   }
 
   .mind-elixir-ghost {
+    position: fixed;
+    top: -100%;
+    left: -100%;
     box-sizing: content-box;
     opacity: 0.5;
     background-color: #f6f6f6;

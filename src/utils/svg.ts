@@ -40,7 +40,7 @@ export const createPath = function (d: string, color: string) {
 }
 
 export const createSvgGroup = function (d: string, arrowd: string): CustomSvg {
-  const g = $d.createElementNS(svgNS, 'g')
+  const g = $d.createElementNS(svgNS, 'g') as CustomSvg
   const path = $d.createElementNS(svgNS, 'path')
   const arrow = $d.createElementNS(svgNS, 'path')
   arrow.setAttribute('d', arrowd)
