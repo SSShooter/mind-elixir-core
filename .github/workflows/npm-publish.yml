@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - run: npm i
+      - run: npm ci
       - run: npm run build
       - run: npm publish
         env:
