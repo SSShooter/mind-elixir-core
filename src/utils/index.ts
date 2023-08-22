@@ -21,6 +21,9 @@ export const getObjById = function (id: string, data: NodeObj): NodeObj | null {
   }
 }
 
+/**
+ * Add parent property to every node
+ */
 export const fillParent = (data: NodeObj, parent?: NodeObj) => {
   data.parent = parent
   if (data.children) {
