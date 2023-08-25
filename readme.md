@@ -38,32 +38,23 @@ Mind elixir is a free open source mind map core.
 <details>
 <summary>Table of Contents</summary>
 
-- [Doc](#doc)
 - [Try now](#try-now)
   - [Playground](#playground)
-    - [Vanilla JS](#vanilla-js)
-    - [Use with React](#use-with-react)
-    - [Use with Vue](#use-with-vue)
-    - [Use with Vue3](#use-with-vue3)
 - [Usage](#usage)
   - [Install](#install)
     - [NPM](#npm)
     - [Script tag](#script-tag)
-  - [HTML structure](#html-structure)
   - [Init](#init)
   - [Data Structure](#data-structure)
   - [Event Handling](#event-handling)
   - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
+- [Methods](#methods)
 - [Theme](#theme)
 - [Not only core](#not-only-core)
 - [Development](#development)
 
 </details>
-
-## Doc
-
-https://doc.mind-elixir.com/
 
 ## Try now
 
@@ -73,21 +64,10 @@ https://mind-elixir.com/
 
 ### Playground
 
-#### Vanilla JS
-
-https://codepen.io/ssshooter/pen/rNqGpwW
-
-#### Use with React
-
-https://codesandbox.io/s/mind-elixir-2-x-react-q9glxt
-
-#### Use with Vue
-
-https://codesandbox.io/s/mind-elixir-vue-nqjjl
-
-#### Use with Vue3
-
-https://codesandbox.io/s/mind-elixir-vue3-dtcq6u
+- Vanilla JS - https://codepen.io/ssshooter/pen/OJrJowN
+- React - https://codesandbox.io/s/mind-elixir-3-x-react-18-x-vy9fcq
+- Vue3 - https://codesandbox.io/s/mind-elixir-3-x-vue3-lth484
+- Vue2 - https://codesandbox.io/s/mind-elixir-3-x-vue-2-x-5kdfjp
 
 ## Usage
 
@@ -100,7 +80,7 @@ npm i mind-elixir -S
 ```
 
 ```javascript
-import MindElixir, { E } from 'mind-elixir'
+import MindElixir from 'mind-elixir'
 ```
 
 #### Script tag
@@ -109,7 +89,7 @@ import MindElixir, { E } from 'mind-elixir'
 <script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
 ```
 
-### HTML structure
+### Init
 
 ```html
 <div id="map"></div>
@@ -121,12 +101,10 @@ import MindElixir, { E } from 'mind-elixir'
 </style>
 ```
 
-### Init
-
 **Breaking Change** since 1.0.0, `data` should be passed to `init()`, not `options`.
 
 ```javascript
-import MindElixir, { E } from 'mind-elixir'
+import MindElixir from 'mind-elixir'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
@@ -174,7 +152,7 @@ const data = MindElixir.new('new topic')
 mind.init(data)
 
 // get a node
-E('node-id')
+MindElixir.E('node-id')
 ```
 
 ### Data Structure
@@ -272,6 +250,10 @@ let mind = new MindElixir({
 })
 ```
 
+## Methods
+
+https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
+
 ## Theme
 
 ```javascript
@@ -287,6 +269,8 @@ const options = {
       '--main-bgcolor': '#4c4f69',
       '--color': '#cccccc',
       '--bgcolor': '#252526',
+      '--panel-color': '255, 255, 255',
+      '--panel-bgcolor': '45, 55, 72',
     },
     // all variables see /src/index.less
   },
@@ -307,11 +291,12 @@ mind.changeTheme({
 })
 ```
 
-Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`. Please change the theme manually when the scheme changes.
+Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`. Please change the theme **manually** when the scheme changes.
 
 ## Not only core
 
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
+- [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
 - [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)
@@ -320,7 +305,7 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 ## Development
 
 ```
-yarn
+pnpm i
 npm start
 ```
 
@@ -330,5 +315,4 @@ Test generated files with `dev.dist.ts`:
 npm run build
 npm link
 npm link mind-elixir
-npm run startd
 ```
