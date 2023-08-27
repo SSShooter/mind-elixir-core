@@ -34,6 +34,7 @@ Mind elixir is a free open source mind map core.
 - Pluginable
 - Build-in drag and drop / node edit plugin
 - Styling your node with CSS
+- Undo / Redo
 
 <details>
 <summary>Table of Contents</summary>
