@@ -76,12 +76,14 @@ export default function (mind: MindElixirInstance, option: any) {
         focus.className = 'disabled'
         up.className = 'disabled'
         down.className = 'disabled'
+        add_parent.className = 'disabled'
         add_sibling.className = 'disabled'
         remove_child.className = 'disabled'
       } else {
         focus.className = ''
         up.className = ''
         down.className = ''
+        add_parent.className = ''
         add_sibling.className = ''
         remove_child.className = ''
       }
