@@ -14,6 +14,9 @@ export const THEME = {
     '--main-bgcolor': '#ffffff',
     '--color': '#777777',
     '--bgcolor': '#f6f6f6',
+    '--panel-color': '#444446',
+    '--panel-bgcolor': '#ffffff',
+    '--panel-border-color': '#eaeaea',
   },
 }
 
@@ -25,5 +28,8 @@ export const DARK_THEME = {
     '--main-bgcolor': '#4c4f69',
     '--color': '#cccccc',
     '--bgcolor': '#252526',
+    '--panel-color': '#ffffff',
+    '--panel-bgcolor': '#2d3748',
+    '--panel-border-color': '#696969',
   },
 }
