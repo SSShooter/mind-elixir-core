@@ -39,7 +39,7 @@ export type Operation =
   | {
       name: 'removeNode'
       obj: NodeObj
-      originSiblingId?: string
+      originIndex?: number
       originParentId?: string
     }
 

@@ -72,7 +72,7 @@ export const selectPrevSibling = function (this: MindElixirInstance) {
   const sibling = this.currentNode.parentElement.parentElement.previousSibling
   let target: Topic
   if (sibling) {
-    target = sibling.firstChild.firstChild as Topic
+    target = sibling.firstChild.firstChild
   } else {
     return false
   }

@@ -362,30 +362,31 @@ export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
 export const removeNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  console.log('removeNode', nodeEle)
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     throw new Error('Can not remove root node')
   }
   const siblings = nodeObj.parent!.children!
-  const index = siblings.findIndex(node => node === nodeObj)
-  const next: NodeObj | undefined = siblings[index + 1]
-  const originSiblingId = next && next.id
+  const i = siblings.findIndex(node => node === nodeObj)
+  const siblingLength = removeNodeObj(nodeObj)
 
-  const childrenLength = removeNodeObj(nodeObj)
   const t = nodeEle.parentNode
-  if (childrenLength === 0) {
+  if (siblingLength === 0) {
     // remove epd when children length === 0
     const c = t.parentNode.parentNode
     // root doesn't have epd
     if (c.tagName !== 'ME-MAIN') {
       c.previousSibling.children[1].remove()
     }
-    this.selectParent()
-  } else {
-    // select sibling automatically
-    this.selectPrevSibling() || this.selectNextSibling()
   }
+  // automatically select sibling or parent
+  if (siblings.length !== 0) {
+    const sibling = siblings[i] || siblings[i - 1]
+    this.selectNode(findEle(sibling.id))
+  } else {
+    this.selectNode(findEle(nodeObj.parent!.id))
+  }
+
   for (const prop in this.linkData) {
     // MAYBEBUG should traverse all children node
     const link = this.linkData[prop]
@@ -394,13 +395,12 @@ export const removeNode = function (this: MindElixirInstance, el?: Topic) {
       this.removeLink(linkEle)
     }
   }
-  // remove GRP
   t.parentNode.remove()
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'removeNode',
     obj: nodeObj,
-    originSiblingId,
+    originIndex: i,
     originParentId: nodeObj?.parent?.id,
   })
 }
