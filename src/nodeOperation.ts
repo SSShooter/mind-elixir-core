@@ -90,6 +90,10 @@ export const insertSibling = function (this: MindElixirInstance, el?: Topic, nod
   if (nodeObj.root === true) {
     this.addChild()
     return
+  } else if (nodeObj.parent?.root === true && nodeObj.parent?.children?.length === 1) {
+    // add at least one node to another side
+    this.addChild(findEle(nodeObj.parent!.id))
+    return
   }
   const newNodeObj = node || this.generateNewObj()
   insertNodeObj(nodeObj, newNodeObj)
