@@ -31,6 +31,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   nodeData: NodeObj
   linkData: LinkObj
   currentNode: Topic | null
+  currentNodes: Topic[] | null
   waitCopy: Topic | null
   currentLink: CustomSvg | null
   inputDiv: HTMLElement | null

@@ -20,6 +20,9 @@ devDependencies:
   '@typescript-eslint/parser':
     specifier: ^5.62.0
     version: 5.62.0(eslint@8.46.0)(typescript@5.1.6)
+  '@viselect/vanilla':
+    specifier: ^3.3.1
+    version: 3.3.1
   eslint:
     specifier: ^8.46.0
     version: 8.46.0
@@ -845,6 +848,10 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.62.0
       eslint-visitor-keys: 3.4.3
+    dev: true
+
+  /@viselect/vanilla@3.3.1:
+    resolution: {integrity: sha512-QqkPGV+uyteX/HqzhHp5ZRfpVYiA0A3umh8HT/nfoBKccoA/kiTdI+5B/8ZPijtanBj9NNymMMPCn0W+/BeEyg==}
     dev: true
 
   /@webassemblyjs/ast@1.11.6:

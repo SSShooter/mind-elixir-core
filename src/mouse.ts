@@ -8,7 +8,10 @@ const isTopic = (target: HTMLElement) => {
 
 export default function (mind: MindElixirInstance) {
   mind.map.addEventListener('click', e => {
-    // if (dragMoveHelper.afterMoving) return
+    if (dragMoveHelper.moved) {
+      dragMoveHelper.clear()
+      return
+    }
     // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as any
     if (target.tagName === 'ME-EPD') {
@@ -25,6 +28,7 @@ export default function (mind: MindElixirInstance) {
       // skip circle
     } else {
       mind.unselectNode()
+      mind.unselectNodes()
       // lite version doesn't have hideLinkController
       mind.hideLinkController && mind.hideLinkController()
     }
@@ -44,21 +48,24 @@ export default function (mind: MindElixirInstance) {
    */
   mind.map.addEventListener('mousemove', e => {
     // click trigger mousemove in windows chrome
-    // the 'true' is a string
     if ((e.target as HTMLElement).contentEditable !== 'true') {
       dragMoveHelper.onMove(e, mind.container)
     }
   })
   mind.map.addEventListener('mousedown', e => {
+    if (e.button !== 2) return
     if ((e.target as HTMLElement).contentEditable !== 'true') {
-      dragMoveHelper.afterMoving = false
+      dragMoveHelper.moved = false
       dragMoveHelper.mousedown = true
     }
   })
-  mind.map.addEventListener('mouseleave', () => {
+  mind.map.addEventListener('mouseleave', e => {
+    console.log(e.button)
+    if (e.button !== 2) return
     dragMoveHelper.clear()
   })
-  mind.map.addEventListener('mouseup', () => {
+  mind.map.addEventListener('mouseup', e => {
+    if (e.button !== 2) return
     dragMoveHelper.clear()
   })
 }

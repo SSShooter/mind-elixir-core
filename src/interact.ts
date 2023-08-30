@@ -53,6 +53,32 @@ export const unselectNode = function (this: MindElixirInstance) {
   this.currentNode = null
   this.bus.fire('unselectNode')
 }
+
+export const selectNodes = function (this: MindElixirInstance, targetElements: Topic[]): void {
+  if (!targetElements) return
+  console.time('selectNodes')
+  for (const el of targetElements) {
+    el.className = 'selected'
+  }
+  this.currentNodes = targetElements
+  this.bus.fire(
+    'selectNodes',
+    targetElements.map(el => el.nodeObj)
+  )
+  console.timeEnd('selectNodes')
+}
+
+export const unselectNodes = function (this: MindElixirInstance) {
+  // debugger
+  if (this.currentNodes) {
+    for (const el of this.currentNodes) {
+      el.classList.remove('selected')
+    }
+  }
+  this.currentNodes = null
+  this.bus.fire('unselectNodes')
+}
+
 export const selectNextSibling = function (this: MindElixirInstance) {
   if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
 
