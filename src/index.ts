@@ -94,6 +94,7 @@ function MindElixir(
   this.nodes.className = 'main-node-container'
 
   this.lines = createLinkSvg('lines') // main link container
+  this.summarySvg = createLinkSvg('summary') // summary container
 
   this.linkController = createLinkSvg('linkcontroller') // bezier controller container
   this.P2 = $d.createElement('div') // bezier P2

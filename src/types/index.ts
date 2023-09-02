@@ -4,6 +4,7 @@ import type { EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { LinkItem } from '../customLink'
+import type { Summary } from '../summary'
 export * from '../methods'
 
 type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
@@ -28,8 +29,11 @@ export interface MindElixirInstance extends MindElixirMethods {
   isFocusMode: boolean
   nodeDataBackup: NodeObj
   mindElixirBox: HTMLElement
+
   nodeData: NodeObj
   linkData: LinkObj
+  summaries: Summary[]
+
   currentNode: Topic | null
   currentNodes: Topic[] | null
   waitCopy: Topic | null
@@ -60,6 +64,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   root: HTMLElement
   nodes: HTMLElement
   lines: SVGElement
+  summarySvg: SVGElement
   linkController: SVGElement
   P2: HTMLElement
   P3: HTMLElement
@@ -154,6 +159,7 @@ export type LinkObj = Record<string, LinkItem>
 export interface MindElixirData {
   nodeData: NodeObj
   linkData?: LinkObj
+  summaries?: Summary[]
   direction?: number
   theme?: Theme
 }

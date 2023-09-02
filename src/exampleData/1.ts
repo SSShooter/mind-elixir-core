@@ -236,6 +236,18 @@ const aboutMindElixir: MindElixirData = {
     expanded: true,
   },
   linkData: {},
+  summaries: [
+    {
+      id: 'a4ed5e72200668fd',
+      start: 'beeb784cc189375f',
+      end: 'beeb7a6bec2d68f5',
+    },
+    {
+      id: 'a4ed611a17170139',
+      start: 'bd42e619051878b3',
+      end: 'bd42e97d7ac35e99',
+    },
+  ],
 }
 
 export default aboutMindElixir

@@ -109,7 +109,7 @@ export const insertSibling = function (this: MindElixirInstance, el?: Topic, nod
   this.linkDiv(grp.offsetParent)
 
   if (!node) {
-    this.createInputDiv(top.firstChild)
+    this.editTopic(top.firstChild)
   }
   this.selectNode(top.firstChild, true)
   console.timeEnd('insertSibling_DOM')
@@ -152,7 +152,7 @@ export const insertBefore = function (this: MindElixirInstance, el?: Topic, node
   this.linkDiv(grp.offsetParent)
 
   if (!node) {
-    this.createInputDiv(top.firstChild)
+    this.editTopic(top.firstChild)
   }
   this.selectNode(top.firstChild, true)
   console.timeEnd('insertSibling_DOM')
@@ -198,7 +198,7 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   this.linkDiv()
 
   if (!node) {
-    this.createInputDiv(top.firstChild)
+    this.editTopic(top.firstChild)
   }
   this.selectNode(top.firstChild, true)
   console.timeEnd('insertParent_DOM')
@@ -269,7 +269,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   })
   console.timeEnd('addChild')
   if (!node) {
-    this.createInputDiv(newTop.firstChild)
+    this.editTopic(newTop.firstChild)
   }
   this.selectNode(newTop.firstChild, true)
 }
@@ -540,7 +540,7 @@ export const moveNodeAfter = function (this: MindElixirInstance, from: Topic, to
 export const beginEdit = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  this.createInputDiv(nodeEle)
+  this.editTopic(nodeEle)
 }
 
 export const setNodeTopic = function (this: MindElixirInstance, el: Topic, topic: string) {

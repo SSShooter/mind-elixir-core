@@ -119,6 +119,8 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const link = this.linkData[prop]
     this.createLink(findEle(link.from), findEle(link.to), true, link)
   }
+
+  this.renderSummary()
   console.timeEnd('linkDiv')
 }
 

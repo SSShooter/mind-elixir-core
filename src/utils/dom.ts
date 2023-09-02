@@ -119,8 +119,8 @@ export function selectText(div: HTMLElement) {
   }
 }
 
-export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
-  console.time('createInputDiv')
+export const editTopic = function (this: MindElixirInstance, el: Topic) {
+  console.time('editTopic')
   if (!el) return
   const div = $d.createElement('div')
   const origin = el.childNodes[0].textContent as string
@@ -173,7 +173,7 @@ export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
       origin,
     })
   })
-  console.timeEnd('createInputDiv')
+  console.timeEnd('editTopic')
 }
 
 export const createExpander = function (expanded: boolean | undefined): Expander {

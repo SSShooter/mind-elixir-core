@@ -1459,7 +1459,7 @@
             },
             {
               "kind": "Content",
-              "text": " | undefined) => void;\n    createInputDiv: (this: "
+              "text": " | undefined) => void;\n    editTopic: (this: "
             },
             {
               "kind": "Reference",

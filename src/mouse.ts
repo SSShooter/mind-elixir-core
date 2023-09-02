@@ -1,3 +1,4 @@
+import type { SummarySvgGroup } from './summary'
 import type { Topic, Expander, CustomSvg } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 import dragMoveHelper from './utils/dragMoveHelper'
@@ -8,6 +9,7 @@ const isTopic = (target: HTMLElement) => {
 
 export default function (mind: MindElixirInstance) {
   mind.map.addEventListener('click', e => {
+    console.log('click', e)
     if (dragMoveHelper.moved) {
       dragMoveHelper.clear()
       return
@@ -40,6 +42,8 @@ export default function (mind: MindElixirInstance) {
     const target = e.target as HTMLElement
     if (isTopic(target)) {
       mind.beginEdit(target as Topic)
+    } else if (target.tagName === 'text') {
+      mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
     }
   })
 

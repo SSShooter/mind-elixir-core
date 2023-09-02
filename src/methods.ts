@@ -7,14 +7,14 @@ import nodeDraggable from './plugin/nodeDraggable'
 import operationHistory from './plugin/operationHistory'
 import toolBar from './plugin/toolBar'
 import selection from './plugin/selection'
-import { createInputDiv, createWrapper, createParent, createChildren, createTopic, findEle } from './utils/dom'
+import { editTopic, createWrapper, createParent, createChildren, createTopic, findEle } from './utils/dom'
 import { getObjById, generateNewObj, fillParent, isMobile } from './utils/index'
 import { layout } from './utils/layout'
 import changeTheme from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
 import * as customLink from './customLink'
-import drawSummary from './summary'
+import * as summaryOperation from './summary'
 
 type Operations = keyof typeof nodeOperation
 type NodeOperation = Record<Operations, ReturnType<typeof beforeHook>>
@@ -51,7 +51,7 @@ const methods = {
   generateNewObj,
   layout,
   linkDiv,
-  createInputDiv,
+  editTopic,
   createWrapper,
   createParent,
   createChildren,
@@ -61,7 +61,7 @@ const methods = {
   ...interact,
   ...(nodeOperationHooked as NodeOperation),
   ...customLink,
-  drawSummary,
+  ...summaryOperation,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
@@ -71,6 +71,7 @@ const methods = {
     this.nodeData = data.nodeData
     fillParent(this.nodeData)
     this.linkData = data.linkData || {}
+    this.summaries = data.summaries || []
     // plugins
     this.toolBar && toolBar(this)
     if (import.meta.env.MODE !== 'lite') {
