@@ -22,6 +22,8 @@ export default function (mind: MindElixirInstance) {
       return
     } else if (isTopic(target)) {
       mind.selectNode(target as Topic, false, e)
+    } else if (target.tagName === 'text') {
+      mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
     } else if (target.tagName === 'path') {
       if (target?.parentElement?.tagName === 'g') {
         mind.selectLink(target.parentElement as CustomSvg)

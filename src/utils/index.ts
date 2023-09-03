@@ -244,3 +244,9 @@ export const getOffsetLT = (parent: HTMLElement, child: HTMLElement) => {
   }
   return { offsetLeft, offsetTop }
 }
+
+export const setAttributes = (el: HTMLElement | SVGElement, attrs: { [key: string]: string }) => {
+  for (const key in attrs) {
+    el.setAttribute(key, attrs[key])
+  }
+}

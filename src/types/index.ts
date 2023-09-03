@@ -4,7 +4,7 @@ import type { EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { LinkItem } from '../customLink'
-import type { Summary } from '../summary'
+import type { Summary, SummarySvgGroup } from '../summary'
 export * from '../methods'
 
 type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
@@ -36,6 +36,8 @@ export interface MindElixirInstance extends MindElixirMethods {
 
   currentNode: Topic | null
   currentNodes: Topic[] | null
+  currentSummary: SummarySvgGroup | null
+
   waitCopy: Topic | null
   currentLink: CustomSvg | null
   inputDiv: HTMLElement | null

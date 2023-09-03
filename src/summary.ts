@@ -1,5 +1,5 @@
 import type { MindElixirInstance, Topic } from '.'
-import { generateUUID, getOffsetLT } from './utils'
+import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { findEle, selectText } from './utils/dom'
 
 export type Summary = {
@@ -10,6 +10,7 @@ export type Summary = {
 }
 
 export type SummarySvgGroup = SVGGElement & {
+  children: [SVGPathElement, SVGTextElement]
   summaryObj: Summary
 }
 
@@ -45,6 +46,8 @@ const calcRange = function (currentNodes: Topic[]) {
   const min = range[0] || 0
   const max = range[range.length - 1] || 0
   const parent = parentChains[0][index - 1].node
+  console.log(parent)
+  // if (parent.root) throw new Error('Please select nodes in the same main topic.')
 
   const start = parent.children![min].id
   const end = parent.children![max].id
@@ -62,20 +65,25 @@ const creatGroup = function (id: string) {
 
 const createPath = function (d: string, color?: string) {
   const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-  path.setAttribute('d', d)
-  path.setAttribute('stroke', color || '#666')
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke-linecap', 'round')
-  path.setAttribute('stroke-width', '2')
+  setAttributes(path, {
+    d,
+    stroke: color || '#666',
+    fill: 'none',
+    'stroke-linecap': 'round',
+    'stroke-width': '2',
+  })
   return path
 }
 
-const createText = function (string: string, x: number, y: number, anchor: 'start' | 'end') {
+const createText = function (string: string, x: number, y: number, anchor: 'start' | 'end', color?: string) {
   const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  setAttributes(text, {
+    'text-anchor': anchor,
+    x: x + '',
+    y: y + '',
+    fill: color || '#666',
+  })
   text.innerHTML = string
-  text.setAttribute('text-anchor', anchor)
-  text.setAttribute('x', x)
-  text.setAttribute('y', y)
   return text
 }
 
@@ -87,6 +95,7 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const startWrapper = getWrapper(start)
   const endWrapper = getWrapper(end)
   const side = startWrapper.closest('me-main')?.className as 'lhs' | 'rls'
+  // TODO: calculate all siblings between start and end
   const { offsetLeft: sL, offsetTop: sT } = getOffsetLT(parentTpc, startWrapper)
   const { offsetLeft: eL, offsetTop: eT } = getOffsetLT(parentTpc, endWrapper)
   console.log({ sL, sT, eL, eT })
@@ -95,14 +104,15 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const top = sT + 10
   const bottom = eT + endWrapper.offsetHeight + 10
   const md = (top + bottom) / 2
+  const color = mei.theme.cssVar['--color']
   if (side === 'lhs') {
     const left = Math.min(sL, eL)
-    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`)
-    text = createText(summaryText, left - 20, md + 6, 'end')
+    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
+    text = createText(summaryText, left - 20, md + 6, 'end', color)
   } else {
     const right = sL + Math.max(startWrapper.offsetWidth, endWrapper.offsetWidth)
-    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`)
-    text = createText(summaryText, right + 20, md + 6, 'start')
+    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, color)
+    text = createText(summaryText, right + 20, md + 6, 'start', color)
   }
   const group = creatGroup('s-' + id)
   group.appendChild(path)
@@ -125,6 +135,26 @@ export const removeSummary = function (this: MindElixirInstance, id: string) {
     this.summaries.splice(index, 1)
     document.querySelector('#s-' + id)?.remove()
   }
+}
+
+export const selectSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
+  const box = el.children[1].getBBox()
+  const padding = 6
+  const radius = 3
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+  setAttributes(rect, {
+    x: box.x - padding + '',
+    y: box.y - padding + '',
+    width: box.width + padding * 2 + '',
+    height: box.height + padding * 2 + '',
+    rx: radius + '',
+    stroke: this.theme.cssVar['--color'],
+    'stroke-width': '2',
+    fill: 'none',
+  })
+  rect.classList.add('selected')
+  el.appendChild(rect)
+  this.currentSummary = el
 }
 
 export const renderSummary = function (this: MindElixirInstance) {
