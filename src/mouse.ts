@@ -33,6 +33,7 @@ export default function (mind: MindElixirInstance) {
     } else {
       mind.unselectNode()
       mind.unselectNodes()
+      mind.unselectSummary()
       // lite version doesn't have hideLinkController
       mind.hideLinkController && mind.hideLinkController()
     }

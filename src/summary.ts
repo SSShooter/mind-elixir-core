@@ -173,6 +173,11 @@ export const selectSummary = function (this: MindElixirInstance, el: SummarySvgG
   this.currentSummary = el
 }
 
+export const unselectSummary = function (this: MindElixirInstance) {
+  this.currentSummary?.querySelector('rect')?.remove()
+  this.currentSummary = null
+}
+
 export const renderSummary = function (this: MindElixirInstance) {
   this.summarySvg.innerHTML = ''
   this.summaries.forEach(summary => {
