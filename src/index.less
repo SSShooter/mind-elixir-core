@@ -1,7 +1,7 @@
 .mind-elixir {
   --gap: 30px; // child node horizontal gap, it will be updated at instance initialization
 
-  // overwrited by js
+  // May overwrited by js
   --root-radius: 30px;
   --main-radius: 20px;
   --root-color: #ffffff;
@@ -11,9 +11,10 @@
   --topic-padding: 3px;
   --color: #777777;
   --bgcolor: #f6f6f6;
-
+  --selected: #4dc4ff;
   --panel-color: #444446;
   --panel-bgcolor: #ffffff;
+  --panel-border-color: #eaeaea;
   // ---
 
   position: relative;
@@ -36,7 +37,7 @@
     height: 0px;
   }
   .selected {
-    box-shadow: 0 0 0 3px #4dc4ff;
+    box-shadow: 0 0 0 3px var(--selected);
   }
   .lhs {
     direction: rtl;

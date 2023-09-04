@@ -12,12 +12,21 @@ type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
 export interface Theme {
   name: string
   palette: string[]
-  cssVar: {
+  cssVar: Partial<{
     '--main-color': string
     '--main-bgcolor': string
     '--color': string
     '--bgcolor': string
-  }
+    '--selected': string
+    '--panel-color': string
+    '--panel-bgcolor': string
+    '--root-color': string
+    '--root-bgcolor': string
+    '--root-radius': string
+    '--main-radius': string
+    '--topic-padding': string
+    '--panel-border-color': string
+  }>
 }
 
 /**

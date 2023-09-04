@@ -164,7 +164,7 @@ export const selectSummary = function (this: MindElixirInstance, el: SummarySvgG
     width: box.width + padding * 2 + '',
     height: box.height + padding * 2 + '',
     rx: radius + '',
-    stroke: this.theme.cssVar['--color'],
+    stroke: this.theme.cssVar['--selected'] || '#4dc4ff',
     'stroke-width': '2',
     fill: 'none',
   })

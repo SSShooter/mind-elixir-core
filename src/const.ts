@@ -1,3 +1,5 @@
+import type { Theme } from '.'
+
 export const LEFT = 0
 export const RIGHT = 1
 export const SIDE = 2
@@ -6,7 +8,7 @@ export const DOWN = 3
 export const GAP = 30 // must sync with --gap in index.less
 
 export const TURNPOINT_R = 8
-export const THEME = {
+export const THEME: Theme = {
   name: 'Latte',
   palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],
   cssVar: {
@@ -20,7 +22,7 @@ export const THEME = {
   },
 }
 
-export const DARK_THEME = {
+export const DARK_THEME: Theme = {
   name: 'Dark',
   palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
   cssVar: {
