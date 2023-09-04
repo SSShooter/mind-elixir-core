@@ -128,14 +128,16 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   group.appendChild(text)
   group.summaryObj = summary
   mei.summarySvg.appendChild(group)
+  return group
 }
 
 export const createSummary = function (this: MindElixirInstance) {
   if (!this.currentNodes) return
   const { parent, start, end } = calcRange(this.currentNodes)
   const summary = { id: generateUUID(), parent, start, end, text: 'summary' }
-  drawSummary(this, summary)
+  const g = drawSummary(this, summary)
   this.summaries.push(summary)
+  this.editSummary(g)
 }
 
 export const removeSummary = function (this: MindElixirInstance, id: string) {

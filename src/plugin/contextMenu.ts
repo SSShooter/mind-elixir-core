@@ -28,6 +28,7 @@ export default function (mind: MindElixirInstance, option: any) {
   const up = createLi('cm-up', lang.moveUp, 'PgUp')
   const down = createLi('cm-down', lang.moveDown, 'Pgdn')
   const link = createLi('cm-down', lang.link, '')
+  const summary = createLi('cm-down', lang.summary || 'Summary', '')
 
   const menuUl = document.createElement('ul')
   menuUl.className = 'menu-list'
@@ -41,6 +42,7 @@ export default function (mind: MindElixirInstance, option: any) {
   }
   menuUl.appendChild(up)
   menuUl.appendChild(down)
+  menuUl.appendChild(summary)
   if (!option || option.link) {
     menuUl.appendChild(link)
   }
@@ -170,5 +172,12 @@ export default function (mind: MindElixirInstance, option: any) {
         once: true,
       }
     )
+  }
+  summary.onclick = () => {
+    menuContainer.hidden = true
+    if (mind.currentNodes && mind.currentNodes.length > 1) {
+      mind.createSummary()
+      mind.unselectNodes()
+    }
   }
 }
