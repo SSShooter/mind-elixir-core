@@ -102,7 +102,12 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   let startTop = 0
   let endBottom = 0
   for (let i = start; i <= end; i++) {
-    const child = parentObj.children![i]
+    const child = parentObj.children?.[i]
+    if (!child) {
+      console.warn('Child not found')
+      mei.removeSummary(id)
+      return null
+    }
     const wrapper = getWrapper(child.id)
     const { offsetLeft, offsetTop } = getOffsetLT(container, wrapper)
     if (i === start) startTop = offsetTop
@@ -135,7 +140,7 @@ export const createSummary = function (this: MindElixirInstance) {
   if (!this.currentNodes) return
   const { parent, start, end } = calcRange(this.currentNodes)
   const summary = { id: generateUUID(), parent, start, end, text: 'summary' }
-  const g = drawSummary(this, summary)
+  const g = drawSummary(this, summary) as SummarySvgGroup
   this.summaries.push(summary)
   this.editSummary(g)
 }
