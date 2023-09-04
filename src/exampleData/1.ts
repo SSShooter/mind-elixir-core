@@ -238,14 +238,18 @@ const aboutMindElixir: MindElixirData = {
   linkData: {},
   summaries: [
     {
-      id: 'a4ed5e72200668fd',
-      start: 'beeb784cc189375f',
-      end: 'beeb7a6bec2d68f5',
+      id: 'a5e68e6a2ce1b648',
+      parent: 'bd42e1d0163ebf04',
+      start: 0,
+      end: 1,
+      text: 'summary',
     },
     {
-      id: 'a4ed611a17170139',
-      start: 'bd42e619051878b3',
-      end: 'bd42e97d7ac35e99',
+      id: 'a5e6978f1bc69f4a',
+      parent: 'bd4313fbac40284b',
+      start: 3,
+      end: 5,
+      text: 'summary',
     },
   ],
 }

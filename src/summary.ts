@@ -5,8 +5,9 @@ import { findEle, selectText } from './utils/dom'
 export type Summary = {
   id: string
   text: string
-  start: string
-  end: string
+  parent: string
+  start: number
+  end: number
 }
 
 export type SummarySvgGroup = SVGGElement & {
@@ -30,6 +31,7 @@ const calcRange = function (currentNodes: Topic[]) {
     return parentChain
   })
   let index = 0
+  // find minimum common parent
   findMcp: for (; index < maxLen; index++) {
     const base = parentChains[0][index]?.node
     console.log(base)
@@ -40,7 +42,6 @@ const calcRange = function (currentNodes: Topic[]) {
       }
     }
   }
-  // minimum common parent
   const range = parentChains.map(chain => chain[index - 1].index).sort()
   console.log(parentChains, 'parentChains')
   const min = range[0] || 0
@@ -49,11 +50,12 @@ const calcRange = function (currentNodes: Topic[]) {
   console.log(parent)
   // if (parent.root) throw new Error('Please select nodes in the same main topic.')
 
-  const start = parent.children![min].id
-  const end = parent.children![max].id
+  // const start = parent.children![min].id
+  // const end = parent.children![max].id
   return {
-    start,
-    end,
+    parent: parent.id,
+    start: min,
+    end: max,
   }
 }
 
@@ -90,27 +92,34 @@ const createText = function (string: string, x: number, y: number, anchor: 'star
 const getWrapper = (id: string) => findEle(id).parentElement.parentElement
 
 const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
-  const { id, text: summaryText, start, end } = summary
-  const parentTpc = mei.nodes
-  const startWrapper = getWrapper(start)
-  const endWrapper = getWrapper(end)
-  const side = startWrapper.closest('me-main')?.className as 'lhs' | 'rls'
-  // TODO: calculate all siblings between start and end
-  const { offsetLeft: sL, offsetTop: sT } = getOffsetLT(parentTpc, startWrapper)
-  const { offsetLeft: eL, offsetTop: eT } = getOffsetLT(parentTpc, endWrapper)
-  console.log({ sL, sT, eL, eT })
+  const { id, text: summaryText, parent, start, end } = summary
+  const container = mei.nodes
+  const parentEl = findEle(parent)
+  const side = parentEl.closest('me-main')?.className as 'lhs' | 'rls'
+  const parentObj = parentEl.nodeObj
+  let left = Infinity
+  let right = 0
+  let startTop = 0
+  let endBottom = 0
+  for (let i = start; i <= end; i++) {
+    const child = parentObj.children![i]
+    const wrapper = getWrapper(child.id)
+    const { offsetLeft, offsetTop } = getOffsetLT(container, wrapper)
+    if (i === start) startTop = offsetTop
+    if (i === end) endBottom = offsetTop + wrapper.offsetHeight
+    if (offsetLeft < left) left = offsetLeft
+    if (wrapper.offsetWidth + offsetLeft > right) right = wrapper.offsetWidth + offsetLeft
+  }
   let path
   let text
-  const top = sT + 10
-  const bottom = eT + endWrapper.offsetHeight + 10
+  const top = startTop + 10
+  const bottom = endBottom + 10
   const md = (top + bottom) / 2
   const color = mei.theme.cssVar['--color']
   if (side === 'lhs') {
-    const left = Math.min(sL, eL)
     path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
     text = createText(summaryText, left - 20, md + 6, 'end', color)
   } else {
-    const right = sL + Math.max(startWrapper.offsetWidth, endWrapper.offsetWidth)
     path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, color)
     text = createText(summaryText, right + 20, md + 6, 'start', color)
   }
@@ -123,8 +132,8 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
 
 export const createSummary = function (this: MindElixirInstance) {
   if (!this.currentNodes) return
-  const { start, end } = calcRange(this.currentNodes)
-  const summary = { id: generateUUID(), start, end, text: 'summary!' }
+  const { parent, start, end } = calcRange(this.currentNodes)
+  const summary = { id: generateUUID(), parent, start, end, text: 'summary' }
   drawSummary(this, summary)
   this.summaries.push(summary)
 }
@@ -183,7 +192,7 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
   const l = textEl.getAttribute('x') + 'px'
   const t = textEl.getAttribute('y') + 'px'
   div.style.cssText = `min-width:${100 - 8}px;position:absolute;left:${l};top:${t};`
-  if (getDirection(el.summaryObj.start) === 'lhs') div.style.cssText += 'transform: translate(-100%, -100%);'
+  if (getDirection(el.summaryObj.parent) === 'lhs') div.style.cssText += 'transform: translate(-100%, -100%);'
   else div.style.cssText += 'transform: translate(0, -100%);'
   div.focus()
 
