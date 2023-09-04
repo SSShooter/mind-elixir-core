@@ -1,3 +1,16 @@
+type LangPack = {
+  addChild: string
+  addParent: string
+  addSibling: string
+  removeNode: string
+  focus: string
+  cancelFocus: string
+  moveUp: string
+  moveDown: string
+  link: string
+  clickTips: string
+  summary: string
+}
 const cn = {
   addChild: '插入子节点',
   addParent: '插入父节点',
@@ -9,8 +22,9 @@ const cn = {
   moveDown: '下移',
   link: '连接',
   clickTips: '请点击目标节点',
+  summary: '摘要',
 }
-const i18n: Record<string, object> = {
+const i18n: Record<string, LangPack> = {
   cn,
   zh_CN: cn,
   zh_TW: {
@@ -24,6 +38,7 @@ const i18n: Record<string, object> = {
     moveDown: '下移',
     link: '連接',
     clickTips: '請點擊目標節點',
+    summary: '摘要',
   },
   en: {
     addChild: 'Add child',
@@ -36,6 +51,7 @@ const i18n: Record<string, object> = {
     moveDown: 'Move down',
     link: 'Link',
     clickTips: 'Please click the target node',
+    summary: 'Summary',
   },
   ru: {
     addChild: 'Добавить дочерний элемент',
@@ -48,6 +64,7 @@ const i18n: Record<string, object> = {
     moveDown: 'Опустить ниже',
     link: 'Ссылка',
     clickTips: 'Пожалуйста, нажмите на целевой узел',
+    summary: 'Описание',
   },
   ja: {
     addChild: '子ノードを追加する',
@@ -60,6 +77,7 @@ const i18n: Record<string, object> = {
     moveDown: '下へ移動',
     link: 'コネクト',
     clickTips: 'ターゲットノードをクリックしてください',
+    summary: '概要',
   },
   pt: {
     addChild: 'Adicionar item filho',
@@ -72,6 +90,7 @@ const i18n: Record<string, object> = {
     moveDown: 'Mover para baixo',
     link: 'Link',
     clickTips: 'Favor clicar no item alvo',
+    summary: 'Resumo',
   },
 }
 
