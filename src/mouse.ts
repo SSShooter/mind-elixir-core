@@ -33,7 +33,7 @@ export default function (mind: MindElixirInstance) {
     } else {
       mind.unselectNode()
       mind.unselectNodes()
-      mind.unselectSummary()
+      mind.unselectSummary() // todo
       // lite version doesn't have hideLinkController
       mind.hideLinkController && mind.hideLinkController()
     }
@@ -51,7 +51,7 @@ export default function (mind: MindElixirInstance) {
   })
 
   /**
-   * drag and move
+   * drag and move the map
    */
   mind.map.addEventListener('mousemove', e => {
     // click trigger mousemove in windows chrome

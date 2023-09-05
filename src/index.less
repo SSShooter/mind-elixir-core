@@ -37,7 +37,7 @@
     height: 0px;
   }
   .selected {
-    box-shadow: 0 0 0 3px var(--selected);
+    box-shadow: 0 0 0 2px var(--selected);
   }
   .lhs {
     direction: rtl;
@@ -84,12 +84,11 @@
       margin: 20px 65px;
       & > me-parent {
         margin: var(--gap);
-        background-color: var(--main-bgcolor);
-        border: 2px solid var(--main-color);
-        border-radius: var(--main-radius);
         padding: 0;
         & > me-tpc {
           border-radius: var(--main-radius);
+          background-color: var(--main-bgcolor);
+          border: 2px solid var(--main-color);
           color: var(--main-color);
           padding: 8px var(--gap);
           #input-box {
@@ -128,6 +127,7 @@
       & > div,
       & > span,
       & > img {
+        // tags,icons,images should not response to click event
         pointer-events: none;
       }
       // drag preview
@@ -237,6 +237,7 @@
     z-index: 11;
     direction: ltr;
     user-select: auto;
+    pointer-events: all;
   }
 
   me-tpc > img {

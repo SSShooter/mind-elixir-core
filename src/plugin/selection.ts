@@ -36,6 +36,7 @@ export default function (mei: MindElixirInstance) {
     .on('beforestart', ({ event }) => {
       if ((event as MouseEvent).button !== 0) return false
       if (((event as MouseEvent).target as Topic).tagName === 'ME-TPC') return false
+      if (((event as MouseEvent).target as HTMLElement).id === 'input-box') return false
       return true
     })
     .on('start', ({ store, event }) => {

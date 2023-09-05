@@ -51,7 +51,13 @@ export default function (mind: MindElixirInstance) {
   const threshold = 12
 
   mind.map.addEventListener('dragstart', e => {
-    dragged = e.target as Topic
+    const target = e.target as Topic
+    if (target?.tagName !== 'ME-TPC') {
+      // it should be a topic element, return if not
+      e.preventDefault()
+      return
+    }
+    dragged = target
     dragged.parentElement.parentElement.style.opacity = '0.5'
     ghost.innerHTML = dragged.innerHTML
     e.dataTransfer?.setDragImage(ghost, 0, 0)
