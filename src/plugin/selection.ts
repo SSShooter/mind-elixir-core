@@ -39,11 +39,10 @@ export default function (mei: MindElixirInstance) {
       if (((event as MouseEvent).target as HTMLElement).id === 'input-box') return false
       return true
     })
-    .on('start', ({ store, event }) => {
-      console.log(store, 'store')
-      console.log(event, 'event')
+    .on('start', ({ event }) => {
       if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
         mei.unselectNodes()
+        mei.unselectSummary()
         selection.clearSelection(true, true)
       }
     })

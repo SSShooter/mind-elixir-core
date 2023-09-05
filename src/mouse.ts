@@ -22,8 +22,12 @@ export default function (mind: MindElixirInstance) {
       return
     } else if (isTopic(target)) {
       mind.selectNode(target as Topic, false, e)
+      mind.unselectNodes()
+      mind.unselectSummary()
     } else if (target.tagName === 'text') {
       mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
+      mind.unselectNode()
+      mind.unselectNodes()
     } else if (target.tagName === 'path') {
       if (target?.parentElement?.tagName === 'g') {
         mind.selectLink(target.parentElement as CustomSvg)
@@ -33,7 +37,7 @@ export default function (mind: MindElixirInstance) {
     } else {
       mind.unselectNode()
       mind.unselectNodes()
-      mind.unselectSummary() // todo
+      mind.unselectSummary()
       // lite version doesn't have hideLinkController
       mind.hideLinkController && mind.hideLinkController()
     }
