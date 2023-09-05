@@ -53,70 +53,6 @@ export interface Expander extends HTMLElement {
 // @public (undocumented)
 export type LinkObj = Record<string, LinkItem>;
 
-// @public
-export const methods: {
-    init(this: MindElixirInstance, data: MindElixirData): Error | undefined;
-    createLink: (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean | undefined, obj?: customLink.LinkItem | undefined) => void;
-    removeLink: (this: MindElixirInstance, linkSvg?: CustomSvg | undefined) => void;
-    selectLink: (this: MindElixirInstance, link: CustomSvg) => void;
-    hideLinkController: (this: MindElixirInstance) => void;
-    showLinkController: (this: MindElixirInstance, p2x: number, p2y: number, p3x: number, p3y: number, linkItem: customLink.LinkItem, fromData: customLink.LinkControllerData, toData: customLink.LinkControllerData) => void;
-    moveNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveNodeAfter: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveNodeBefore: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    removeNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    addChild: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    copyNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    reshapeNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    insertSibling: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    insertBefore: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    insertParent: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveUpNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveDownNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    beginEdit: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    setNodeTopic: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    selectNode: (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean | undefined, e?: MouseEvent | undefined) => void;
-    unselectNode: (this: MindElixirInstance) => void;
-    selectNextSibling: (this: MindElixirInstance) => boolean;
-    selectPrevSibling: (this: MindElixirInstance) => boolean;
-    selectFirstChild: (this: MindElixirInstance) => void;
-    selectParent: (this: MindElixirInstance) => void;
-    getDataString: (this: MindElixirInstance) => string;
-    getData: (this: MindElixirInstance) => MindElixirData;
-    getDataMd: (this: MindElixirInstance) => string;
-    enableEdit: (this: MindElixirInstance) => void;
-    disableEdit: (this: MindElixirInstance) => void;
-    scale: (this: MindElixirInstance, scaleVal: number) => void;
-    toCenter: (this: MindElixirInstance) => void;
-    install: (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) => void;
-    focusNode: (this: MindElixirInstance, el: Topic) => void;
-    cancelFocus: (this: MindElixirInstance) => void;
-    initLeft: (this: MindElixirInstance) => void;
-    initRight: (this: MindElixirInstance) => void;
-    initSide: (this: MindElixirInstance) => void;
-    setLocale: (this: MindElixirInstance, locale: string) => void;
-    expandNode: (this: MindElixirInstance, el: Topic, isExpand?: boolean | undefined) => void;
-    refresh: (this: MindElixirInstance, data?: MindElixirData | undefined) => void;
-    getObjById: (id: string, data: NodeObj) => NodeObj | null;
-    generateNewObj: (this: MindElixirInstance) => NodeObjExport;
-    layout: (this: MindElixirInstance) => void;
-    linkDiv: (this: MindElixirInstance, mainNode?: Wrapper | undefined) => void;
-    createInputDiv: (this: MindElixirInstance, el: Topic) => void;
-    createWrapper: (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean | undefined) => {
-        grp: Wrapper;
-        top: Parent;
-        tpc: Topic;
-    };
-    createParent: (this: MindElixirInstance, nodeObj: NodeObj) => {
-        p: Parent;
-        tpc: Topic;
-    };
-    createChildren: (this: MindElixirInstance, wrappers: Wrapper[]) => Children;
-    createTopic: (this: MindElixirInstance, nodeObj: NodeObj) => Topic;
-    findEle: (id: string, instance?: MindElixirInstance | undefined) => Topic;
-    changeTheme: (this: MindElixirInstance, theme: Theme, shouldRefresh?: boolean) => void;
-};
-
 // @public (undocumented)
 export interface MindElixirCtor {
     // (undocumented)
@@ -163,6 +99,10 @@ export interface MindElixirData {
     linkData?: LinkObj;
     // (undocumented)
     nodeData: NodeObj;
+    // Warning: (ae-forgotten-export) The symbol "Summary" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    summaries?: Summary[];
     // (undocumented)
     theme?: Theme;
 }
@@ -191,6 +131,12 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     currentNode: Topic | null;
     // (undocumented)
+    currentNodes: Topic[] | null;
+    // Warning: (ae-forgotten-export) The symbol "SummarySvgGroup" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    currentSummary: SummarySvgGroup | null;
+    // (undocumented)
     direction: number;
     // (undocumented)
     draggable: boolean;
@@ -206,8 +152,6 @@ export interface MindElixirInstance extends MindElixirMethods {
     //
     // (undocumented)
     history: Operation[];
-    // (undocumented)
-    inputDiv: HTMLElement | null;
     // (undocumented)
     isFocusMode: boolean;
     // (undocumented)
@@ -257,6 +201,10 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     subLinkStyle: number;
     // (undocumented)
+    summaries: Summary[];
+    // (undocumented)
+    summarySvg: SVGElement;
+    // (undocumented)
     tempDirection: number | null;
     // (undocumented)
     theme: Theme;
@@ -270,6 +218,8 @@ export interface MindElixirInstance extends MindElixirMethods {
     waitCopy: Topic | null;
 }
 
+// Warning: (ae-forgotten-export) The symbol "methods" needs to be exported by the entry point index.d.ts
+//
 // @public (undocumented)
 export type MindElixirMethods = typeof methods;
 
@@ -374,12 +324,21 @@ export interface Parent extends HTMLElement {
 // @public (undocumented)
 export interface Theme {
     // (undocumented)
-    cssVar: {
+    cssVar: Partial<{
         '--main-color': string;
         '--main-bgcolor': string;
         '--color': string;
         '--bgcolor': string;
-    };
+        '--selected': string;
+        '--panel-color': string;
+        '--panel-bgcolor': string;
+        '--root-color': string;
+        '--root-bgcolor': string;
+        '--root-radius': string;
+        '--main-radius': string;
+        '--topic-padding': string;
+        '--panel-border-color': string;
+    }>;
     // (undocumented)
     name: string;
     // (undocumented)
@@ -428,10 +387,6 @@ export interface Wrapper extends HTMLElement {
     // (undocumented)
     previousSibling: Wrapper | null;
 }
-
-// Warnings were encountered during analysis:
-//
-// dist/types/methods.d.ts:11:5 - (ae-forgotten-export) The symbol "customLink" needs to be exported by the entry point index.d.ts
 
 // (No @packageDocumentation comment for this package)
 

@@ -134,7 +134,6 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   div.focus()
 
   selectText(div)
-  this.inputDiv = div
 
   this.bus.fire('operation', {
     name: 'beginEdit',
@@ -150,7 +149,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
       if (e.shiftKey) return
 
       e.preventDefault()
-      this.inputDiv?.blur()
+      div?.blur()
       this.map.focus()
     }
   })
@@ -162,8 +161,6 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
     if (topic === '') node.topic = origin
     else node.topic = topic
     div.remove()
-    // memory leak?
-    this.inputDiv = null
     if (topic === origin) return
     el.childNodes[0].textContent = node.topic
     this.linkDiv()

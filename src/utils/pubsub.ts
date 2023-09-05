@@ -1,3 +1,4 @@
+import type { Summary } from '../summary'
 import type { NodeObj } from '../types/index'
 export type OperationType =
   | 'moveNode'
@@ -28,6 +29,11 @@ export type Operation =
   | {
       name: 'finishEdit'
       obj: NodeObj
+      origin: string
+    }
+  | {
+      name: 'finishEditSummary'
+      obj: Summary
       origin: string
     }
   | {

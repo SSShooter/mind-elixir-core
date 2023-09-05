@@ -209,7 +209,6 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
   div.focus()
 
   selectText(div)
-  this.inputDiv = div
 
   div.addEventListener('keydown', e => {
     e.stopPropagation()
@@ -220,7 +219,7 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
       if (e.shiftKey) return
 
       e.preventDefault()
-      this.inputDiv?.blur()
+      div.blur()
       this.map.focus()
     }
   })
@@ -232,17 +231,14 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
     if (text === '') node.text = origin
     else node.text = text
     div.remove()
-    // memory leak?
-    this.inputDiv = null
-    // debugger
     if (text === origin) return
     textEl.innerHTML = node.text
     this.linkDiv()
-    // this.bus.fire('operation', {
-    //   name: 'finishEdit',
-    //   obj: node,
-    //   origin,
-    // })
+    this.bus.fire('operation', {
+      name: 'finishEditSummary',
+      obj: node,
+      origin,
+    })
   })
   console.timeEnd('editSummary')
 }

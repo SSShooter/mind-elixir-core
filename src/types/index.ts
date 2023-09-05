@@ -49,7 +49,6 @@ export interface MindElixirInstance extends MindElixirMethods {
 
   waitCopy: Topic | null
   currentLink: CustomSvg | null
-  inputDiv: HTMLElement | null
   scaleVal: number
   tempDirection: number | null
   theme: Theme
