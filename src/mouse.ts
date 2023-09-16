@@ -9,11 +9,13 @@ const isTopic = (target: HTMLElement) => {
 
 export default function (mind: MindElixirInstance) {
   mind.map.addEventListener('click', e => {
-    console.log('click', e)
     if (dragMoveHelper.moved) {
       dragMoveHelper.clear()
       return
     }
+    mind.unselectNode()
+    mind.unselectNodes()
+    mind.unselectSummary()
     // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as any
     if (target.tagName === 'ME-EPD') {
@@ -22,12 +24,8 @@ export default function (mind: MindElixirInstance) {
       return
     } else if (isTopic(target)) {
       mind.selectNode(target as Topic, false, e)
-      mind.unselectNodes()
-      mind.unselectSummary()
     } else if (target.tagName === 'text') {
       mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
-      mind.unselectNode()
-      mind.unselectNodes()
     } else if (target.tagName === 'path') {
       if (target?.parentElement?.tagName === 'g') {
         mind.selectLink(target.parentElement as CustomSvg)
@@ -35,9 +33,6 @@ export default function (mind: MindElixirInstance) {
     } else if (target.className === 'circle') {
       // skip circle
     } else {
-      mind.unselectNode()
-      mind.unselectNodes()
-      mind.unselectSummary()
       // lite version doesn't have hideLinkController
       mind.hideLinkController && mind.hideLinkController()
     }

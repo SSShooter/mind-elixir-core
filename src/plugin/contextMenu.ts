@@ -89,7 +89,7 @@ export default function (mind: MindElixirInstance, option: any) {
         add_sibling.className = ''
         remove_child.className = ''
       }
-      mind.selectNode(target)
+      if (!mind.currentNodes) mind.selectNode(target)
       menuContainer.hidden = false
       const height = menuUl.offsetHeight
       const width = menuUl.offsetWidth
@@ -175,9 +175,7 @@ export default function (mind: MindElixirInstance, option: any) {
   }
   summary.onclick = () => {
     menuContainer.hidden = true
-    if (mind.currentNodes && mind.currentNodes.length > 1) {
-      mind.createSummary()
-      mind.unselectNodes()
-    }
+    mind.createSummary()
+    mind.unselectNodes()
   }
 }

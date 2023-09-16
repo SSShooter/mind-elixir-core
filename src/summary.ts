@@ -15,9 +15,21 @@ export type SummarySvgGroup = SVGGElement & {
   summaryObj: Summary
 }
 
-const calcRange = function (currentNodes: Topic[]) {
+const calcRange = function (nodes: Topic[]) {
+  if (nodes.length === 0) throw new Error('No selected node.')
+  if (nodes.length === 1) {
+    const obj = nodes[0].nodeObj
+    const parent = nodes[0].nodeObj.parent
+    if (!parent) throw new Error('Can not select root node.')
+    const i = parent.children!.findIndex(child => obj === child)
+    return {
+      parent: parent.id,
+      start: i,
+      end: i,
+    }
+  }
   let maxLen = 0
-  const parentChains = currentNodes.map(item => {
+  const parentChains = nodes.map(item => {
     let node = item.nodeObj
     const parentChain = []
     while (node.parent) {
@@ -34,7 +46,6 @@ const calcRange = function (currentNodes: Topic[]) {
   // find minimum common parent
   findMcp: for (; index < maxLen; index++) {
     const base = parentChains[0][index]?.node
-    console.log(base)
     for (let i = 1; i < parentChains.length; i++) {
       const parentChain = parentChains[i]
       if (parentChain[index]?.node !== base) {
@@ -43,12 +54,10 @@ const calcRange = function (currentNodes: Topic[]) {
     }
   }
   const range = parentChains.map(chain => chain[index - 1].index).sort()
-  console.log(parentChains, 'parentChains')
   const min = range[0] || 0
   const max = range[range.length - 1] || 0
   const parent = parentChains[0][index - 1].node
-  console.log(parent)
-  // if (parent.root) throw new Error('Please select nodes in the same main topic.')
+  if (parent.root) throw new Error('Please select nodes in the same main topic.')
 
   // const start = parent.children![min].id
   // const end = parent.children![max].id
@@ -137,8 +146,13 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
 }
 
 export const createSummary = function (this: MindElixirInstance) {
-  if (!this.currentNodes) return
-  const { parent, start, end } = calcRange(this.currentNodes)
+  let nodes: Topic[] = []
+  if (this.currentNode) {
+    nodes = [this.currentNode]
+  } else if (this.currentNodes) {
+    nodes = this.currentNodes
+  }
+  const { parent, start, end } = calcRange(nodes)
   const summary = { id: generateUUID(), parent, start, end, text: 'summary' }
   const g = drawSummary(this, summary) as SummarySvgGroup
   this.summaries.push(summary)
@@ -227,7 +241,6 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
     if (!div) return
     const node = el.summaryObj
     const text = div.textContent?.trim() || ''
-    console.log(text)
     if (text === '') node.text = origin
     else node.text = text
     div.remove()

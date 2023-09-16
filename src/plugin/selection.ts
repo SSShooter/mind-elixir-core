@@ -22,16 +22,6 @@ export default function (mei: MindElixirInstance) {
         startScrollMargins: { x: 10, y: 10 },
       },
     },
-    features: {
-      // Configuration in case a selectable gets just clicked.
-      singleTap: {
-        // Enable single-click selection (Also disables range-selection via shift + ctrl).
-        allow: true,
-
-        // 'native' (element was mouse-event target) or 'touch' (element visually touched).
-        intersect: 'native',
-      },
-    },
   })
     .on('beforestart', ({ event }) => {
       if ((event as MouseEvent).button !== 0) return false
@@ -41,6 +31,7 @@ export default function (mei: MindElixirInstance) {
     })
     .on('start', ({ event }) => {
       if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
+        mei.unselectNode()
         mei.unselectNodes()
         mei.unselectSummary()
         selection.clearSelection(true, true)
