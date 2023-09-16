@@ -14,6 +14,7 @@ export const createMainPath = function (d: string, color: string) {
 export const createLinkSvg = function (klass: string) {
   const svg = $d.createElementNS(svgNS, 'svg')
   svg.setAttribute('class', klass)
+  svg.setAttribute('overflow', 'visible')
   return svg
 }
 

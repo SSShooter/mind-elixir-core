@@ -27,14 +27,14 @@
 
 Mind elixir is a free open source mind map core.
 
-- Zero dependency
-- High performance
 - Lightweight
+- High performance
 - Framework agnostic
 - Pluginable
 - Build-in drag and drop / node edit plugin
-- Styling your node with CSS
+- Summarize nodes
 - Undo / Redo
+- Styling your node with CSS
 
 <details>
 <summary>Table of Contents</summary>
@@ -54,6 +54,7 @@ Mind elixir is a free open source mind map core.
 - [Theme](#theme)
 - [Not only core](#not-only-core)
 - [Development](#development)
+- [Thanks](#thanks)
 
 </details>
 
@@ -317,3 +318,7 @@ npm run build
 npm link
 npm link mind-elixir
 ```
+
+## Thanks
+
+- [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)

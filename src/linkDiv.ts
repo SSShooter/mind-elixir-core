@@ -1,4 +1,5 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
+import { getOffsetLT } from './utils/index'
 import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R } from './const'
 import type { Wrapper, Topic, Parent } from './types/dom'
@@ -18,16 +19,6 @@ type SubLineParams = {
   isFirst: boolean | undefined
 }
 
-const getOffsetLT = (parent: HTMLElement, child: HTMLElement) => {
-  let offsetLeft = 0
-  let offsetTop = 0
-  while (child && child !== parent) {
-    offsetLeft += child.offsetLeft
-    offsetTop += child.offsetTop
-    child = child.offsetParent as HTMLElement
-  }
-  return { offsetLeft, offsetTop }
-}
 let genPath: typeof generateSubLine1 = generateSubLine1
 /**
  * Link nodes with svg,
@@ -128,6 +119,8 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const link = this.linkData[prop]
     this.createLink(findEle(link.from), findEle(link.to), true, link)
   }
+
+  this.renderSummary()
   console.timeEnd('linkDiv')
 }
 

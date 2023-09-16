@@ -729,938 +729,6 @@
           }
         },
         {
-          "kind": "Variable",
-          "canonicalReference": "mind-elixir!methods:var",
-          "docComment": "/**\n * Methods that mind-elixir instance can use\n *\n * @public\n */\n",
-          "excerptTokens": [
-            {
-              "kind": "Content",
-              "text": "methods: "
-            },
-            {
-              "kind": "Content",
-              "text": "{\n    init(this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", data: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirData",
-              "canonicalReference": "mind-elixir!MindElixirData:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "): "
-            },
-            {
-              "kind": "Reference",
-              "text": "Error",
-              "canonicalReference": "!Error:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined;\n    createLink: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", from: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", to: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", isInitPaint?: boolean | undefined, obj?: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.LinkItem",
-              "canonicalReference": "mind-elixir!~LinkItem:type"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined) => void;\n    removeLink: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", linkSvg?: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "CustomSvg",
-              "canonicalReference": "mind-elixir!CustomSvg:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined) => void;\n    selectLink: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", link: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "CustomSvg",
-              "canonicalReference": "mind-elixir!CustomSvg:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    hideLinkController: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    showLinkController: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", p2x: number, p2y: number, p3x: number, p3y: number, linkItem: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.LinkItem",
-              "canonicalReference": "mind-elixir!~LinkItem:type"
-            },
-            {
-              "kind": "Content",
-              "text": ", fromData: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.LinkControllerData",
-              "canonicalReference": "mind-elixir!~LinkControllerData:type"
-            },
-            {
-              "kind": "Content",
-              "text": ", toData: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.LinkControllerData",
-              "canonicalReference": "mind-elixir!~LinkControllerData:type"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    moveNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    moveNodeAfter: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    moveNodeBefore: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    removeNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    addChild: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    copyNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    reshapeNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    insertSibling: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    insertBefore: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    insertParent: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    moveUpNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    moveDownNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    beginEdit: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    setNodeTopic: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", ...args: unknown[]) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    selectNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", targetElement: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", isNewNode?: boolean | undefined, e?: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MouseEvent",
-              "canonicalReference": "!MouseEvent:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined) => void;\n    unselectNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    selectNextSibling: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => boolean;\n    selectPrevSibling: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => boolean;\n    selectFirstChild: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    selectParent: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    getDataString: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => string;\n    getData: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirData",
-              "canonicalReference": "mind-elixir!MindElixirData:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    getDataMd: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => string;\n    enableEdit: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    disableEdit: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    scale: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", scaleVal: number) => void;\n    toCenter: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    install: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", plugin: (instance: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void) => void;\n    focusNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", el: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    cancelFocus: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    initLeft: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    initRight: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    initSide: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    setLocale: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", locale: string) => void;\n    expandNode: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", el: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", isExpand?: boolean | undefined) => void;\n    refresh: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", data?: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirData",
-              "canonicalReference": "mind-elixir!MindElixirData:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined) => void;\n    getObjById: (id: string, data: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeObj",
-              "canonicalReference": "mind-elixir!NodeObj:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeObj",
-              "canonicalReference": "mind-elixir!NodeObj:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | null;\n    generateNewObj: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeObjExport",
-              "canonicalReference": "mind-elixir!NodeObjExport:type"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    layout: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    linkDiv: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", mainNode?: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Wrapper",
-              "canonicalReference": "mind-elixir!Wrapper:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined) => void;\n    createInputDiv: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", el: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    createWrapper: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", nodeObj: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeObj",
-              "canonicalReference": "mind-elixir!NodeObj:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", omitChildren?: boolean | undefined) => {\n        grp: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Wrapper",
-              "canonicalReference": "mind-elixir!Wrapper:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n        top: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Parent",
-              "canonicalReference": "mind-elixir!Parent:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n        tpc: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    };\n    createParent: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", nodeObj: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeObj",
-              "canonicalReference": "mind-elixir!NodeObj:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => {\n        p: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Parent",
-              "canonicalReference": "mind-elixir!Parent:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n        tpc: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    };\n    createChildren: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", wrappers: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Wrapper",
-              "canonicalReference": "mind-elixir!Wrapper:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "[]) => import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Children",
-              "canonicalReference": "mind-elixir!Children:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    createTopic: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", nodeObj: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeObj",
-              "canonicalReference": "mind-elixir!NodeObj:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    findEle: (id: string, instance?: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined) => import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ";\n    changeTheme: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", theme: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Theme",
-              "canonicalReference": "mind-elixir!Theme:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", shouldRefresh?: boolean) => void;\n}"
-            }
-          ],
-          "fileUrlPath": "dist/types/methods.d.ts",
-          "isReadonly": true,
-          "releaseTag": "Public",
-          "name": "methods",
-          "variableTypeTokenRange": {
-            "startIndex": 1,
-            "endIndex": 204
-          }
-        },
-        {
           "kind": "Interface",
           "canonicalReference": "mind-elixir!MindElixirCtor:interface",
           "docComment": "",
@@ -2102,6 +1170,38 @@
             },
             {
               "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirData#summaries:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "summaries?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Summary",
+                  "canonicalReference": "mind-elixir!~Summary:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "summaries",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirData#theme:member",
               "docComment": "",
               "excerptTokens": [
@@ -2408,6 +1508,70 @@
             },
             {
               "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#currentNodes:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "currentNodes: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Topic",
+                  "canonicalReference": "mind-elixir!Topic:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[] | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "currentNodes",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#currentSummary:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "currentSummary: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SummarySvgGroup",
+                  "canonicalReference": "mind-elixir!~SummarySvgGroup:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "currentSummary",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#direction:member",
               "docComment": "",
               "excerptTokens": [
@@ -2514,38 +1678,6 @@
               "isOptional": false,
               "releaseTag": "Public",
               "name": "history",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 3
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#inputDiv:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "inputDiv: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "HTMLElement",
-                  "canonicalReference": "!HTMLElement:interface"
-                },
-                {
-                  "kind": "Content",
-                  "text": " | null"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "inputDiv",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 3
@@ -3215,6 +2347,66 @@
             },
             {
               "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#summaries:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "summaries: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Summary",
+                  "canonicalReference": "mind-elixir!~Summary:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "summaries",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#summarySvg:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "summarySvg: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SVGElement",
+                  "canonicalReference": "!SVGElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "summarySvg",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#tempDirection:member",
               "docComment": "",
               "excerptTokens": [
@@ -3406,7 +2598,7 @@
             {
               "kind": "Reference",
               "text": "methods",
-              "canonicalReference": "mind-elixir!methods:var"
+              "canonicalReference": "mind-elixir!~methods:var"
             },
             {
               "kind": "Content",
@@ -4595,8 +3787,13 @@
                   "text": "cssVar: "
                 },
                 {
+                  "kind": "Reference",
+                  "text": "Partial",
+                  "canonicalReference": "!Partial:type"
+                },
+                {
                   "kind": "Content",
-                  "text": "{\n        '--main-color': string;\n        '--main-bgcolor': string;\n        '--color': string;\n        '--bgcolor': string;\n    }"
+                  "text": "<{\n        '--main-color': string;\n        '--main-bgcolor': string;\n        '--color': string;\n        '--bgcolor': string;\n        '--selected': string;\n        '--panel-color': string;\n        '--panel-bgcolor': string;\n        '--root-color': string;\n        '--root-bgcolor': string;\n        '--root-radius': string;\n        '--main-radius': string;\n        '--topic-padding': string;\n        '--panel-border-color': string;\n    }>"
                 },
                 {
                   "kind": "Content",
@@ -4609,7 +3806,7 @@
               "name": "cssVar",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
-                "endIndex": 2
+                "endIndex": 3
               }
             },
             {

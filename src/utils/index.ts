@@ -233,3 +233,20 @@ export function deepClone(obj: NodeObj) {
   )
   return deepCloneObj
 }
+
+export const getOffsetLT = (parent: HTMLElement, child: HTMLElement) => {
+  let offsetLeft = 0
+  let offsetTop = 0
+  while (child && child !== parent) {
+    offsetLeft += child.offsetLeft
+    offsetTop += child.offsetTop
+    child = child.offsetParent as HTMLElement
+  }
+  return { offsetLeft, offsetTop }
+}
+
+export const setAttributes = (el: HTMLElement | SVGElement, attrs: { [key: string]: string }) => {
+  for (const key in attrs) {
+    el.setAttribute(key, attrs[key])
+  }
+}

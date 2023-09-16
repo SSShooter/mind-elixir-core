@@ -67,7 +67,6 @@ function MindElixir(
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
   this.currentLink = null // the selected link svg element
-  this.inputDiv = null // editor
   this.scaleVal = 1
   this.tempDirection = null
   this.mainLinkStyle = mainLinkStyle || 0
@@ -94,6 +93,7 @@ function MindElixir(
   this.nodes.className = 'main-node-container'
 
   this.lines = createLinkSvg('lines') // main link container
+  this.summarySvg = createLinkSvg('summary') // summary container
 
   this.linkController = createLinkSvg('linkcontroller') // bezier controller container
   this.P2 = $d.createElement('div') // bezier P2
@@ -130,7 +130,7 @@ MindElixir.DARK_THEME = DARK_THEME
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '3.0.4'
+MindElixir.version = '3.1.0'
 /**
  * @function
  * @memberof MindElixir

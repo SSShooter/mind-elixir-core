@@ -19,7 +19,7 @@ const buildList = [
 ]
 for (let i = 0; i < buildList.length; i++) {
   const info = buildList[i]
-  console.log(`\n\nBuilding ${info.fileName}...\n\n`)
+  console.log(`\n\nBuilding ${info.name}...\n\n`)
   await build({
     build: {
       emptyOutDir: i === 0,

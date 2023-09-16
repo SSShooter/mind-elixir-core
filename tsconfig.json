@@ -21,6 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
     // "moduleResolution": "nodenext"
+    "moduleResolution": "Node",
   },
   "include": ["src"],
   "exclude": ["src/dev.dist.ts"]

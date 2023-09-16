@@ -4,6 +4,7 @@ import type { EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { LinkItem } from '../customLink'
+import type { Summary, SummarySvgGroup } from '../summary'
 export * from '../methods'
 
 type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
@@ -11,12 +12,21 @@ type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
 export interface Theme {
   name: string
   palette: string[]
-  cssVar: {
+  cssVar: Partial<{
     '--main-color': string
     '--main-bgcolor': string
     '--color': string
     '--bgcolor': string
-  }
+    '--selected': string
+    '--panel-color': string
+    '--panel-bgcolor': string
+    '--root-color': string
+    '--root-bgcolor': string
+    '--root-radius': string
+    '--main-radius': string
+    '--topic-padding': string
+    '--panel-border-color': string
+  }>
 }
 
 /**
@@ -28,12 +38,17 @@ export interface MindElixirInstance extends MindElixirMethods {
   isFocusMode: boolean
   nodeDataBackup: NodeObj
   mindElixirBox: HTMLElement
+
   nodeData: NodeObj
   linkData: LinkObj
+  summaries: Summary[]
+
   currentNode: Topic | null
+  currentNodes: Topic[] | null
+  currentSummary: SummarySvgGroup | null
+
   waitCopy: Topic | null
   currentLink: CustomSvg | null
-  inputDiv: HTMLElement | null
   scaleVal: number
   tempDirection: number | null
   theme: Theme
@@ -59,6 +74,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   root: HTMLElement
   nodes: HTMLElement
   lines: SVGElement
+  summarySvg: SVGElement
   linkController: SVGElement
   P2: HTMLElement
   P3: HTMLElement
@@ -153,6 +169,7 @@ export type LinkObj = Record<string, LinkItem>
 export interface MindElixirData {
   nodeData: NodeObj
   linkData?: LinkObj
+  summaries?: Summary[]
   direction?: number
   theme?: Theme
 }

@@ -1,7 +1,7 @@
 .mind-elixir {
   --gap: 30px; // child node horizontal gap, it will be updated at instance initialization
 
-  // overwrited by js
+  // May overwrited by js
   --root-radius: 30px;
   --main-radius: 20px;
   --root-color: #ffffff;
@@ -11,9 +11,10 @@
   --topic-padding: 3px;
   --color: #777777;
   --bgcolor: #f6f6f6;
-
+  --selected: #4dc4ff;
   --panel-color: #444446;
   --panel-bgcolor: #ffffff;
+  --panel-border-color: #eaeaea;
   // ---
 
   position: relative;
@@ -36,7 +37,7 @@
     height: 0px;
   }
   .selected {
-    box-shadow: 0 0 0 3px #4dc4ff;
+    box-shadow: 0 0 0 2px var(--selected);
   }
   .lhs {
     direction: rtl;
@@ -83,12 +84,11 @@
       margin: 20px 65px;
       & > me-parent {
         margin: var(--gap);
-        background-color: var(--main-bgcolor);
-        border: 2px solid var(--main-color);
-        border-radius: var(--main-radius);
         padding: 0;
         & > me-tpc {
           border-radius: var(--main-radius);
+          background-color: var(--main-bgcolor);
+          border: 2px solid var(--main-color);
           color: var(--main-color);
           padding: 8px var(--gap);
           #input-box {
@@ -127,6 +127,7 @@
       & > div,
       & > span,
       & > img {
+        // tags,icons,images should not response to click event
         pointer-events: none;
       }
       // drag preview
@@ -186,6 +187,7 @@
     overflow: hidden;
   }
   .lines,
+  .summary,
   .subLines,
   .topiclinks,
   .linkcontroller {
@@ -196,10 +198,14 @@
     left: 0;
   }
   .topiclinks,
-  .linkcontroller {
+  .linkcontroller,
+  .summary {
     pointer-events: none;
-    g {
+    text {
       pointer-events: all;
+    }
+    .selected {
+      pointer-events: none;
     }
   }
   .lines,
@@ -231,6 +237,7 @@
     z-index: 11;
     direction: ltr;
     user-select: auto;
+    pointer-events: all;
   }
 
   me-tpc > img {
@@ -287,4 +294,8 @@
     border-radius: 6px;
     border: #666666 2px solid;
   }
+}
+.selection-area {
+  background: #4f90f22d;
+  border: 1px solid #4f90f2;
 }

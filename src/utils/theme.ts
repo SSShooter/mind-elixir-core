@@ -7,7 +7,7 @@ const changeTheme = function (this: MindElixirInstance, theme: Theme, shouldRefr
   const keys = Object.keys(cssVar)
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i] as keyof typeof cssVar
-    this.mindElixirBox.style.setProperty(key, cssVar[key])
+    this.mindElixirBox.style.setProperty(key, cssVar[key] as string)
   }
   shouldRefresh && this.refresh()
 }

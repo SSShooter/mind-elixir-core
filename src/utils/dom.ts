@@ -119,8 +119,8 @@ export function selectText(div: HTMLElement) {
   }
 }
 
-export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
-  console.time('createInputDiv')
+export const editTopic = function (this: MindElixirInstance, el: Topic) {
+  console.time('editTopic')
   if (!el) return
   const div = $d.createElement('div')
   const origin = el.childNodes[0].textContent as string
@@ -134,7 +134,6 @@ export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
   div.focus()
 
   selectText(div)
-  this.inputDiv = div
 
   this.bus.fire('operation', {
     name: 'beginEdit',
@@ -150,7 +149,7 @@ export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
       if (e.shiftKey) return
 
       e.preventDefault()
-      this.inputDiv?.blur()
+      div?.blur()
       this.map.focus()
     }
   })
@@ -162,8 +161,6 @@ export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
     if (topic === '') node.topic = origin
     else node.topic = topic
     div.remove()
-    // memory leak?
-    this.inputDiv = null
     if (topic === origin) return
     el.childNodes[0].textContent = node.topic
     this.linkDiv()
@@ -173,7 +170,7 @@ export const createInputDiv = function (this: MindElixirInstance, el: Topic) {
       origin,
     })
   })
-  console.timeEnd('createInputDiv')
+  console.timeEnd('editTopic')
 }
 
 export const createExpander = function (expanded: boolean | undefined): Expander {

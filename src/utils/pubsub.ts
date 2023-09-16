@@ -1,3 +1,4 @@
+import type { Summary } from '../summary'
 import type { NodeObj } from '../types/index'
 export type OperationType =
   | 'moveNode'
@@ -31,6 +32,11 @@ export type Operation =
       origin: string
     }
   | {
+      name: 'finishEditSummary'
+      obj: Summary
+      origin: string
+    }
+  | {
       name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNode'
       obj: NodeObj
       toObj: NodeObj
@@ -47,7 +53,9 @@ export type EventMap = {
   operation: (info: Operation) => void
   selectNode: (nodeObj: NodeObj, e?: MouseEvent) => void
   selectNewNode: (nodeObj: NodeObj) => void
+  selectNodes: (nodeObj: NodeObj[]) => void
   unselectNode: () => void
+  unselectNodes: () => void
   expandNode: (nodeObj: NodeObj) => void
 }
 

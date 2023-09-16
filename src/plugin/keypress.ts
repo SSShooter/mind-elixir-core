@@ -118,6 +118,7 @@ export default function (mind: MindElixirInstance) {
     if (e.keyCode === 8 || e.keyCode === 46) {
       // del,backspace
       if (mind.currentLink) mind.removeLink()
+      else if (mind.currentSummary) mind.removeSummary(mind.currentSummary.summaryObj.id)
       else mind.removeNode()
     } else {
       const keyHandler = key2func[e.keyCode]
