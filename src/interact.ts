@@ -134,7 +134,7 @@ export const selectParent = function (this: MindElixirInstance) {
 export const getDataString = function (this: MindElixirInstance) {
   const data = collectData(this)
   return JSON.stringify(data, (k, v) => {
-    if (k === 'parent') return undefined
+    if (k === 'parent' && typeof v !== 'string') return undefined
     if (k === 'from') return v.nodeObj.id
     if (k === 'to') return v.nodeObj.id
     return v
