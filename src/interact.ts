@@ -14,6 +14,7 @@ function collectData(instance: MindElixirInstance) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
     linkData: instance.linkData,
+    summaries: instance.summaries,
     direction: instance.direction,
     theme: instance.theme,
   }
