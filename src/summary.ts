@@ -53,14 +53,13 @@ const calcRange = function (nodes: Topic[]) {
       }
     }
   }
+  if (!index) throw new Error('Can not select root node.')
   const range = parentChains.map(chain => chain[index - 1].index).sort()
   const min = range[0] || 0
   const max = range[range.length - 1] || 0
   const parent = parentChains[0][index - 1].node
   if (parent.root) throw new Error('Please select nodes in the same main topic.')
 
-  // const start = parent.children![min].id
-  // const end = parent.children![max].id
   return {
     parent: parent.id,
     start: min,
@@ -100,12 +99,24 @@ const createText = function (string: string, x: number, y: number, anchor: 'star
 
 const getWrapper = (id: string) => findEle(id).parentElement.parentElement
 
+const getDirection = function ({ parent, start }: Summary) {
+  const parentEl = findEle(parent)
+  const parentObj = parentEl.nodeObj
+  let side: 'lhs' | 'rls'
+  if (parentObj.root === true) {
+    side = findEle(parentObj.children![start].id).closest('me-main')?.className as 'lhs' | 'rls'
+  } else {
+    side = parentEl.closest('me-main')?.className as 'lhs' | 'rls'
+  }
+  return side
+}
+
 const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const { id, text: summaryText, parent, start, end } = summary
   const container = mei.nodes
   const parentEl = findEle(parent)
-  const side = parentEl.closest('me-main')?.className as 'lhs' | 'rls'
   const parentObj = parentEl.nodeObj
+  const side = getDirection(summary)
   let left = Infinity
   let right = 0
   let startTop = 0
@@ -200,10 +211,6 @@ export const renderSummary = function (this: MindElixirInstance) {
   this.nodes.insertAdjacentElement('beforeend', this.summarySvg)
 }
 
-const getDirection = function (id: string) {
-  return findEle(id).closest('me-main')?.className as 'lhs' | 'rls'
-}
-
 export const editSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
   console.time('editSummary')
   if (!el) return
@@ -218,7 +225,7 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
   const l = textEl.getAttribute('x') + 'px'
   const t = textEl.getAttribute('y') + 'px'
   div.style.cssText = `min-width:${100 - 8}px;position:absolute;left:${l};top:${t};`
-  if (getDirection(el.summaryObj.parent) === 'lhs') div.style.cssText += 'transform: translate(-100%, -100%);'
+  if (getDirection(el.summaryObj) === 'lhs') div.style.cssText += 'transform: translate(-100%, -100%);'
   else div.style.cssText += 'transform: translate(0, -100%);'
   div.focus()
 
