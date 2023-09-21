@@ -23,20 +23,30 @@ export default function (mind: MindElixirInstance) {
       // tab
       mind.addChild()
     },
+    112: () => {
+      // f1
+      mind.toCenter()
+    },
     113: () => {
       // f2
       mind.beginEdit()
     },
-    38: () => {
+    38: e => {
       // up
+      if (e.metaKey || e.ctrlKey) {
+        return mind.initSide()
+      }
       mind.selectPrevSibling()
     },
     40: () => {
       // down
       mind.selectNextSibling()
     },
-    37: () => {
+    37: e => {
       // left
+      if (e.metaKey || e.ctrlKey) {
+        return mind.initLeft()
+      }
       if (!mind.currentNode) return
       const nodeObj = mind.currentNode.nodeObj
       const main = mind.currentNode.offsetParent.offsetParent.parentElement
@@ -52,8 +62,11 @@ export default function (mind: MindElixirInstance) {
         mind.selectFirstChild()
       }
     },
-    39: () => {
+    39: e => {
       // right
+      if (e.metaKey || e.ctrlKey) {
+        return mind.initRight()
+      }
       if (!mind.currentNode) return
       const nodeObj = mind.currentNode.nodeObj
       const main = mind.currentNode.offsetParent.offsetParent.parentElement
@@ -103,6 +116,12 @@ export default function (mind: MindElixirInstance) {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal < 0.6) return
         mind.scale((mind.scaleVal -= 0.2))
+      }
+    },
+    // ctrl 0
+    48: (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey) {
+        mind.scale(1)
       }
     },
   }

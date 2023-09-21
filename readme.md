@@ -52,6 +52,7 @@ Mind elixir is a free open source mind map core.
   - [Operation Guards](#operation-guards)
 - [Methods](#methods)
 - [Theme](#theme)
+- [Shortcuts](#shortcuts)
 - [Not only core](#not-only-core)
 - [Development](#development)
 - [Thanks](#thanks)
@@ -294,6 +295,28 @@ mind.changeTheme({
 ```
 
 Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`. Please change the theme **manually** when the scheme changes.
+
+## Shortcuts
+
+| Shortcut           | Function                         |
+| ------------------ | -------------------------------- |
+| Enter              | Insert Sibling Node              |
+| Tab                | Insert Child Node                |
+| F1                 | Center the Map                   |
+| F2                 | Begin Editing the Current Node   |
+| Up Arrow           | Select the Previous Sibling Node |
+| Down Arrow         | Select the Next Sibling Node     |
+| Left/Right Arrow   | Select Parent or First Child     |
+| PageUp             | Move Up Node                     |
+| PageDown           | Move Down Node                   |
+| Ctrl + Up Arrow    | Change Layout Pattern to Side    |
+| Ctrl + Left Arrow  | Change Layout Pattern to Left    |
+| Ctrl + Right Arrow | Change Layout Pattern to Right   |
+| Ctrl + C           | Copy the Current Node            |
+| Ctrl + V           | Paste the Copied Node            |
+| Ctrl + "+"         | Zoom In Mind Map                 |
+| Ctrl + "-"         | Zoom Out Mind Map                |
+| Ctrl + 0           | Reset Zoom Level                 |
 
 ## Not only core
 
