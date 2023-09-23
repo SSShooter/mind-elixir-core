@@ -1,4 +1,4 @@
-import { generateUUID, getArrowPoints, calcP1, calcP4 } from './utils/index'
+import { generateUUID, getArrowPoints, calcP1, calcP4, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { findEle } from './utils/dom'
 import { createSvgGroup } from './utils/svg'
@@ -25,6 +25,19 @@ export type LinkControllerData = {
   w: number
   h: number
 }
+
+const createText = function (string: string, x: number, y: number, color?: string) {
+  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  setAttributes(text, {
+    'text-anchor': 'middle',
+    x: x + '',
+    y: y + '',
+    fill: color || '#666',
+  })
+  text.innerHTML = string
+  return text
+}
+
 export const createLink = function (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, obj?: LinkItem) {
   const map = this.map.getBoundingClientRect()
   if (!from || !to) {
@@ -81,13 +94,9 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
 
   const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
 
-  // TODO link lable
-  // const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
-  // const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
-
   const newLinkObj = {
     id: '',
-    label: '',
+    label: 'custom link',
     from: from.nodeObj.id,
     to: to.nodeObj.id,
     delta1: {
@@ -103,6 +112,11 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
     `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`,
     `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
   )
+
+  const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
+  const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
+  const label = createText(newLinkObj.label, halfx, halfy)
+  newSvgGroup.appendChild(label)
 
   if (isInitPaint && obj) {
     newLinkObj.id = obj.id
@@ -234,6 +248,13 @@ export const showLinkController = function (
     this.P2.style.top = p2y + 'px'
     this.P2.style.left = p2x + 'px'
     this.currentLink?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+
+    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
+    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
+    setAttributes(this.currentLink!.children[2], {
+      x: halfx + '',
+      y: halfy + '',
+    })
     this.line1.setAttribute('x1', p1x)
     this.line1.setAttribute('y1', p1y)
     this.line1.setAttribute('x2', p2x)
@@ -255,6 +276,13 @@ export const showLinkController = function (
     this.P3.style.left = p3x + 'px'
     this.currentLink?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
     this.currentLink?.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+
+    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
+    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
+    setAttributes(this.currentLink!.children[2], {
+      x: halfx + '',
+      y: halfy + '',
+    })
     this.line2.setAttribute('x1', p3x)
     this.line2.setAttribute('y1', p3y)
     this.line2.setAttribute('x2', p4x)
