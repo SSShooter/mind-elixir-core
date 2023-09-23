@@ -34,6 +34,7 @@ const createText = function (string: string, x: number, y: number, color?: strin
     y: y + '',
     fill: color || '#666',
   })
+  text.dataset.type = 'custom-link'
   text.innerHTML = string
   return text
 }

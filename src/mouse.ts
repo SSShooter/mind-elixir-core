@@ -25,10 +25,10 @@ export default function (mind: MindElixirInstance) {
     } else if (isTopic(target)) {
       mind.selectNode(target as Topic, false, e)
     } else if (target.tagName === 'text') {
-      mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
-    } else if (target.tagName === 'path') {
-      if (target?.parentElement?.tagName === 'g') {
+      if (target.dataset.type === 'custom-link') {
         mind.selectLink(target.parentElement as CustomSvg)
+      } else {
+        mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
       }
     } else if (target.className === 'circle') {
       // skip circle
