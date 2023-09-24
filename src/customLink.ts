@@ -1,9 +1,14 @@
-import { generateUUID, getArrowPoints, setAttributes } from './utils/index'
+import { generateUUID, getArrowPoints, getOffsetLT, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { findEle } from './utils/dom'
-import { createSvgGroup } from './utils/svg'
+import { createSvgGroup, editSvgText } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
+
+// p1: starting point
+// p2: control point of starting point
+// p3: control point of ending point
+// p4: ending point
 
 export type LinkItem = {
   id: string
@@ -24,14 +29,34 @@ export type DivData = {
   cy: number // center y
   w: number // div width
   h: number // div height
+  ctrlX: number // control point x
+  ctrlY: number // control point y
+}
+
+function calcCtrlP(mei: MindElixirInstance, tpc: Topic, delta: { x: number; y: number }) {
+  const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, tpc)
+  const w = tpc.offsetWidth
+  const h = tpc.offsetHeight
+  const cx = x + w / 2
+  const cy = y + h / 2
+  const ctrlX = cx + delta.x
+  const ctrlY = cy + delta.y
+  return {
+    w,
+    h,
+    cx,
+    cy,
+    ctrlX,
+    ctrlY,
+  }
 }
 
 // calc starting and ending point using control point and div status
-function calcP(data: DivData, ctrlX: number, ctrlY: number) {
+function calcP(data: DivData) {
   let x, y
-  const k = (data.cy - ctrlY) / (ctrlX - data.cx)
+  const k = (data.cy - data.ctrlY) / (data.ctrlX - data.cx)
   if (k > data.h / data.w || k < -data.h / data.w) {
-    if (data.cy - ctrlY < 0) {
+    if (data.cy - data.ctrlY < 0) {
       x = data.cx - data.h / 2 / k
       y = data.cy + data.h / 2
     } else {
@@ -39,7 +64,7 @@ function calcP(data: DivData, ctrlX: number, ctrlY: number) {
       y = data.cy - data.h / 2
     }
   } else {
-    if (data.cx - ctrlX < 0) {
+    if (data.cx - data.ctrlX < 0) {
       x = data.cx + data.w / 2
       y = data.cy - (data.w * k) / 2
     } else {
@@ -66,77 +91,22 @@ const createText = function (string: string, x: number, y: number, color?: strin
   return text
 }
 
-export const createLink = function (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, obj?: LinkItem) {
+export const drawCustomLink = function (this: MindElixirInstance, from: Topic, to: Topic, obj: LinkItem, isInitPaint?: boolean) {
   if (!from || !to) {
     return // not expand
   }
+  const start = performance.now()
   this.hideLinkController()
-  const map = this.map.getBoundingClientRect()
-  const pfrom = from.getBoundingClientRect()
-  const pto = to.getBoundingClientRect()
-  const fromCenterX = (pfrom.x + pfrom.width / 2 - map.x) / this.scaleVal
-  const fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
-  const toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
-  const toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
+  const fromData = calcCtrlP(this, from, obj.delta1)
+  const toData = calcCtrlP(this, to, obj.delta2)
 
-  // p1: starting point
-  // p2: control point of starting point
-  // p3: control point of ending point
-  // p4: ending point
-
-  let p2x, p2y, p3x, p3y
-  if (isInitPaint && obj) {
-    p2x = fromCenterX + obj.delta1.x
-    p2y = fromCenterY + obj.delta1.y
-    p3x = toCenterX + obj.delta2.x
-    p3y = toCenterY + obj.delta2.y
-  } else {
-    if ((fromCenterY + toCenterY) / 2 - fromCenterY <= pfrom.height / 2) {
-      // the situation that two div is too close
-      p2x = (pfrom.x + pfrom.width - map.x) / this.scaleVal + 100
-      p2y = fromCenterY
-      p3x = (pto.x + pto.width - map.x) / this.scaleVal + 100
-      p3y = toCenterY
-    } else {
-      p2x = (fromCenterX + toCenterX) / 2
-      p2y = (fromCenterY + toCenterY) / 2
-      p3x = (fromCenterX + toCenterX) / 2
-      p3y = (fromCenterY + toCenterY) / 2
-    }
-  }
-
-  const fromData = {
-    cx: fromCenterX,
-    cy: fromCenterY,
-    w: pfrom.width,
-    h: pfrom.height,
-  }
-  const toData = {
-    cx: toCenterX,
-    cy: toCenterY,
-    w: pto.width,
-    h: pto.height,
-  }
-
-  const { x: p1x, y: p1y } = calcP(fromData, p2x, p2y)
-  const { x: p4x, y: p4y } = calcP(toData, p3x, p3y)
+  const { x: p1x, y: p1y } = calcP(fromData)
+  const { ctrlX: p2x, ctrlY: p2y } = fromData
+  const { ctrlX: p3x, ctrlY: p3y } = toData
+  const { x: p4x, y: p4y } = calcP(toData)
 
   const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
 
-  const newLinkObj = {
-    id: '',
-    label: obj?.label || 'custom link',
-    from: from.nodeObj.id,
-    to: to.nodeObj.id,
-    delta1: {
-      x: p2x - fromCenterX,
-      y: p2y - fromCenterY,
-    },
-    delta2: {
-      x: p3x - toCenterX,
-      y: p3y - toCenterY,
-    },
-  }
   const newSvgGroup = createSvgGroup(
     `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`,
     `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
@@ -144,25 +114,37 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
 
   const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
   const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
-  const label = createText(newLinkObj.label, halfx, halfy, this.theme.cssVar['--color'])
+  const label = createText(obj.label, halfx, halfy, this.theme.cssVar['--color'])
   newSvgGroup.appendChild(label)
 
-  if (isInitPaint && obj) {
-    newLinkObj.id = obj.id
-    // overwrite
-    this.linkData[obj.id] = newLinkObj
-  } else {
-    // new
-    newLinkObj.id = generateUUID()
-    this.linkData[newLinkObj.id] = newLinkObj
-    this.currentLink = newSvgGroup
-  }
-  newSvgGroup.linkObj = newLinkObj
-  newSvgGroup.dataset.linkid = newLinkObj.id
+  newSvgGroup.linkObj = obj
+  newSvgGroup.dataset.linkid = obj.id
   this.linkSvgGroup.appendChild(newSvgGroup)
   if (!isInitPaint) {
-    this.showLinkController(p2x, p2y, p3x, p3y, newLinkObj, fromData, toData)
+    this.linkData[obj.id] = obj
+    this.currentLink = newSvgGroup
+    this.showLinkController(obj, fromData, toData)
   }
+  const end = performance.now()
+  console.log(`DrawCustomLink Execution time: ${end - start} ms`)
+}
+
+export const createLink = function (this: MindElixirInstance, from: Topic, to: Topic) {
+  const newLinkObj = {
+    id: generateUUID(),
+    label: 'Custom Link',
+    from: from.nodeObj.id,
+    to: to.nodeObj.id,
+    delta1: {
+      x: 0,
+      y: -200,
+    },
+    delta2: {
+      x: 0,
+      y: -200,
+    },
+  }
+  this.drawCustomLink(from, to, newLinkObj)
 }
 
 export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSvg) {
@@ -175,68 +157,43 @@ export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSv
   if (!link) return
   this.hideLinkController()
   const id = link.linkObj!.id
-  console.log(id)
   delete this.linkData[id]
   link.remove()
-  link = null
+  link = null // useless
 }
 
 export const selectLink = function (this: MindElixirInstance, link: CustomSvg) {
   this.currentLink = link
   const obj = link.linkObj
-  if (!obj) return
-  const from = obj.from
-  const to = obj.to
 
-  const map = this.map.getBoundingClientRect()
-  const pfrom = findEle(from).getBoundingClientRect()
-  const pto = findEle(to).getBoundingClientRect()
-  const fromCenterX = (pfrom.x + pfrom.width / 2 - map.x) / this.scaleVal
-  const fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
-  const toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
-  const toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
+  const from = findEle(obj.from)
+  const to = findEle(obj.to)
 
-  const fromData = {
-    cx: fromCenterX,
-    cy: fromCenterY,
-    w: pfrom.width,
-    h: pfrom.height,
-  }
-  const toData = {
-    cx: toCenterX,
-    cy: toCenterY,
-    w: pto.width,
-    h: pto.height,
-  }
+  const fromData = calcCtrlP(this, from, obj.delta1)
+  const toData = calcCtrlP(this, to, obj.delta2)
 
-  const p2x = fromCenterX + obj.delta1.x
-  const p2y = fromCenterY + obj.delta1.y
-  const p3x = toCenterX + obj.delta2.x
-  const p3y = toCenterY + obj.delta2.y
-
-  this.showLinkController(p2x, p2y, p3x, p3y, obj, fromData, toData)
+  this.showLinkController(obj, fromData, toData)
 }
+
 export const hideLinkController = function (this: MindElixirInstance) {
   this.linkController.style.display = 'none'
   this.P2.style.display = 'none'
   this.P3.style.display = 'none'
 }
-export const showLinkController = function (
-  this: MindElixirInstance,
-  p2x: number,
-  p2y: number,
-  p3x: number,
-  p3y: number,
-  linkItem: LinkItem,
-  fromData: DivData,
-  toData: DivData
-) {
+
+export const showLinkController = function (this: MindElixirInstance, linkItem: LinkItem, fromData: DivData, toData: DivData) {
   this.linkController.style.display = 'initial'
   this.P2.style.display = 'initial'
   this.P3.style.display = 'initial'
+  this.nodes.appendChild(this.linkController)
+  this.nodes.appendChild(this.P2)
+  this.nodes.appendChild(this.P3)
 
-  let { x: p1x, y: p1y } = calcP(fromData, p2x, p2y)
-  let { x: p4x, y: p4y } = calcP(toData, p3x, p3y)
+  // init points
+  let { x: p1x, y: p1y } = calcP(fromData)
+  let { ctrlX: p2x, ctrlY: p2y } = fromData
+  let { ctrlX: p3x, ctrlY: p3y } = toData
+  let { x: p4x, y: p4y } = calcP(toData)
 
   this.P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
   this.P3.style.cssText = `top:${p3y}px;left:${p3x}px;`
@@ -261,24 +218,20 @@ export const showLinkController = function (
   this.helper1 = LinkDragMoveHelper.create(this.P2)
   this.helper2 = LinkDragMoveHelper.create(this.P3)
 
+  // TODO: generate cb function
   this.helper1.init(this.map, (deltaX, deltaY) => {
-    /**
-     * user will control bezier with p2 & p3
-     * p1 & p4 is depend on p2 & p3
-     */
+    // recalc key points
     p2x = p2x - deltaX / this.scaleVal
     p2y = p2y - deltaY / this.scaleVal
-
-    const p1 = calcP(fromData, p2x, p2y)
+    const p1 = calcP({ ...fromData, ctrlX: p2x, ctrlY: p2y })
     p1x = p1.x
     p1y = p1.y
-
+    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
+    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
+    // update dom position
     this.P2.style.top = p2y + 'px'
     this.P2.style.left = p2x + 'px'
     this.currentLink?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-
-    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
-    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
     setAttributes(this.currentLink!.children[2], {
       x: halfx + '',
       y: halfy + '',
@@ -289,6 +242,7 @@ export const showLinkController = function (
       x2: p2x + '',
       y2: p2y + '',
     })
+    // update linkItem
     linkItem.delta1.x = p2x - fromData.cx
     linkItem.delta1.y = p2y - fromData.cy
   })
@@ -296,23 +250,22 @@ export const showLinkController = function (
   this.helper2.init(this.map, (deltaX, deltaY) => {
     p3x = p3x - deltaX / this.scaleVal
     p3y = p3y - deltaY / this.scaleVal
-
-    const p4 = calcP(toData, p3x, p3y)
+    const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
     p4x = p4.x
     p4y = p4.y
+    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
+    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
     const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
 
     this.P3.style.top = p3y + 'px'
     this.P3.style.left = p3x + 'px'
     this.currentLink?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
     this.currentLink?.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
-
-    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
-    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
     setAttributes(this.currentLink!.children[2], {
       x: halfx + '',
       y: halfy + '',
     })
+    // TODO: absctract this
     setAttributes(this.line2, {
       x1: p3x + '',
       y1: p3y + '',
@@ -328,6 +281,30 @@ export function renderCustomLink(this: MindElixirInstance) {
   this.linkSvgGroup.innerHTML = ''
   for (const prop in this.linkData) {
     const link = this.linkData[prop]
-    this.createLink(findEle(link.from), findEle(link.to), true, link)
+    this.drawCustomLink(findEle(link.from), findEle(link.to), link, true)
   }
+  this.nodes.appendChild(this.linkSvgGroup)
+}
+
+export function editCutsomLinkLabel(this: MindElixirInstance, el: CustomSvg) {
+  console.time('editSummary')
+  if (!el) return
+  const textEl = el.children[2]
+  console.log(textEl, el)
+  editSvgText(this, textEl, div => {
+    const node = el.linkObj
+    const text = div.textContent?.trim() || ''
+    if (text === '') node.label = origin
+    else node.label = text
+    div.remove()
+    if (text === origin) return
+    textEl.innerHTML = node.label
+    this.linkDiv()
+    // this.bus.fire('operation', {
+    //   name: 'finishEditSummary',
+    //   obj: node,
+    //   origin,
+    // })
+  })
+  console.timeEnd('editSummary')
 }

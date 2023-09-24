@@ -1,6 +1,7 @@
 import type { MindElixirInstance, Topic } from '.'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { findEle, selectText } from './utils/dom'
+import { editSvgText } from './utils/svg'
 
 export type Summary = {
   id: string
@@ -215,38 +216,7 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
   console.time('editSummary')
   if (!el) return
   const textEl = el.childNodes[1] as SVGTextElement
-  console.log(textEl)
-  const div = document.createElement('div')
-  this.nodes.appendChild(div)
-  const origin = textEl.innerHTML
-  div.id = 'input-box'
-  div.textContent = origin
-  div.contentEditable = 'true'
-  div.spellcheck = false
-  const l = textEl.getAttribute('x') + 'px'
-  const t = textEl.getAttribute('y') + 'px'
-  div.style.cssText = `min-width:${100 - 8}px;position:absolute;left:${l};top:${t};`
-  if (getDirection(el.summaryObj) === 'lhs') div.style.cssText += 'transform: translate(-100%, -100%);'
-  else div.style.cssText += 'transform: translate(0, -100%);'
-  div.focus()
-
-  selectText(div)
-
-  div.addEventListener('keydown', e => {
-    e.stopPropagation()
-    const key = e.key
-
-    if (key === 'Enter' || key === 'Tab') {
-      // keep wrap for shift enter
-      if (e.shiftKey) return
-
-      e.preventDefault()
-      div.blur()
-      this.map.focus()
-    }
-  })
-  div.addEventListener('blur', () => {
-    if (!div) return
+  editSvgText(this, textEl, div => {
     const node = el.summaryObj
     const text = div.textContent?.trim() || ''
     if (text === '') node.text = origin

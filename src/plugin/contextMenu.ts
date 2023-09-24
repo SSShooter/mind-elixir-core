@@ -8,7 +8,7 @@ export default function (mind: MindElixirInstance, option: any) {
   const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words
-    div.style.cssText = 'position:absolute;bottom:20px;left:50%;transform:translateX(-50%);'
+    div.className = 'tips'
     return div
   }
   const createLi = (id: string, name: string, keyname: string) => {
@@ -163,7 +163,7 @@ export default function (mind: MindElixirInstance, option: any) {
         tips.remove()
         const target = e.target as Topic
         if (target.parentElement.tagName === 'ME-PARENT' || target.parentElement.tagName === 'ME-ROOT') {
-          mind.createLink(from, mind.currentNode as Topic)
+          mind.createLink(from, target)
         } else {
           console.log('link cancel')
         }

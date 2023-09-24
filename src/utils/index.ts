@@ -66,7 +66,7 @@ export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: numbe
   if (deltax > 0 && deltay < 0) {
     angle = 360 - angle
   }
-  const arrowLength = 20
+  const arrowLength = 15
   const arrowAngle = 30
   const a1 = angle + arrowAngle
   const a2 = angle - arrowAngle

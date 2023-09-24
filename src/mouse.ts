@@ -45,7 +45,11 @@ export default function (mind: MindElixirInstance) {
     if (isTopic(target)) {
       mind.beginEdit(target as Topic)
     } else if (target.tagName === 'text') {
-      mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
+      if (target.dataset.type === 'custom-link') {
+        mind.editCutsomLinkLabel(target.parentElement as unknown as CustomSvg)
+      } else {
+        mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
+      }
     }
   })
 

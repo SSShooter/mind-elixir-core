@@ -100,17 +100,13 @@ function MindElixir(
   this.P3 = $d.createElement('div') // bezier P3
   this.P2.className = this.P3.className = 'circle'
   this.P2.style.display = this.P3.style.display = 'none'
-  this.line1 = createLine(0, 0, 0, 0) // bezier auxiliary line1
-  this.line2 = createLine(0, 0, 0, 0) // bezier auxiliary line2
+  this.line1 = createLine() // bezier auxiliary line1
+  this.line2 = createLine() // bezier auxiliary line2
   this.linkController.appendChild(this.line1)
   this.linkController.appendChild(this.line2)
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
 
   this.map.appendChild(this.nodes)
-  this.map.appendChild(this.linkController)
-  this.map.appendChild(this.linkSvgGroup)
-  this.map.appendChild(this.P2)
-  this.map.appendChild(this.P3)
 
   if (this.overflowHidden) {
     this.container.style.overflow = 'hidden'
