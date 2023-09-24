@@ -5,7 +5,7 @@ const create = function (dom: HTMLElement) {
     lastX: 0,
     lastY: 0,
     handleMouseMove(e: MouseEvent) {
-      e.stopPropagation()
+      // e.stopPropagation()
       if (this.mousedown) {
         if (!this.lastX) {
           this.lastX = e.pageX
@@ -20,11 +20,11 @@ const create = function (dom: HTMLElement) {
       }
     },
     handleMouseDown(e: MouseEvent) {
-      e.stopPropagation()
+      // e.stopPropagation()
       this.mousedown = true
     },
     handleClear(e: MouseEvent) {
-      e.stopPropagation()
+      // e.stopPropagation()
       this.clear()
     },
     cb: null as ((deltaX: number, deltaY: number) => void) | null,

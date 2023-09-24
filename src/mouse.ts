@@ -35,7 +35,6 @@ export default function (mind: MindElixirInstance) {
     } else {
       // lite version doesn't have hideLinkController
       mind.hideLinkController && mind.hideLinkController()
-      // BUG: selection doesn't work after this operation
     }
   })
 
