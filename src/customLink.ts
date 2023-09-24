@@ -67,10 +67,11 @@ const createText = function (string: string, x: number, y: number, color?: strin
 }
 
 export const createLink = function (this: MindElixirInstance, from: Topic, to: Topic, isInitPaint?: boolean, obj?: LinkItem) {
-  const map = this.map.getBoundingClientRect()
   if (!from || !to) {
     return // not expand
   }
+  this.hideLinkController()
+  const map = this.map.getBoundingClientRect()
   const pfrom = from.getBoundingClientRect()
   const pto = to.getBoundingClientRect()
   const fromCenterX = (pfrom.x + pfrom.width / 2 - map.x) / this.scaleVal
@@ -177,7 +178,6 @@ export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSv
     link = this.currentLink
   }
   if (!link) return
-  console.log(link)
   this.hideLinkController()
   const id = link.linkObj!.id
   console.log(id)
