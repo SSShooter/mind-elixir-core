@@ -1,4 +1,4 @@
-import { generateUUID, getArrowPoints, calcP1, calcP4, setAttributes } from './utils/index'
+import { generateUUID, getArrowPoints, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { findEle } from './utils/dom'
 import { createSvgGroup } from './utils/svg'
@@ -19,11 +19,38 @@ export type LinkItem = {
     y: number
   }
 }
-export type LinkControllerData = {
-  cx: number
-  cy: number
-  w: number
-  h: number
+export type DivData = {
+  cx: number // center x
+  cy: number // center y
+  w: number // div width
+  h: number // div height
+}
+
+// calc starting and ending point using control point and div status
+function calcP(data: DivData, ctrlX: number, ctrlY: number) {
+  let x, y
+  const k = (data.cy - ctrlY) / (ctrlX - data.cx)
+  if (k > data.h / data.w || k < -data.h / data.w) {
+    if (data.cy - ctrlY < 0) {
+      x = data.cx - data.h / 2 / k
+      y = data.cy + data.h / 2
+    } else {
+      x = data.cx + data.h / 2 / k
+      y = data.cy - data.h / 2
+    }
+  } else {
+    if (data.cx - ctrlX < 0) {
+      x = data.cx + data.w / 2
+      y = data.cy - (data.w * k) / 2
+    } else {
+      x = data.cx - data.w / 2
+      y = data.cy + (data.w * k) / 2
+    }
+  }
+  return {
+    x,
+    y,
+  }
 }
 
 const createText = function (string: string, x: number, y: number, color?: string) {
@@ -50,6 +77,11 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
   const fromCenterY = (pfrom.y + pfrom.height / 2 - map.y) / this.scaleVal
   const toCenterX = (pto.x + pto.width / 2 - map.x) / this.scaleVal
   const toCenterY = (pto.y + pto.height / 2 - map.y) / this.scaleVal
+
+  // p1: starting point
+  // p2: control point of starting point
+  // p3: control point of ending point
+  // p4: ending point
 
   let p2x, p2y, p3x, p3y
   if (isInitPaint && obj) {
@@ -85,11 +117,11 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
     h: pto.height,
   }
 
-  const p1 = calcP1(fromData, p2x, p2y)
+  const p1 = calcP(fromData, p2x, p2y)
   const p1x = p1.x
   const p1y = p1.y
 
-  const p4 = calcP4(toData, p3x, p3y)
+  const p4 = calcP(toData, p3x, p3y)
   const p4x = p4.x
   const p4y = p4.y
 
@@ -116,7 +148,7 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
 
   const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
   const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
-  const label = createText(newLinkObj.label, halfx, halfy)
+  const label = createText(newLinkObj.label, halfx, halfy, this.theme.cssVar['--color'])
   newSvgGroup.appendChild(label)
 
   if (isInitPaint && obj) {
@@ -200,31 +232,35 @@ export const showLinkController = function (
   p3x: number,
   p3y: number,
   linkItem: LinkItem,
-  fromData: LinkControllerData,
-  toData: LinkControllerData
+  fromData: DivData,
+  toData: DivData
 ) {
   this.linkController.style.display = 'initial'
   this.P2.style.display = 'initial'
   this.P3.style.display = 'initial'
 
-  const p1 = calcP1(fromData, p2x, p2y)
+  const p1 = calcP(fromData, p2x, p2y)
   let p1x = p1.x
   let p1y = p1.y
 
-  const p4 = calcP4(toData, p3x, p3y)
+  const p4 = calcP(toData, p3x, p3y)
   let p4x = p4.x
   let p4y = p4.y
 
   this.P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
   this.P3.style.cssText = `top:${p3y}px;left:${p3x}px;`
-  this.line1.setAttribute('x1', p1x)
-  this.line1.setAttribute('y1', p1y)
-  this.line1.setAttribute('x2', p2x)
-  this.line1.setAttribute('y2', p2y)
-  this.line2.setAttribute('x1', p3x)
-  this.line2.setAttribute('y1', p3y)
-  this.line2.setAttribute('x2', p4x)
-  this.line2.setAttribute('y2', p4y)
+  setAttributes(this.line1, {
+    x1: p1x + '',
+    y1: p1y + '',
+    x2: p2x + '',
+    y2: p2y + '',
+  })
+  setAttributes(this.line2, {
+    x1: p3x + '',
+    y1: p3y + '',
+    x2: p4x + '',
+    y2: p4y + '',
+  })
 
   if (this.helper1) {
     this.helper1.destory(this.map)
@@ -242,7 +278,7 @@ export const showLinkController = function (
     p2x = p2x - deltaX / this.scaleVal
     p2y = p2y - deltaY / this.scaleVal
 
-    const p1 = calcP1(fromData, p2x, p2y)
+    const p1 = calcP(fromData, p2x, p2y)
     p1x = p1.x
     p1y = p1.y
 
@@ -256,10 +292,12 @@ export const showLinkController = function (
       x: halfx + '',
       y: halfy + '',
     })
-    this.line1.setAttribute('x1', p1x)
-    this.line1.setAttribute('y1', p1y)
-    this.line1.setAttribute('x2', p2x)
-    this.line1.setAttribute('y2', p2y)
+    setAttributes(this.line1, {
+      x1: p1x + '',
+      y1: p1y + '',
+      x2: p2x + '',
+      y2: p2y + '',
+    })
     linkItem.delta1.x = p2x - fromData.cx
     linkItem.delta1.y = p2y - fromData.cy
   })
@@ -268,7 +306,7 @@ export const showLinkController = function (
     p3x = p3x - deltaX / this.scaleVal
     p3y = p3y - deltaY / this.scaleVal
 
-    const p4 = calcP4(toData, p3x, p3y)
+    const p4 = calcP(toData, p3x, p3y)
     p4x = p4.x
     p4y = p4.y
     const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
@@ -284,11 +322,21 @@ export const showLinkController = function (
       x: halfx + '',
       y: halfy + '',
     })
-    this.line2.setAttribute('x1', p3x)
-    this.line2.setAttribute('y1', p3y)
-    this.line2.setAttribute('x2', p4x)
-    this.line2.setAttribute('y2', p4y)
+    setAttributes(this.line2, {
+      x1: p3x + '',
+      y1: p3y + '',
+      x2: p4x + '',
+      y2: p4y + '',
+    })
     linkItem.delta2.x = p3x - toData.cx
     linkItem.delta2.y = p3y - toData.cy
   })
+}
+
+export function renderCustomLink(this: MindElixirInstance) {
+  this.linkSvgGroup.innerHTML = ''
+  for (const prop in this.linkData) {
+    const link = this.linkData[prop]
+    this.createLink(findEle(link.from), findEle(link.to), true, link)
+  }
 }

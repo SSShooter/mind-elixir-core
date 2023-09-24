@@ -113,13 +113,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     }
   }
 
-  // 4. generate custom link
-  this.linkSvgGroup.innerHTML = ''
-  for (const prop in this.linkData) {
-    const link = this.linkData[prop]
-    this.createLink(findEle(link.from), findEle(link.to), true, link)
-  }
-
+  this.renderCustomLink()
   this.renderSummary()
   console.timeEnd('linkDiv')
 }

@@ -1,4 +1,4 @@
-import type { LinkControllerData } from '../customLink'
+import type { DivData } from '../customLink'
 import type { NodeObj, MindElixirInstance, NodeObjExport } from '../types/index'
 
 export function encodeHTML(s: string) {
@@ -75,58 +75,6 @@ export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: numbe
     y1: p4y - Math.sin((Math.PI * a1) / 180) * arrowLength,
     x2: p4x + Math.cos((Math.PI * a2) / 180) * arrowLength,
     y2: p4y - Math.sin((Math.PI * a2) / 180) * arrowLength,
-  }
-}
-
-export function calcP1(fromData: LinkControllerData, p2x: number, p2y: number) {
-  let x, y
-  const k = (fromData.cy - p2y) / (p2x - fromData.cx)
-  if (k > fromData.h / fromData.w || k < -fromData.h / fromData.w) {
-    if (fromData.cy - p2y < 0) {
-      x = fromData.cx - fromData.h / 2 / k
-      y = fromData.cy + fromData.h / 2
-    } else {
-      x = fromData.cx + fromData.h / 2 / k
-      y = fromData.cy - fromData.h / 2
-    }
-  } else {
-    if (fromData.cx - p2x < 0) {
-      x = fromData.cx + fromData.w / 2
-      y = fromData.cy - (fromData.w * k) / 2
-    } else {
-      x = fromData.cx - fromData.w / 2
-      y = fromData.cy + (fromData.w * k) / 2
-    }
-  }
-  return {
-    x,
-    y,
-  }
-}
-
-export function calcP4(toData: LinkControllerData, p3x: number, p3y: number) {
-  let x, y
-  const k = (toData.cy - p3y) / (p3x - toData.cx)
-  if (k > toData.h / toData.w || k < -toData.h / toData.w) {
-    if (toData.cy - p3y < 0) {
-      x = toData.cx - toData.h / 2 / k
-      y = toData.cy + toData.h / 2
-    } else {
-      x = toData.cx + toData.h / 2 / k
-      y = toData.cy - toData.h / 2
-    }
-  } else {
-    if (toData.cx - p3x < 0) {
-      x = toData.cx + toData.w / 2
-      y = toData.cy - (toData.w * k) / 2
-    } else {
-      x = toData.cx - toData.w / 2
-      y = toData.cy + (toData.w * k) / 2
-    }
-  }
-  return {
-    x,
-    y,
   }
 }
 
