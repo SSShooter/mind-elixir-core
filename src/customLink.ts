@@ -118,19 +118,14 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
     h: pto.height,
   }
 
-  const p1 = calcP(fromData, p2x, p2y)
-  const p1x = p1.x
-  const p1y = p1.y
-
-  const p4 = calcP(toData, p3x, p3y)
-  const p4x = p4.x
-  const p4y = p4.y
+  const { x: p1x, y: p1y } = calcP(fromData, p2x, p2y)
+  const { x: p4x, y: p4y } = calcP(toData, p3x, p3y)
 
   const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
 
   const newLinkObj = {
     id: '',
-    label: 'custom link',
+    label: obj?.label || 'custom link',
     from: from.nodeObj.id,
     to: to.nodeObj.id,
     delta1: {
@@ -185,6 +180,7 @@ export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSv
   link.remove()
   link = null
 }
+
 export const selectLink = function (this: MindElixirInstance, link: CustomSvg) {
   this.currentLink = link
   const obj = link.linkObj
@@ -239,13 +235,8 @@ export const showLinkController = function (
   this.P2.style.display = 'initial'
   this.P3.style.display = 'initial'
 
-  const p1 = calcP(fromData, p2x, p2y)
-  let p1x = p1.x
-  let p1y = p1.y
-
-  const p4 = calcP(toData, p3x, p3y)
-  let p4x = p4.x
-  let p4y = p4.y
+  let { x: p1x, y: p1y } = calcP(fromData, p2x, p2y)
+  let { x: p4x, y: p4y } = calcP(toData, p3x, p3y)
 
   this.P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
   this.P3.style.cssText = `top:${p3y}px;left:${p3x}px;`

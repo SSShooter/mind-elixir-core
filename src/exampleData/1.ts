@@ -235,7 +235,22 @@ const aboutMindElixir: MindElixirData = {
     ],
     expanded: true,
   },
-  linkData: {},
+  linkData: {
+    ac5fb1df7345e9c4: {
+      id: 'ac5fb1df7345e9c4',
+      label: 'Render',
+      from: 'beeb784cc189375f',
+      to: 'beeb7a6bec2d68f5',
+      delta1: {
+        x: 142.8828125,
+        y: -57,
+      },
+      delta2: {
+        x: 146.1171875,
+        y: 45,
+      },
+    },
+  },
   summaries: [
     {
       id: 'a5e68e6a2ce1b648',

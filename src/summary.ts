@@ -215,6 +215,7 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
   console.time('editSummary')
   if (!el) return
   const textEl = el.childNodes[1] as SVGTextElement
+  console.log(textEl)
   const div = document.createElement('div')
   this.nodes.appendChild(div)
   const origin = textEl.innerHTML
