@@ -222,7 +222,7 @@ const aboutMindElixir: MindElixirData = {
             expanded: true,
             children: [
               {
-                topic: 'Save button in the top-right corner',
+                topic: 'Save button in the top-right corner',
                 id: 'bd42e619051878b3',
                 expanded: true,
                 children: [],
