@@ -66,6 +66,7 @@
       me-tpc {
         display: block;
         font-size: 25px;
+        line-height: 1.2em;
         color: var(--root-color);
         padding: 10px var(--gap);
         border-radius: var(--root-radius);
@@ -120,10 +121,10 @@
       border-radius: 3px;
       color: var(--color);
       pointer-events: all;
-      max-width: 800px;
+      max-width: 35em;
       white-space: pre-wrap;
       padding: var(--topic-padding);
-      line-height: 1.2; // assure the line-height consistency between different languages
+      line-height: 1.2em; // assure the line-height consistency between different languages
       & > div,
       & > span,
       & > img {
@@ -233,7 +234,7 @@
     color: var(--color);
     background-color: var(--bgcolor);
     width: max-content; // let words expand the div and keep max length at the same time
-    max-width: 800px;
+    max-width: 35em;
     z-index: 11;
     direction: ltr;
     user-select: auto;
@@ -267,7 +268,7 @@
       color: #276f86;
       margin: 0px;
       font-size: 12px;
-      line-height: 16px;
+      line-height: 1.3em;
       margin-right: 3px;
       margin-top: 2px;
     }
@@ -276,6 +277,9 @@
     display: inline-block;
     direction: ltr;
     margin-right: 10px;
+    span {
+      display: inline-block;
+    }
   }
 
   .mind-elixir-ghost {

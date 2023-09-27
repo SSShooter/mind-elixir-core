@@ -5,14 +5,16 @@ import example2 from './exampleData/2'
 import example3 from './exampleData/3'
 import type { Options, MindElixirData, MindElixirInstance } from './types/index'
 import type { Operation } from './utils/pubsub'
-import { exportSvg } from './plugin/exportImage'
+import { exportSvg, exportPng } from './plugin/exportImage'
 
 window.exportSvg = exportSvg
+window.exportPng = exportPng
 interface Window {
   m: MindElixirInstance
   M: MindElixirCtor
   E: typeof MindElixir.E
   exportSvg: typeof exportSvg
+  exportPng: typeof exportPng
 }
 
 declare let window: Window
