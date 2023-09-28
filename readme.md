@@ -34,8 +34,8 @@ Mind elixir is a free open source mind map core.
 - Export as SVG or PNG
 - Build-in drag and drop / node edit plugin
 - Summarize nodes
-- Undo / Redo
 - Styling your node with CSS
+- Undo / Redo
 - Efficient shortcuts
 
 <details>
@@ -53,7 +53,7 @@ Mind elixir is a free open source mind map core.
   - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
 - [Export as a Image](#export-as-a-image)
-- [Methods](#methods)
+- [APIs](#apis)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
 - [Not only core](#not-only-core)
@@ -261,9 +261,11 @@ let mind = new MindElixir({
 ```typescript
 import { exportPng } from './plugin/exportImage'
 
-const mind = {/** mind elixir instance */}
+const mind = {
+  /** mind elixir instance */
+}
 const downloadPng = async () => {
-  const blob = await exportPng(mind) // Get a Blob!
+  const blob = await mind.exportPng() // Get a Blob!
   if (!blob) return
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -274,7 +276,7 @@ const downloadPng = async () => {
 }
 ```
 
-## Methods
+## APIs
 
 https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
 
