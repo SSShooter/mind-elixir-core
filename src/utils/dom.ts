@@ -45,7 +45,6 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     linkContainer.href = nodeObj.hyperLink
     tpc.appendChild(linkContainer)
     tpc.linkContainer = linkContainer
-    console.log(linkContainer)
   } else if (tpc.linkContainer) {
     tpc.linkContainer.remove()
     tpc.linkContainer = null
