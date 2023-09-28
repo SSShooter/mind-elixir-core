@@ -136,12 +136,12 @@ const generateSvg = (mei: MindElixirInstance) => {
     g.appendChild(clone)
   })
 
-  const mainLine = mapDiv.querySelector('.lines')?.cloneNode(true) as SVGSVGElement
-  g.appendChild(mainLine)
-  const topiclinks = mapDiv.querySelector('.topiclinks')?.cloneNode(true) as SVGSVGElement
-  g.appendChild(topiclinks)
-  const summaries = mapDiv.querySelector('.summary')?.cloneNode(true) as SVGSVGElement
-  g.appendChild(summaries)
+  const mainLine = mapDiv.querySelector('.lines')?.cloneNode(true)
+  mainLine && g.appendChild(mainLine)
+  const topiclinks = mapDiv.querySelector('.topiclinks')?.cloneNode(true)
+  topiclinks && g.appendChild(topiclinks)
+  const summaries = mapDiv.querySelector('.summary')?.cloneNode(true)
+  summaries && g.appendChild(summaries)
 
   mapDiv.querySelectorAll('me-tpc').forEach(tpc => {
     g.appendChild(convertDivToSvg(mei, tpc as Topic, true))
@@ -171,11 +171,24 @@ export const exportSvg = (mei: MindElixirInstance, name: string) => {
   URL.revokeObjectURL(url)
 }
 
-export const exportPng = (mei: MindElixirInstance, name: string) => {
+function blobToUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = evt => {
+      resolve(evt.target!.result as string)
+    }
+    reader.onerror = err => {
+      reject(err)
+    }
+    reader.readAsDataURL(blob)
+  })
+}
+
+export const exportPng = async (mei: MindElixirInstance, name: string) => {
   const svgString = generateSvg(mei)
 
-  // use base64 to bypass canvas taint
-  const url = 'data:image/svg+xml;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(svgString)))
+  const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+  const url = await blobToUrl(blob)
 
   const img = new Image()
   img.onload = () => {
