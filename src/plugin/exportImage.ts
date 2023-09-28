@@ -155,14 +155,17 @@ const generateSvg = (mei: MindElixirInstance) => {
   mapDiv.querySelectorAll('.hyper-link').forEach(hl => {
     g.appendChild(convertAToSvg(mei, hl as HTMLAnchorElement))
   })
-  g.setAttribute('x', `${padding}`)
-  g.setAttribute('y', `${padding}`)
+  setAttributes(g, {
+    x: padding + '',
+    y: padding + '',
+    overflow: 'visible',
+  })
   svg.appendChild(g)
   return head + svg.outerHTML
 }
 export const exportSvg = (mei: MindElixirInstance, name: string) => {
   const svgString = generateSvg(mei)
-  const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+  const blob = new Blob([svgString], { type: 'image/svg+xml' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
@@ -186,10 +189,9 @@ function blobToUrl(blob: Blob): Promise<string> {
 
 export const exportPng = async (mei: MindElixirInstance, name: string) => {
   const svgString = generateSvg(mei)
-
-  const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+  const blob = new Blob([svgString], { type: 'image/svg+xml' })
+  // use base64 to bypass canvas taint
   const url = await blobToUrl(blob)
-
   const img = new Image()
   img.setAttribute('crossOrigin', 'anonymous')
   img.onload = () => {
