@@ -163,16 +163,6 @@ const generateSvg = (mei: MindElixirInstance) => {
   svg.appendChild(g)
   return head + svg.outerHTML
 }
-export const exportSvg = (mei: MindElixirInstance, name: string) => {
-  const svgString = generateSvg(mei)
-  const blob = new Blob([svgString], { type: 'image/svg+xml' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = name
-  a.click()
-  URL.revokeObjectURL(url)
-}
 
 function blobToUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -187,25 +177,29 @@ function blobToUrl(blob: Blob): Promise<string> {
   })
 }
 
-export const exportPng = async (mei: MindElixirInstance, name: string) => {
+export const exportSvg = (mei: MindElixirInstance) => {
+  const svgString = generateSvg(mei)
+  const blob = new Blob([svgString], { type: 'image/svg+xml' })
+  return blob
+}
+
+export const exportPng = async (mei: MindElixirInstance) => {
   const svgString = generateSvg(mei)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   // use base64 to bypass canvas taint
   const url = await blobToUrl(blob)
-  const img = new Image()
-  img.setAttribute('crossOrigin', 'anonymous')
-  img.onload = () => {
-    const canvas = document.createElement('canvas')
-    canvas.width = img.width
-    canvas.height = img.height
-    const ctx = canvas.getContext('2d')!
-    ctx.drawImage(img, 0, 0)
-    const png = canvas.toDataURL('image/png')
-    const a = document.createElement('a')
-    a.href = png
-    a.download = name
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-  img.src = url
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.setAttribute('crossOrigin', 'anonymous')
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width
+      canvas.height = img.height
+      const ctx = canvas.getContext('2d')!
+      ctx.drawImage(img, 0, 0)
+      canvas.toBlob(resolve, 'image/png', 1)
+    }
+    img.src = url
+    img.onerror = reject
+  })
 }
