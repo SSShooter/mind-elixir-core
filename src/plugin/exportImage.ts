@@ -177,14 +177,14 @@ function blobToUrl(blob: Blob): Promise<string> {
   })
 }
 
-export const exportSvg = (mei: MindElixirInstance) => {
-  const svgString = generateSvg(mei)
+export const exportSvg = function (this: MindElixirInstance) {
+  const svgString = generateSvg(this)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   return blob
 }
 
-export const exportPng = async (mei: MindElixirInstance) => {
-  const svgString = generateSvg(mei)
+export const exportPng = async function (this: MindElixirInstance): Promise<Blob | null> {
+  const svgString = generateSvg(this)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   // use base64 to bypass canvas taint
   const url = await blobToUrl(blob)

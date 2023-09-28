@@ -31,10 +31,12 @@ Mind elixir is a free open source mind map core.
 - High performance
 - Framework agnostic
 - Pluginable
+- Export as SVG or PNG
 - Build-in drag and drop / node edit plugin
 - Summarize nodes
 - Undo / Redo
 - Styling your node with CSS
+- Efficient shortcuts
 
 <details>
 <summary>Table of Contents</summary>
@@ -50,6 +52,7 @@ Mind elixir is a free open source mind map core.
   - [Event Handling](#event-handling)
   - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
+- [Export as a Image](#export-as-a-image)
 - [Methods](#methods)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
@@ -251,6 +254,24 @@ let mind = new MindElixir({
     },
   },
 })
+```
+
+## Export as a Image
+
+```typescript
+import { exportPng } from './plugin/exportImage'
+
+const mind = {/** mind elixir instance */}
+const downloadPng = async () => {
+  const blob = await exportPng(mind) // Get a Blob!
+  if (!blob) return
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'filename.png'
+  a.click()
+  URL.revokeObjectURL(url)
+}
 ```
 
 ## Methods

@@ -15,6 +15,7 @@ import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
 import * as customLink from './customLink'
 import * as summaryOperation from './summary'
+import * as exportImage from './plugin/exportImage'
 
 type Operations = keyof typeof nodeOperation
 type NodeOperation = Record<Operations, ReturnType<typeof beforeHook>>
@@ -62,6 +63,7 @@ const methods = {
   ...(nodeOperationHooked as NodeOperation),
   ...customLink,
   ...summaryOperation,
+  ...exportImage,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
