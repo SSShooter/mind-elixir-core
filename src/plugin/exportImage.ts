@@ -56,7 +56,7 @@ function generateSvgTextUsingForeignObject(tpc: HTMLElement, tpcStyle: CSSStyleD
   const div = document.createElement('div')
   setAttributes(div, {
     xmlns: 'http://www.w3.org/1999/xhtml',
-    style: `font-family: ${tpcStyle.fontFamily}; font-size: ${tpcStyle.fontSize}; font-weight: ${tpcStyle.fontWeight}; color: ${tpcStyle.color};`,
+    style: `font-family: ${tpcStyle.fontFamily}; font-size: ${tpcStyle.fontSize}; font-weight: ${tpcStyle.fontWeight}; color: ${tpcStyle.color}; white-space: pre-wrap;`,
   })
   div.innerHTML = content
   foreignObject.appendChild(div)
@@ -191,6 +191,7 @@ export const exportPng = async (mei: MindElixirInstance, name: string) => {
   const url = await blobToUrl(blob)
 
   const img = new Image()
+  img.setAttribute('crossOrigin', 'anonymous')
   img.onload = () => {
     const canvas = document.createElement('canvas')
     canvas.width = img.width
