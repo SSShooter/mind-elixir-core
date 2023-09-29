@@ -5,8 +5,8 @@ import dragMoveHelper from '../utils/dragMoveHelper'
 export default function (mei: MindElixirInstance) {
   const selection = new SelectionArea({
     selectables: ['.map-container me-tpc'],
-    boundaries: ['.map-container'],
-    container: '.map-container',
+    boundaries: [mei.container],
+    container: mei.container,
     behaviour: {
       // Scroll configuration.
       scrolling: {
