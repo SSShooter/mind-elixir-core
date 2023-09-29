@@ -79,6 +79,9 @@ const methods = {
     if (import.meta.env.MODE !== 'lite') {
       this.keypress && keypress(this)
 
+      if (this.editable) {
+        selection(this)
+      }
       if (isMobile() && this.mobileMenu) {
         mobileMenu(this)
       } else {
@@ -87,7 +90,6 @@ const methods = {
       this.draggable && nodeDraggable(this)
       this.allowUndo && operationHistory(this)
     }
-    selection(this)
     this.toCenter()
     this.layout()
     this.linkDiv()

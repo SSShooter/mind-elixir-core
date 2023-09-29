@@ -59,5 +59,4 @@ export default function (mei: MindElixirInstance) {
       console.log(stored, 'stored')
       mei.selectNodes(stored as Topic[])
     })
-  console.log(selection, 'selection')
 }
