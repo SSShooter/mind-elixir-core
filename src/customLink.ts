@@ -175,6 +175,11 @@ export const selectLink = function (this: MindElixirInstance, link: CustomSvg) {
   this.showLinkController(obj, fromData, toData)
 }
 
+export const unselectLink = function (this: MindElixirInstance) {
+  this.currentLink = null
+  this.hideLinkController()
+}
+
 export const hideLinkController = function (this: MindElixirInstance) {
   this.linkController.style.display = 'none'
   this.P2.style.display = 'none'

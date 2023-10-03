@@ -16,6 +16,7 @@ export default function (mind: MindElixirInstance) {
     mind.unselectNode()
     mind.unselectNodes()
     mind.unselectSummary()
+    mind.unselectLink()
     // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as any
     if (target.tagName === 'ME-EPD') {
