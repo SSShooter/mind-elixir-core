@@ -6,11 +6,11 @@ import { layoutChildren } from './layout'
 
 // DOM manipulation
 const $d = document
-export const findEle = (id: string, instance?: MindElixirInstance): Topic => {
+export const findEle = (id: string, instance?: MindElixirInstance) => {
   const scope = instance ? instance.mindElixirBox : $d
   const ele = scope.querySelector<Topic>(`[data-nodeid=me${id}]`)
-  if (!ele) new Error(`findEle: ${id} not found`)
-  return ele as Topic
+  if (!ele) throw new Error(`findEle: ${id} not found`)
+  return ele
 }
 
 export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {

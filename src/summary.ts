@@ -1,6 +1,6 @@
 import type { MindElixirInstance, Topic } from '.'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
-import { findEle, selectText } from './utils/dom'
+import { findEle } from './utils/dom'
 import { editSvgText } from './utils/svg'
 
 export type Summary = {
