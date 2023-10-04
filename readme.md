@@ -259,8 +259,6 @@ let mind = new MindElixir({
 ## Export as a Image
 
 ```typescript
-import { exportPng } from './plugin/exportImage'
-
 const mind = {
   /** mind elixir instance */
 }
@@ -347,7 +345,6 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
 - [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
-- [@mind-elixir/export-image](https://github.com/ssshooter/export-image) (WIP🚧)
 - [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
 
 ## Development
