@@ -9,7 +9,7 @@ const $d = document
 export const findEle = (id: string, instance?: MindElixirInstance) => {
   const scope = instance ? instance.mindElixirBox : $d
   const ele = scope.querySelector<Topic>(`[data-nodeid=me${id}]`)
-  if (!ele) throw new Error(`findEle: ${id} not found`)
+  if (!ele) throw new Error(`FindEle: Node ${id} not found, maybe it's collapsed.`)
   return ele
 }
 
