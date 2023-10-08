@@ -325,14 +325,14 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 | Tab                | Insert Child Node                |
 | F1                 | Center the Map                   |
 | F2                 | Begin Editing the Current Node   |
-| Up Arrow           | Select the Previous Sibling Node |
-| Down Arrow         | Select the Next Sibling Node     |
-| Left/Right Arrow   | Select Parent or First Child     |
-| PageUp             | Move Up Node                     |
-| PageDown           | Move Down Node                   |
-| Ctrl + Up Arrow    | Change Layout Pattern to Side    |
-| Ctrl + Left Arrow  | Change Layout Pattern to Left    |
-| Ctrl + Right Arrow | Change Layout Pattern to Right   |
+| ↑                  | Select the Previous Sibling Node |
+| ↓                  | Select the Next Sibling Node     |
+| ← / →              | Select Parent or First Child     |
+| PageUp / Alt + ↑   | Move Up Node                     |
+| PageDown / Alt + ↓ | Move Down Node                   |
+| Ctrl + ↑           | Change Layout Pattern to Side    |
+| Ctrl + ←           | Change Layout Pattern to Left    |
+| Ctrl + →           | Change Layout Pattern to Right   |
 | Ctrl + C           | Copy the Current Node            |
 | Ctrl + V           | Paste the Copied Node            |
 | Ctrl + "+"         | Zoom In Mind Map                 |

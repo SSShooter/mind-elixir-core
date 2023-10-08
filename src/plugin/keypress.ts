@@ -15,9 +15,13 @@ const selectRoot = (mei: MindElixirInstance) => {
 
 export default function (mind: MindElixirInstance) {
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
-    13: () => {
+    13: e => {
       // enter
-      mind.insertSibling()
+      if (e.shiftKey) {
+        mind.insertBefore()
+      } else {
+        mind.insertSibling()
+      }
     },
     9: () => {
       // tab
@@ -33,14 +37,21 @@ export default function (mind: MindElixirInstance) {
     },
     38: e => {
       // up
-      if (e.metaKey || e.ctrlKey) {
+      if (e.altKey) {
+        mind.moveUpNode()
+      } else if (e.metaKey || e.ctrlKey) {
         return mind.initSide()
+      } else {
+        mind.selectPrevSibling()
       }
-      mind.selectPrevSibling()
     },
-    40: () => {
+    40: e => {
       // down
-      mind.selectNextSibling()
+      if (e.altKey) {
+        mind.moveDownNode()
+      } else {
+        mind.selectNextSibling()
+      }
     },
     37: e => {
       // left
