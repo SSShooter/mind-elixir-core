@@ -391,14 +391,6 @@ export const removeNode = function (this: MindElixirInstance, el?: Topic) {
     this.selectNode(findEle(nodeObj.parent!.id))
   }
 
-  for (const prop in this.linkData) {
-    // MAYBEBUG should traverse all children node
-    const link = this.linkData[prop]
-    if (link.from === nodeObj.id || link.to === nodeObj.id) {
-      const linkEle = this.mindElixirBox.querySelector(`[data-linkid=${this.linkData[prop].id}]`) as CustomSvg
-      this.removeLink(linkEle)
-    }
-  }
   t.parentNode.remove()
   this.linkDiv()
   this.bus.fire('operation', {

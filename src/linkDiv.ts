@@ -1,6 +1,5 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
-import { findEle } from './utils/dom'
 import { SIDE, GAP, TURNPOINT_R } from './const'
 import type { Wrapper, Topic, Parent } from './types/dom'
 import type { MindElixirInstance } from './types/index'
@@ -25,9 +24,10 @@ let genPath: typeof generateSubLine1 = generateSubLine1
  * only link specific node if `mainNode` is present
  *
  * procedure:
- * 1. layout main node, generate main link
+ * 1. generate main link
  * 2. generate links inside main node, if `mainNode` is present, only generate the link of the specific main node
  * 3. generate custom link
+ * 4. generate summary
  * @param mainNode regenerate sublink of the specific main node
  */
 const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
@@ -62,7 +62,6 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
       x2 = offsetLeft
     }
     const y2 = offsetTop + p.offsetHeight / 2
-    // console.log(x1, y1, x2, y2)
     let mainPath = ''
     if (this.mainLinkStyle === 2) {
       if (this.direction === SIDE) {
@@ -96,7 +95,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
       }
     }
 
-    // 3. generate link inside main node
+    // generate link inside main node
     if (mainNode && mainNode !== el) {
       continue
     }
@@ -231,9 +230,5 @@ function generateSubLine1({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }
     return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
   }
 }
-
-// function generateSubLine3({ x1, y1, x2, y2, xMiddle }) {
-//   return `M ${x1} ${y1} Q ${x1} ${y2} ${xMiddle} ${y2} H ${x2}`
-// }
 
 export default linkDiv

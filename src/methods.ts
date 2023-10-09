@@ -74,6 +74,7 @@ const methods = {
     fillParent(this.nodeData)
     this.linkData = data.linkData || {}
     this.summaries = data.summaries || []
+    this.tidyCustomLink()
     // plugins
     this.toolBar && toolBar(this)
     if (import.meta.env.MODE !== 'lite') {

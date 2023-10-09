@@ -1,4 +1,4 @@
-import { generateUUID, getArrowPoints, getOffsetLT, setAttributes } from './utils/index'
+import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { findEle } from './utils/dom'
 import { createSvgGroup, editSvgText } from './utils/svg'
@@ -159,7 +159,6 @@ export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSv
   const id = link.linkObj!.id
   delete this.linkData[id]
   link.remove()
-  link = null // useless
 }
 
 export const selectLink = function (this: MindElixirInstance, link: CustomSvg) {
@@ -312,4 +311,13 @@ export function editCutsomLinkLabel(this: MindElixirInstance, el: CustomSvg) {
     // })
   })
   console.timeEnd('editSummary')
+}
+
+export function tidyCustomLink(this: MindElixirInstance) {
+  for (const prop in this.linkData) {
+    const link = this.linkData[prop]
+    if (!getObjById(link.from, this.nodeData) || !getObjById(link.to, this.nodeData)) {
+      delete this.linkData[link.id]
+    }
+  }
 }

@@ -1,4 +1,3 @@
-import type { DivData } from '../customLink'
 import type { NodeObj, MindElixirInstance, NodeObjExport } from '../types/index'
 
 export function encodeHTML(s: string) {
