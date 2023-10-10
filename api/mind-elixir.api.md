@@ -4,92 +4,89 @@
 
 ```ts
 
-// @public (undocumented)
-export interface Children extends HTMLElement {
-    // (undocumented)
-    children: HTMLCollection & Wrapper[];
-    // (undocumented)
-    firstChild: Wrapper;
-    // (undocumented)
-    parentElement: Wrapper;
-    // (undocumented)
-    parentNode: Wrapper;
-    // (undocumented)
-    previousSibling: Parent;
-}
-
-// @public (undocumented)
-export type CustomArrow = SVGPathElement;
-
-// @public (undocumented)
-export type CustomLine = SVGPathElement;
-
-// @public (undocumented)
-export interface CustomSvg extends SVGGElement {
-    // (undocumented)
-    children: HTMLCollection & [CustomLine, CustomArrow];
-    // Warning: (ae-forgotten-export) The symbol "LinkItem" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    linkObj?: LinkItem;
-}
-
-// @public (undocumented)
-const _default: MindElixirCtor;
-export default _default;
-
-// @public (undocumented)
-export interface Expander extends HTMLElement {
-    // (undocumented)
-    expanded?: boolean;
-    // (undocumented)
-    parentElement: Parent;
-    // (undocumented)
-    parentNode: Parent;
-    // (undocumented)
-    previousSibling: Topic;
-}
-
+// Warning: (ae-forgotten-export) The symbol "LinkItem" needs to be exported by the entry point docs.d.ts
+//
 // @public (undocumented)
 export type LinkObj = Record<string, LinkItem>;
 
-// @public (undocumented)
-export interface MindElixirCtor {
-    // (undocumented)
-    new (options: Options): MindElixirInstance;
-    // Warning: (ae-forgotten-export) The symbol "DARK_THEME" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    DARK_THEME: typeof DARK_THEME;
-    // Warning: (ae-forgotten-export) The symbol "findEle" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    E: typeof findEle;
-    // Warning: (ae-forgotten-export) The symbol "LEFT" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    LEFT: typeof LEFT;
-    // Warning: (ae-forgotten-export) The symbol "MindElixir" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    new: typeof MindElixir.new;
-    // (undocumented)
-    prototype: MindElixirMethods;
-    // Warning: (ae-forgotten-export) The symbol "RIGHT" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    RIGHT: typeof RIGHT;
-    // Warning: (ae-forgotten-export) The symbol "SIDE" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    SIDE: typeof SIDE;
-    // Warning: (ae-forgotten-export) The symbol "THEME" needs to be exported by the entry point index.d.ts
-    //
-    // (undocumented)
-    THEME: typeof THEME;
-    // (undocumented)
-    version: string;
-}
+// @public
+export const methods: {
+    init(this: MindElixirInstance, data: MindElixirData): Error | undefined;
+    exportSvg: (this: MindElixirInstance) => Blob;
+    exportPng: (this: MindElixirInstance) => Promise<Blob | null>;
+    createSummary: (this: MindElixirInstance) => void;
+    removeSummary: (this: MindElixirInstance, id: string) => void;
+    selectSummary: (this: MindElixirInstance, el: summaryOperation.SummarySvgGroup) => void;
+    unselectSummary: (this: MindElixirInstance) => void;
+    renderSummary: (this: MindElixirInstance) => void;
+    editSummary: (this: MindElixirInstance, el: summaryOperation.SummarySvgGroup) => void;
+    renderCustomLink(this: MindElixirInstance): void;
+    editCutsomLinkLabel(this: MindElixirInstance, el: CustomSvg): void;
+    tidyCustomLink(this: MindElixirInstance): void;
+    drawCustomLink: (this: MindElixirInstance, from: Topic, to: Topic, obj: customLink.LinkItem, isInitPaint?: boolean | undefined) => void;
+    createLink: (this: MindElixirInstance, from: Topic, to: Topic) => void;
+    removeLink: (this: MindElixirInstance, linkSvg?: CustomSvg | undefined) => void;
+    selectLink: (this: MindElixirInstance, link: CustomSvg) => void;
+    unselectLink: (this: MindElixirInstance) => void;
+    hideLinkController: (this: MindElixirInstance) => void;
+    showLinkController: (this: MindElixirInstance, linkItem: customLink.LinkItem, fromData: customLink.DivData, toData: customLink.DivData) => void;
+    reshapeNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    insertSibling: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    insertBefore: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    insertParent: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    addChild: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    copyNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    moveUpNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    moveDownNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    removeNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    moveNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    moveNodeBefore: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    moveNodeAfter: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    beginEdit: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    setNodeTopic: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    selectNode: (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean | undefined, e?: MouseEvent | undefined) => void;
+    unselectNode: (this: MindElixirInstance) => void;
+    selectNodes: (this: MindElixirInstance, targetElements: Topic[]) => void;
+    unselectNodes: (this: MindElixirInstance) => void;
+    selectNextSibling: (this: MindElixirInstance) => boolean;
+    selectPrevSibling: (this: MindElixirInstance) => boolean;
+    selectFirstChild: (this: MindElixirInstance) => void;
+    selectParent: (this: MindElixirInstance) => void;
+    getDataString: (this: MindElixirInstance) => string;
+    getData: (this: MindElixirInstance) => MindElixirData;
+    getDataMd: (this: MindElixirInstance) => string;
+    enableEdit: (this: MindElixirInstance) => void;
+    disableEdit: (this: MindElixirInstance) => void;
+    scale: (this: MindElixirInstance, scaleVal: number) => void;
+    toCenter: (this: MindElixirInstance) => void;
+    install: (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) => void;
+    focusNode: (this: MindElixirInstance, el: Topic) => void;
+    cancelFocus: (this: MindElixirInstance) => void;
+    initLeft: (this: MindElixirInstance) => void;
+    initRight: (this: MindElixirInstance) => void;
+    initSide: (this: MindElixirInstance) => void;
+    setLocale: (this: MindElixirInstance, locale: string) => void;
+    expandNode: (this: MindElixirInstance, el: Topic, isExpand?: boolean | undefined) => void;
+    refresh: (this: MindElixirInstance, data?: MindElixirData | undefined) => void;
+    getObjById: (id: string, data: NodeObj) => NodeObj | null;
+    generateNewObj: (this: MindElixirInstance) => NodeObjExport;
+    layout: (this: MindElixirInstance) => void;
+    linkDiv: (this: MindElixirInstance, mainNode?: Wrapper | undefined) => void;
+    editTopic: (this: MindElixirInstance, el: Topic) => void;
+    createWrapper: (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean | undefined) => {
+        grp: Wrapper;
+        top: Parent;
+        tpc: Topic;
+    };
+    createParent: (this: MindElixirInstance, nodeObj: NodeObj) => {
+        p: Parent;
+        tpc: Topic;
+    };
+    createChildren: (this: MindElixirInstance, wrappers: Wrapper[]) => Children;
+    createTopic: (this: MindElixirInstance, nodeObj: NodeObj) => Topic;
+    findEle: (id: string, instance?: MindElixirInstance | undefined) => Topic;
+    changeTheme: (this: MindElixirInstance, theme: Theme, shouldRefresh?: boolean) => void;
+};
 
 // @public
 export interface MindElixirData {
@@ -99,8 +96,6 @@ export interface MindElixirData {
     linkData?: LinkObj;
     // (undocumented)
     nodeData: NodeObj;
-    // Warning: (ae-forgotten-export) The symbol "Summary" needs to be exported by the entry point index.d.ts
-    //
     // (undocumented)
     summaries?: Summary[];
     // (undocumented)
@@ -111,12 +106,12 @@ export interface MindElixirData {
 export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     allowUndo: boolean;
-    // Warning: (ae-forgotten-export) The symbol "Before" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "Before" needs to be exported by the entry point docs.d.ts
     //
     // (undocumented)
     before: Before;
-    // Warning: (ae-forgotten-export) The symbol "Bus" needs to be exported by the entry point index.d.ts
-    // Warning: (ae-forgotten-export) The symbol "EventMap" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "Bus" needs to be exported by the entry point docs.d.ts
+    // Warning: (ae-forgotten-export) The symbol "EventMap" needs to be exported by the entry point docs.d.ts
     //
     // (undocumented)
     bus: ReturnType<typeof Bus.create<EventMap>>;
@@ -132,7 +127,7 @@ export interface MindElixirInstance extends MindElixirMethods {
     currentNode: Topic | null;
     // (undocumented)
     currentNodes: Topic[] | null;
-    // Warning: (ae-forgotten-export) The symbol "SummarySvgGroup" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "SummarySvgGroup" needs to be exported by the entry point docs.d.ts
     //
     // (undocumented)
     currentSummary: SummarySvgGroup | null;
@@ -142,13 +137,13 @@ export interface MindElixirInstance extends MindElixirMethods {
     draggable: boolean;
     // (undocumented)
     editable: boolean;
-    // Warning: (ae-forgotten-export) The symbol "LinkDragMoveHelperInstance" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "LinkDragMoveHelperInstance" needs to be exported by the entry point docs.d.ts
     //
     // @internal (undocumented)
     helper1: LinkDragMoveHelperInstance;
     // @internal (undocumented)
     helper2: LinkDragMoveHelperInstance;
-    // Warning: (ae-forgotten-export) The symbol "Operation" needs to be exported by the entry point index.d.ts
+    // Warning: (ae-forgotten-export) The symbol "Operation" needs to be exported by the entry point docs.d.ts
     //
     // (undocumented)
     history: Operation[];
@@ -218,8 +213,6 @@ export interface MindElixirInstance extends MindElixirMethods {
     waitCopy: Topic | null;
 }
 
-// Warning: (ae-forgotten-export) The symbol "methods" needs to be exported by the entry point index.d.ts
-//
 // @public (undocumented)
 export type MindElixirMethods = typeof methods;
 
@@ -237,6 +230,8 @@ export interface NodeObj {
     hyperLink?: string;
     // (undocumented)
     icons?: string[];
+    // Warning: (ae-forgotten-export) The symbol "Uid" needs to be exported by the entry point docs.d.ts
+    //
     // (undocumented)
     id: Uid;
     // (undocumented)
@@ -263,130 +258,25 @@ export interface NodeObj {
 }
 
 // @public (undocumented)
-export type NodeObjExport = Omit<NodeObj, 'parent'>;
+export type Summary = {
+    id: string;
+    text: string;
+    parent: string;
+    start: number;
+    end: number;
+};
 
-// @public
-export interface Options {
-    // (undocumented)
-    allowUndo?: boolean;
-    // (undocumented)
-    before?: Before;
-    // (undocumented)
-    contextMenu?: boolean;
-    // (undocumented)
-    contextMenuOption?: any;
-    // (undocumented)
-    direction?: number;
-    // (undocumented)
-    draggable?: boolean;
-    // (undocumented)
-    editable?: boolean;
-    // (undocumented)
-    el: string | HTMLElement;
-    // (undocumented)
-    keypress?: boolean;
-    // (undocumented)
-    locale?: string;
-    // (undocumented)
-    mainLinkStyle?: number;
-    // (undocumented)
-    mobileMenu?: boolean;
-    // (undocumented)
-    newTopicName?: string;
-    // (undocumented)
-    nodeMenu?: boolean;
-    // (undocumented)
-    overflowHidden?: boolean;
-    // (undocumented)
-    subLinkStyle?: number;
-    // (undocumented)
-    theme?: Theme;
-    // (undocumented)
-    toolBar?: boolean;
-}
-
-// @public (undocumented)
-export interface Parent extends HTMLElement {
-    // (undocumented)
-    children: HTMLCollection & [Topic, Expander];
-    // (undocumented)
-    firstChild: Topic;
-    // (undocumented)
-    nextSibling: Children;
-    // (undocumented)
-    offsetParent: Wrapper;
-    // (undocumented)
-    parentElement: Wrapper;
-    // (undocumented)
-    parentNode: Wrapper;
-}
-
-// @public (undocumented)
-export interface Theme {
-    // (undocumented)
-    cssVar: Partial<{
-        '--main-color': string;
-        '--main-bgcolor': string;
-        '--color': string;
-        '--bgcolor': string;
-        '--selected': string;
-        '--panel-color': string;
-        '--panel-bgcolor': string;
-        '--root-color': string;
-        '--root-bgcolor': string;
-        '--root-radius': string;
-        '--main-radius': string;
-        '--topic-padding': string;
-        '--panel-border-color': string;
-    }>;
-    // (undocumented)
-    name: string;
-    // (undocumented)
-    palette: string[];
-}
-
-// @public (undocumented)
-export interface Topic extends HTMLElement {
-    // (undocumented)
-    expander?: Expander;
-    // (undocumented)
-    icons?: HTMLSpanElement;
-    // (undocumented)
-    image?: HTMLImageElement;
-    // (undocumented)
-    linkContainer: HTMLElement | null;
-    // (undocumented)
-    nodeObj: NodeObj;
-    // (undocumented)
-    offsetParent: Parent;
-    // (undocumented)
-    parentElement: Parent;
-    // (undocumented)
-    parentNode: Parent;
-    // (undocumented)
-    tags?: HTMLDivElement;
-}
-
-// @public (undocumented)
-export type Uid = string;
-
-// @public (undocumented)
-export interface Wrapper extends HTMLElement {
-    // (undocumented)
-    children: HTMLCollection & [Parent, Children];
-    // (undocumented)
-    firstChild: Parent;
-    // (undocumented)
-    nextSibling: Wrapper | null;
-    // (undocumented)
-    offsetParent: Wrapper;
-    // (undocumented)
-    parentElement: Children;
-    // (undocumented)
-    parentNode: Children;
-    // (undocumented)
-    previousSibling: Wrapper | null;
-}
+// Warnings were encountered during analysis:
+//
+// dist/types/methods.d.ts:16:5 - (ae-forgotten-export) The symbol "summaryOperation" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:21:5 - (ae-forgotten-export) The symbol "CustomSvg" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:23:5 - (ae-forgotten-export) The symbol "Topic" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:23:5 - (ae-forgotten-export) The symbol "customLink" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:69:5 - (ae-forgotten-export) The symbol "NodeObjExport" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:71:5 - (ae-forgotten-export) The symbol "Wrapper" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:75:9 - (ae-forgotten-export) The symbol "Parent" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:82:5 - (ae-forgotten-export) The symbol "Children" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:85:5 - (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point docs.d.ts
 
 // (No @packageDocumentation comment for this package)
 
