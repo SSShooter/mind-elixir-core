@@ -14,7 +14,7 @@ import {
 } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
-import type { Topic, Wrapper, CustomSvg } from './types/dom'
+import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirInstance, NodeObj } from './types/index'
 import { LEFT, RIGHT, SIDE } from './const'
 
