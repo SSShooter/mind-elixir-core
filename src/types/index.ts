@@ -1,13 +1,15 @@
 import type Bus from '../utils/pubsub'
 import type { Topic, CustomSvg } from './dom'
 import type { EventMap, Operation } from '../utils/pubsub'
-import type { MindElixirMethods } from '../methods'
+import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { LinkItem } from '../customLink'
 import type { Summary, SummarySvgGroup } from '../summary'
 export * from '../methods'
 
-type Before = Record<string, (...args: any[]) => Promise<boolean> | boolean>
+type Before = Partial<{
+  [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
+}>
 
 export interface Theme {
   name: string

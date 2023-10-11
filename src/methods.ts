@@ -17,17 +17,23 @@ import * as customLink from './customLink'
 import * as summaryOperation from './summary'
 import * as exportImage from './plugin/exportImage'
 
-type Operations = keyof typeof nodeOperation
-type NodeOperation = Record<Operations, ReturnType<typeof beforeHook>>
+export type OperationMap = typeof nodeOperation
+export type Operations = keyof OperationMap
+type NodeOperation = {
+  [K in Operations]: ReturnType<typeof beforeHook<K>>
+}
 
-function beforeHook(fn: (...arg: any[]) => void, fnName: Operations) {
-  return async function (this: MindElixirInstance, ...args: unknown[]) {
+function beforeHook<T extends Operations>(
+  fn: OperationMap[T],
+  fnName: T
+): (this: MindElixirInstance, ...args: Parameters<OperationMap[T]>) => Promise<void> {
+  return async function (this: MindElixirInstance, ...args: Parameters<OperationMap[T]>) {
     const hook = this.before[fnName]
     if (hook) {
       const res = await hook.apply(this, args)
       if (!res) return
     }
-    fn.apply(this, args)
+    ;(fn as any).apply(this, args)
   }
 }
 

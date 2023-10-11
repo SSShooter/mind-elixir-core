@@ -174,6 +174,50 @@
       "members": [
         {
           "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!LinkItem:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type LinkItem = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    id: string;\n    label: string;\n    from: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Uid",
+              "canonicalReference": "mind-elixir!~Uid:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    to: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Uid",
+              "canonicalReference": "mind-elixir!~Uid:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    delta1: {\n        x: number;\n        y: number;\n    };\n    delta2: {\n        x: number;\n        y: number;\n    };\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/customLink.d.ts",
+          "releaseTag": "Public",
+          "name": "LinkItem",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 6
+          }
+        },
+        {
+          "kind": "TypeAlias",
           "canonicalReference": "mind-elixir!LinkObj:type",
           "docComment": "",
           "excerptTokens": [
@@ -193,7 +237,7 @@
             {
               "kind": "Reference",
               "text": "LinkItem",
-              "canonicalReference": "mind-elixir!~LinkItem:type"
+              "canonicalReference": "mind-elixir!LinkItem:type"
             },
             {
               "kind": "Content",
@@ -435,7 +479,7 @@
             {
               "kind": "Reference",
               "text": "customLink.LinkItem",
-              "canonicalReference": "mind-elixir!~LinkItem:type"
+              "canonicalReference": "mind-elixir!LinkItem:type"
             },
             {
               "kind": "Content",
@@ -534,7 +578,7 @@
             {
               "kind": "Reference",
               "text": "customLink.LinkItem",
-              "canonicalReference": "mind-elixir!~LinkItem:type"
+              "canonicalReference": "mind-elixir!LinkItem:type"
             },
             {
               "kind": "Content",
@@ -565,7 +609,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", tpc: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", patchData: import(\"./types\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
             },
             {
               "kind": "Reference",
@@ -583,7 +645,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined, node?: import(\"./types\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -601,7 +681,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined, node?: import(\"./types\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -619,7 +717,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined, node?: import(\"./types\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -637,7 +753,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined, node?: import(\"./types\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -655,7 +789,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", node: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", to: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
             },
             {
               "kind": "Reference",
@@ -673,7 +825,16 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -691,7 +852,16 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -709,7 +879,16 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -727,7 +906,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", from: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", to: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
             },
             {
               "kind": "Reference",
@@ -745,7 +942,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", from: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", to: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
             },
             {
               "kind": "Reference",
@@ -763,7 +978,25 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", from: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", to: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
             },
             {
               "kind": "Reference",
@@ -781,7 +1014,16 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el?: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " | undefined) => "
             },
             {
               "kind": "Reference",
@@ -799,7 +1041,16 @@
             },
             {
               "kind": "Content",
-              "text": ", ...args: unknown[]) => "
+              "text": ", el: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", topic: string) => "
             },
             {
               "kind": "Reference",
@@ -1357,7 +1608,7 @@
           "name": "methods",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 252
+            "endIndex": 298
           }
         },
         {

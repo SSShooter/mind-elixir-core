@@ -4,8 +4,22 @@
 
 ```ts
 
-// Warning: (ae-forgotten-export) The symbol "LinkItem" needs to be exported by the entry point docs.d.ts
-//
+// @public (undocumented)
+export type LinkItem = {
+    id: string;
+    label: string;
+    from: Uid;
+    to: Uid;
+    delta1: {
+        x: number;
+        y: number;
+    };
+    delta2: {
+        x: number;
+        y: number;
+    };
+};
+
 // @public (undocumented)
 export type LinkObj = Record<string, LinkItem>;
 
@@ -30,20 +44,20 @@ export const methods: {
     unselectLink: (this: MindElixirInstance) => void;
     hideLinkController: (this: MindElixirInstance) => void;
     showLinkController: (this: MindElixirInstance, linkItem: customLink.LinkItem, fromData: customLink.DivData, toData: customLink.DivData) => void;
-    reshapeNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    insertSibling: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    insertBefore: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    insertParent: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    addChild: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    copyNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveUpNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveDownNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    removeNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveNode: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveNodeBefore: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    moveNodeAfter: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    beginEdit: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
-    setNodeTopic: (this: MindElixirInstance, ...args: unknown[]) => Promise<void>;
+    reshapeNode: (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) => Promise<void>;
+    insertSibling: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
+    insertBefore: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
+    insertParent: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
+    addChild: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
+    copyNode: (this: MindElixirInstance, node: Topic, to: Topic) => Promise<void>;
+    moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
+    moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
+    removeNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
+    moveNode: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
+    moveNodeBefore: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
+    moveNodeAfter: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
+    beginEdit: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
+    setNodeTopic: (this: MindElixirInstance, el: Topic, topic: string) => Promise<void>;
     selectNode: (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean | undefined, e?: MouseEvent | undefined) => void;
     unselectNode: (this: MindElixirInstance) => void;
     selectNodes: (this: MindElixirInstance, targetElements: Topic[]) => void;
@@ -230,8 +244,6 @@ export interface NodeObj {
     hyperLink?: string;
     // (undocumented)
     icons?: string[];
-    // Warning: (ae-forgotten-export) The symbol "Uid" needs to be exported by the entry point docs.d.ts
-    //
     // (undocumented)
     id: Uid;
     // (undocumented)
@@ -268,15 +280,16 @@ export type Summary = {
 
 // Warnings were encountered during analysis:
 //
-// dist/types/methods.d.ts:16:5 - (ae-forgotten-export) The symbol "summaryOperation" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:21:5 - (ae-forgotten-export) The symbol "CustomSvg" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:23:5 - (ae-forgotten-export) The symbol "Topic" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:23:5 - (ae-forgotten-export) The symbol "customLink" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:69:5 - (ae-forgotten-export) The symbol "NodeObjExport" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:71:5 - (ae-forgotten-export) The symbol "Wrapper" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:75:9 - (ae-forgotten-export) The symbol "Parent" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:82:5 - (ae-forgotten-export) The symbol "Children" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:85:5 - (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point docs.d.ts
+// dist/types/customLink.d.ts:6:5 - (ae-forgotten-export) The symbol "Uid" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:19:5 - (ae-forgotten-export) The symbol "summaryOperation" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:24:5 - (ae-forgotten-export) The symbol "CustomSvg" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:26:5 - (ae-forgotten-export) The symbol "Topic" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:26:5 - (ae-forgotten-export) The symbol "customLink" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:72:5 - (ae-forgotten-export) The symbol "NodeObjExport" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:74:5 - (ae-forgotten-export) The symbol "Wrapper" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:78:9 - (ae-forgotten-export) The symbol "Parent" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:85:5 - (ae-forgotten-export) The symbol "Children" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:88:5 - (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point docs.d.ts
 
 // (No @packageDocumentation comment for this package)
 
