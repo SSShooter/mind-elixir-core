@@ -113,7 +113,7 @@ const padding = 100
 
 const head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`
 
-const generateSvg = (mei: MindElixirInstance) => {
+const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
   const mapDiv = mei.nodes
   const height = mapDiv.offsetHeight + padding * 2
   const width = mapDiv.offsetWidth + padding * 2
@@ -144,7 +144,7 @@ const generateSvg = (mei: MindElixirInstance) => {
   summaries && g.appendChild(summaries)
 
   mapDiv.querySelectorAll('me-tpc').forEach(tpc => {
-    g.appendChild(convertDivToSvg(mei, tpc as Topic, true))
+    g.appendChild(convertDivToSvg(mei, tpc as Topic, noForiegnObject ? false : true))
   })
   mapDiv.querySelectorAll('.tags > span').forEach(tag => {
     g.appendChild(convertDivToSvg(mei, tag as HTMLElement))
@@ -177,14 +177,14 @@ function blobToUrl(blob: Blob): Promise<string> {
   })
 }
 
-export const exportSvg = function (this: MindElixirInstance) {
-  const svgString = generateSvg(this)
+export const exportSvg = function (this: MindElixirInstance, noForiegnObject = false) {
+  const svgString = generateSvg(this, noForiegnObject)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   return blob
 }
 
-export const exportPng = async function (this: MindElixirInstance): Promise<Blob | null> {
-  const svgString = generateSvg(this)
+export const exportPng = async function (this: MindElixirInstance, noForiegnObject = false): Promise<Blob | null> {
+  const svgString = generateSvg(this, noForiegnObject)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   // use base64 to bypass canvas taint
   const url = await blobToUrl(blob)
