@@ -14,6 +14,8 @@ export const findEle = (id: string, instance?: MindElixirInstance) => {
 }
 
 export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
+  tpc.innerHTML = ''
+
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color || ''
     tpc.style.background = nodeObj.style.background || ''
