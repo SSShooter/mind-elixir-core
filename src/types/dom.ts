@@ -30,12 +30,14 @@ export interface Children extends HTMLElement {
 
 export interface Topic extends HTMLElement {
   nodeObj: NodeObj
-  linkContainer: HTMLElement | null
   parentNode: Parent
   parentElement: Parent
   offsetParent: Parent
 
+  text: HTMLSpanElement
   expander?: Expander
+
+  linkContainer?: HTMLElement
   image?: HTMLImageElement
   icons?: HTMLSpanElement
   tags?: HTMLDivElement

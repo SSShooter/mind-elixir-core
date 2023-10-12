@@ -144,7 +144,7 @@ const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
   summaries && g.appendChild(summaries)
 
   mapDiv.querySelectorAll('me-tpc').forEach(tpc => {
-    g.appendChild(convertDivToSvg(mei, tpc as Topic, noForiegnObject ? false : true))
+    g.appendChild(convertDivToSvg(mei, (tpc as Topic).text, noForiegnObject ? false : true))
   })
   mapDiv.querySelectorAll('.tags > span').forEach(tag => {
     g.appendChild(convertDivToSvg(mei, tag as HTMLElement))

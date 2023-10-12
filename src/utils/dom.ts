@@ -14,14 +14,22 @@ export const findEle = (id: string, instance?: MindElixirInstance) => {
 }
 
 export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
-  tpc.textContent = nodeObj.topic
-
   if (nodeObj.style) {
     tpc.style.color = nodeObj.style.color || ''
     tpc.style.background = nodeObj.style.background || ''
     tpc.style.fontSize = nodeObj.style.fontSize + 'px'
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
+
+  if (nodeObj.branchColor) {
+    tpc.style.borderColor = nodeObj.branchColor
+  }
+
+  // TODO
+  // if (nodeObj.dangerouslySetInnerHTML) {
+  //   tpc.innerHTML = nodeObj.dangerouslySetInnerHTML
+  //   return
+  // }
 
   if (nodeObj.image) {
     const img = nodeObj.image
@@ -35,6 +43,16 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     } else {
       console.warn('image url/width/height are required')
     }
+  } else if (tpc.image) {
+    tpc.image = undefined
+  }
+
+  {
+    const textContainer = $d.createElement('span')
+    textContainer.className = 'text'
+    textContainer.textContent = nodeObj.topic
+    tpc.appendChild(textContainer)
+    tpc.text = textContainer
   }
 
   if (nodeObj.hyperLink) {
@@ -46,26 +64,27 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     tpc.appendChild(linkContainer)
     tpc.linkContainer = linkContainer
   } else if (tpc.linkContainer) {
-    tpc.linkContainer.remove()
-    tpc.linkContainer = null
+    tpc.linkContainer = undefined
   }
+
   if (nodeObj.icons && nodeObj.icons.length) {
     const iconsContainer = $d.createElement('span')
     iconsContainer.className = 'icons'
     iconsContainer.innerHTML = nodeObj.icons.map(icon => `<span>${encodeHTML(icon)}</span>`).join('')
     tpc.appendChild(iconsContainer)
     tpc.icons = iconsContainer
+  } else if (tpc.icons) {
+    tpc.icons = undefined
   }
+
   if (nodeObj.tags && nodeObj.tags.length) {
     const tagsContainer = $d.createElement('div')
     tagsContainer.className = 'tags'
     tagsContainer.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
     tpc.appendChild(tagsContainer)
     tpc.tags = tagsContainer
-  }
-
-  if (nodeObj.branchColor) {
-    tpc.style.borderColor = nodeObj.branchColor
+  } else if (tpc.tags) {
+    tpc.tags = undefined
   }
 }
 
@@ -122,7 +141,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   console.time('editTopic')
   if (!el) return
   const div = $d.createElement('div')
-  const origin = el.childNodes[0].textContent as string
+  const origin = el.text.textContent as string
   el.appendChild(div)
   div.id = 'input-box'
   div.textContent = origin
@@ -161,7 +180,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
     else node.topic = topic
     div.remove()
     if (topic === origin) return
-    el.childNodes[0].textContent = node.topic
+    el.text.textContent = node.topic
     this.linkDiv()
     this.bus.fire('operation', {
       name: 'finishEdit',

@@ -536,7 +536,7 @@ export const beginEdit = function (this: MindElixirInstance, el?: Topic) {
 }
 
 export const setNodeTopic = function (this: MindElixirInstance, el: Topic, topic: string) {
-  el.childNodes[0].textContent = topic
+  el.text.textContent = topic
   el.nodeObj.topic = topic
   this.linkDiv()
 }

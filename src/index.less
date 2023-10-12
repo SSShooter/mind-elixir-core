@@ -81,7 +81,7 @@
   me-main {
     // main node
     & > me-wrapper {
-      position: relative; // make subline svg's offsetParent to be the main node
+      position: relative; // make subline svg's offsetParent be the main node
       margin: 20px 65px;
       & > me-parent {
         margin: var(--gap);
@@ -125,12 +125,7 @@
       white-space: pre-wrap;
       padding: var(--topic-padding);
       line-height: 1.2em; // assure the line-height consistency between different languages
-      & > div,
-      & > span,
-      & > img {
-        // tags,icons,images should not response to click event
-        pointer-events: none;
-      }
+
       // drag preview
       .insert-preview {
         position: absolute;
@@ -241,13 +236,19 @@
     pointer-events: all;
   }
 
-  me-tpc > img {
-    pointer-events: none;
-    display: block;
-    margin-top: 8px;
-    object-fit: cover;
+  me-tpc {
+    & > div,
+    & > span,
+    & > img {
+      // tags,icons,images should not response to click event
+      pointer-events: none;
+    }
+    & > img {
+      display: block;
+      margin-bottom: 8px;
+      object-fit: cover;
+    }
   }
-
   .circle {
     position: absolute;
     height: 10px;
@@ -299,8 +300,9 @@
     border-radius: 6px;
     border: #666666 2px solid;
   }
-}
-.selection-area {
-  background: #4f90f22d;
-  border: 1px solid #4f90f2;
+
+  .selection-area {
+    background: #4f90f22d;
+    border: 1px solid #4f90f2;
+  }
 }
