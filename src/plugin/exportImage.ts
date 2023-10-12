@@ -20,7 +20,12 @@ function lineHightToPadding(lineHeight: string, fontSize: string) {
 
 function generateSvgText(tpc: HTMLElement, tpcStyle: CSSStyleDeclaration, x: number, y: number) {
   const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
-  const content = tpc.childNodes[0].textContent
+  let content = ''
+  if ((tpc as Topic).text) {
+    content = (tpc as Topic).text.textContent!
+  } else {
+    content = tpc.childNodes[0].textContent!
+  }
   const lines = content!.split('\n')
   lines.forEach((line, index) => {
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
@@ -45,7 +50,12 @@ function generateSvgText(tpc: HTMLElement, tpcStyle: CSSStyleDeclaration, x: num
 }
 
 function generateSvgTextUsingForeignObject(tpc: HTMLElement, tpcStyle: CSSStyleDeclaration, x: number, y: number) {
-  const content = tpc.childNodes[0].textContent!
+  let content = ''
+  if ((tpc as Topic).text) {
+    content = (tpc as Topic).text.textContent!
+  } else {
+    content = tpc.childNodes[0].textContent!
+  }
   const foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject')
   setAttributes(foreignObject, {
     x: x + parseInt(tpcStyle.paddingLeft) + '',
@@ -144,7 +154,7 @@ const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
   summaries && g.appendChild(summaries)
 
   mapDiv.querySelectorAll('me-tpc').forEach(tpc => {
-    g.appendChild(convertDivToSvg(mei, (tpc as Topic).text, noForiegnObject ? false : true))
+    g.appendChild(convertDivToSvg(mei, tpc as Topic, noForiegnObject ? false : true))
   })
   mapDiv.querySelectorAll('.tags > span').forEach(tag => {
     g.appendChild(convertDivToSvg(mei, tag as HTMLElement))
