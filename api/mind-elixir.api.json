@@ -303,7 +303,7 @@
             },
             {
               "kind": "Content",
-              "text": ") => "
+              "text": ", noForiegnObject?: boolean) => "
             },
             {
               "kind": "Reference",
@@ -321,7 +321,7 @@
             },
             {
               "kind": "Content",
-              "text": ") => "
+              "text": ", noForiegnObject?: boolean) => "
             },
             {
               "kind": "Reference",

@@ -26,8 +26,8 @@ export type LinkObj = Record<string, LinkItem>;
 // @public
 export const methods: {
     init(this: MindElixirInstance, data: MindElixirData): Error | undefined;
-    exportSvg: (this: MindElixirInstance) => Blob;
-    exportPng: (this: MindElixirInstance) => Promise<Blob | null>;
+    exportSvg: (this: MindElixirInstance, noForiegnObject?: boolean) => Blob;
+    exportPng: (this: MindElixirInstance, noForiegnObject?: boolean) => Promise<Blob | null>;
     createSummary: (this: MindElixirInstance) => void;
     removeSummary: (this: MindElixirInstance, id: string) => void;
     selectSummary: (this: MindElixirInstance, el: summaryOperation.SummarySvgGroup) => void;
