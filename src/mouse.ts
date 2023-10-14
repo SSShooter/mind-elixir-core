@@ -3,7 +3,7 @@ import type { Topic, Expander, CustomSvg } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 import dragMoveHelper from './utils/dragMoveHelper'
 
-const isTopic = (target: HTMLElement) => {
+const isTopic = (target: HTMLElement): target is Topic => {
   return target.tagName === 'ME-TPC'
 }
 
@@ -24,7 +24,7 @@ export default function (mind: MindElixirInstance) {
     } else if (!mind.editable) {
       return
     } else if (isTopic(target)) {
-      mind.selectNode(target as Topic, false, e)
+      mind.selectNode(target, false, e)
     } else if (target.tagName === 'text') {
       if (target.dataset.type === 'custom-link') {
         mind.selectLink(target.parentElement as CustomSvg)
@@ -44,7 +44,7 @@ export default function (mind: MindElixirInstance) {
     if (!mind.editable) return
     const target = e.target as HTMLElement
     if (isTopic(target)) {
-      mind.beginEdit(target as Topic)
+      mind.beginEdit(target)
     } else if (target.tagName === 'text') {
       if (target.dataset.type === 'custom-link') {
         mind.editCutsomLinkLabel(target.parentElement as unknown as CustomSvg)
