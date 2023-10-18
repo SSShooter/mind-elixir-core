@@ -86,11 +86,11 @@ export interface MindElixirInstance extends MindElixirMethods {
   /**
    * @internal
    */
-  helper1: LinkDragMoveHelperInstance
+  helper1?: LinkDragMoveHelperInstance
   /**
    * @internal
    */
-  helper2: LinkDragMoveHelperInstance
+  helper2?: LinkDragMoveHelperInstance
 
   bus: ReturnType<typeof Bus.create<EventMap>>
   history: Operation[]

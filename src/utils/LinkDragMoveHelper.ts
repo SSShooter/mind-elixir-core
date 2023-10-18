@@ -1,31 +1,23 @@
 const create = function (dom: HTMLElement) {
   return {
     dom,
+    moved: false, // diffrentiate click and move
     mousedown: false,
-    lastX: 0,
-    lastY: 0,
     handleMouseMove(e: MouseEvent) {
-      // e.stopPropagation()
       if (this.mousedown) {
-        if (!this.lastX) {
-          this.lastX = e.pageX
-          this.lastY = e.pageY
-          return
-        }
-        const deltaX = this.lastX - e.pageX
-        const deltaY = this.lastY - e.pageY
-        this.cb && this.cb(deltaX, deltaY)
-        this.lastX = e.pageX
-        this.lastY = e.pageY
+        this.moved = true
+        this.cb && this.cb(e.movementX, e.movementY)
       }
     },
     handleMouseDown(e: MouseEvent) {
       // e.stopPropagation()
+      if (e.button !== 0) return
       this.mousedown = true
     },
     handleClear(e: MouseEvent) {
       // e.stopPropagation()
-      this.clear()
+      // this.clear()
+      this.mousedown = false
     },
     cb: null as ((deltaX: number, deltaY: number) => void) | null,
     init(map: HTMLElement, cb: (deltaX: number, deltaY: number) => void) {
@@ -45,9 +37,8 @@ const create = function (dom: HTMLElement) {
       this.dom.removeEventListener('mousedown', this.handleMouseDown)
     },
     clear() {
+      this.moved = false
       this.mousedown = false
-      this.lastX = 0
-      this.lastY = 0
     },
   }
 }

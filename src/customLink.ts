@@ -96,7 +96,6 @@ export const drawCustomLink = function (this: MindElixirInstance, from: Topic, t
     return // not expand
   }
   const start = performance.now()
-  this.hideLinkController()
   const fromData = calcCtrlP(this, from, obj.delta1)
   const toData = calcCtrlP(this, to, obj.delta2)
 
@@ -216,7 +215,7 @@ export const showLinkController = function (this: MindElixirInstance, linkItem: 
 
   if (this.helper1) {
     this.helper1.destory(this.map)
-    this.helper2.destory(this.map)
+    this.helper2?.destory(this.map)
   }
 
   this.helper1 = LinkDragMoveHelper.create(this.P2)
@@ -225,8 +224,8 @@ export const showLinkController = function (this: MindElixirInstance, linkItem: 
   // TODO: generate cb function
   this.helper1.init(this.map, (deltaX, deltaY) => {
     // recalc key points
-    p2x = p2x - deltaX / this.scaleVal
-    p2y = p2y - deltaY / this.scaleVal
+    p2x = p2x + deltaX / this.scaleVal
+    p2y = p2y + deltaY / this.scaleVal
     const p1 = calcP({ ...fromData, ctrlX: p2x, ctrlY: p2y })
     p1x = p1.x
     p1y = p1.y

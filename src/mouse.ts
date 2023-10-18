@@ -9,6 +9,15 @@ const isTopic = (target: HTMLElement): target is Topic => {
 
 export default function (mind: MindElixirInstance) {
   mind.map.addEventListener('click', e => {
+    if (e.button !== 0) return
+    if (mind.helper1?.moved) {
+      mind.helper1.clear()
+      return
+    }
+    if (mind.helper2?.moved) {
+      mind.helper2.clear()
+      return
+    }
     if (dragMoveHelper.moved) {
       dragMoveHelper.clear()
       return
@@ -71,7 +80,6 @@ export default function (mind: MindElixirInstance) {
     }
   })
   mind.map.addEventListener('mouseleave', e => {
-    console.log(e.button)
     if (e.button !== 2) return
     dragMoveHelper.clear()
   })
