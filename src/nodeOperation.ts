@@ -1,22 +1,20 @@
-import {
-  moveNodeObj,
-  removeNodeObj,
-  insertNodeObj,
-  insertBeforeNodeObj,
-  insertParentNodeObj,
-  checkMoveValid,
-  fillParent,
-  moveUpObj,
-  moveDownObj,
-  moveNodeBeforeObj,
-  moveNodeAfterObj,
-  refreshIds,
-} from './utils/index'
+import { checkMoveValid, fillParent, refreshIds } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirInstance, NodeObj } from './types/index'
 import { LEFT, RIGHT, SIDE } from './const'
+import {
+  insertNodeObj,
+  insertBeforeNodeObj,
+  insertParentNodeObj,
+  moveUpObj,
+  moveDownObj,
+  removeNodeObj,
+  moveNodeObj,
+  moveNodeBeforeObj,
+  moveNodeAfterObj,
+} from './utils/objectManipulation'
 
 const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
