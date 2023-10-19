@@ -1,11 +1,8 @@
 import type { SummarySvgGroup } from './summary'
-import type { Topic, Expander, CustomSvg } from './types/dom'
+import type { Expander, CustomSvg } from './types/dom'
 import type { MindElixirInstance } from './types/index'
+import { isTopic } from './utils'
 import dragMoveHelper from './utils/dragMoveHelper'
-
-const isTopic = (target: HTMLElement): target is Topic => {
-  return target.tagName === 'ME-TPC'
-}
 
 export default function (mind: MindElixirInstance) {
   mind.map.addEventListener('click', e => {

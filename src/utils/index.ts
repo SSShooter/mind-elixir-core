@@ -1,3 +1,4 @@
+import type { Topic } from '../types/dom'
 import type { NodeObj, MindElixirInstance, NodeObjExport } from '../types/index'
 
 export function encodeHTML(s: string) {
@@ -196,4 +197,21 @@ export const setAttributes = (el: HTMLElement | SVGElement, attrs: { [key: strin
   for (const key in attrs) {
     el.setAttribute(key, attrs[key])
   }
+}
+
+export const isTopic = (target?: HTMLElement): target is Topic => {
+  return target ? target.tagName === 'ME-TPC' : false
+}
+
+export const unionTopics = (nodes: Topic[]) => {
+  return nodes.filter(node => {
+    for (let i = 0; i < nodes.length; i++) {
+      if (node === nodes[i]) continue
+      const parent = nodes[i].parentElement.parentElement
+      if (parent.contains(node)) {
+        return false
+      }
+    }
+    return true
+  })
 }

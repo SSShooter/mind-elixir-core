@@ -2,10 +2,7 @@ import type { Topic } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
 import { findEle } from './utils/dom'
 import { fillParent } from './utils/index'
-/**
- * @exports -
- * workaround for jsdoc
- */
+
 /**
  * @exports MapInteraction
  * @namespace MapInteraction
@@ -70,7 +67,6 @@ export const selectNodes = function (this: MindElixirInstance, targetElements: T
 }
 
 export const unselectNodes = function (this: MindElixirInstance) {
-  // debugger
   if (this.currentNodes) {
     for (const el of this.currentNodes) {
       el.classList.remove('selected')

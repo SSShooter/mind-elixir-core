@@ -1,7 +1,7 @@
 import i18n from '../i18n'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
-import { encodeHTML } from '../utils/index'
+import { encodeHTML, isTopic } from '../utils/index'
 import './contextMenu.less'
 
 export default function (mind: MindElixirInstance, option: any) {
@@ -67,8 +67,8 @@ export default function (mind: MindElixirInstance, option: any) {
     e.preventDefault()
     if (!mind.editable) return
     // console.log(e.pageY, e.screenY, e.clientY)
-    const target = e.target as Topic
-    if (target.tagName === 'ME-TPC') {
+    const target = e.target as HTMLElement
+    if (isTopic(target)) {
       if (target.parentElement.tagName === 'ME-ROOT') {
         isRoot = true
       } else {

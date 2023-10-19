@@ -5,6 +5,7 @@ import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { LinkItem } from '../customLink'
 import type { Summary, SummarySvgGroup } from '../summary'
+import type SelectionArea from '@viselect/vanilla'
 export * from '../methods'
 
 type Before = Partial<{
@@ -96,6 +97,8 @@ export interface MindElixirInstance extends MindElixirMethods {
   history: Operation[]
   undo: () => void
   redo: () => void
+
+  selection: SelectionArea
 }
 
 /**
