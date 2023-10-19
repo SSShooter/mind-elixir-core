@@ -1,9 +1,8 @@
 import { checkMoveValid, fillParent, refreshIds } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
-import type { Topic, Wrapper } from './types/dom'
+import type { Topic } from './types/dom'
 import type { MindElixirInstance, NodeObj } from './types/index'
-import { LEFT, RIGHT, SIDE } from './const'
 import {
   insertNodeObj,
   insertBeforeNodeObj,
@@ -15,30 +14,12 @@ import {
   moveNodeBeforeObj,
   moveNodeAfterObj,
 } from './utils/objectManipulation'
+import { addChildDom, judgeDirection } from './utils/domManipulation'
 
 const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
   const lc = mainNode.lastElementChild
   if (lc?.tagName === 'svg') lc?.remove() // clear svg group of main node
-}
-
-// Judge new added node L or R
-const judgeDirection = function (direction: number, obj: NodeObj) {
-  if (direction === LEFT) {
-    return LEFT
-  } else if (direction === RIGHT) {
-    return RIGHT
-  } else if (direction === SIDE) {
-    const l = document.querySelector('.lhs')?.childElementCount || 0
-    const r = document.querySelector('.rhs')?.childElementCount || 0
-    if (l <= r) {
-      obj.direction = LEFT
-      return LEFT
-    } else {
-      obj.direction = RIGHT
-      return RIGHT
-    }
-  }
 }
 
 /**
@@ -206,43 +187,6 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   })
 }
 
-const addChildFunction = function (this: MindElixirInstance, nodeEle: Topic, node?: NodeObj) {
-  if (!nodeEle) return null
-  const nodeObj = nodeEle.nodeObj
-  if (nodeObj.expanded === false) {
-    this.expandNode(nodeEle, true)
-    // dom had resetted
-    nodeEle = findEle(nodeObj.id) as Topic
-  }
-  const newNodeObj = node || this.generateNewObj()
-  if (nodeObj.children) nodeObj.children.push(newNodeObj)
-  else nodeObj.children = [newNodeObj]
-  fillParent(this.nodeData)
-
-  const top = nodeEle.parentElement
-
-  const { grp, top: newTop } = this.createWrapper(newNodeObj)
-  if (top.tagName === 'ME-PARENT') {
-    if (top.children[1]) {
-      top.nextSibling.appendChild(grp)
-    } else {
-      const c = this.createChildren([grp])
-      top.appendChild(createExpander(true))
-      top.insertAdjacentElement('afterend', c)
-    }
-    this.linkDiv(grp.offsetParent as Wrapper)
-  } else if (top.tagName === 'ME-ROOT') {
-    const direction = judgeDirection(this.direction, newNodeObj)
-    if (direction === LEFT) {
-      document.querySelector('.lhs')?.appendChild(grp)
-    } else {
-      document.querySelector('.rhs')?.appendChild(grp)
-    }
-    this.linkDiv()
-  }
-  return { newTop, newNodeObj }
-}
-
 /**
  * @function
  * @instance
@@ -258,7 +202,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  const res = addChildFunction.call(this, nodeEle, node)
+  const res = addChildDom.call(this, nodeEle, node)
   if (!res) return
   const { newTop, newNodeObj } = res
   this.bus.fire('operation', {
@@ -289,7 +233,7 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)
-  const res = addChildFunction.call(this, to, deepCloneObj)
+  const res = addChildDom.call(this, to, deepCloneObj)
   if (!res) return
   const { newNodeObj } = res
   console.timeEnd('copyNode')
@@ -471,10 +415,8 @@ export const moveNodeBefore = function (this: MindElixirInstance, from: Topic, t
   moveNodeBeforeObj(obj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
-  const fromTop = from.parentElement
-  const fromGrp = fromTop.parentNode
-  const toTop = to.parentElement
-  const toGrp = toTop.parentNode
+  const fromGrp = from.parentElement.parentNode
+  const toGrp = to.parentElement.parentNode
   toGrp.insertAdjacentElement('beforebegin', fromGrp)
   this.linkDiv()
   this.bus.fire('operation', {
@@ -503,10 +445,8 @@ export const moveNodeAfter = function (this: MindElixirInstance, from: Topic, to
   moveNodeAfterObj(obj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
-  const fromTop = from.parentElement
-  const fromGrp = fromTop.parentElement
-  const toTop = to.parentElement
-  const toGrp = toTop.parentElement
+  const fromGrp = from.parentElement.parentNode
+  const toGrp = to.parentElement.parentNode
   toGrp.insertAdjacentElement('afterend', fromGrp)
   this.linkDiv()
   this.bus.fire('operation', {
