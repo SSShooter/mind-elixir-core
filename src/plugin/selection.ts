@@ -6,7 +6,7 @@ export default function (mei: MindElixirInstance) {
   const selection = new SelectionArea({
     selectables: ['.map-container me-tpc'],
     boundaries: [mei.container],
-    container: mei.container,
+    container: 'body',
     behaviour: {
       // Scroll configuration.
       scrolling: {
@@ -28,6 +28,9 @@ export default function (mei: MindElixirInstance) {
       if (((event as MouseEvent).target as Topic).tagName === 'ME-TPC') return false
       if (((event as MouseEvent).target as HTMLElement).id === 'input-box') return false
       if (((event as MouseEvent).target as HTMLElement).className === 'circle') return false
+      const selectionAreaElement = selection.getSelectionArea()
+      selectionAreaElement.style.background = '#4f90f22d'
+      selectionAreaElement.style.border = '1px solid #4f90f2'
       return true
     })
     .on('start', ({ event }) => {
