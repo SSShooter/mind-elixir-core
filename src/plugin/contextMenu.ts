@@ -2,6 +2,7 @@ import i18n from '../i18n'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
+import dragMoveHelper from '../utils/dragMoveHelper'
 import './contextMenu.less'
 
 export default function (mind: MindElixirInstance, option: any) {
@@ -91,21 +92,36 @@ export default function (mind: MindElixirInstance, option: any) {
       }
       if (!mind.currentNodes) mind.selectNode(target)
       menuContainer.hidden = false
+
+      if (dragMoveHelper.mousedown) {
+        dragMoveHelper.mousedown = false
+      }
+
+      menuUl.style.top = ''
+      menuUl.style.bottom = ''
+      menuUl.style.left = ''
+      menuUl.style.right = ''
+      const rect = menuUl.getBoundingClientRect()
       const height = menuUl.offsetHeight
       const width = menuUl.offsetWidth
-      if (height + e.clientY > window.innerHeight) {
+
+      const relativeY = e.clientY - rect.top
+      const relativeX = e.clientX - rect.left
+
+      if (height + relativeY > window.innerHeight) {
         menuUl.style.top = ''
         menuUl.style.bottom = '0px'
       } else {
         menuUl.style.bottom = ''
-        menuUl.style.top = e.clientY + 15 + 'px'
+        menuUl.style.top = relativeY + 15 + 'px'
       }
-      if (width + e.clientX > window.innerWidth) {
+
+      if (width + relativeX > window.innerWidth) {
         menuUl.style.left = ''
         menuUl.style.right = '0px'
       } else {
         menuUl.style.right = ''
-        menuUl.style.left = e.clientX + 10 + 'px'
+        menuUl.style.left = relativeX + 10 + 'px'
       }
     }
   }

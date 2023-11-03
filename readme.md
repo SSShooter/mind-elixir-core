@@ -351,7 +351,7 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 
 ```
 pnpm i
-npm start
+pnpm dev
 ```
 
 Test generated files with `dev.dist.ts`:

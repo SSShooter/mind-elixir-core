@@ -28,7 +28,10 @@
 
 <body>
   <div id="map"></div>
-  <div id="map2"></div>
+  <!-- test transform compatibility -->
+  <div style="transform: translateX(30px) translateY(20px);">
+    <div id="map2"></div>
+  </div>
   <script type="module" src="/src/dev.ts"></script>
 </body>
 
