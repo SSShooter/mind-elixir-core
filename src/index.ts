@@ -27,6 +27,7 @@ function MindElixir(
     contextMenuOption,
     toolBar,
     keypress,
+    mouseSelectionButton,
     before,
     newTopicName,
     allowUndo,
@@ -57,6 +58,7 @@ function MindElixir(
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
+  this.mouseSelectionButton = mouseSelectionButton || 0
   this.mobileMenu = mobileMenu || false
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   this.direction = typeof direction === 'number' ? direction : 1

@@ -70,18 +70,21 @@ export default function (mind: MindElixirInstance) {
     }
   })
   mind.map.addEventListener('mousedown', e => {
-    if (e.button !== 2) return
+    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
+    if (e.button !== mouseMoveButton) return
     if ((e.target as HTMLElement).contentEditable !== 'true') {
       dragMoveHelper.moved = false
       dragMoveHelper.mousedown = true
     }
   })
   mind.map.addEventListener('mouseleave', e => {
-    if (e.button !== 2) return
+    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
+    if (e.button !== mouseMoveButton) return
     dragMoveHelper.clear()
   })
   mind.map.addEventListener('mouseup', e => {
-    if (e.button !== 2) return
+    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
+    if (e.button !== mouseMoveButton) return
     dragMoveHelper.clear()
   })
   mind.map.addEventListener('contextmenu', e => {

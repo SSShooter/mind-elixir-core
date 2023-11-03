@@ -64,6 +64,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   contextMenuOption: object
   toolBar: boolean
   keypress: boolean
+  mouseSelectionButton: 0 | 2
   before: Before
   newTopicName: string
   allowUndo: boolean
@@ -116,6 +117,7 @@ export interface Options {
   contextMenuOption?: any
   toolBar?: boolean
   keypress?: boolean
+  mouseSelectionButton?: 0 | 2
   before?: Before
   newTopicName?: string
   allowUndo?: boolean

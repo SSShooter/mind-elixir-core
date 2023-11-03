@@ -124,6 +124,7 @@ let options = {
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
   overflowHidden: false, // default false
   mainLinkStyle: 2, // [1,2] default 1
+  mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
   contextMenuOption: {
     focus: true,
     link: true,
