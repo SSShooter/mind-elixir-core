@@ -31,6 +31,9 @@ export default function (mei: MindElixirInstance) {
       const selectionAreaElement = selection.getSelectionArea()
       selectionAreaElement.style.background = '#4f90f22d'
       selectionAreaElement.style.border = '1px solid #4f90f2'
+      if (selectionAreaElement.parentElement) {
+        selectionAreaElement.parentElement.style.zIndex = '9999'
+      }
       return true
     })
     .on('start', ({ event }) => {
