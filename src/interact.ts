@@ -344,6 +344,7 @@ export const refresh = function (this: MindElixirInstance, data?: MindElixirData
     data = JSON.parse(JSON.stringify(data)) as MindElixirData // it shouldn't contanimate the original data
     this.nodeData = data.nodeData
     this.linkData = data.linkData || {}
+    this.summaries = data.summaries || []
   }
   fillParent(this.nodeData)
   // create dom element for every node

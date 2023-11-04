@@ -169,6 +169,10 @@ export const createSummary = function (this: MindElixirInstance) {
   const g = drawSummary(this, summary) as SummarySvgGroup
   this.summaries.push(summary)
   this.editSummary(g)
+  this.bus.fire('operation', {
+    name: 'createSummary',
+    obj: summary,
+  })
 }
 
 export const removeSummary = function (this: MindElixirInstance, id: string) {
@@ -177,6 +181,10 @@ export const removeSummary = function (this: MindElixirInstance, id: string) {
     this.summaries.splice(index, 1)
     document.querySelector('#s-' + id)?.remove()
   }
+  this.bus.fire('operation', {
+    name: 'removeSummary',
+    obj: { id },
+  })
 }
 
 export const selectSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
@@ -228,7 +236,6 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
     this.bus.fire('operation', {
       name: 'finishEditSummary',
       obj: node,
-      origin,
     })
   })
   console.timeEnd('editSummary')

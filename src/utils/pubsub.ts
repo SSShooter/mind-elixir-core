@@ -1,23 +1,7 @@
 import type { Summary } from '../summary'
 import type { NodeObj } from '../types/index'
-export type OperationType =
-  | 'moveNode'
-  | 'moveNodeAfter'
-  | 'moveNodeBefore'
-  | 'removeNode'
-  | 'removeNodes'
-  | 'addChild'
-  | 'copyNode'
-  | 'reshapeNode'
-  | 'insertSibling'
-  | 'insertBefore'
-  | 'insertParent'
-  | 'moveUpNode'
-  | 'moveDownNode'
-  | 'beginEdit'
-  | 'finishEdit'
 
-export type Operation =
+type NodeOperation =
   | {
       name: 'moveNode' | 'moveDownNode' | 'moveUpNode' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'insertSibling' | 'beginEdit'
       obj: NodeObj
@@ -30,11 +14,6 @@ export type Operation =
   | {
       name: 'finishEdit'
       obj: NodeObj
-      origin: string
-    }
-  | {
-      name: 'finishEditSummary'
-      obj: Summary
       origin: string
     }
   | {
@@ -53,6 +32,23 @@ export type Operation =
       name: 'removeNodes'
       objs: NodeObj[]
     }
+
+export type SummaryOperation =
+  | {
+      name: 'createSummary'
+      obj: Summary
+    }
+  | {
+      name: 'removeSummary'
+      obj: { id: string }
+    }
+  | {
+      name: 'finishEditSummary'
+      obj: Summary
+    }
+
+export type Operation = NodeOperation | SummaryOperation
+export type OperationType = Operation['name']
 
 export type EventMap = {
   operation: (info: Operation) => void

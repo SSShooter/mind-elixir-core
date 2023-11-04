@@ -1,12 +1,39 @@
-import type { MindElixirData } from '../index'
+import type { MindElixirData, NodeObj } from '../index'
 import { type MindElixirInstance } from '../index'
 import { findEle } from '../utils/dom'
 import type { Operation } from '../utils/pubsub'
 
 type History = {
   prev: MindElixirData
-  currentNodeId: string | undefined
   next: MindElixirData
+  currentObject:
+    | {
+        type: 'node' | 'summary' | 'customLink'
+        value: string
+      }
+    | {
+        type: 'nodes'
+        value: string[]
+      }
+}
+
+const calcCurentObject = function (operation: Operation): History['currentObject'] {
+  if (['createSummary', 'removeSummary', 'finishEditSummary'].includes(operation.name)) {
+    return {
+      type: 'summary',
+      value: (operation as any).obj.id,
+    }
+  } else if (['removeNodes'].includes(operation.name)) {
+    return {
+      type: 'nodes',
+      value: (operation as any).objs.map((obj: NodeObj) => obj.id),
+    }
+  } else {
+    return {
+      type: 'node',
+      value: (operation as any).obj.id,
+    }
+  }
 }
 
 export default function (mei: MindElixirInstance) {
@@ -17,9 +44,7 @@ export default function (mei: MindElixirInstance) {
     if (operation.name === 'beginEdit') return
     history = history.slice(0, currentIndex + 1)
     const next = mei.getData()
-    let currentNodeId = undefined
-    if ('obj' in operation) currentNodeId = operation.obj.id
-    history.push({ prev: current, currentNodeId, next })
+    history.push({ prev: current, currentObject: calcCurentObject(operation), next })
     current = next
     currentIndex = history.length - 1
     // console.log('operation', operation.obj.id, history)
@@ -29,7 +54,7 @@ export default function (mei: MindElixirInstance) {
       const h = history[currentIndex]
       current = h.prev
       mei.refresh(h.prev)
-      if (h.currentNodeId) mei.selectNode(findEle(h.currentNodeId))
+      if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
       currentIndex--
       console.log('current', current)
     }
@@ -40,7 +65,7 @@ export default function (mei: MindElixirInstance) {
       const h = history[currentIndex]
       current = h.next
       mei.refresh(h.next)
-      if (h.currentNodeId) mei.selectNode(findEle(h.currentNodeId))
+      if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
     }
   }
   mei.map.addEventListener('keydown', (e: KeyboardEvent) => {

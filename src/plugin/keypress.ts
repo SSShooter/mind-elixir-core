@@ -150,12 +150,10 @@ export default function (mind: MindElixirInstance) {
       // bug
       if (mind.currentLink) mind.removeLink()
       else if (mind.currentSummary) mind.removeSummary(mind.currentSummary.summaryObj.id)
-      else {
-        if (mind.currentNode) {
-          mind.removeNode()
-        } else if (mind.currentNodes) {
-          mind.removeNodes(mind.currentNodes)
-        }
+      else if (mind.currentNode) {
+        mind.removeNode()
+      } else if (mind.currentNodes) {
+        mind.removeNodes(mind.currentNodes)
       }
     } else {
       const keyHandler = key2func[e.keyCode]
