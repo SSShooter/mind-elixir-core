@@ -23,6 +23,11 @@ const calcCurentObject = function (operation: Operation): History['currentObject
       type: 'summary',
       value: (operation as any).obj.id,
     }
+  } else if (['createCustomLink', 'removeCustomLink', 'finishEditCustomLinkLabel'].includes(operation.name)) {
+    return {
+      type: 'customLink',
+      value: (operation as any).obj.id,
+    }
   } else if (['removeNodes'].includes(operation.name)) {
     return {
       type: 'nodes',

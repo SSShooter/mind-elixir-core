@@ -129,7 +129,7 @@ export const drawCustomLink = function (this: MindElixirInstance, from: Topic, t
 }
 
 export const createLink = function (this: MindElixirInstance, from: Topic, to: Topic) {
-  const newLinkObj = {
+  const linkObj = {
     id: generateUUID(),
     label: 'Custom Link',
     from: from.nodeObj.id,
@@ -143,7 +143,12 @@ export const createLink = function (this: MindElixirInstance, from: Topic, to: T
       y: -200,
     },
   }
-  this.drawCustomLink(from, to, newLinkObj)
+  this.drawCustomLink(from, to, linkObj)
+
+  this.bus.fire('operation', {
+    name: 'createCustomLink',
+    obj: linkObj,
+  })
 }
 
 export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSvg) {
@@ -158,6 +163,12 @@ export const removeLink = function (this: MindElixirInstance, linkSvg?: CustomSv
   const id = link.linkObj!.id
   delete this.linkData[id]
   link.remove()
+  this.bus.fire('operation', {
+    name: 'removeCustomLink',
+    obj: {
+      id,
+    },
+  })
 }
 
 export const selectLink = function (this: MindElixirInstance, link: CustomSvg) {
@@ -307,11 +318,10 @@ export function editCutsomLinkLabel(this: MindElixirInstance, el: CustomSvg) {
     if (text === origin) return
     textEl.innerHTML = node.label
     this.linkDiv()
-    // this.bus.fire('operation', {
-    //   name: 'finishEditSummary',
-    //   obj: node,
-    //   origin,
-    // })
+    this.bus.fire('operation', {
+      name: 'finishEditCustomLinkLabel',
+      obj: node,
+    })
   })
   console.timeEnd('editSummary')
 }

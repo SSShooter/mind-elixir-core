@@ -1,3 +1,4 @@
+import type { LinkItem } from '../customLink'
 import type { Summary } from '../summary'
 import type { NodeObj } from '../types/index'
 
@@ -47,7 +48,21 @@ export type SummaryOperation =
       obj: Summary
     }
 
-export type Operation = NodeOperation | SummaryOperation
+export type CustomLinkOperation =
+  | {
+      name: 'createCustomLink'
+      obj: LinkItem
+    }
+  | {
+      name: 'removeCustomLink'
+      obj: { id: string }
+    }
+  | {
+      name: 'finishEditCustomLinkLabel'
+      obj: LinkItem
+    }
+
+export type Operation = NodeOperation | SummaryOperation | CustomLinkOperation
 export type OperationType = Operation['name']
 
 export type EventMap = {
