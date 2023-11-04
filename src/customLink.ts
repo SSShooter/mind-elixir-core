@@ -5,6 +5,8 @@ import { createSvgGroup, editSvgText } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
 
+// TODO: rename `custom link` to `association`
+
 // p1: starting point
 // p2: control point of starting point
 // p3: control point of ending point
