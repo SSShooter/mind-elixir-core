@@ -5,6 +5,7 @@ export type OperationType =
   | 'moveNodeAfter'
   | 'moveNodeBefore'
   | 'removeNode'
+  | 'removeNodes'
   | 'addChild'
   | 'copyNode'
   | 'reshapeNode'
@@ -47,6 +48,10 @@ export type Operation =
       obj: NodeObj
       originIndex?: number
       originParentId?: string
+    }
+  | {
+      name: 'removeNodes'
+      objs: NodeObj[]
     }
 
 export type EventMap = {

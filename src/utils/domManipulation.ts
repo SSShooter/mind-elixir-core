@@ -23,20 +23,20 @@ export const judgeDirection = function (direction: number, obj: NodeObj) {
   }
 }
 
-export const addChildDom = function (this: MindElixirInstance, nodeEle: Topic, node?: NodeObj) {
-  if (!nodeEle) return null
-  const nodeObj = nodeEle.nodeObj
+export const addChildDom = function (this: MindElixirInstance, tpc: Topic, node?: NodeObj) {
+  if (!tpc) return null
+  const nodeObj = tpc.nodeObj
   if (nodeObj.expanded === false) {
-    this.expandNode(nodeEle, true)
+    this.expandNode(tpc, true)
     // dom had resetted
-    nodeEle = findEle(nodeObj.id) as Topic
+    tpc = findEle(nodeObj.id) as Topic
   }
   const newNodeObj = node || this.generateNewObj()
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
   fillParent(this.nodeData)
 
-  const top = nodeEle.parentElement
+  const top = tpc.parentElement
 
   const { grp, top: newTop } = this.createWrapper(newNodeObj)
   if (top.tagName === 'ME-PARENT') {
@@ -58,4 +58,17 @@ export const addChildDom = function (this: MindElixirInstance, nodeEle: Topic, n
     this.linkDiv()
   }
   return { newTop, newNodeObj }
+}
+
+export const removeNodeDom = function (tpc: Topic, siblingLength: number) {
+  const p = tpc.parentNode
+  if (siblingLength === 0) {
+    // remove epd when children length === 0
+    const c = p.parentNode.parentNode
+    // root doesn't have epd
+    if (c.tagName !== 'ME-MAIN') {
+      c.previousSibling.children[1].remove()
+    }
+  }
+  p.parentNode.remove()
 }

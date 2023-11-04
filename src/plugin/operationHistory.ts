@@ -5,7 +5,7 @@ import type { Operation } from '../utils/pubsub'
 
 type History = {
   prev: MindElixirData
-  currentNodeId: string
+  currentNodeId: string | undefined
   next: MindElixirData
 }
 
@@ -17,17 +17,19 @@ export default function (mei: MindElixirInstance) {
     if (operation.name === 'beginEdit') return
     history = history.slice(0, currentIndex + 1)
     const next = mei.getData()
-    history.push({ prev: current, currentNodeId: operation.obj.id, next })
+    let currentNodeId = undefined
+    if ('obj' in operation) currentNodeId = operation.obj.id
+    history.push({ prev: current, currentNodeId, next })
     current = next
     currentIndex = history.length - 1
-    console.log('operation', operation.obj.id, history)
+    // console.log('operation', operation.obj.id, history)
   })
   mei.undo = function () {
     if (currentIndex > -1) {
       const h = history[currentIndex]
       current = h.prev
       mei.refresh(h.prev)
-      mei.selectNode(findEle(h.currentNodeId))
+      if (h.currentNodeId) mei.selectNode(findEle(h.currentNodeId))
       currentIndex--
       console.log('current', current)
     }
@@ -38,7 +40,7 @@ export default function (mei: MindElixirInstance) {
       const h = history[currentIndex]
       current = h.next
       mei.refresh(h.next)
-      mei.selectNode(findEle(h.currentNodeId))
+      if (h.currentNodeId) mei.selectNode(findEle(h.currentNodeId))
     }
   }
   mei.map.addEventListener('keydown', (e: KeyboardEvent) => {

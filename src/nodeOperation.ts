@@ -14,7 +14,7 @@ import {
   moveNodeBeforeObj,
   moveNodeAfterObj,
 } from './utils/objectManipulation'
-import { addChildDom, judgeDirection } from './utils/domManipulation'
+import { addChildDom, judgeDirection, removeNodeDom } from './utils/domManipulation'
 
 const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
@@ -256,9 +256,9 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
 export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  const grp = nodeEle.parentNode.parentNode
   const obj = nodeEle.nodeObj
   moveUpObj(obj)
+  const grp = nodeEle.parentNode.parentNode
   grp.parentNode.insertBefore(grp, grp.previousSibling)
   this.linkDiv()
   this.bus.fire('operation', {
@@ -280,9 +280,9 @@ export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
 export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  const grp = nodeEle.parentNode.parentNode
   const obj = nodeEle.nodeObj
   moveDownObj(obj)
+  const grp = nodeEle.parentNode.parentNode
   if (grp.nextSibling) {
     grp.nextSibling.insertAdjacentElement('afterend', grp)
   } else {
@@ -306,25 +306,17 @@ export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
  * removeNode(E('bd4313fbac40284b'))
  */
 export const removeNode = function (this: MindElixirInstance, el?: Topic) {
-  const nodeEle = el || this.currentNode
-  if (!nodeEle) return
-  const nodeObj = nodeEle.nodeObj
+  const tpc = el || this.currentNode
+  if (!tpc) return
+  const nodeObj = tpc.nodeObj
   if (nodeObj.root === true) {
     throw new Error('Can not remove root node')
   }
   const siblings = nodeObj.parent!.children!
   const i = siblings.findIndex(node => node === nodeObj)
   const siblingLength = removeNodeObj(nodeObj)
+  removeNodeDom(tpc, siblingLength)
 
-  const t = nodeEle.parentNode
-  if (siblingLength === 0) {
-    // remove epd when children length === 0
-    const c = t.parentNode.parentNode
-    // root doesn't have epd
-    if (c.tagName !== 'ME-MAIN') {
-      c.previousSibling.children[1].remove()
-    }
-  }
   // automatically select sibling or parent
   if (siblings.length !== 0) {
     const sibling = siblings[i] || siblings[i - 1]
@@ -333,7 +325,6 @@ export const removeNode = function (this: MindElixirInstance, el?: Topic) {
     this.selectNode(findEle(nodeObj.parent!.id))
   }
 
-  t.parentNode.remove()
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'removeNode',
@@ -343,6 +334,21 @@ export const removeNode = function (this: MindElixirInstance, el?: Topic) {
   })
 }
 
+export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
+  for (const tpc of tpcs) {
+    const nodeObj = tpc.nodeObj
+    if (nodeObj.root === true) {
+      continue
+    }
+    const siblingLength = removeNodeObj(nodeObj)
+    removeNodeDom(tpc, siblingLength)
+  }
+  this.linkDiv()
+  this.bus.fire('operation', {
+    name: 'removeNodes',
+    objs: tpcs.map(tpc => tpc.nodeObj),
+  })
+}
 /**
  * @function
  * @instance
