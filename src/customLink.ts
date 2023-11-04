@@ -284,7 +284,11 @@ export function renderCustomLink(this: MindElixirInstance) {
   this.linkSvgGroup.innerHTML = ''
   for (const prop in this.linkData) {
     const link = this.linkData[prop]
-    this.drawCustomLink(findEle(link.from), findEle(link.to), link, true)
+    try {
+      this.drawCustomLink(findEle(link.from), findEle(link.to), link, true)
+    } catch (e) {
+      console.warn('Node may not be expanded')
+    }
   }
   this.nodes.appendChild(this.linkSvgGroup)
 }
