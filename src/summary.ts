@@ -215,7 +215,11 @@ export const unselectSummary = function (this: MindElixirInstance) {
 export const renderSummary = function (this: MindElixirInstance) {
   this.summarySvg.innerHTML = ''
   this.summaries.forEach(summary => {
-    drawSummary(this, summary)
+    try {
+      drawSummary(this, summary)
+    } catch (e) {
+      console.warn('Node may not be expanded')
+    }
   })
   this.nodes.insertAdjacentElement('beforeend', this.summarySvg)
 }
