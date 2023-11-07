@@ -112,7 +112,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     }
   }
 
-  this.renderCustomLink()
+  this.renderArrow()
   this.renderSummary()
   console.timeEnd('linkDiv')
 }

@@ -41,7 +41,7 @@ export default function (mei: MindElixirInstance) {
         mei.unselectNode()
         mei.unselectNodes()
         mei.unselectSummary()
-        mei.unselectLink()
+        mei.unselectArrow()
         selection.clearSelection(true, true)
       }
     })

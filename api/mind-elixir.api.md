@@ -4,8 +4,10 @@
 
 ```ts
 
+import type SelectionArea from '@viselect/vanilla';
+
 // @public (undocumented)
-export type LinkItem = {
+export type Arrow = {
     id: string;
     label: string;
     from: Uid;
@@ -21,7 +23,7 @@ export type LinkItem = {
 };
 
 // @public (undocumented)
-export type LinkObj = Record<string, LinkItem>;
+export type LinkObj = Record<string, Arrow>;
 
 // @public
 export const methods: {
@@ -34,16 +36,13 @@ export const methods: {
     unselectSummary: (this: MindElixirInstance) => void;
     renderSummary: (this: MindElixirInstance) => void;
     editSummary: (this: MindElixirInstance, el: summaryOperation.SummarySvgGroup) => void;
-    renderCustomLink(this: MindElixirInstance): void;
-    editCutsomLinkLabel(this: MindElixirInstance, el: CustomSvg): void;
-    tidyCustomLink(this: MindElixirInstance): void;
-    drawCustomLink: (this: MindElixirInstance, from: Topic, to: Topic, obj: customLink.LinkItem, isInitPaint?: boolean | undefined) => void;
-    createLink: (this: MindElixirInstance, from: Topic, to: Topic) => void;
-    removeLink: (this: MindElixirInstance, linkSvg?: CustomSvg | undefined) => void;
-    selectLink: (this: MindElixirInstance, link: CustomSvg) => void;
-    unselectLink: (this: MindElixirInstance) => void;
-    hideLinkController: (this: MindElixirInstance) => void;
-    showLinkController: (this: MindElixirInstance, linkItem: customLink.LinkItem, fromData: customLink.DivData, toData: customLink.DivData) => void;
+    renderArrow(this: MindElixirInstance): void;
+    editArrowLabel(this: MindElixirInstance, el: CustomSvg): void;
+    tidyArrow(this: MindElixirInstance): void;
+    createArrow: (this: MindElixirInstance, from: Topic, to: Topic) => void;
+    removeArrow: (this: MindElixirInstance, linkSvg?: CustomSvg | undefined) => void;
+    selectArrow: (this: MindElixirInstance, link: CustomSvg) => void;
+    unselectArrow: (this: MindElixirInstance) => void;
     reshapeNode: (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) => Promise<void>;
     insertSibling: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
     insertBefore: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
@@ -53,6 +52,7 @@ export const methods: {
     moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
     moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
     removeNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
+    removeNodes: (this: MindElixirInstance, tpcs: Topic[]) => Promise<void>;
     moveNode: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
     moveNodeBefore: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
     moveNodeAfter: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
@@ -136,7 +136,7 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     contextMenuOption: object;
     // (undocumented)
-    currentLink: CustomSvg | null;
+    currentArrow: CustomSvg | null;
     // (undocumented)
     currentNode: Topic | null;
     // (undocumented)
@@ -154,9 +154,9 @@ export interface MindElixirInstance extends MindElixirMethods {
     // Warning: (ae-forgotten-export) The symbol "LinkDragMoveHelperInstance" needs to be exported by the entry point docs.d.ts
     //
     // @internal (undocumented)
-    helper1: LinkDragMoveHelperInstance;
+    helper1?: LinkDragMoveHelperInstance;
     // @internal (undocumented)
-    helper2: LinkDragMoveHelperInstance;
+    helper2?: LinkDragMoveHelperInstance;
     // Warning: (ae-forgotten-export) The symbol "Operation" needs to be exported by the entry point docs.d.ts
     //
     // (undocumented)
@@ -188,6 +188,8 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     mobileMenu: boolean;
     // (undocumented)
+    mouseSelectionButton: 0 | 2;
+    // (undocumented)
     newTopicName: string;
     // (undocumented)
     nodeData: NodeObj;
@@ -207,6 +209,8 @@ export interface MindElixirInstance extends MindElixirMethods {
     root: HTMLElement;
     // (undocumented)
     scaleVal: number;
+    // (undocumented)
+    selection: SelectionArea;
     // (undocumented)
     subLinkStyle: number;
     // (undocumented)
@@ -280,16 +284,15 @@ export type Summary = {
 
 // Warnings were encountered during analysis:
 //
-// dist/types/customLink.d.ts:6:5 - (ae-forgotten-export) The symbol "Uid" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:19:5 - (ae-forgotten-export) The symbol "summaryOperation" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:24:5 - (ae-forgotten-export) The symbol "CustomSvg" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:26:5 - (ae-forgotten-export) The symbol "Topic" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:26:5 - (ae-forgotten-export) The symbol "customLink" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:72:5 - (ae-forgotten-export) The symbol "NodeObjExport" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:74:5 - (ae-forgotten-export) The symbol "Wrapper" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:78:9 - (ae-forgotten-export) The symbol "Parent" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:85:5 - (ae-forgotten-export) The symbol "Children" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:88:5 - (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point docs.d.ts
+// dist/types/arrow.d.ts:6:5 - (ae-forgotten-export) The symbol "Uid" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:18:5 - (ae-forgotten-export) The symbol "summaryOperation" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:23:5 - (ae-forgotten-export) The symbol "CustomSvg" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:25:5 - (ae-forgotten-export) The symbol "Topic" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:69:5 - (ae-forgotten-export) The symbol "NodeObjExport" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:71:5 - (ae-forgotten-export) The symbol "Wrapper" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:75:9 - (ae-forgotten-export) The symbol "Parent" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:82:5 - (ae-forgotten-export) The symbol "Children" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:85:5 - (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point docs.d.ts
 
 // (No @packageDocumentation comment for this package)
 

@@ -1,4 +1,4 @@
-import type { LinkItem } from '../customLink'
+import type { Arrow } from '../arrow'
 import type { NodeObj } from './index'
 
 export interface Wrapper extends HTMLElement {
@@ -53,6 +53,6 @@ export interface Expander extends HTMLElement {
 export type CustomLine = SVGPathElement
 export type CustomArrow = SVGPathElement
 export interface CustomSvg extends SVGGElement {
-  linkObj: LinkItem
+  linkObj: Arrow
   children: HTMLCollection & [CustomLine, CustomArrow, SVGTextElement]
 }

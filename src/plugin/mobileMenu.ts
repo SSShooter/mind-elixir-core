@@ -142,7 +142,7 @@ export default function (mind: MindElixirInstance, option?: any) {
   //         e.target.parentElement.tagName === 'ME-PARENT' ||
   //         e.target.parentElement.tagName === 'ME-ROOT'
   //       ) {
-  //         mind.drawCustomLink(from, mind.currentNode)
+  //         mind.drawArrow(from, mind.currentNode)
   //       } else {
   //         console.log('取消连接')
   //       }

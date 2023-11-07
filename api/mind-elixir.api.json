@@ -174,12 +174,12 @@
       "members": [
         {
           "kind": "TypeAlias",
-          "canonicalReference": "mind-elixir!LinkItem:type",
+          "canonicalReference": "mind-elixir!Arrow:type",
           "docComment": "",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "export type LinkItem = "
+              "text": "export type Arrow = "
             },
             {
               "kind": "Content",
@@ -208,9 +208,9 @@
               "text": ";"
             }
           ],
-          "fileUrlPath": "dist/types/customLink.d.ts",
+          "fileUrlPath": "dist/types/arrow.d.ts",
           "releaseTag": "Public",
-          "name": "LinkItem",
+          "name": "Arrow",
           "typeTokenRange": {
             "startIndex": 1,
             "endIndex": 6
@@ -236,8 +236,8 @@
             },
             {
               "kind": "Reference",
-              "text": "LinkItem",
-              "canonicalReference": "mind-elixir!LinkItem:type"
+              "text": "Arrow",
+              "canonicalReference": "mind-elixir!Arrow:type"
             },
             {
               "kind": "Content",
@@ -411,7 +411,7 @@
             },
             {
               "kind": "Content",
-              "text": ") => void;\n    renderCustomLink(this: "
+              "text": ") => void;\n    renderArrow(this: "
             },
             {
               "kind": "Reference",
@@ -420,7 +420,7 @@
             },
             {
               "kind": "Content",
-              "text": "): void;\n    editCutsomLinkLabel(this: "
+              "text": "): void;\n    editArrowLabel(this: "
             },
             {
               "kind": "Reference",
@@ -438,7 +438,7 @@
             },
             {
               "kind": "Content",
-              "text": "): void;\n    tidyCustomLink(this: "
+              "text": "): void;\n    tidyArrow(this: "
             },
             {
               "kind": "Reference",
@@ -447,43 +447,7 @@
             },
             {
               "kind": "Content",
-              "text": "): void;\n    drawCustomLink: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", from: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!~Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", to: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!~Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", obj: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.LinkItem",
-              "canonicalReference": "mind-elixir!LinkItem:type"
-            },
-            {
-              "kind": "Content",
-              "text": ", isInitPaint?: boolean | undefined) => void;\n    createLink: (this: "
+              "text": "): void;\n    createArrow: (this: "
             },
             {
               "kind": "Reference",
@@ -510,7 +474,7 @@
             },
             {
               "kind": "Content",
-              "text": ") => void;\n    removeLink: (this: "
+              "text": ") => void;\n    removeArrow: (this: "
             },
             {
               "kind": "Reference",
@@ -528,7 +492,7 @@
             },
             {
               "kind": "Content",
-              "text": " | undefined) => void;\n    selectLink: (this: "
+              "text": " | undefined) => void;\n    selectArrow: (this: "
             },
             {
               "kind": "Reference",
@@ -546,57 +510,12 @@
             },
             {
               "kind": "Content",
-              "text": ") => void;\n    unselectLink: (this: "
+              "text": ") => void;\n    unselectArrow: (this: "
             },
             {
               "kind": "Reference",
               "text": "MindElixirInstance",
               "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    hideLinkController: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ") => void;\n    showLinkController: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", linkItem: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.LinkItem",
-              "canonicalReference": "mind-elixir!LinkItem:type"
-            },
-            {
-              "kind": "Content",
-              "text": ", fromData: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.DivData",
-              "canonicalReference": "mind-elixir!~DivData:type"
-            },
-            {
-              "kind": "Content",
-              "text": ", toData: "
-            },
-            {
-              "kind": "Reference",
-              "text": "customLink.DivData",
-              "canonicalReference": "mind-elixir!~DivData:type"
             },
             {
               "kind": "Content",
@@ -889,6 +808,33 @@
             {
               "kind": "Content",
               "text": " | undefined) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    removeNodes: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", tpcs: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[]) => "
             },
             {
               "kind": "Reference",
@@ -1608,7 +1554,7 @@
           "name": "methods",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 298
+            "endIndex": 286
           }
         },
         {
@@ -1985,12 +1931,12 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#currentLink:member",
+              "canonicalReference": "mind-elixir!MindElixirInstance#currentArrow:member",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "currentLink: "
+                  "text": "currentArrow: "
                 },
                 {
                   "kind": "Reference",
@@ -2009,7 +1955,7 @@
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Public",
-              "name": "currentLink",
+              "name": "currentArrow",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 3
@@ -2585,6 +2531,33 @@
             },
             {
               "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#mouseSelectionButton:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "mouseSelectionButton: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "0 | 2"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "mouseSelectionButton",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#newTopicName:member",
               "docComment": "",
               "excerptTokens": [
@@ -2854,6 +2827,34 @@
               "isOptional": false,
               "releaseTag": "Public",
               "name": "scaleVal",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#selection:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "selection: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SelectionArea",
+                  "canonicalReference": "@viselect/vanilla!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "selection",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2

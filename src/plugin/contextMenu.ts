@@ -179,7 +179,7 @@ export default function (mind: MindElixirInstance, option: any) {
         tips.remove()
         const target = e.target as Topic
         if (target.parentElement.tagName === 'ME-PARENT' || target.parentElement.tagName === 'ME-ROOT') {
-          mind.createLink(from, target)
+          mind.createArrow(from, target)
         } else {
           console.log('link cancel')
         }

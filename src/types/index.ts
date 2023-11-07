@@ -3,7 +3,7 @@ import type { Topic, CustomSvg } from './dom'
 import type { EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
-import type { LinkItem } from '../customLink'
+import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
 import type SelectionArea from '@viselect/vanilla'
 export * from '../methods'
@@ -51,7 +51,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   currentSummary: SummarySvgGroup | null
 
   waitCopy: Topic | null
-  currentLink: CustomSvg | null
+  currentArrow: CustomSvg | null
   scaleVal: number
   tempDirection: number | null
   theme: Theme
@@ -166,7 +166,7 @@ export interface NodeObj {
 }
 export type NodeObjExport = Omit<NodeObj, 'parent'>
 
-export type LinkObj = Record<string, LinkItem>
+export type LinkObj = Record<string, Arrow>
 
 /**
  * The exported data of MindElixir

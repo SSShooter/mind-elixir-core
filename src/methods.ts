@@ -13,7 +13,7 @@ import { layout } from './utils/layout'
 import changeTheme from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
-import * as customLink from './customLink'
+import * as arrow from './arrow'
 import * as summaryOperation from './summary'
 import * as exportImage from './plugin/exportImage'
 
@@ -67,7 +67,7 @@ const methods = {
   changeTheme,
   ...interact,
   ...(nodeOperationHooked as NodeOperation),
-  ...customLink,
+  ...arrow,
   ...summaryOperation,
   ...exportImage,
   init(this: MindElixirInstance, data: MindElixirData) {
@@ -80,7 +80,7 @@ const methods = {
     fillParent(this.nodeData)
     this.linkData = data.linkData || {}
     this.summaries = data.summaries || []
-    this.tidyCustomLink()
+    this.tidyArrow()
     // plugins
     this.toolBar && toolBar(this)
     if (import.meta.env.MODE !== 'lite') {

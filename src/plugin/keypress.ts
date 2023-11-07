@@ -148,7 +148,7 @@ export default function (mind: MindElixirInstance) {
     if (e.keyCode === 8 || e.keyCode === 46) {
       // del,backspace
       // bug
-      if (mind.currentLink) mind.removeLink()
+      if (mind.currentArrow) mind.removeArrow()
       else if (mind.currentSummary) mind.removeSummary(mind.currentSummary.summaryObj.id)
       else if (mind.currentNode) {
         mind.removeNode()
