@@ -14,7 +14,7 @@ type SubLineParams = {
   cL: number
   cW: number
   cH: number
-  direction: string // 'lhs' | 'rhs'
+  direction: 'lhs' | 'rhs'
   isFirst: boolean | undefined
 }
 
@@ -41,7 +41,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
   this.lines.innerHTML = ''
 
-  genPath = this.subLinkStyle === 2 ? generateSubLine2 : generateSubLine1
+  genPath = this.subBranchStyle === 2 ? generateSubLine2 : generateSubLine1
 
   for (let i = 0; i < mainNodeList.length; i++) {
     const el = mainNodeList[i] as Wrapper
@@ -52,8 +52,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const y1 = root.offsetTop + root.offsetHeight / 2
 
     let x2
-    const palette = this.theme.palette
-    const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
+    const branchColor = tpc.nodeObj.branchColor as string
 
     const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, p)
     if (direction === 'lhs') {
@@ -63,7 +62,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     }
     const y2 = offsetTop + p.offsetHeight / 2
     let mainPath = ''
-    if (this.mainLinkStyle === 2) {
+    if (this.mainBranchStyle === 2) {
       if (this.direction === SIDE) {
         if (direction === 'lhs') {
           x1 = x1 - root.offsetWidth / 6

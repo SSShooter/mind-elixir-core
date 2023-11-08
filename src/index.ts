@@ -31,8 +31,8 @@ function MindElixir(
     before,
     newTopicName,
     allowUndo,
-    mainLinkStyle,
-    subLinkStyle,
+    mainBranchStyle,
+    subBranchStyle,
     overflowHidden,
     mobileMenu,
     theme,
@@ -71,8 +71,8 @@ function MindElixir(
   this.currentArrow = null // the selected link svg element
   this.scaleVal = 1
   this.tempDirection = null
-  this.mainLinkStyle = mainLinkStyle || 0
-  this.subLinkStyle = subLinkStyle || 0
+  this.mainBranchStyle = mainBranchStyle || 0
+  this.subBranchStyle = subBranchStyle || 0
   this.overflowHidden = overflowHidden || false
 
   this.bus = Bus.create()

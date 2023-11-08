@@ -42,7 +42,7 @@ const options: Options = {
       return true
     },
   },
-  // mainLinkStyle: 2,
+  // mainBranchStyle: 2,
 }
 const mind = new MindElixir(options)
 mind.init(example)

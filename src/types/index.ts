@@ -69,8 +69,8 @@ export interface MindElixirInstance extends MindElixirMethods {
   newTopicName: string
   allowUndo: boolean
   overflowHidden: boolean
-  mainLinkStyle: number
-  subLinkStyle: number
+  mainBranchStyle: number
+  subBranchStyle: number
   mobileMenu: boolean
 
   container: HTMLElement
@@ -122,8 +122,8 @@ export interface Options {
   newTopicName?: string
   allowUndo?: boolean
   overflowHidden?: boolean
-  mainLinkStyle?: number
-  subLinkStyle?: number
+  mainBranchStyle?: number
+  subBranchStyle?: number
   mobileMenu?: boolean
   theme?: Theme
   nodeMenu?: boolean

@@ -215,8 +215,6 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   }
   this.selectNode(newTop.firstChild, true)
 }
-// uncertain link disappear sometimes??
-// TODO while direction = SIDE, move up won't change the direction of main node
 
 /**
  * @function

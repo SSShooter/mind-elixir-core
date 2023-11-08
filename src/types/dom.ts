@@ -13,7 +13,7 @@ export interface Wrapper extends HTMLElement {
 
 export interface Parent extends HTMLElement {
   firstChild: Topic
-  children: HTMLCollection & [Topic, Expander]
+  children: HTMLCollection & [Topic, Expander | undefined]
   parentNode: Wrapper
   parentElement: Wrapper
   nextSibling: Children

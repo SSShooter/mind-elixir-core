@@ -48,6 +48,8 @@ const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root:
   rightPart.className = 'rhs'
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
+    const palette = mei.theme.palette
+    nodeObj.branchColor = nodeObj.branchColor || palette[i % palette.length]
     const { grp: w } = mei.createWrapper(nodeObj)
     if (mei.direction === SIDE) {
       if (nodeObj.direction === LEFT) {
