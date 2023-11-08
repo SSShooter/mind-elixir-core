@@ -264,8 +264,8 @@ export const showLinkController = function (this: MindElixirInstance, linkItem: 
   })
 
   this.helper2.init(this.map, (deltaX, deltaY) => {
-    p3x = p3x - deltaX / this.scaleVal
-    p3y = p3y - deltaY / this.scaleVal
+    p3x = p3x + deltaX / this.scaleVal
+    p3y = p3y + deltaY / this.scaleVal
     const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
     p4x = p4.x
     p4y = p4.y
