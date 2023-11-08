@@ -235,8 +235,8 @@ const aboutMindElixir: MindElixirData = {
     ],
     expanded: true,
   },
-  linkData: {
-    ac5fb1df7345e9c4: {
+  arrows: [
+    {
       id: 'ac5fb1df7345e9c4',
       label: 'Render',
       from: 'beeb784cc189375f',
@@ -250,7 +250,7 @@ const aboutMindElixir: MindElixirData = {
         y: 45,
       },
     },
-  },
+  ],
   summaries: [
     {
       id: 'a5e68e6a2ce1b648',

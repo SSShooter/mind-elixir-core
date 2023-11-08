@@ -10,7 +10,7 @@ import { fillParent } from './utils/index'
 function collectData(instance: MindElixirInstance) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
-    linkData: instance.linkData,
+    arrows: instance.arrows,
     summaries: instance.summaries,
     direction: instance.direction,
     theme: instance.theme,
@@ -343,7 +343,7 @@ export const refresh = function (this: MindElixirInstance, data?: MindElixirData
   if (data) {
     data = JSON.parse(JSON.stringify(data)) as MindElixirData // it shouldn't contanimate the original data
     this.nodeData = data.nodeData
-    this.linkData = data.linkData || {}
+    this.arrows = data.arrows || []
     this.summaries = data.summaries || []
   }
   fillParent(this.nodeData)

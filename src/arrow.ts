@@ -116,11 +116,11 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const label = createText(obj.label, halfx, halfy, mei.theme.cssVar['--color'])
   newSvgGroup.appendChild(label)
 
-  newSvgGroup.linkObj = obj
+  newSvgGroup.arrowObj = obj
   newSvgGroup.dataset.linkid = obj.id
   mei.linkSvgGroup.appendChild(newSvgGroup)
   if (!isInitPaint) {
-    mei.linkData[obj.id] = obj
+    mei.arrows.push(obj)
     mei.currentArrow = newSvgGroup
     showLinkController(mei, obj, fromData, toData)
   }
@@ -129,7 +129,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
 }
 
 export const createArrow = function (this: MindElixirInstance, from: Topic, to: Topic) {
-  const linkObj = {
+  const arrowObj = {
     id: generateUUID(),
     label: 'Custom Link',
     from: from.nodeObj.id,
@@ -143,11 +143,11 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
       y: -200,
     },
   }
-  drawArrow(this, from, to, linkObj)
+  drawArrow(this, from, to, arrowObj)
 
   this.bus.fire('operation', {
     name: 'createArrow',
-    obj: linkObj,
+    obj: arrowObj,
   })
 }
 
@@ -160,8 +160,8 @@ export const removeArrow = function (this: MindElixirInstance, linkSvg?: CustomS
   }
   if (!link) return
   hideLinkController(this)
-  const id = link.linkObj!.id
-  delete this.linkData[id]
+  const id = link.arrowObj!.id
+  this.arrows = this.arrows.filter(arrow => arrow.id !== id)
   link.remove()
   this.bus.fire('operation', {
     name: 'removeArrow',
@@ -173,7 +173,7 @@ export const removeArrow = function (this: MindElixirInstance, linkSvg?: CustomS
 
 export const selectArrow = function (this: MindElixirInstance, link: CustomSvg) {
   this.currentArrow = link
-  const obj = link.linkObj
+  const obj = link.arrowObj
 
   const from = findEle(obj.from)
   const to = findEle(obj.to)
@@ -262,8 +262,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   })
 
   mei.helper2.init(mei.map, (deltaX, deltaY) => {
-    p3x = p3x - deltaX / mei.scaleVal
-    p3y = p3y - deltaY / mei.scaleVal
+    p3x = p3x + deltaX / mei.scaleVal
+    p3y = p3y + deltaY / mei.scaleVal
     const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
     p4x = p4.x
     p4y = p4.y
@@ -293,8 +293,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
 
 export function renderArrow(this: MindElixirInstance) {
   this.linkSvgGroup.innerHTML = ''
-  for (const prop in this.linkData) {
-    const link = this.linkData[prop]
+  for (let i = 0; i < this.arrows.length; i++) {
+    const link = this.arrows[i]
     try {
       drawArrow(this, findEle(link.from), findEle(link.to), link, true)
     } catch (e) {
@@ -310,7 +310,7 @@ export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   const textEl = el.children[2]
   console.log(textEl, el)
   editSvgText(this, textEl, div => {
-    const node = el.linkObj
+    const node = el.arrowObj
     const text = div.textContent?.trim() || ''
     if (text === '') node.label = origin
     else node.label = text
@@ -327,10 +327,7 @@ export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
 }
 
 export function tidyArrow(this: MindElixirInstance) {
-  for (const prop in this.linkData) {
-    const link = this.linkData[prop]
-    if (!getObjById(link.from, this.nodeData) || !getObjById(link.to, this.nodeData)) {
-      delete this.linkData[link.id]
-    }
-  }
+  this.arrows = this.arrows.filter(arrow => {
+    return getObjById(arrow.from, this.nodeData) && getObjById(arrow.to, this.nodeData)
+  })
 }

@@ -78,7 +78,7 @@ const methods = {
     this.changeTheme(data.theme || this.theme, false)
     this.nodeData = data.nodeData
     fillParent(this.nodeData)
-    this.linkData = data.linkData || {}
+    this.arrows = data.arrows || []
     this.summaries = data.summaries || []
     this.tidyArrow()
     // plugins

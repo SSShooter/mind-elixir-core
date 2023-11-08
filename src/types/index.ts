@@ -43,7 +43,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   mindElixirBox: HTMLElement
 
   nodeData: NodeObj
-  linkData: LinkObj
+  arrows: Arrow[]
   summaries: Summary[]
 
   currentNode: Topic | null
@@ -166,8 +166,6 @@ export interface NodeObj {
 }
 export type NodeObjExport = Omit<NodeObj, 'parent'>
 
-export type LinkObj = Record<string, Arrow>
-
 /**
  * The exported data of MindElixir
  *
@@ -175,7 +173,7 @@ export type LinkObj = Record<string, Arrow>
  */
 export interface MindElixirData {
   nodeData: NodeObj
-  linkData?: LinkObj
+  arrows?: Arrow[]
   summaries?: Summary[]
   direction?: number
   theme?: Theme

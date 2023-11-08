@@ -289,5 +289,5 @@ export default {
     ],
     expanded: true,
   },
-  linkData: {},
+  arrows: [],
 }

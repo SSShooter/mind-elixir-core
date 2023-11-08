@@ -155,7 +155,6 @@ if (import.meta.env.MODE !== 'lite') {
       root: true,
       children: [],
     },
-    linkData: {},
   })
 }
 

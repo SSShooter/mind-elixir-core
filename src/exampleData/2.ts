@@ -117,7 +117,7 @@ const mindElixirStruct: MindElixirData = {
       },
     ],
   },
-  linkData: {},
+  arrows: [],
 }
 
 export default mindElixirStruct

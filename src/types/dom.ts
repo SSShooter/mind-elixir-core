@@ -53,6 +53,6 @@ export interface Expander extends HTMLElement {
 export type CustomLine = SVGPathElement
 export type CustomArrow = SVGPathElement
 export interface CustomSvg extends SVGGElement {
-  linkObj: Arrow
+  arrowObj: Arrow
   children: HTMLCollection & [CustomLine, CustomArrow, SVGTextElement]
 }
