@@ -11,6 +11,7 @@ export * from './types/index'
 export * from './types/dom'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
+import { sub, main } from './utils/generateBranch'
 
 // TODO show up animation
 const $d = document
@@ -31,8 +32,8 @@ function MindElixir(
     before,
     newTopicName,
     allowUndo,
-    mainBranchStyle,
-    subBranchStyle,
+    generateMainBranch,
+    generateSubBranch,
     overflowHidden,
     mobileMenu,
     theme,
@@ -71,8 +72,8 @@ function MindElixir(
   this.currentArrow = null // the selected link svg element
   this.scaleVal = 1
   this.tempDirection = null
-  this.mainBranchStyle = mainBranchStyle || 0
-  this.subBranchStyle = subBranchStyle || 0
+  this.generateMainBranch = generateMainBranch || main
+  this.generateSubBranch = generateSubBranch || sub
   this.overflowHidden = overflowHidden || false
 
   this.bus = Bus.create()

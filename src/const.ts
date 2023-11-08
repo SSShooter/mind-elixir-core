@@ -7,7 +7,6 @@ export const DOWN = 3
 
 export const GAP = 30 // must sync with --gap in index.less
 
-export const TURNPOINT_R = 8
 export const THEME: Theme = {
   name: 'Latte',
   palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],

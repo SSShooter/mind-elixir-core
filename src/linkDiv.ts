@@ -1,24 +1,9 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
-import { SIDE, GAP, TURNPOINT_R } from './const'
+import { GAP } from './const'
 import type { Wrapper, Topic, Parent } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 
-type MainLineParams = { x1: number; y1: number; x2: number; y2: number }
-type SubLineParams = {
-  pT: number
-  pL: number
-  pW: number
-  pH: number
-  cT: number
-  cL: number
-  cW: number
-  cH: number
-  direction: 'lhs' | 'rhs'
-  isFirst: boolean | undefined
-}
-
-let genPath: typeof generateSubLine1 = generateSubLine1
 /**
  * Link nodes with svg,
  * only link specific node if `mainNode` is present
@@ -41,8 +26,6 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
   this.lines.innerHTML = ''
 
-  genPath = this.subBranchStyle === 2 ? generateSubLine2 : generateSubLine1
-
   for (let i = 0; i < mainNodeList.length; i++) {
     const el = mainNodeList[i] as Wrapper
     const tpc = el.querySelector<Topic>('me-tpc') as Topic
@@ -62,25 +45,16 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     }
     const y2 = offsetTop + p.offsetHeight / 2
     let mainPath = ''
-    if (this.mainBranchStyle === 2) {
-      if (this.direction === SIDE) {
-        if (direction === 'lhs') {
-          x1 = x1 - root.offsetWidth / 6
-        } else {
-          x1 = x1 + root.offsetWidth / 6
-        }
-      }
-      mainPath = generateMainLine2({ x1, y1, x2, y2 })
+
+    const pct = Math.abs(y2 - el.parentElement.offsetTop - el.parentElement.offsetHeight / 2) / el.parentElement.offsetHeight
+    const offset = (1 - pct) * 0.25 * (root.offsetWidth / 2)
+    if (direction === 'lhs') {
+      x1 = x1 - root.offsetWidth / 10 - offset
     } else {
-      const pct = Math.abs(y2 - el.parentElement.offsetTop - el.parentElement.offsetHeight / 2) / el.parentElement.offsetHeight
-      const offset = (1 - pct) * 0.25 * (root.offsetWidth / 2)
-      if (direction === 'lhs') {
-        x1 = x1 - root.offsetWidth / 10 - offset
-      } else {
-        x1 = x1 + root.offsetWidth / 10 + offset
-      }
-      mainPath = generateMainLine1({ x1, y1, x2, y2 })
+      x1 = x1 + root.offsetWidth / 10 + offset
     }
+    mainPath = this.generateMainBranch({ x1, y1, x2, y2, direction })
+
     this.lines.appendChild(createMainPath(mainPath, branchColor))
 
     // set position of main node expander
@@ -106,7 +80,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
       el.appendChild(svg)
       const parent = el.firstChild
       const children = el.children[1].children
-      const path = traverseChildren(children, parent, direction, true)
+      const path = traverseChildren(this, children, parent, direction, true)
       svg.appendChild(createPath(path, branchColor))
     }
   }
@@ -117,7 +91,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
 }
 
 // core function of generate subLines
-const traverseChildren = function (children: Wrapper[], parent: Parent, direction: 'lhs' | 'rhs', isFirst?: boolean) {
+const traverseChildren = function (mei: MindElixirInstance, children: Wrapper[], parent: Parent, direction: 'lhs' | 'rhs', isFirst?: boolean) {
   let path = ''
   const pT = parent.offsetTop
   const pL = parent.offsetLeft
@@ -131,7 +105,7 @@ const traverseChildren = function (children: Wrapper[], parent: Parent, directio
     const cW = childT.offsetWidth
     const cH = childT.offsetHeight
 
-    path += genPath({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
+    path += mei.generateSubBranch({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
 
     const expander = childT.children[1]
     if (expander) {
@@ -150,84 +124,10 @@ const traverseChildren = function (children: Wrapper[], parent: Parent, directio
 
     const nextChildren = child.children[1].children
     if (nextChildren.length > 0) {
-      path += traverseChildren(nextChildren, childT, direction)
+      path += traverseChildren(mei, nextChildren, childT, direction)
     }
   }
   return path
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
-function generateMainLine2({ x1, y1, x2, y2 }: MainLineParams) {
-  return `M ${x1} ${y1} V ${y2 > y1 ? y2 - 20 : y2 + 20} C ${x1} ${y2} ${x1} ${y2} ${x2 > x1 ? x1 + 20 : x1 - 20} ${y2} H ${x2}`
-}
-
-function generateMainLine1({ x1, y1, x2, y2 }: MainLineParams) {
-  return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
-}
-
-function generateSubLine2({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
-  let y1: number
-  if (isFirst) {
-    y1 = pT + pH / 2
-  } else {
-    y1 = pT + pH
-  }
-  const y2 = cT + cH
-  let x1 = 0
-  let x2 = 0
-  let xMiddle = 0
-  if (direction === 'lhs') {
-    x1 = pL + GAP
-    x2 = cL
-    xMiddle = cL + cW
-  } else if (direction === 'rhs') {
-    x1 = pL + pW - GAP
-    x2 = cL + cW
-    xMiddle = cL
-  }
-
-  if (y2 < y1 + 50 && y2 > y1 - 50) {
-    // draw straight line if the distance is between +-50
-    return `M ${x1} ${y1} H ${xMiddle} V ${y2} H ${x2}`
-  } else if (y2 >= y1) {
-    // child bottom lower than parent
-    return `M ${x1} ${y1} H ${xMiddle} V ${y2 - TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 1 : 0} ${
-      x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
-    } ${y2} H ${x2}`
-  } else {
-    // child bottom higher than parent
-    return `M ${x1} ${y1} H ${xMiddle} V ${y2 + TURNPOINT_R} A ${TURNPOINT_R} ${TURNPOINT_R} 0 0 ${x1 > x2 ? 0 : 1} ${
-      x1 > x2 ? xMiddle - TURNPOINT_R : xMiddle + TURNPOINT_R
-    } ${y2} H ${x2}`
-  }
-}
-
-function generateSubLine1({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
-  let y1 = 0
-  let end = 0
-  if (isFirst) {
-    y1 = pT + pH / 2
-  } else {
-    y1 = pT + pH
-  }
-  const y2 = cT + cH
-  let x1 = 0
-  let x2 = 0
-  let xMid = 0
-  const offset = Math.min(Math.abs(y1 - y2) / 800, 1.2) * GAP
-  if (direction === 'lhs') {
-    xMid = pL
-    x1 = xMid + GAP
-    x2 = xMid - GAP
-    end = cL + GAP
-    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
-  } else {
-    xMid = pL + pW
-    x1 = xMid - GAP
-    x2 = xMid + GAP
-    end = cL + cW - GAP
-    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
-  }
 }
 
 export default linkDiv

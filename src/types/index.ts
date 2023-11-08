@@ -6,6 +6,7 @@ import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
 import type SelectionArea from '@viselect/vanilla'
+import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 export * from '../methods'
 
 type Before = Partial<{
@@ -72,6 +73,8 @@ export interface MindElixirInstance extends MindElixirMethods {
   mainBranchStyle: number
   subBranchStyle: number
   mobileMenu: boolean
+  generateMainBranch: (params: MainLineParams) => PathString
+  generateSubBranch: (params: SubLineParams) => PathString
 
   container: HTMLElement
   map: HTMLElement
@@ -101,7 +104,7 @@ export interface MindElixirInstance extends MindElixirMethods {
 
   selection: SelectionArea
 }
-
+type PathString = string
 /**
  * The MindElixir options
  *
@@ -122,8 +125,8 @@ export interface Options {
   newTopicName?: string
   allowUndo?: boolean
   overflowHidden?: boolean
-  mainBranchStyle?: number
-  subBranchStyle?: number
+  generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => PathString
+  generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => PathString
   mobileMenu?: boolean
   theme?: Theme
   nodeMenu?: boolean

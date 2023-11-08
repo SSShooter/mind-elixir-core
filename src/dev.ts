@@ -57,8 +57,6 @@ const options: Options = {
       return true
     },
   },
-  mainBranchStyle: 1,
-  subBranchStyle: 1,
 }
 
 const mind = new MindElixir(options)
