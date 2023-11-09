@@ -5,6 +5,7 @@ export const RIGHT = 1
 export const SIDE = 2
 export const DOWN = 3
 
+// TODO: move to options
 export const GAP = 30 // must sync with --gap in index.less
 
 export const THEME: Theme = {

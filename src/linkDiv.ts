@@ -1,6 +1,5 @@
 import { createPath, createMainPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
-import { GAP } from './const'
 import type { Wrapper, Topic, Parent } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 
@@ -35,7 +34,6 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const y1 = root.offsetTop + root.offsetHeight / 2
 
     let x2
-    const branchColor = tpc.nodeObj.branchColor as string
 
     const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, p)
     if (direction === 'lhs') {
@@ -55,6 +53,9 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     }
     mainPath = this.generateMainBranch({ x1, y1, x2, y2, direction })
 
+    const palette = this.theme.palette
+    const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
+    tpc.style.borderColor = branchColor
     this.lines.appendChild(createMainPath(mainPath, branchColor))
 
     // set position of main node expander

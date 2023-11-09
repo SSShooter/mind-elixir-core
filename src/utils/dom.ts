@@ -23,10 +23,6 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
   }
 
-  if (nodeObj.branchColor) {
-    tpc.style.borderColor = nodeObj.branchColor
-  }
-
   // TODO
   // if (nodeObj.dangerouslySetInnerHTML) {
   //   tpc.innerHTML = nodeObj.dangerouslySetInnerHTML
