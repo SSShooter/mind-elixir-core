@@ -20,19 +20,7 @@ const mainToSub = function (tpc: Topic) {
   if (lc?.tagName === 'svg') lc?.remove() // clear svg group of main node
 }
 
-/**
- * @function
- * @instance
- * @name reshapeNode
- * @memberof NodeOperation
- * @description Re-shape a node.
- * @param {TargetElement} el - Target element return by E('...')
- * @param {patchData} node - Data should be patched to the original data
- * @example
- * reshapeNode(E('bd4313fbac40284b'),{tags:['A', 'B'], style:{color:'#000'}})
- */
 export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) {
-  console.log(patchData)
   const nodeObj = tpc.nodeObj
   const origin = deepClone(nodeObj)
   // merge styles
@@ -49,17 +37,6 @@ export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patch
   })
 }
 
-/**
- * @function
- * @instance
- * @name insertSibling
- * @memberof NodeOperation
- * @description Create a sibling node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @param {node} node - New node information.
- * @example
- * insertSibling(E('bd4313fbac40284b'))
- */
 export const insertSibling = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -96,17 +73,6 @@ export const insertSibling = function (this: MindElixirInstance, el?: Topic, nod
   })
 }
 
-/**
- * @function
- * @instance
- * @name insertBefore
- * @memberof NodeOperation
- * @description Create a sibling node before the selected node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @param {node} node - New node information.
- * @example
- * insertBefore(E('bd4313fbac40284b'))
- */
 export const insertBefore = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -139,17 +105,6 @@ export const insertBefore = function (this: MindElixirInstance, el?: Topic, node
   })
 }
 
-/**
- * @function
- * @instance
- * @name insertParent
- * @memberof NodeOperation
- * @description Create a parent node of the selected node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @param {node} node - New node information.
- * @example
- * insertParent(E('bd4313fbac40284b'))
- */
 export const insertParent = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -185,17 +140,6 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   })
 }
 
-/**
- * @function
- * @instance
- * @name addChild
- * @memberof NodeOperation
- * @description Create a child node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @param {node} node - New node information.
- * @example
- * addChild(E('bd4313fbac40284b'))
- */
 export const addChild = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
@@ -214,17 +158,6 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   this.selectNode(newTop.firstChild, true)
 }
 
-/**
- * @function
- * @instance
- * @name copyNode
- * @memberof NodeOperation
- * @description Copy node to another node.
- * @param {TargetElement} node - Target element return by E('...'), default value: currentTarget.
- * @param {TargetElement} to - The target(as parent node) you want to copy to.
- * @example
- * copyNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
- */
 export const copyNode = function (this: MindElixirInstance, node: Topic, to: Topic) {
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
@@ -239,16 +172,6 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   })
 }
 
-/**
- * @function
- * @instance
- * @name moveUpNode
- * @memberof NodeOperation
- * @description Move the target node up.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @example
- * moveUpNode(E('bd4313fbac40284b'))
- */
 export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -263,16 +186,6 @@ export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
   })
 }
 
-/**
- * @function
- * @instance
- * @name moveDownNode
- * @memberof NodeOperation
- * @description Move the target node down.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @example
- * moveDownNode(E('bd4313fbac40284b'))
- */
 export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -361,6 +274,7 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic, to: T
   const toObj = to.nodeObj
   const originParentId = obj?.parent?.id
   if (toObj.expanded === false) {
+    // TODO
     this.expandNode(to, true)
     from = findEle(obj.id) as Topic
     to = findEle(toObj.id) as Topic
@@ -399,54 +313,33 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic, to: T
   console.timeEnd('moveNodeIn')
 }
 
-export const moveNodeBefore = function (this: MindElixirInstance, from: Topic, to: Topic) {
+const moveNode = (from: Topic, type: 'before' | 'after', to: Topic, mei: MindElixirInstance) => {
   const obj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = obj.parent?.id
-  moveNodeObj('before', obj, toObj)
-  fillParent(this.nodeData)
+  moveNodeObj(type, obj, toObj)
+  fillParent(mei.nodeData)
   mainToSub(from)
   const fromGrp = from.parentElement.parentNode
   const toGrp = to.parentElement.parentNode
-  toGrp.insertAdjacentElement('beforebegin', fromGrp)
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'moveNodeBefore',
+  toGrp.insertAdjacentElement(type === 'before' ? 'beforebegin' : 'afterend', fromGrp)
+  mei.linkDiv()
+  mei.bus.fire('operation', {
+    name: type === 'before' ? 'moveNodeBefore' : 'moveNodeAfter',
     obj,
     toObj,
     originParentId,
   })
+}
+
+export const moveNodeBefore = function (this: MindElixirInstance, from: Topic, to: Topic) {
+  moveNode(from, 'before', to, this)
 }
 
 export const moveNodeAfter = function (this: MindElixirInstance, from: Topic, to: Topic) {
-  const obj = from.nodeObj
-  const toObj = to.nodeObj
-  const originParentId = obj.parent?.id
-  moveNodeObj('after', obj, toObj)
-  fillParent(this.nodeData)
-  mainToSub(from)
-  const fromGrp = from.parentElement.parentNode
-  const toGrp = to.parentElement.parentNode
-  toGrp.insertAdjacentElement('afterend', fromGrp)
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'moveNodeAfter',
-    obj,
-    toObj,
-    originParentId,
-  })
+  moveNode(from, 'before', to, this)
 }
 
-/**
- * @function
- * @instance
- * @name beginEdit
- * @memberof NodeOperation
- * @description Begin to edit the target node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @example
- * beginEdit(E('bd4313fbac40284b'))
- */
 export const beginEdit = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
