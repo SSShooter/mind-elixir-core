@@ -1,6 +1,6 @@
 import { createPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
-import type { Wrapper, Topic, Parent } from './types/dom'
+import type { Wrapper, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 
 /**
@@ -32,9 +32,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const direction = el.parentNode.className as 'lhs' | 'rhs'
     let x1 = root.offsetLeft + root.offsetWidth / 2
     const y1 = root.offsetTop + root.offsetHeight / 2
-
     let x2
-
     const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, p)
     if (direction === 'lhs') {
       x2 = offsetLeft + p.offsetWidth
@@ -77,10 +75,8 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
       const svgLine = el.lastChild as SVGSVGElement
       if (svgLine.tagName === 'svg') svgLine.remove()
       el.appendChild(svg)
-      const parent = el.firstChild
-      const children = el.children[1].children
-      traverseChildren(this, svg, branchColor, children, parent, direction, true)
-      // svg.appendChild(createPath(path, branchColor, '2'))
+
+      traverseChildren(this, svg, branchColor, el, direction, true)
     }
   }
 
@@ -90,30 +86,36 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
 }
 
 // core function of generate subLines
+
 const traverseChildren = function (
   mei: MindElixirInstance,
   svgContainer: SVGSVGElement,
   branchColor: string,
-  children: Wrapper[],
-  parent: Parent,
+  wrapper: Wrapper,
   direction: 'lhs' | 'rhs',
   isFirst?: boolean
 ) {
+  const parent = wrapper.firstChild
+  const children = wrapper.children[1].children
+
   const pT = parent.offsetTop
   const pL = parent.offsetLeft
   const pW = parent.offsetWidth
   const pH = parent.offsetHeight
   for (let i = 0; i < children.length; i++) {
     const child = children[i]
-    const childT = child.firstChild
-    const cT = childT.offsetTop
-    const cL = childT.offsetLeft
-    const cW = childT.offsetWidth
-    const cH = childT.offsetHeight
+    const childP = child.firstChild
+    const cT = childP.offsetTop
+    const cL = childP.offsetLeft
+    const cW = childP.offsetWidth
+    const cH = childP.offsetHeight
 
+    const bc = childP.firstChild.nodeObj.branchColor || branchColor
     const path = mei.generateSubBranch({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
-    svgContainer.appendChild(createPath(path, branchColor, '2'))
-    const expander = childT.children[1]
+    svgContainer.appendChild(createPath(path, bc, '2'))
+
+    const expander = childP.children[1]
+
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
       if (direction === 'lhs') {
@@ -130,7 +132,7 @@ const traverseChildren = function (
 
     const nextChildren = child.children[1].children
     if (nextChildren.length > 0) {
-      traverseChildren(mei, svgContainer, branchColor, nextChildren, childT, direction)
+      traverseChildren(mei, svgContainer, bc, child, direction)
     }
   }
 }

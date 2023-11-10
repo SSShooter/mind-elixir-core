@@ -224,6 +224,7 @@ const aboutMindElixir: MindElixirData = {
               {
                 topic: 'Save button in the top-right corner',
                 id: 'bd42e619051878b3',
+                branchColor: 'green',
                 expanded: true,
                 children: [],
               },
