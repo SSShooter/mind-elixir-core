@@ -4,7 +4,7 @@ import type { NodeObj } from '../types/index'
 
 type NodeOperation =
   | {
-      name: 'moveNode' | 'moveDownNode' | 'moveUpNode' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'insertSibling' | 'beginEdit'
+      name: 'moveNodeIn' | 'moveDownNode' | 'moveUpNode' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'insertSibling' | 'beginEdit'
       obj: NodeObj
     }
   | {
@@ -18,7 +18,7 @@ type NodeOperation =
       origin: string
     }
   | {
-      name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNode'
+      name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNodeIn'
       obj: NodeObj
       toObj: NodeObj
       originParentId?: string

@@ -86,7 +86,7 @@ mind.bus.addListener('operation', (operation: Operation) => {
   // name: [insertSibling|addChild|removeNode|beginEdit|finishEdit]
   // obj: target
 
-  // name: moveNode
+  // name: moveNodeIn
   // obj: {from:target1,to:target2}
 })
 mind.bus.addListener('selectNode', node => {

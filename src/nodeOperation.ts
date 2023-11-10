@@ -11,8 +11,6 @@ import {
   moveDownObj,
   removeNodeObj,
   moveNodeObj,
-  moveNodeBeforeObj,
-  moveNodeAfterObj,
 } from './utils/objectManipulation'
 import { addChildDom, judgeDirection, removeNodeDom } from './utils/domManipulation'
 
@@ -350,15 +348,15 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
 /**
  * @function
  * @instance
- * @name moveNode
+ * @name moveNodeIn
  * @memberof NodeOperation
  * @description Move a node to another node (as child node).
  * @param {TargetElement} from - The target you want to move.
  * @param {TargetElement} to - The target(as parent node) you want to move to.
  * @example
- * moveNode(E('bd4313fbac402842'),E('bd4313fbac402839'))
+ * moveNodeIn(E('bd4313fbac402842'),E('bd4313fbac402839'))
  */
-export const moveNode = function (this: MindElixirInstance, from: Topic, to: Topic) {
+export const moveNodeIn = function (this: MindElixirInstance, from: Topic, to: Topic) {
   const obj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = obj?.parent?.id
@@ -371,8 +369,8 @@ export const moveNode = function (this: MindElixirInstance, from: Topic, to: Top
     console.warn('Invalid move')
     return
   }
-  console.time('moveNode')
-  moveNodeObj(obj, toObj)
+  console.time('moveNodeIn')
+  moveNodeObj('in', obj, toObj)
   fillParent(this.nodeData) // update parent property
   const fromTop = from.parentElement
   const toTop = to.parentElement
@@ -393,30 +391,19 @@ export const moveNode = function (this: MindElixirInstance, from: Topic, to: Top
   }
   this.linkDiv()
   this.bus.fire('operation', {
-    name: 'moveNode',
+    name: 'moveNodeIn',
     obj,
     toObj,
     originParentId,
   })
-  console.timeEnd('moveNode')
+  console.timeEnd('moveNodeIn')
 }
 
-/**
- * @function
- * @instance
- * @name moveNodeBefore
- * @memberof NodeOperation
- * @description Move a node and become previous node of another node.
- * @param {TargetElement} from
- * @param {TargetElement} to
- * @example
- * moveNodeBefore(E('bd4313fbac402842'),E('bd4313fbac402839'))
- */
 export const moveNodeBefore = function (this: MindElixirInstance, from: Topic, to: Topic) {
   const obj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = obj.parent?.id
-  moveNodeBeforeObj(obj, toObj)
+  moveNodeObj('before', obj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
   const fromGrp = from.parentElement.parentNode
@@ -431,22 +418,11 @@ export const moveNodeBefore = function (this: MindElixirInstance, from: Topic, t
   })
 }
 
-/**
- * @function
- * @instance
- * @name moveNodeAfter
- * @memberof NodeOperation
- * @description Move a node and become next node of another node.
- * @param {TargetElement} from
- * @param {TargetElement} to
- * @example
- * moveNodeAfter(E('bd4313fbac402842'),E('bd4313fbac402839'))
- */
 export const moveNodeAfter = function (this: MindElixirInstance, from: Topic, to: Topic) {
   const obj = from.nodeObj
   const toObj = to.nodeObj
   const originParentId = obj.parent?.id
-  moveNodeAfterObj(obj, toObj)
+  moveNodeObj('after', obj, toObj)
   fillParent(this.nodeData)
   mainToSub(from)
   const fromGrp = from.parentElement.parentNode

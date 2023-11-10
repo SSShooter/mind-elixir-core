@@ -65,11 +65,11 @@ describe('nodeOperation', () => {
     expect(res[0]).toEqual(true)
     expect(res[1]).toEqual(true)
   })
-  it('moveNode"', async() => {
+  it('moveNodeIn"', async() => {
     const res = await page.evaluate(async() => {
       let from = E('bd1f07c598e729dc')
       let to = E('bd1babdd5c18a7a2')
-      await m.moveNode(from, to)
+      await m.moveNodeIn(from, to)
 
       const domCheck =
         from.closest('me-children').previousElementSibling === to.parentNode

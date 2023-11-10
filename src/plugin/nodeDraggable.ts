@@ -82,7 +82,7 @@ export default function (mind: MindElixirInstance) {
         mind.selectNode(E(obj.id))
         break
       case 'in':
-        mind.moveNode(dragged, meet)
+        mind.moveNodeIn(dragged, meet)
         break
     }
     dragged = null
