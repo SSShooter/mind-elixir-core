@@ -129,7 +129,7 @@ MindElixir.DARK_THEME = DARK_THEME
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '3.3.1'
+MindElixir.version = '3.3.2'
 /**
  * @function
  * @memberof MindElixir
