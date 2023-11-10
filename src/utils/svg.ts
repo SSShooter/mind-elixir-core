@@ -5,12 +5,15 @@ import { selectText } from './dom'
 
 const $d = document
 const svgNS = 'http://www.w3.org/2000/svg'
-export const createMainPath = function (d: string, color: string) {
+
+export const createPath = function (d: string, color: string, width: string) {
   const path = $d.createElementNS(svgNS, 'path')
-  path.setAttribute('d', d)
-  path.setAttribute('stroke', color || '#666')
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke-width', '3')
+  setAttributes(path, {
+    d,
+    stroke: color || '#666',
+    fill: 'none',
+    'stroke-width': width,
+  })
   return path
 }
 
@@ -27,16 +30,6 @@ export const createLine = function () {
   line.setAttribute('fill', 'none')
   line.setAttribute('stroke-width', '2')
   return line
-}
-
-export const createPath = function (d: string, color: string) {
-  const path = $d.createElementNS(svgNS, 'path')
-  path.setAttribute('d', d)
-  path.setAttribute('stroke', color || '#555')
-  path.setAttribute('fill', 'none')
-  path.setAttribute('stroke-linecap', 'square')
-  path.setAttribute('stroke-width', '2')
-  return path
 }
 
 export const createSvgGroup = function (d: string, arrowd: string): CustomSvg {

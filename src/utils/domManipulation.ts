@@ -67,7 +67,7 @@ export const removeNodeDom = function (tpc: Topic, siblingLength: number) {
     const c = p.parentNode.parentNode
     // root doesn't have epd
     if (c.tagName !== 'ME-MAIN') {
-      c.previousSibling.children[1].remove()
+      c.previousSibling.children[1]!.remove()
     }
   }
   p.parentNode.remove()

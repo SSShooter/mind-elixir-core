@@ -1,4 +1,4 @@
-import { createPath, createMainPath, createLinkSvg } from './utils/svg'
+import { createPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
 import type { Wrapper, Topic, Parent } from './types/dom'
 import type { MindElixirInstance } from './types/index'
@@ -42,7 +42,6 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
       x2 = offsetLeft
     }
     const y2 = offsetTop + p.offsetHeight / 2
-    let mainPath = ''
 
     const pct = Math.abs(y2 - el.parentElement.offsetTop - el.parentElement.offsetHeight / 2) / el.parentElement.offsetHeight
     const offset = (1 - pct) * 0.25 * (root.offsetWidth / 2)
@@ -51,12 +50,11 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     } else {
       x1 = x1 + root.offsetWidth / 10 + offset
     }
-    mainPath = this.generateMainBranch({ x1, y1, x2, y2, direction })
-
+    const mainPath = this.generateMainBranch({ x1, y1, x2, y2, direction })
     const palette = this.theme.palette
     const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
     tpc.style.borderColor = branchColor
-    this.lines.appendChild(createMainPath(mainPath, branchColor))
+    this.lines.appendChild(createPath(mainPath, branchColor, '3'))
 
     // set position of main node expander
     const expander = el.children[0].children[1]
@@ -81,8 +79,8 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
       el.appendChild(svg)
       const parent = el.firstChild
       const children = el.children[1].children
-      const path = traverseChildren(this, children, parent, direction, true)
-      svg.appendChild(createPath(path, branchColor))
+      traverseChildren(this, svg, branchColor, children, parent, direction, true)
+      // svg.appendChild(createPath(path, branchColor, '2'))
     }
   }
 
@@ -92,8 +90,15 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
 }
 
 // core function of generate subLines
-const traverseChildren = function (mei: MindElixirInstance, children: Wrapper[], parent: Parent, direction: 'lhs' | 'rhs', isFirst?: boolean) {
-  let path = ''
+const traverseChildren = function (
+  mei: MindElixirInstance,
+  svgContainer: SVGSVGElement,
+  branchColor: string,
+  children: Wrapper[],
+  parent: Parent,
+  direction: 'lhs' | 'rhs',
+  isFirst?: boolean
+) {
   const pT = parent.offsetTop
   const pL = parent.offsetLeft
   const pW = parent.offsetWidth
@@ -106,8 +111,8 @@ const traverseChildren = function (mei: MindElixirInstance, children: Wrapper[],
     const cW = childT.offsetWidth
     const cH = childT.offsetHeight
 
-    path += mei.generateSubBranch({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
-
+    const path = mei.generateSubBranch({ pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst })
+    svgContainer.appendChild(createPath(path, branchColor, '2'))
     const expander = childT.children[1]
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
@@ -125,10 +130,9 @@ const traverseChildren = function (mei: MindElixirInstance, children: Wrapper[],
 
     const nextChildren = child.children[1].children
     if (nextChildren.length > 0) {
-      path += traverseChildren(mei, nextChildren, childT, direction)
+      traverseChildren(mei, svgContainer, branchColor, nextChildren, childT, direction)
     }
   }
-  return path
 }
 
 export default linkDiv
