@@ -59,12 +59,14 @@ export function moveNodeObj(from: NodeObj, to: NodeObj) {
 }
 
 export function moveNodeBeforeObj(from: NodeObj, to: NodeObj) {
+  if (from.direction !== undefined) from.direction = to.direction
   removeNodeObj(from)
   const { siblings, index } = getSibling(to)
   siblings.splice(index, 0, from)
 }
 
 export function moveNodeAfterObj(from: NodeObj, to: NodeObj) {
+  if (from.direction !== undefined) from.direction = to.direction
   removeNodeObj(from)
   const { siblings, index } = getSibling(to)
   siblings.splice(index + 1, 0, from)
