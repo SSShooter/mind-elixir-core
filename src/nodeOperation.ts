@@ -144,7 +144,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  const res = addChildDom.call(this, nodeEle, node)
+  const res = addChildDom(this, nodeEle, node)
   if (!res) return
   const { newTop, newNodeObj } = res
   this.bus.fire('operation', {
@@ -162,13 +162,30 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)
-  const res = addChildDom.call(this, to, deepCloneObj)
+  const res = addChildDom(this, to, deepCloneObj)
   if (!res) return
   const { newNodeObj } = res
   console.timeEnd('copyNode')
   this.bus.fire('operation', {
     name: 'copyNode',
     obj: newNodeObj,
+  })
+}
+
+export const copyNodes = function (this: MindElixirInstance, nodes: Topic[], to: Topic) {
+  const objs = []
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i]
+    const deepCloneObj = deepClone(node.nodeObj)
+    refreshIds(deepCloneObj)
+    const res = addChildDom(this, to, deepCloneObj)
+    if (!res) return
+    const { newNodeObj } = res
+    objs.push(newNodeObj)
+  }
+  this.bus.fire('operation', {
+    name: 'copyNodes',
+    objs,
   })
 }
 
@@ -204,16 +221,6 @@ export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
   })
 }
 
-/**
- * @function
- * @instance
- * @name removeNode
- * @memberof NodeOperation
- * @description Remove the target node.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- * @example
- * removeNode(E('bd4313fbac40284b'))
- */
 export const removeNode = function (this: MindElixirInstance, el?: Topic) {
   const tpc = el || this.currentNode
   if (!tpc) return
@@ -258,17 +265,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
     objs: tpcs.map(tpc => tpc.nodeObj),
   })
 }
-/**
- * @function
- * @instance
- * @name moveNodeIn
- * @memberof NodeOperation
- * @description Move a node to another node (as child node).
- * @param {TargetElement} from - The target you want to move.
- * @param {TargetElement} to - The target(as parent node) you want to move to.
- * @example
- * moveNodeIn(E('bd4313fbac402842'),E('bd4313fbac402839'))
- */
+
 export const moveNodeIn = function (this: MindElixirInstance, from: Topic, to: Topic) {
   const obj = from.nodeObj
   const toObj = to.nodeObj

@@ -105,6 +105,7 @@ export default function (mind: MindElixirInstance) {
       if (e.metaKey || e.ctrlKey) {
         // ctrl c
         mind.waitCopy = mind.currentNode
+        // TODO: refactor currentNode
       }
     },
     86: (e: KeyboardEvent) => {

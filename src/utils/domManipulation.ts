@@ -23,39 +23,39 @@ export const judgeDirection = function (direction: number, obj: NodeObj) {
   }
 }
 
-export const addChildDom = function (this: MindElixirInstance, tpc: Topic, node?: NodeObj) {
+export const addChildDom = function (mei: MindElixirInstance, tpc: Topic, node?: NodeObj) {
   if (!tpc) return null
   const nodeObj = tpc.nodeObj
   if (nodeObj.expanded === false) {
-    this.expandNode(tpc, true)
+    mei.expandNode(tpc, true)
     // dom had resetted
     tpc = findEle(nodeObj.id) as Topic
   }
-  const newNodeObj = node || this.generateNewObj()
+  const newNodeObj = node || mei.generateNewObj()
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
   else nodeObj.children = [newNodeObj]
-  fillParent(this.nodeData)
+  fillParent(mei.nodeData)
 
   const top = tpc.parentElement
 
-  const { grp, top: newTop } = this.createWrapper(newNodeObj)
+  const { grp, top: newTop } = mei.createWrapper(newNodeObj)
   if (top.tagName === 'ME-PARENT') {
     if (top.children[1]) {
       top.nextSibling.appendChild(grp)
     } else {
-      const c = this.createChildren([grp])
+      const c = mei.createChildren([grp])
       top.appendChild(createExpander(true))
       top.insertAdjacentElement('afterend', c)
     }
-    this.linkDiv(grp.offsetParent as Wrapper)
+    mei.linkDiv(grp.offsetParent as Wrapper)
   } else if (top.tagName === 'ME-ROOT') {
-    const direction = judgeDirection(this.direction, newNodeObj)
+    const direction = judgeDirection(mei.direction, newNodeObj)
     if (direction === LEFT) {
       document.querySelector('.lhs')?.appendChild(grp)
     } else {
       document.querySelector('.rhs')?.appendChild(grp)
     }
-    this.linkDiv()
+    mei.linkDiv()
   }
   return { newTop, newNodeObj }
 }

@@ -29,8 +29,14 @@ type NodeOperation =
       originIndex?: number
       originParentId?: string
     }
+
+type MultipleNodeOperation =
   | {
       name: 'removeNodes'
+      objs: NodeObj[]
+    }
+  | {
+      name: 'copyNodes'
       objs: NodeObj[]
     }
 
@@ -62,7 +68,7 @@ export type ArrowOperation =
       obj: Arrow
     }
 
-export type Operation = NodeOperation | SummaryOperation | ArrowOperation
+export type Operation = NodeOperation | MultipleNodeOperation | SummaryOperation | ArrowOperation
 export type OperationType = Operation['name']
 
 export type EventMap = {
