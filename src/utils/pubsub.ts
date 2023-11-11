@@ -19,9 +19,8 @@ type NodeOperation =
     }
   | {
       name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNodeIn'
-      obj: NodeObj
+      obj: NodeObj[]
       toObj: NodeObj
-      originParentId?: string
     }
   | {
       name: 'removeNode'

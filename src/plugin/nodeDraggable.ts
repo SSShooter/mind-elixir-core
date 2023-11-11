@@ -1,6 +1,5 @@
 import { throttle } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
-import { findEle as E } from '../utils/dom'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
@@ -31,9 +30,13 @@ const clearPreview = function (el: Element | null) {
   }
 }
 
-const canPreview = function (el: Element, dragged: Topic) {
-  const isContain = dragged.parentElement.parentElement.contains(el)
-  return el && el.tagName === 'ME-TPC' && el !== dragged && !isContain && (el as Topic).nodeObj.root !== true
+const canPreview = function (el: Element, dragged: Topic[]) {
+  for (const node of dragged) {
+    const isContain = node.parentElement.parentElement.contains(el)
+    const ok = el && el.tagName === 'ME-TPC' && el !== node && !isContain && (el as Topic).nodeObj.root !== true
+    if (!ok) return false
+  }
+  return true
 }
 
 const createGhost = function (mei: MindElixirInstance) {
@@ -44,7 +47,7 @@ const createGhost = function (mei: MindElixirInstance) {
 }
 
 export default function (mind: MindElixirInstance) {
-  let dragged: Topic | null = null
+  let dragged: Topic[] | null = null
   let insertTpye: InsertType = null
   let meet: Topic | null = null
   const ghost = createGhost(mind)
@@ -57,33 +60,40 @@ export default function (mind: MindElixirInstance) {
       e.preventDefault()
       return
     }
-    dragged = target
-    dragged.parentElement.parentElement.style.opacity = '0.5'
-    ghost.innerHTML = dragged.innerHTML
+    if (!mind.currentNodes?.includes(target)) {
+      mind.unselectNodes()
+      mind.selectNode(target)
+    }
+    if (mind.currentNodes) {
+      dragged = mind.currentNodes
+      ghost.innerHTML = mind.currentNodes.length + ' nodes'
+    } else {
+      dragged = [target]
+      ghost.innerHTML = target.innerHTML
+    }
+    for (const node of dragged) {
+      node.parentElement.parentElement.style.opacity = '0.5'
+    }
     e.dataTransfer?.setDragImage(ghost, 0, 0)
     dragMoveHelper.clear()
   })
 
   mind.map.addEventListener('dragend', async e => {
     if (!dragged) return
-    dragged.parentElement.parentElement.style.opacity = '1'
+    for (const node of dragged) {
+      node.parentElement.parentElement.style.opacity = '1'
+    }
     const target = e.target as Topic
     target.style.opacity = ''
     if (!meet) return
     clearPreview(meet)
-    const obj = dragged.nodeObj
-    switch (insertTpye) {
-      case 'before':
-        mind.moveNodeBefore(dragged, meet)
-        mind.selectNode(E(obj.id))
-        break
-      case 'after':
-        mind.moveNodeAfter(dragged, meet)
-        mind.selectNode(E(obj.id))
-        break
-      case 'in':
-        mind.moveNodeIn(dragged, meet)
-        break
+    // const obj = dragged.nodeObj
+    if (insertTpye === 'before') {
+      mind.moveNodeBefore(dragged, meet)
+    } else if (insertTpye === 'after') {
+      mind.moveNodeAfter(dragged, meet)
+    } else if (insertTpye === 'in') {
+      mind.moveNodeIn(dragged, meet)
     }
     dragged = null
   })

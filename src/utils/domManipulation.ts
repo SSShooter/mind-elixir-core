@@ -1,5 +1,6 @@
 import { fillParent } from '.'
 import { LEFT, RIGHT, SIDE } from '../const'
+import { mainToSub } from '../nodeOperation'
 import type { MindElixirInstance, NodeObj } from '../types'
 import type { Topic, Wrapper } from '../types/dom'
 import { findEle, createExpander } from './dom'
@@ -23,6 +24,30 @@ export const judgeDirection = function (direction: number, obj: NodeObj) {
   }
 }
 
+export const realAddChild = function (mei: MindElixirInstance, to: Topic, wrapper: Wrapper) {
+  const tpc = wrapper.children[0].children[0]
+  const top = to.parentElement
+  if (top.tagName === 'ME-PARENT') {
+    mainToSub(tpc)
+    if (top.children[1]) {
+      top.nextSibling.appendChild(wrapper)
+    } else {
+      const c = mei.createChildren([wrapper])
+      top.appendChild(createExpander(true))
+      top.insertAdjacentElement('afterend', c)
+    }
+    mei.linkDiv(wrapper.offsetParent as Wrapper)
+  } else if (top.tagName === 'ME-ROOT') {
+    const direction = judgeDirection(mei.direction, tpc.nodeObj)
+    if (direction === LEFT) {
+      document.querySelector('.lhs')?.appendChild(wrapper)
+    } else {
+      document.querySelector('.rhs')?.appendChild(wrapper)
+    }
+    mei.linkDiv()
+  }
+}
+
 export const addChildDom = function (mei: MindElixirInstance, tpc: Topic, node?: NodeObj) {
   if (!tpc) return null
   const nodeObj = tpc.nodeObj
@@ -36,27 +61,8 @@ export const addChildDom = function (mei: MindElixirInstance, tpc: Topic, node?:
   else nodeObj.children = [newNodeObj]
   fillParent(mei.nodeData)
 
-  const top = tpc.parentElement
-
   const { grp, top: newTop } = mei.createWrapper(newNodeObj)
-  if (top.tagName === 'ME-PARENT') {
-    if (top.children[1]) {
-      top.nextSibling.appendChild(grp)
-    } else {
-      const c = mei.createChildren([grp])
-      top.appendChild(createExpander(true))
-      top.insertAdjacentElement('afterend', c)
-    }
-    mei.linkDiv(grp.offsetParent as Wrapper)
-  } else if (top.tagName === 'ME-ROOT') {
-    const direction = judgeDirection(mei.direction, newNodeObj)
-    if (direction === LEFT) {
-      document.querySelector('.lhs')?.appendChild(grp)
-    } else {
-      document.querySelector('.rhs')?.appendChild(grp)
-    }
-    mei.linkDiv()
-  }
+  realAddChild(mei, tpc, grp)
   return { newTop, newNodeObj }
 }
 

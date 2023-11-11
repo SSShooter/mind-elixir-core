@@ -12,9 +12,9 @@ import {
   removeNodeObj,
   moveNodeObj,
 } from './utils/objectManipulation'
-import { addChildDom, judgeDirection, removeNodeDom } from './utils/domManipulation'
+import { addChildDom, realAddChild, removeNodeDom } from './utils/domManipulation'
 
-const mainToSub = function (tpc: Topic) {
+export const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
   const lc = mainNode.lastElementChild
   if (lc?.tagName === 'svg') lc?.remove() // clear svg group of main node
@@ -266,75 +266,59 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   })
 }
 
-export const moveNodeIn = function (this: MindElixirInstance, from: Topic, to: Topic) {
-  const obj = from.nodeObj
+export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to: Topic) {
   const toObj = to.nodeObj
-  const originParentId = obj?.parent?.id
   if (toObj.expanded === false) {
     // TODO
     this.expandNode(to, true)
-    from = findEle(obj.id) as Topic
     to = findEle(toObj.id) as Topic
   }
-  if (!checkMoveValid(obj, toObj)) {
-    console.warn('Invalid move')
-    return
-  }
+  // if (!checkMoveValid(obj, toObj)) {
+  //   console.warn('Invalid move')
+  //   return
+  // }
   console.time('moveNodeIn')
-  moveNodeObj('in', obj, toObj)
-  fillParent(this.nodeData) // update parent property
-  const fromTop = from.parentElement
-  const toTop = to.parentElement
-  if (toTop.tagName === 'ME-PARENT') {
-    mainToSub(from)
-    if (toTop.children[1]) {
-      // expander exist
-      toTop.nextSibling.appendChild(fromTop.parentElement)
-    } else {
-      // expander not exist, no child
-      const c = this.createChildren([fromTop.parentElement])
-      toTop.appendChild(createExpander(true))
-      toTop.parentElement.insertBefore(c, toTop.nextSibling)
-    }
-  } else if (toTop.tagName === 'ME-ROOT') {
-    judgeDirection(this.direction, obj)
-    toTop.nextSibling.appendChild(fromTop.parentElement)
+  for (const f of from) {
+    const obj = f.nodeObj
+    moveNodeObj('in', obj, toObj)
+    fillParent(this.nodeData) // update parent property
+    const fromTop = f.parentElement
+    realAddChild(this, to, fromTop.parentElement)
   }
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeIn',
-    obj,
+    obj: from.map(f => f.nodeObj),
     toObj,
-    originParentId,
   })
   console.timeEnd('moveNodeIn')
 }
 
-const moveNode = (from: Topic, type: 'before' | 'after', to: Topic, mei: MindElixirInstance) => {
-  const obj = from.nodeObj
+const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindElixirInstance) => {
   const toObj = to.nodeObj
-  const originParentId = obj.parent?.id
-  moveNodeObj(type, obj, toObj)
-  fillParent(mei.nodeData)
-  mainToSub(from)
-  const fromGrp = from.parentElement.parentNode
-  const toGrp = to.parentElement.parentNode
-  toGrp.insertAdjacentElement(type === 'before' ? 'beforebegin' : 'afterend', fromGrp)
+  for (const f of from) {
+    const obj = f.nodeObj
+    moveNodeObj(type, obj, toObj)
+    fillParent(mei.nodeData)
+    mainToSub(f)
+    const fromGrp = f.parentElement.parentNode
+    const toGrp = to.parentElement.parentNode
+    toGrp.insertAdjacentElement(type === 'before' ? 'beforebegin' : 'afterend', fromGrp)
+  }
   mei.linkDiv()
   mei.bus.fire('operation', {
     name: type === 'before' ? 'moveNodeBefore' : 'moveNodeAfter',
-    obj,
+    obj: from.map(f => f.nodeObj),
     toObj,
-    originParentId,
   })
 }
 
-export const moveNodeBefore = function (this: MindElixirInstance, from: Topic, to: Topic) {
+export const moveNodeBefore = function (this: MindElixirInstance, from: Topic[], to: Topic) {
   moveNode(from, 'before', to, this)
 }
 
-export const moveNodeAfter = function (this: MindElixirInstance, from: Topic, to: Topic) {
-  moveNode(from, 'before', to, this)
+export const moveNodeAfter = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+  moveNode(from, 'after', to, this)
 }
 
 export const beginEdit = function (this: MindElixirInstance, el?: Topic) {
