@@ -50,9 +50,9 @@ export interface MindElixirInstance extends MindElixirMethods {
   currentNode: Topic | null
   currentNodes: Topic[] | null
   currentSummary: SummarySvgGroup | null
-
-  waitCopy: Topic | null
   currentArrow: CustomSvg | null
+
+  waitCopy: Topic[] | null
   scaleVal: number
   tempDirection: number | null
   theme: Theme

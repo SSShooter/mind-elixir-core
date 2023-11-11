@@ -104,15 +104,19 @@ export default function (mind: MindElixirInstance) {
     67: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         // ctrl c
-        mind.waitCopy = mind.currentNode
-        // TODO: refactor currentNode
+        if (mind.currentNode) mind.waitCopy = [mind.currentNode]
+        else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
       }
     },
     86: (e: KeyboardEvent) => {
       if (!mind.waitCopy || !mind.currentNode) return
       if (e.metaKey || e.ctrlKey) {
         // ctrl v
-        mind.copyNode(mind.waitCopy, mind.currentNode)
+        if (mind.waitCopy.length === 1) {
+          mind.copyNode(mind.waitCopy[0], mind.currentNode)
+        } else {
+          mind.copyNodes(mind.waitCopy, mind.currentNode)
+        }
         mind.waitCopy = null
       }
     },

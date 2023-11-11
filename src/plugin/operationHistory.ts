@@ -28,7 +28,7 @@ const calcCurentObject = function (operation: Operation): History['currentObject
       type: 'arrow',
       value: (operation as any).obj.id,
     }
-  } else if (['removeNodes'].includes(operation.name)) {
+  } else if (['removeNodes', 'copyNodes'].includes(operation.name)) {
     return {
       type: 'nodes',
       value: (operation as any).objs.map((obj: NodeObj) => obj.id),
