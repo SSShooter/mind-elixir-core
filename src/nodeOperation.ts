@@ -291,7 +291,7 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to:
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'moveNodeIn',
-    obj: from.map(f => f.nodeObj),
+    objs: from.map(f => f.nodeObj),
     toObj,
   })
   console.timeEnd('moveNodeIn')
@@ -312,7 +312,7 @@ const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindE
   mei.linkDiv()
   mei.bus.fire('operation', {
     name: type === 'before' ? 'moveNodeBefore' : 'moveNodeAfter',
-    obj: from.map(f => f.nodeObj),
+    objs: from.map(f => f.nodeObj),
     toObj,
   })
 }

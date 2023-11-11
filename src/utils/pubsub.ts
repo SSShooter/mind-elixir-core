@@ -19,7 +19,7 @@ type NodeOperation =
     }
   | {
       name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNodeIn'
-      obj: NodeObj[]
+      objs: NodeObj[]
       toObj: NodeObj
     }
   | {
