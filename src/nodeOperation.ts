@@ -1,4 +1,4 @@
-import { checkMoveValid, fillParent, refreshIds } from './utils/index'
+import { checkMoveValid, fillParent, refreshIds, unionTopics } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Topic } from './types/dom'
@@ -172,10 +172,11 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   })
 }
 
-export const copyNodes = function (this: MindElixirInstance, nodes: Topic[], to: Topic) {
+export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: Topic) {
+  tpcs = unionTopics(tpcs)
   const objs = []
-  for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i]
+  for (let i = 0; i < tpcs.length; i++) {
+    const node = tpcs[i]
     const deepCloneObj = deepClone(node.nodeObj)
     refreshIds(deepCloneObj)
     const res = addChildDom(this, to, deepCloneObj)
@@ -251,6 +252,7 @@ export const removeNode = function (this: MindElixirInstance, el?: Topic) {
 }
 
 export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
+  tpcs = unionTopics(tpcs)
   for (const tpc of tpcs) {
     const nodeObj = tpc.nodeObj
     if (nodeObj.root === true) {
@@ -267,6 +269,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
 }
 
 export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+  from = unionTopics(from)
   const toObj = to.nodeObj
   if (toObj.expanded === false) {
     // TODO
@@ -295,6 +298,7 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to:
 }
 
 const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindElixirInstance) => {
+  from = unionTopics(from)
   const toObj = to.nodeObj
   for (const f of from) {
     const obj = f.nodeObj
