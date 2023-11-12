@@ -3,16 +3,13 @@ import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Topic } from './types/dom'
 import type { MindElixirInstance, NodeObj } from './types/index'
-import {
-  insertNodeObj,
-  insertBeforeNodeObj,
-  insertParentNodeObj,
-  moveUpObj,
-  moveDownObj,
-  removeNodeObj,
-  moveNodeObj,
-} from './utils/objectManipulation'
+import { insertNodeObj, insertParentNodeObj, moveUpObj, moveDownObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
 import { addChildDom, realAddChild, removeNodeDom } from './utils/domManipulation'
+
+const typeMap: Record<string, InsertPosition> = {
+  before: 'beforebegin',
+  after: 'afterend',
+}
 
 export const mainToSub = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
@@ -37,7 +34,7 @@ export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patch
   })
 }
 
-export const insertSibling = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
+export const insertSibling = function (this: MindElixirInstance, type: 'before' | 'after', el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -50,15 +47,14 @@ export const insertSibling = function (this: MindElixirInstance, el?: Topic, nod
     return
   }
   const newNodeObj = node || this.generateNewObj()
-  insertNodeObj(nodeObj, newNodeObj)
+  insertNodeObj(newNodeObj, type, nodeObj)
   fillParent(this.nodeData)
   const t = nodeEle.parentElement
   console.time('insertSibling_DOM')
 
   const { grp, top } = this.createWrapper(newNodeObj)
 
-  const children = t.parentNode.parentNode
-  children.insertBefore(grp, t.parentNode.nextSibling)
+  t.parentElement.insertAdjacentElement(typeMap[type], grp)
 
   this.linkDiv(grp.offsetParent)
 
@@ -69,38 +65,7 @@ export const insertSibling = function (this: MindElixirInstance, el?: Topic, nod
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
-    obj: newNodeObj,
-  })
-}
-
-export const insertBefore = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
-  const nodeEle = el || this.currentNode
-  if (!nodeEle) return
-  const nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
-    this.addChild()
-    return
-  }
-  const newNodeObj = node || this.generateNewObj()
-  insertBeforeNodeObj(nodeObj, newNodeObj)
-  fillParent(this.nodeData)
-  const t = nodeEle.parentElement
-  console.time('insertSibling_DOM')
-
-  const { grp, top } = this.createWrapper(newNodeObj)
-
-  const children = t.parentNode.parentNode
-  children.insertBefore(grp, t.parentNode)
-
-  this.linkDiv(grp.offsetParent)
-
-  if (!node) {
-    this.editTopic(top.firstChild)
-  }
-  this.selectNode(top.firstChild, true)
-  console.timeEnd('insertSibling_DOM')
-  this.bus.fire('operation', {
-    name: 'insertBefore',
+    type,
     obj: newNodeObj,
   })
 }
@@ -307,7 +272,7 @@ const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindE
     mainToSub(f)
     const fromGrp = f.parentElement.parentNode
     const toGrp = to.parentElement.parentNode
-    toGrp.insertAdjacentElement(type === 'before' ? 'beforebegin' : 'afterend', fromGrp)
+    toGrp.insertAdjacentElement(typeMap[type], fromGrp)
   }
   mei.linkDiv()
   mei.bus.fire('operation', {

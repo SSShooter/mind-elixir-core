@@ -36,14 +36,13 @@ export function removeNodeObj(obj: NodeObj) {
   return siblings.length
 }
 
-export function insertNodeObj(obj: NodeObj, newObj: NodeObj) {
+export function insertNodeObj(newObj: NodeObj, type: 'before' | 'after', obj: NodeObj) {
   const { siblings, index } = getSibling(obj)
-  siblings.splice(index + 1, 0, newObj)
-}
-
-export function insertBeforeNodeObj(obj: NodeObj, newObj: NodeObj) {
-  const { siblings, index } = getSibling(obj)
-  siblings.splice(index, 0, newObj)
+  if (type === 'before') {
+    siblings.splice(index, 0, newObj)
+  } else {
+    siblings.splice(index + 1, 0, newObj)
+  }
 }
 
 export function insertParentNodeObj(obj: NodeObj, newObj: NodeObj) {

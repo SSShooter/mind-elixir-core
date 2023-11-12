@@ -106,7 +106,7 @@ export default function (mind: MindElixirInstance, option?: any) {
   }
   add_sibling.onclick = () => {
     if (isRoot) return
-    mind.insertSibling()
+    mind.insertSibling('after')
   }
   remove_child.onclick = () => {
     if (isRoot) return

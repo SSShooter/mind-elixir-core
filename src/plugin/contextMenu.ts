@@ -140,7 +140,7 @@ export default function (mind: MindElixirInstance, option: any) {
   }
   add_sibling.onclick = () => {
     if (isRoot) return
-    mind.insertSibling()
+    mind.insertSibling('after')
     menuContainer.hidden = true
   }
   remove_child.onclick = () => {
