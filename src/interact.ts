@@ -3,10 +3,6 @@ import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
 import { findEle } from './utils/dom'
 import { fillParent } from './utils/index'
 
-/**
- * @exports MapInteraction
- * @namespace MapInteraction
- */
 function collectData(instance: MindElixirInstance) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
@@ -16,14 +12,7 @@ function collectData(instance: MindElixirInstance) {
     theme: instance.theme,
   }
 }
-/**
- * @function
- * @instance
- * @name selectNode
- * @memberof MapInteraction
- * @description Select a node and add solid border to it.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- */
+
 export const selectNode = function (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   if (!targetElement) return
   console.time('selectNode')
@@ -32,7 +21,6 @@ export const selectNode = function (this: MindElixirInstance, targetElement: Top
     if (!el) return
     return this.selectNode(el)
   }
-  if (this.currentNode) this.currentNode.className = ''
   targetElement.className = 'selected'
   targetElement.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   this.currentNode = targetElement
@@ -44,6 +32,7 @@ export const selectNode = function (this: MindElixirInstance, targetElement: Top
   }
   console.timeEnd('selectNode')
 }
+
 export const unselectNode = function (this: MindElixirInstance) {
   if (this.currentNode) {
     this.currentNode.className = ''
@@ -74,6 +63,13 @@ export const unselectNodes = function (this: MindElixirInstance) {
   }
   this.currentNodes = null
   this.bus.fire('unselectNodes')
+}
+
+export const clearSelection = function (this: MindElixirInstance) {
+  this.unselectNode()
+  this.unselectNodes()
+  this.unselectSummary()
+  this.unselectArrow()
 }
 
 export const selectNextSibling = function (this: MindElixirInstance) {

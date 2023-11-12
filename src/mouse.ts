@@ -19,10 +19,7 @@ export default function (mind: MindElixirInstance) {
       dragMoveHelper.clear()
       return
     }
-    mind.unselectNode()
-    mind.unselectNodes()
-    mind.unselectSummary()
-    mind.unselectArrow()
+    mind.clearSelection()
     // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as any
     if (target.tagName === 'ME-EPD') {
