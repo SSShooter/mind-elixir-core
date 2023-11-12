@@ -16,6 +16,7 @@ function collectData(instance: MindElixirInstance) {
 export const selectNode = function (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   if (!targetElement) return
   console.time('selectNode')
+  this.clearSelection()
   if (typeof targetElement === 'string') {
     const el = findEle(targetElement)
     if (!el) return
