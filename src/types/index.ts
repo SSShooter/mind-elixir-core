@@ -166,6 +166,7 @@ export interface NodeObj {
   parent?: NodeObj // root node has no parent
   // TODO: checkbox
   // checkbox?: boolean | undefined
+  dangerouslySetInnerHTML?: string
 }
 export type NodeObjExport = Omit<NodeObj, 'parent'>
 

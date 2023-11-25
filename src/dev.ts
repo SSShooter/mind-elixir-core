@@ -5,13 +5,13 @@ import example2 from './exampleData/2'
 import example3 from './exampleData/3'
 import type { Options, MindElixirData, MindElixirInstance } from './types/index'
 import type { Operation } from './utils/pubsub'
-import { exportPng } from './plugin/exportImage'
 
 interface Window {
   m: MindElixirInstance
   M: MindElixirCtor
   E: typeof MindElixir.E
-  downloadPng: typeof downloadPng
+  downloadPng: ReturnType<typeof download>
+  downloadSvg: ReturnType<typeof download>
 }
 
 declare let window: Window
@@ -96,18 +96,27 @@ mind.bus.addListener('expandNode', node => {
   console.log('expandNode: ', node)
 })
 
-const downloadPng = async () => {
-  const blob = await mind.exportPng()
-  if (!blob) return
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'filename.png'
-  a.click()
-  URL.revokeObjectURL(url)
+const download = (type: 'svg' | 'png') => {
+  return async () => {
+    try {
+      let blob = null
+      if (type === 'png') blob = await mind.exportPng()
+      else blob = await mind.exportSvg()
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'filename.' + type
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }
 
-window.downloadPng = downloadPng
+window.downloadPng = download('png')
+window.downloadSvg = download('svg')
 window.m = mind
 // window.m2 = mind2
 window.M = MindElixir

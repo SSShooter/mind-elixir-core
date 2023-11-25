@@ -1,7 +1,7 @@
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types'
 import { setAttributes } from '../utils'
-import { getOffsetLT } from '../utils'
+import { getOffsetLT, isTopic } from '../utils'
 
 function createSvgDom(height: string, width: string) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
@@ -51,7 +51,9 @@ function generateSvgText(tpc: HTMLElement, tpcStyle: CSSStyleDeclaration, x: num
 
 function generateSvgTextUsingForeignObject(tpc: HTMLElement, tpcStyle: CSSStyleDeclaration, x: number, y: number) {
   let content = ''
-  if ((tpc as Topic).text) {
+  if ((tpc as Topic).nodeObj?.dangerouslySetInnerHTML) {
+    content = (tpc as Topic).nodeObj.dangerouslySetInnerHTML!
+  } else if ((tpc as Topic).text) {
     content = (tpc as Topic).text.textContent!
   } else {
     content = tpc.childNodes[0].textContent!
