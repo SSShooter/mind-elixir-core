@@ -44,9 +44,6 @@ const options: Options = {
   keypress: true,
   allowUndo: true,
   before: {
-    moveDownNode() {
-      return false
-    },
     insertSibling(el, obj) {
       console.log('insertSibling', el, obj)
       return true
