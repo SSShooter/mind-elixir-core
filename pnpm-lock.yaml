@@ -49,10 +49,10 @@ devDependencies:
     version: 5.1.6
   vite:
     specifier: ^4.4.8
-    version: 4.4.8(@types/node@20.4.7)(less@4.1.3)
+    version: 4.4.12(@types/node@20.4.7)(less@4.1.3)
   vite-plugin-css-injected-by-js:
     specifier: ^3.2.1
-    version: 3.2.1(vite@4.4.8)
+    version: 3.2.1(vite@4.4.12)
 
 packages:
 
@@ -2904,16 +2904,16 @@ packages:
     engines: {node: '>= 0.10'}
     dev: true
 
-  /vite-plugin-css-injected-by-js@3.2.1(vite@4.4.8):
+  /vite-plugin-css-injected-by-js@3.2.1(vite@4.4.12):
     resolution: {integrity: sha512-8UQWy7tcmgwkaUKYfbj/8GOeAD0RPG2tdetAGg7WikWC8IEtNrovs8RRuLjFqdRqORT1XxchBB5tPl6xO/H95g==}
     peerDependencies:
       vite: '>2.0.0-0'
     dependencies:
-      vite: 4.4.8(@types/node@20.4.7)(less@4.1.3)
+      vite: 4.4.12(@types/node@20.4.7)(less@4.1.3)
     dev: true
 
-  /vite@4.4.8(@types/node@20.4.7)(less@4.1.3):
-    resolution: {integrity: sha512-LONawOUUjxQridNWGQlNizfKH89qPigK36XhMI7COMGztz8KNY0JHim7/xDd71CZwGT4HtSRgI7Hy+RlhG0Gvg==}
+  /vite@4.4.12(@types/node@20.4.7)(less@4.1.3):
+    resolution: {integrity: sha512-KtPlUbWfxzGVul8Nut8Gw2Qe8sBzWY+8QVc5SL8iRFnpnrcoCaNlzO40c1R6hPmcdTwIPEDkq0Y9+27a5tVbdQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
     peerDependencies:
