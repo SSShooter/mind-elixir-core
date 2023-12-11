@@ -5,6 +5,8 @@ import example2 from './exampleData/2'
 import example3 from './exampleData/3'
 import type { Options, MindElixirData, MindElixirInstance } from './types/index'
 import type { Operation } from './utils/pubsub'
+import style from '../index.css?raw'
+import katex from '../katex.css?raw'
 
 interface Window {
   m: MindElixirInstance
@@ -97,8 +99,8 @@ const download = (type: 'svg' | 'png') => {
   return async () => {
     try {
       let blob = null
-      if (type === 'png') blob = await mind.exportPng()
-      else blob = await mind.exportSvg()
+      if (type === 'png') blob = await mind.exportPng(false, style + katex)
+      else blob = await mind.exportSvg(false, style + katex)
       if (!blob) return
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')

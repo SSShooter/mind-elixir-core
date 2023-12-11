@@ -173,7 +173,12 @@ const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
     overflow: 'visible',
   })
   svg.appendChild(g)
-  return head + svg.outerHTML
+  return svg
+}
+
+const generateSvgStr = (svgEl: SVGSVGElement, injectCss?: string) => {
+  if (injectCss) svgEl.insertAdjacentHTML('afterbegin', '<style>' + injectCss + '</style>')
+  return head + svgEl.outerHTML
 }
 
 function blobToUrl(blob: Blob): Promise<string> {
@@ -189,15 +194,15 @@ function blobToUrl(blob: Blob): Promise<string> {
   })
 }
 
-export const exportSvg = function (this: MindElixirInstance, noForiegnObject = false) {
-  const svgString = generateSvg(this, noForiegnObject)
+export const exportSvg = function (this: MindElixirInstance, noForiegnObject = false, injectCss?: string) {
+  const svgEl = generateSvg(this, noForiegnObject)
+  const svgString = generateSvgStr(svgEl, injectCss)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   return blob
 }
 
-export const exportPng = async function (this: MindElixirInstance, noForiegnObject = false): Promise<Blob | null> {
-  const svgString = generateSvg(this, noForiegnObject)
-  const blob = new Blob([svgString], { type: 'image/svg+xml' })
+export const exportPng = async function (this: MindElixirInstance, noForiegnObject = false, injectCss?: string): Promise<Blob | null> {
+  const blob = this.exportSvg(noForiegnObject, injectCss)
   // use base64 to bypass canvas taint
   const url = await blobToUrl(blob)
   return new Promise((resolve, reject) => {
