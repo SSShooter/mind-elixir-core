@@ -117,7 +117,6 @@ export default function (mind: MindElixirInstance) {
         } else {
           mind.copyNodes(mind.waitCopy, mind.currentNode)
         }
-        mind.waitCopy = null
       }
     },
     // ctrl +
