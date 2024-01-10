@@ -33,6 +33,13 @@ export class MindElixirFixture {
     this.m = mind
   }
   async getData() {
-    return this.m.getData()
+    return await this.page.evaluate(() => {
+      return window.m.getData()
+    })
+  }
+  async dblclick(topic: string) {
+    await this.page.getByText(topic).dblclick({
+      force: true,
+    })
   }
 }
