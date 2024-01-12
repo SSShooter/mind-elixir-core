@@ -1,7 +1,8 @@
 import { test, expect } from './mind-elixir-test'
 
-const id = 'asfihiasfajdad'
-const topic = 'topic-fajfaoo'
+const id = 'root-id'
+const topic = 'root-topic'
+const childTopic = 'child-topic'
 const data = {
   nodeData: {
     topic,
@@ -9,67 +10,82 @@ const data = {
     root: true,
     children: [
       {
-        id: 'child',
-        topic: 'child-topic',
+        id: 'middle',
+        topic: 'middle',
+        children: [
+          {
+            id: 'child',
+            topic: childTopic,
+          },
+        ],
       },
     ],
   },
 }
 
 test.beforeEach(async ({ me }) => {
-  await me.goto()
   await me.init(data)
 })
 
 test('Edit Node', async ({ page, me }) => {
   await me.dblclick(topic)
-  expect(await page.locator('#input-box').count()).toEqual(1)
+  await expect(page.locator('#input-box')).toBeVisible()
   await page.keyboard.insertText('update node')
   await page.keyboard.press('Enter')
-  expect(await page.locator('#input-box').count()).toEqual(0)
-  expect(await page.getByText('update node')).toBeTruthy()
-  const data = await me.getData()
-  expect(data.nodeData.topic).toEqual('update node')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('update node')).toBeVisible()
+  await me.toHaveScreenshot()
 })
 
-test('Clear and reset', async ({ page }) => {
-  await page.getByText(topic).dblclick({
-    force: true,
-  })
-  expect(await page.locator('#input-box').count()).toEqual(1)
+test('Clear and reset', async ({ page, me }) => {
+  await me.dblclick(topic)
+  await expect(page.locator('#input-box')).toBeVisible()
   await page.keyboard.press('Backspace')
   await page.keyboard.press('Enter')
-  expect(await page.locator('#input-box').count()).toEqual(0)
-  expect(await page.getByText(topic)).toBeTruthy()
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText(topic)).toBeVisible()
+  await me.toHaveScreenshot()
 })
 
-test('Remove Node', async ({ page }) => {
-  const topic = 'child-topic'
-  await page.getByText(topic).click({
-    force: true,
-  })
+test('Remove Node', async ({ page, me }) => {
+  await me.click(childTopic)
   await page.keyboard.press('Delete')
-  expect(await page.getByText(topic)).toBeHidden()
+  await expect(page.getByText(childTopic)).toBeHidden()
+  await me.toHaveScreenshot()
 })
 
-test('Child Add Sibling', async ({ page }) => {
-  const topic = 'child-topic'
-  await page.getByText(topic).click({
-    force: true,
-  })
+test('Add Sibling', async ({ page, me }) => {
+  await me.click(childTopic)
   await page.keyboard.press('Enter')
   await page.keyboard.press('Enter')
-  expect(await page.locator('#input-box')).toBeHidden()
-  expect(await page.getByText('New Node')).toBeVisible()
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('New Node')).toBeVisible()
+  await me.toHaveScreenshot()
 })
 
-test('Child Add Child', async ({ page }) => {
-  const topic = 'child-topic'
-  await page.getByText(topic).click({
-    force: true,
-  })
+test('Add Before', async ({ page, me }) => {
+  await me.click(childTopic)
+  await page.keyboard.press('Shift+Enter')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('New Node')).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('Add Parent', async ({ page, me }) => {
+  await me.click(childTopic)
+  await page.keyboard.press('Control+Enter')
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('New Node')).toBeVisible()
+  await me.toHaveScreenshot()
+})
+
+test('Add Child', async ({ page, me }) => {
+  await me.click(childTopic)
   await page.keyboard.press('Tab')
   await page.keyboard.press('Enter')
-  expect(await page.locator('#input-box')).toBeHidden()
-  expect(await page.getByText('New Node')).toBeVisible()
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.getByText('New Node')).toBeVisible()
+  await me.toHaveScreenshot()
 })

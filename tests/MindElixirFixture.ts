@@ -1,4 +1,4 @@
-import type { Page, Locator } from '@playwright/test'
+import { type Page, type Locator, expect } from '@playwright/test'
 import type { MindElixirCtor, MindElixirData, MindElixirInstance, Options } from '../src'
 import type MindElixir from '../src'
 interface Window {
@@ -41,5 +41,13 @@ export class MindElixirFixture {
     await this.page.getByText(topic).dblclick({
       force: true,
     })
+  }
+  async click(topic: string) {
+    await this.page.getByText(topic).click({
+      force: true,
+    })
+  }
+  async toHaveScreenshot(locator?: Locator) {
+    await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot()
   }
 }
