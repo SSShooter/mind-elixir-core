@@ -14,7 +14,7 @@ import changeTheme from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
 import * as arrow from './arrow'
-import * as summaryOperation from './summary'
+import * as summary from './summary'
 import * as exportImage from './plugin/exportImage'
 
 export type OperationMap = typeof nodeOperation
@@ -68,7 +68,7 @@ const methods = {
   ...interact,
   ...(nodeOperationHooked as NodeOperation),
   ...arrow,
-  ...summaryOperation,
+  ...summary,
   ...exportImage,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
