@@ -42,14 +42,13 @@ export function refreshIds(data: NodeObj) {
   }
 }
 
-export const throttle = (fn: (...args: any[]) => void, wait: number) => {
+export const throttle = <T extends (...args: never[]) => void>(fn: T, wait: number) => {
   let pre = Date.now()
-  return function (...args: any[]) {
+  return function (...args: Parameters<T>) {
     const now = Date.now()
-    if (now - pre >= wait) {
-      fn(...args)
-      pre = Date.now()
-    }
+    if (now - pre < wait) return
+    fn(...args)
+    pre = Date.now()
   }
 }
 
