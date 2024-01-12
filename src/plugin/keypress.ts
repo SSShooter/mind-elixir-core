@@ -19,6 +19,8 @@ export default function (mind: MindElixirInstance) {
       // enter
       if (e.shiftKey) {
         mind.insertSibling('before')
+      } else if (e.ctrlKey) {
+        mind.insertParent()
       } else {
         mind.insertSibling('after')
       }
