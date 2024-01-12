@@ -5,26 +5,24 @@ import type { MindElixirInstance } from '../types/index'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
 type InsertType = 'before' | 'after' | 'in' | null
 const $d = document
-const insertPreview = function (el: Element, insertTpye: InsertType) {
+const insertPreview = function (tpc: Topic, insertTpye: InsertType) {
   if (!insertTpye) {
-    clearPreview(el)
-    return el
+    clearPreview(tpc)
+    return tpc
   }
-  const query = el.getElementsByClassName('insert-preview')
+  let el = tpc.querySelector('.insert-preview')
   const className = `insert-preview ${insertTpye} show`
-  if (query.length > 0) {
-    query[0].className = className
-  } else {
-    const insertPreviewEL = $d.createElement('div')
-    insertPreviewEL.className = className
-    el.appendChild(insertPreviewEL)
+  if (!el) {
+    el = $d.createElement('div')
+    tpc.appendChild(el)
   }
-  return el
+  el.className = className
+  return tpc
 }
 
 const clearPreview = function (el: Element | null) {
   if (!el) return
-  const query = el.getElementsByClassName('insert-preview')
+  const query = el.querySelectorAll('.insert-preview')
   for (const queryElement of query || []) {
     queryElement.remove()
   }
@@ -87,7 +85,6 @@ export default function (mind: MindElixirInstance) {
     target.style.opacity = ''
     if (!meet) return
     clearPreview(meet)
-    // const obj = dragged.nodeObj
     if (insertTpye === 'before') {
       mind.moveNodeBefore(dragged, meet)
     } else if (insertTpye === 'after') {
