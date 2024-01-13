@@ -28,7 +28,7 @@ const clearPreview = function (el: Element | null) {
   }
 }
 
-const canPreview = function (el: Element, dragged: Topic[]) {
+const canMove = function (el: Element, dragged: Topic[]) {
   for (const node of dragged) {
     const isContain = node.parentElement.parentElement.contains(el)
     const ok = el && el.tagName === 'ME-TPC' && el !== node && !isContain && (el as Topic).nodeObj.root !== true
@@ -102,22 +102,22 @@ export default function (mind: MindElixirInstance) {
       clearPreview(meet)
       // minus threshold infer that postion of the cursor is above topic
       const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
-      if (canPreview(topMeet, dragged)) {
+      if (canMove(topMeet, dragged)) {
         meet = topMeet
         const y = topMeet.getBoundingClientRect().y
         if (e.clientY > y + topMeet.clientHeight) {
           insertTpye = 'after'
-        } else if (e.clientY > y + topMeet.clientHeight / 2) {
+        } else {
           insertTpye = 'in'
         }
       } else {
         const bottomMeet = $d.elementFromPoint(e.clientX, e.clientY + threshold) as Topic
-        if (canPreview(bottomMeet, dragged)) {
+        if (canMove(bottomMeet, dragged)) {
           meet = bottomMeet
           const y = bottomMeet.getBoundingClientRect().y
           if (e.clientY < y) {
             insertTpye = 'before'
-          } else if (e.clientY < y + bottomMeet.clientHeight / 2) {
+          } else {
             insertTpye = 'in'
           }
         } else {
