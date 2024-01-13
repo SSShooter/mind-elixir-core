@@ -218,42 +218,28 @@
         },
         {
           "kind": "TypeAlias",
-          "canonicalReference": "mind-elixir!LinkObj:type",
+          "canonicalReference": "mind-elixir!MainLineParams:type",
           "docComment": "",
           "excerptTokens": [
             {
               "kind": "Content",
-              "text": "export type LinkObj = "
-            },
-            {
-              "kind": "Reference",
-              "text": "Record",
-              "canonicalReference": "!Record:type"
+              "text": "export type MainLineParams = "
             },
             {
               "kind": "Content",
-              "text": "<string, "
-            },
-            {
-              "kind": "Reference",
-              "text": "Arrow",
-              "canonicalReference": "mind-elixir!Arrow:type"
-            },
-            {
-              "kind": "Content",
-              "text": ">"
+              "text": "{\n    x1: number;\n    y1: number;\n    x2: number;\n    y2: number;\n    direction: 'lhs' | 'rhs';\n}"
             },
             {
               "kind": "Content",
               "text": ";"
             }
           ],
-          "fileUrlPath": "dist/types/types/index.d.ts",
+          "fileUrlPath": "dist/types/utils/generateBranch.d.ts",
           "releaseTag": "Public",
-          "name": "LinkObj",
+          "name": "MainLineParams",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 5
+            "endIndex": 2
           }
         },
         {
@@ -303,7 +289,7 @@
             },
             {
               "kind": "Content",
-              "text": ", noForiegnObject?: boolean) => "
+              "text": ", noForiegnObject?: boolean, injectCss?: string | undefined) => "
             },
             {
               "kind": "Reference",
@@ -321,7 +307,7 @@
             },
             {
               "kind": "Content",
-              "text": ", noForiegnObject?: boolean) => "
+              "text": ", noForiegnObject?: boolean, injectCss?: string | undefined) => "
             },
             {
               "kind": "Reference",
@@ -370,8 +356,8 @@
             },
             {
               "kind": "Reference",
-              "text": "summaryOperation.SummarySvgGroup",
-              "canonicalReference": "mind-elixir!~SummarySvgGroup:type"
+              "text": "summary.SummarySvgGroup",
+              "canonicalReference": "mind-elixir!SummarySvgGroup:type"
             },
             {
               "kind": "Content",
@@ -406,8 +392,8 @@
             },
             {
               "kind": "Reference",
-              "text": "summaryOperation.SummarySvgGroup",
-              "canonicalReference": "mind-elixir!~SummarySvgGroup:type"
+              "text": "summary.SummarySvgGroup",
+              "canonicalReference": "mind-elixir!SummarySvgGroup:type"
             },
             {
               "kind": "Content",
@@ -519,7 +505,34 @@
             },
             {
               "kind": "Content",
-              "text": ") => void;\n    reshapeNode: (this: "
+              "text": ") => void;\n    mainToSub: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", tpc: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<void>;\n    reshapeNode: (this: "
             },
             {
               "kind": "Reference",
@@ -564,43 +577,7 @@
             },
             {
               "kind": "Content",
-              "text": ", el?: import(\"./index\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "Topic",
-              "canonicalReference": "mind-elixir!~Topic:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined, node?: import(\"./types\")."
-            },
-            {
-              "kind": "Reference",
-              "text": "NodeObj",
-              "canonicalReference": "mind-elixir!NodeObj:interface"
-            },
-            {
-              "kind": "Content",
-              "text": " | undefined) => "
-            },
-            {
-              "kind": "Reference",
-              "text": "Promise",
-              "canonicalReference": "!Promise:interface"
-            },
-            {
-              "kind": "Content",
-              "text": "<void>;\n    insertBefore: (this: "
-            },
-            {
-              "kind": "Reference",
-              "text": "MindElixirInstance",
-              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
-            },
-            {
-              "kind": "Content",
-              "text": ", el?: import(\"./index\")."
+              "text": ", type: \"before\" | \"after\", el?: import(\"./index\")."
             },
             {
               "kind": "Reference",
@@ -735,6 +712,42 @@
             },
             {
               "kind": "Content",
+              "text": "<void>;\n    copyNodes: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", tpcs: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[], to: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
               "text": "<void>;\n    moveUpNode: (this: "
             },
             {
@@ -843,7 +856,7 @@
             },
             {
               "kind": "Content",
-              "text": "<void>;\n    moveNode: (this: "
+              "text": "<void>;\n    moveNodeIn: (this: "
             },
             {
               "kind": "Reference",
@@ -861,7 +874,7 @@
             },
             {
               "kind": "Content",
-              "text": ", to: import(\"./index\")."
+              "text": "[], to: import(\"./index\")."
             },
             {
               "kind": "Reference",
@@ -897,7 +910,7 @@
             },
             {
               "kind": "Content",
-              "text": ", to: import(\"./index\")."
+              "text": "[], to: import(\"./index\")."
             },
             {
               "kind": "Reference",
@@ -933,7 +946,7 @@
             },
             {
               "kind": "Content",
-              "text": ", to: import(\"./index\")."
+              "text": "[], to: import(\"./index\")."
             },
             {
               "kind": "Reference",
@@ -1060,6 +1073,15 @@
             {
               "kind": "Content",
               "text": "[]) => void;\n    unselectNodes: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    clearSelection: (this: "
             },
             {
               "kind": "Reference",
@@ -1325,7 +1347,7 @@
             {
               "kind": "Reference",
               "text": "NodeObjExport",
-              "canonicalReference": "mind-elixir!~NodeObjExport:type"
+              "canonicalReference": "mind-elixir!NodeObjExport:type"
             },
             {
               "kind": "Content",
@@ -1541,7 +1563,7 @@
             {
               "kind": "Reference",
               "text": "Theme",
-              "canonicalReference": "mind-elixir!~Theme:interface"
+              "canonicalReference": "mind-elixir!Theme:interface"
             },
             {
               "kind": "Content",
@@ -1554,7 +1576,7 @@
           "name": "methods",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 286
+            "endIndex": 294
           }
         },
         {
@@ -1572,6 +1594,38 @@
           "name": "MindElixirData",
           "preserveMemberOrder": false,
           "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirData#arrows:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "arrows?: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Arrow",
+                  "canonicalReference": "mind-elixir!Arrow:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "arrows",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
             {
               "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirData#direction:member",
@@ -1594,34 +1648,6 @@
               "isOptional": true,
               "releaseTag": "Public",
               "name": "direction",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirData#linkData:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "linkData?: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "LinkObj",
-                  "canonicalReference": "mind-elixir!LinkObj:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": true,
-              "releaseTag": "Public",
-              "name": "linkData",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -1699,7 +1725,7 @@
                 {
                   "kind": "Reference",
                   "text": "Theme",
-                  "canonicalReference": "mind-elixir!~Theme:interface"
+                  "canonicalReference": "mind-elixir!Theme:interface"
                 },
                 {
                   "kind": "Content",
@@ -1767,6 +1793,38 @@
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#arrows:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "arrows: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Arrow",
+                  "canonicalReference": "mind-elixir!Arrow:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "arrows",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
               }
             },
             {
@@ -2037,7 +2095,7 @@
                 {
                   "kind": "Reference",
                   "text": "SummarySvgGroup",
-                  "canonicalReference": "mind-elixir!~SummarySvgGroup:type"
+                  "canonicalReference": "mind-elixir!SummarySvgGroup:type"
                 },
                 {
                   "kind": "Content",
@@ -2136,6 +2194,88 @@
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#generateMainBranch:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "generateMainBranch: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "MainLineParams",
+                  "canonicalReference": "mind-elixir!MainLineParams:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ") => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "PathString",
+                  "canonicalReference": "mind-elixir!~PathString:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "generateMainBranch",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 5
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#generateSubBranch:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "generateSubBranch: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "(params: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SubLineParams",
+                  "canonicalReference": "mind-elixir!SubLineParams:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ") => "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "PathString",
+                  "canonicalReference": "mind-elixir!~PathString:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "generateSubBranch",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 5
               }
             },
             {
@@ -2338,34 +2478,6 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#linkData:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "linkData: "
-                },
-                {
-                  "kind": "Reference",
-                  "text": "LinkObj",
-                  "canonicalReference": "mind-elixir!LinkObj:type"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "linkData",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#linkSvgGroup:member",
               "docComment": "",
               "excerptTokens": [
@@ -2421,12 +2533,12 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#mainLinkStyle:member",
+              "canonicalReference": "mind-elixir!MindElixirInstance#mainBranchStyle:member",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "mainLinkStyle: "
+                  "text": "mainBranchStyle: "
                 },
                 {
                   "kind": "Content",
@@ -2440,7 +2552,7 @@
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Public",
-              "name": "mainLinkStyle",
+              "name": "mainBranchStyle",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -2862,12 +2974,12 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#subLinkStyle:member",
+              "canonicalReference": "mind-elixir!MindElixirInstance#subBranchStyle:member",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "subLinkStyle: "
+                  "text": "subBranchStyle: "
                 },
                 {
                   "kind": "Content",
@@ -2881,7 +2993,7 @@
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Public",
-              "name": "subLinkStyle",
+              "name": "subBranchStyle",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -2986,7 +3098,7 @@
                 {
                   "kind": "Reference",
                   "text": "Theme",
-                  "canonicalReference": "mind-elixir!~Theme:interface"
+                  "canonicalReference": "mind-elixir!Theme:interface"
                 },
                 {
                   "kind": "Content",
@@ -3068,7 +3180,7 @@
                 {
                   "kind": "Reference",
                   "text": "Theme",
-                  "canonicalReference": "mind-elixir!~Theme:interface"
+                  "canonicalReference": "mind-elixir!Theme:interface"
                 },
                 {
                   "kind": "Content",
@@ -3100,7 +3212,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": " | null"
+                  "text": "[] | null"
                 },
                 {
                   "kind": "Content",
@@ -3227,6 +3339,33 @@
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!NodeObj#dangerouslySetInnerHTML:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "dangerouslySetInnerHTML?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "dangerouslySetInnerHTML",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
               }
             },
             {
@@ -3533,6 +3672,72 @@
         },
         {
           "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!NodeObjExport:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type NodeObjExport = "
+            },
+            {
+              "kind": "Reference",
+              "text": "Omit",
+              "canonicalReference": "!Omit:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "NodeObj",
+              "canonicalReference": "mind-elixir!NodeObj:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", 'parent'>"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "NodeObjExport",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 5
+          }
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!SubLineParams:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type SubLineParams = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    pT: number;\n    pL: number;\n    pW: number;\n    pH: number;\n    cT: number;\n    cL: number;\n    cW: number;\n    cH: number;\n    direction: 'lhs' | 'rhs';\n    isFirst: boolean | undefined;\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/utils/generateBranch.d.ts",
+          "releaseTag": "Public",
+          "name": "SubLineParams",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
+          "kind": "TypeAlias",
           "canonicalReference": "mind-elixir!Summary:type",
           "docComment": "",
           "excerptTokens": [
@@ -3556,6 +3761,168 @@
             "startIndex": 1,
             "endIndex": 2
           }
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!SummarySvgGroup:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type SummarySvgGroup = "
+            },
+            {
+              "kind": "Reference",
+              "text": "SVGGElement",
+              "canonicalReference": "!SVGGElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " & {\n    children: ["
+            },
+            {
+              "kind": "Reference",
+              "text": "SVGPathElement",
+              "canonicalReference": "!SVGPathElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", "
+            },
+            {
+              "kind": "Reference",
+              "text": "SVGTextElement",
+              "canonicalReference": "!SVGTextElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "];\n    summaryObj: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Summary",
+              "canonicalReference": "mind-elixir!Summary:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/summary.d.ts",
+          "releaseTag": "Public",
+          "name": "SummarySvgGroup",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 9
+          }
+        },
+        {
+          "kind": "Interface",
+          "canonicalReference": "mind-elixir!Theme:interface",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export interface Theme "
+            }
+          ],
+          "fileUrlPath": "dist/types/types/index.d.ts",
+          "releaseTag": "Public",
+          "name": "Theme",
+          "preserveMemberOrder": false,
+          "members": [
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Theme#cssVar:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "cssVar: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Partial",
+                  "canonicalReference": "!Partial:type"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<{\n        '--main-color': string;\n        '--main-bgcolor': string;\n        '--color': string;\n        '--bgcolor': string;\n        '--selected': string;\n        '--panel-color': string;\n        '--panel-bgcolor': string;\n        '--root-color': string;\n        '--root-bgcolor': string;\n        '--root-radius': string;\n        '--main-radius': string;\n        '--topic-padding': string;\n        '--panel-border-color': string;\n    }>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "cssVar",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Theme#name:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "name: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "name",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!Theme#palette:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "palette: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "palette",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            }
+          ],
+          "extendsTokenRanges": []
         }
       ]
     }

@@ -23,19 +23,25 @@ export type Arrow = {
 };
 
 // @public (undocumented)
-export type LinkObj = Record<string, Arrow>;
+export type MainLineParams = {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    direction: 'lhs' | 'rhs';
+};
 
 // @public
 export const methods: {
     init(this: MindElixirInstance, data: MindElixirData): Error | undefined;
-    exportSvg: (this: MindElixirInstance, noForiegnObject?: boolean) => Blob;
-    exportPng: (this: MindElixirInstance, noForiegnObject?: boolean) => Promise<Blob | null>;
+    exportSvg: (this: MindElixirInstance, noForiegnObject?: boolean, injectCss?: string | undefined) => Blob;
+    exportPng: (this: MindElixirInstance, noForiegnObject?: boolean, injectCss?: string | undefined) => Promise<Blob | null>;
     createSummary: (this: MindElixirInstance) => void;
     removeSummary: (this: MindElixirInstance, id: string) => void;
-    selectSummary: (this: MindElixirInstance, el: summaryOperation.SummarySvgGroup) => void;
+    selectSummary: (this: MindElixirInstance, el: summary.SummarySvgGroup) => void;
     unselectSummary: (this: MindElixirInstance) => void;
     renderSummary: (this: MindElixirInstance) => void;
-    editSummary: (this: MindElixirInstance, el: summaryOperation.SummarySvgGroup) => void;
+    editSummary: (this: MindElixirInstance, el: summary.SummarySvgGroup) => void;
     renderArrow(this: MindElixirInstance): void;
     editArrowLabel(this: MindElixirInstance, el: CustomSvg): void;
     tidyArrow(this: MindElixirInstance): void;
@@ -43,25 +49,27 @@ export const methods: {
     removeArrow: (this: MindElixirInstance, linkSvg?: CustomSvg | undefined) => void;
     selectArrow: (this: MindElixirInstance, link: CustomSvg) => void;
     unselectArrow: (this: MindElixirInstance) => void;
+    mainToSub: (this: MindElixirInstance, tpc: Topic) => Promise<void>;
     reshapeNode: (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) => Promise<void>;
-    insertSibling: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
-    insertBefore: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
+    insertSibling: (this: MindElixirInstance, type: "before" | "after", el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
     insertParent: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
     addChild: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
     copyNode: (this: MindElixirInstance, node: Topic, to: Topic) => Promise<void>;
+    copyNodes: (this: MindElixirInstance, tpcs: Topic[], to: Topic) => Promise<void>;
     moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
     moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
     removeNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
     removeNodes: (this: MindElixirInstance, tpcs: Topic[]) => Promise<void>;
-    moveNode: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
-    moveNodeBefore: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
-    moveNodeAfter: (this: MindElixirInstance, from: Topic, to: Topic) => Promise<void>;
+    moveNodeIn: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>;
+    moveNodeBefore: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>;
+    moveNodeAfter: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>;
     beginEdit: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>;
     setNodeTopic: (this: MindElixirInstance, el: Topic, topic: string) => Promise<void>;
     selectNode: (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean | undefined, e?: MouseEvent | undefined) => void;
     unselectNode: (this: MindElixirInstance) => void;
     selectNodes: (this: MindElixirInstance, targetElements: Topic[]) => void;
     unselectNodes: (this: MindElixirInstance) => void;
+    clearSelection: (this: MindElixirInstance) => void;
     selectNextSibling: (this: MindElixirInstance) => boolean;
     selectPrevSibling: (this: MindElixirInstance) => boolean;
     selectFirstChild: (this: MindElixirInstance) => void;
@@ -105,9 +113,9 @@ export const methods: {
 // @public
 export interface MindElixirData {
     // (undocumented)
-    direction?: number;
+    arrows?: Arrow[];
     // (undocumented)
-    linkData?: LinkObj;
+    direction?: number;
     // (undocumented)
     nodeData: NodeObj;
     // (undocumented)
@@ -120,6 +128,8 @@ export interface MindElixirData {
 export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     allowUndo: boolean;
+    // (undocumented)
+    arrows: Arrow[];
     // Warning: (ae-forgotten-export) The symbol "Before" needs to be exported by the entry point docs.d.ts
     //
     // (undocumented)
@@ -141,8 +151,6 @@ export interface MindElixirInstance extends MindElixirMethods {
     currentNode: Topic | null;
     // (undocumented)
     currentNodes: Topic[] | null;
-    // Warning: (ae-forgotten-export) The symbol "SummarySvgGroup" needs to be exported by the entry point docs.d.ts
-    //
     // (undocumented)
     currentSummary: SummarySvgGroup | null;
     // (undocumented)
@@ -151,6 +159,12 @@ export interface MindElixirInstance extends MindElixirMethods {
     draggable: boolean;
     // (undocumented)
     editable: boolean;
+    // Warning: (ae-forgotten-export) The symbol "PathString" needs to be exported by the entry point docs.d.ts
+    //
+    // (undocumented)
+    generateMainBranch: (params: MainLineParams) => PathString;
+    // (undocumented)
+    generateSubBranch: (params: SubLineParams) => PathString;
     // Warning: (ae-forgotten-export) The symbol "LinkDragMoveHelperInstance" needs to be exported by the entry point docs.d.ts
     //
     // @internal (undocumented)
@@ -174,13 +188,11 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     linkController: SVGElement;
     // (undocumented)
-    linkData: LinkObj;
-    // (undocumented)
     linkSvgGroup: SVGElement;
     // (undocumented)
     locale: string;
     // (undocumented)
-    mainLinkStyle: number;
+    mainBranchStyle: number;
     // (undocumented)
     map: HTMLElement;
     // (undocumented)
@@ -212,7 +224,7 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     selection: SelectionArea;
     // (undocumented)
-    subLinkStyle: number;
+    subBranchStyle: number;
     // (undocumented)
     summaries: Summary[];
     // (undocumented)
@@ -228,7 +240,7 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     userTheme?: Theme;
     // (undocumented)
-    waitCopy: Topic | null;
+    waitCopy: Topic[] | null;
 }
 
 // @public (undocumented)
@@ -240,6 +252,8 @@ export interface NodeObj {
     branchColor?: string;
     // (undocumented)
     children?: NodeObj[];
+    // (undocumented)
+    dangerouslySetInnerHTML?: string;
     // (undocumented)
     direction?: number;
     // (undocumented)
@@ -274,6 +288,23 @@ export interface NodeObj {
 }
 
 // @public (undocumented)
+export type NodeObjExport = Omit<NodeObj, 'parent'>;
+
+// @public (undocumented)
+export type SubLineParams = {
+    pT: number;
+    pL: number;
+    pW: number;
+    pH: number;
+    cT: number;
+    cL: number;
+    cW: number;
+    cH: number;
+    direction: 'lhs' | 'rhs';
+    isFirst: boolean | undefined;
+};
+
+// @public (undocumented)
 export type Summary = {
     id: string;
     text: string;
@@ -282,17 +313,45 @@ export type Summary = {
     end: number;
 };
 
+// @public (undocumented)
+export type SummarySvgGroup = SVGGElement & {
+    children: [SVGPathElement, SVGTextElement];
+    summaryObj: Summary;
+};
+
+// @public (undocumented)
+export interface Theme {
+    // (undocumented)
+    cssVar: Partial<{
+        '--main-color': string;
+        '--main-bgcolor': string;
+        '--color': string;
+        '--bgcolor': string;
+        '--selected': string;
+        '--panel-color': string;
+        '--panel-bgcolor': string;
+        '--root-color': string;
+        '--root-bgcolor': string;
+        '--root-radius': string;
+        '--main-radius': string;
+        '--topic-padding': string;
+        '--panel-border-color': string;
+    }>;
+    // (undocumented)
+    name: string;
+    // (undocumented)
+    palette: string[];
+}
+
 // Warnings were encountered during analysis:
 //
 // dist/types/arrow.d.ts:6:5 - (ae-forgotten-export) The symbol "Uid" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:18:5 - (ae-forgotten-export) The symbol "summaryOperation" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:18:5 - (ae-forgotten-export) The symbol "summary" needs to be exported by the entry point docs.d.ts
 // dist/types/methods.d.ts:23:5 - (ae-forgotten-export) The symbol "CustomSvg" needs to be exported by the entry point docs.d.ts
 // dist/types/methods.d.ts:25:5 - (ae-forgotten-export) The symbol "Topic" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:69:5 - (ae-forgotten-export) The symbol "NodeObjExport" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:71:5 - (ae-forgotten-export) The symbol "Wrapper" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:75:9 - (ae-forgotten-export) The symbol "Parent" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:82:5 - (ae-forgotten-export) The symbol "Children" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:85:5 - (ae-forgotten-export) The symbol "Theme" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:73:5 - (ae-forgotten-export) The symbol "Wrapper" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:77:9 - (ae-forgotten-export) The symbol "Parent" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:84:5 - (ae-forgotten-export) The symbol "Children" needs to be exported by the entry point docs.d.ts
 
 // (No @packageDocumentation comment for this package)
 

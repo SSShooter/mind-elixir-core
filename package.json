@@ -17,7 +17,7 @@
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "doc": "tsc && api-extractor run --local --verbose",
+    "doc": "npm run build && tsc && api-extractor run --local --verbose",
     "beta": "npm run build && npm publish --tag beta"
   },
   "exports": {
