@@ -264,6 +264,9 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to:
 
 const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindElixirInstance) => {
   from = unionTopics(from)
+  if (type === 'after') {
+    from = from.reverse()
+  }
   const toObj = to.nodeObj
   for (const f of from) {
     const obj = f.nodeObj
