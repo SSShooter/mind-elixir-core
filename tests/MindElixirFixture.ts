@@ -47,6 +47,18 @@ export class MindElixirFixture {
       force: true,
     })
   }
+  async dragOver(topic: string, type: 'before' | 'after' | 'in') {
+    await this.page.getByText(topic).hover({ force: true })
+    await this.page.mouse.down()
+    const target = await this.page.getByText(topic)
+    const box = (await target.boundingBox())!
+    const y = type === 'before' ? -12 : type === 'after' ? box.height + 12 : box.height / 2
+    // https://playwright.dev/docs/input#dragging-manually
+    // If your page relies on the dragover event being dispatched, you need at least two mouse moves to trigger it in all browsers.
+    await this.page.mouse.move(box.x + box.width / 2, box.y + y)
+    await this.page.waitForTimeout(200) // throttle
+    await this.page.mouse.move(box.x + box.width / 2, box.y + y)
+  }
   async toHaveScreenshot(locator?: Locator) {
     await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot()
   }

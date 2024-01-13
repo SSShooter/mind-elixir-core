@@ -1,11 +1,9 @@
 import { test, expect } from './mind-elixir-test'
 
-const id = 'root-id'
-
 const data = {
   nodeData: {
     topic: 'root',
-    id,
+    id: 'root',
     root: true,
     children: [
       {
