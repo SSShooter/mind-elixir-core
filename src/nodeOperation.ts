@@ -131,6 +131,7 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   if (!res) return
   const { newNodeObj } = res
   console.timeEnd('copyNode')
+  this.selectNode(findEle(newNodeObj.id))
   this.bus.fire('operation', {
     name: 'copyNode',
     obj: newNodeObj,
@@ -149,6 +150,7 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
     const { newNodeObj } = res
     objs.push(newNodeObj)
   }
+  this.selectNodes(objs.map(obj => findEle(obj.id)))
   this.bus.fire('operation', {
     name: 'copyNodes',
     objs,
