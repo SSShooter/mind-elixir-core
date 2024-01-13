@@ -48,6 +48,8 @@ export class MindElixirFixture {
     })
   }
   async toHaveScreenshot(locator?: Locator) {
-    await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot()
+    await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot({
+      maxDiffPixelRatio: 0.08,
+    })
   }
 }

@@ -8,9 +8,8 @@ type MyFixtures = {
 // Extend base test by providing "todoPage" and "settingsPage".
 // This new "test" can be used in multiple test files, and each of them will get the fixtures.
 export const test = base.extend<MyFixtures>({
-  me: async ({ page }, use, testInfo) => {
+  me: async ({ page }, use) => {
     // Set up the fixture.
-    testInfo.snapshotSuffix = ''
     const me = new MindElixirFixture(page)
     await me.goto()
 
