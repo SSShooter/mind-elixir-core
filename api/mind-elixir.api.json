@@ -897,6 +897,33 @@
             },
             {
               "kind": "Content",
+              "text": "<void>;\n    removeNodes: (this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ", tpcs: import(\"./index\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Topic",
+              "canonicalReference": "mind-elixir!~Topic:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "[]) => "
+            },
+            {
+              "kind": "Reference",
+              "text": "Promise",
+              "canonicalReference": "!Promise:interface"
+            },
+            {
+              "kind": "Content",
               "text": "<void>;\n    moveNode: (this: "
             },
             {
@@ -1608,7 +1635,7 @@
           "name": "methods",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 298
+            "endIndex": 304
           }
         },
         {
@@ -2585,6 +2612,33 @@
             },
             {
               "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#mouseSelectionButton:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "mouseSelectionButton: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "0 | 2"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "mouseSelectionButton",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#newTopicName:member",
               "docComment": "",
               "excerptTokens": [
@@ -2854,6 +2908,34 @@
               "isOptional": false,
               "releaseTag": "Public",
               "name": "scaleVal",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              }
+            },
+            {
+              "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#selection:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "selection: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "SelectionArea",
+                  "canonicalReference": "@viselect/vanilla!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "selection",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
