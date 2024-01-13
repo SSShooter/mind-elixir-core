@@ -89,3 +89,11 @@ test('Add Child', async ({ page, me }) => {
   await expect(page.getByText('New Node')).toBeVisible()
   await me.toHaveScreenshot()
 })
+
+test('Copy and Paste', async ({ page, me }) => {
+  await me.click('middle')
+  await page.keyboard.press('Control+C')
+  await me.click('child-topic')
+  await page.keyboard.press('Control+V')
+  await me.toHaveScreenshot()
+})
