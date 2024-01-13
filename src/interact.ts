@@ -42,16 +42,16 @@ export const unselectNode = function (this: MindElixirInstance) {
   this.bus.fire('unselectNode')
 }
 
-export const selectNodes = function (this: MindElixirInstance, targetElements: Topic[]): void {
-  if (!targetElements) return
+export const selectNodes = function (this: MindElixirInstance, tpc: Topic[]): void {
   console.time('selectNodes')
-  for (const el of targetElements) {
+  this.clearSelection()
+  for (const el of tpc) {
     el.className = 'selected'
   }
-  this.currentNodes = targetElements
+  this.currentNodes = tpc
   this.bus.fire(
     'selectNodes',
-    targetElements.map(el => el.nodeObj)
+    tpc.map(el => el.nodeObj)
   )
   console.timeEnd('selectNodes')
 }
