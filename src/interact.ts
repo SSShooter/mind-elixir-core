@@ -99,23 +99,7 @@ export const selectPrevSibling = function (this: MindElixirInstance) {
   this.selectNode(target)
   return true
 }
-export const selectFirstChild = function (this: MindElixirInstance) {
-  if (!this.currentNode) return
-  const children = this.currentNode.parentElement.nextSibling
-  if (children && children.firstChild) {
-    const target = children.firstChild.firstChild.firstChild
-    this.selectNode(target)
-  }
-}
-export const selectParent = function (this: MindElixirInstance) {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
 
-  const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
-  if (parent) {
-    const target = parent.firstChild
-    this.selectNode(target)
-  }
-}
 /**
  * @function
  * @instance
