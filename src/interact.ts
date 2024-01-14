@@ -73,33 +73,6 @@ export const clearSelection = function (this: MindElixirInstance) {
   this.unselectArrow()
 }
 
-export const selectNextSibling = function (this: MindElixirInstance) {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
-
-  const sibling = this.currentNode.parentElement.parentElement.nextSibling
-  let target: Topic
-  if (sibling) {
-    target = sibling.firstChild.firstChild
-  } else {
-    return false
-  }
-  this.selectNode(target)
-  return true
-}
-export const selectPrevSibling = function (this: MindElixirInstance) {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
-
-  const sibling = this.currentNode.parentElement.parentElement.previousSibling
-  let target: Topic
-  if (sibling) {
-    target = sibling.firstChild.firstChild
-  } else {
-    return false
-  }
-  this.selectNode(target)
-  return true
-}
-
 /**
  * @function
  * @instance

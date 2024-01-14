@@ -1,11 +1,11 @@
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 
-const selectLeft = (mei: MindElixirInstance) => {
+const selectRootLeft = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
   mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
 }
-const selectRight = (mei: MindElixirInstance) => {
+const selectRootRight = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.rhs>me-wrapper>me-parent>me-tpc')
   mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
 }
@@ -32,7 +32,7 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: 'lhs' | 'r
   const nodeObj = current.nodeObj
   const main = current.offsetParent.offsetParent.parentElement
   if (nodeObj.root) {
-    direction === 'lhs' ? selectLeft(mei) : selectRight(mei)
+    direction === 'lhs' ? selectRootLeft(mei) : selectRootRight(mei)
   } else if (main.className === direction) {
     selectFirstChild(mei, current)
   } else {
@@ -41,6 +41,17 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: 'lhs' | 'r
     } else {
       selectParent(mei, current)
     }
+  }
+}
+const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' | 'next') {
+  const current = mei.currentNode || mei.currentNodes?.[0]
+  if (!current) return
+  const nodeObj = current.nodeObj
+  if (nodeObj.root) return
+  const s = (direction + 'Sibling') as 'previousSibling' | 'nextSibling'
+  const sibling = current.parentElement.parentElement[s]
+  if (sibling) {
+    mei.selectNode(sibling.firstChild.firstChild)
   }
 }
 
@@ -84,7 +95,7 @@ export default function (mind: MindElixirInstance) {
       } else if (e.metaKey || e.ctrlKey) {
         return mind.initSide()
       } else {
-        mind.selectPrevSibling()
+        handlePrevNext(mind, 'previous')
       }
     },
     40: e => {
@@ -92,7 +103,7 @@ export default function (mind: MindElixirInstance) {
       if (e.altKey) {
         mind.moveDownNode()
       } else {
-        mind.selectNextSibling()
+        handlePrevNext(mind, 'next')
       }
     },
     37: e => {

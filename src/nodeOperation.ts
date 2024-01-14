@@ -1,4 +1,4 @@
-import { checkMoveValid, fillParent, refreshIds, unionTopics } from './utils/index'
+import { fillParent, refreshIds, unionTopics } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Topic } from './types/dom'
