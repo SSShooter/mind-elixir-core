@@ -46,9 +46,7 @@ test.beforeEach(async ({ me }) => {
 const select = async (page: Page) => {
   await page.mouse.move(200, 100)
   await page.mouse.down()
-  const target = await page.getByText('child2')
-  const box = (await target.boundingBox())!
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  await page.getByText('child2').hover({ force: true })
   await page.mouse.up()
 }
 

@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test'
 import { test, expect } from './mind-elixir-test'
 
 const data = {
@@ -38,6 +39,13 @@ const data = {
   },
 }
 
+const select = async (page: Page) => {
+  await page.mouse.move(200, 100)
+  await page.mouse.down()
+  await page.getByText('child2').hover({ force: true })
+  await page.mouse.up()
+}
+
 test.beforeEach(async ({ me }) => {
   await me.init(data)
 })
@@ -48,6 +56,12 @@ test('Select Sibling', async ({ page, me }) => {
   await expect(page.locator('.selected')).toHaveText('child1')
   await page.keyboard.press('ArrowDown')
   await expect(page.locator('.selected')).toHaveText('child2')
+
+  await select(page)
+  await page.keyboard.press('ArrowDown')
+  await expect(page.locator('.selected')).toHaveText('child2')
+  await page.keyboard.press('ArrowUp')
+  await expect(page.locator('.selected')).toHaveText('child1')
 })
 
 test('Parent Child', async ({ page, me }) => {
