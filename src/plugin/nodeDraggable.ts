@@ -125,6 +125,6 @@ export default function (mind: MindElixirInstance) {
         }
       }
       if (meet) insertPreview(meet, insertTpye)
-    }, 200)
+    }, 100)
   )
 }

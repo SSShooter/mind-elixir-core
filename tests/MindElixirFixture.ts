@@ -56,7 +56,7 @@ export class MindElixirFixture {
     // https://playwright.dev/docs/input#dragging-manually
     // If your page relies on the dragover event being dispatched, you need at least two mouse moves to trigger it in all browsers.
     await this.page.mouse.move(box.x + box.width / 2, box.y + y)
-    await this.page.waitForTimeout(200) // throttle
+    await this.page.waitForTimeout(100) // throttle
     await this.page.mouse.move(box.x + box.width / 2, box.y + y)
   }
   async toHaveScreenshot(locator?: Locator) {
