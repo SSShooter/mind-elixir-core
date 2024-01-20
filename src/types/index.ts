@@ -13,7 +13,7 @@ type Before = Partial<{
   [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
 }>
 
-export interface Theme {
+export type Theme = {
   name: string
   palette: string[]
   cssVar: Partial<{
@@ -110,7 +110,7 @@ type PathString = string
  *
  * @public
  */
-export interface Options {
+export type Options = {
   el: string | HTMLElement
   direction?: number
   locale?: string
@@ -139,7 +139,7 @@ export type Uid = string
  *
  * @public
  */
-export interface NodeObj {
+export type NodeObj = {
   topic: string
   id: Uid
   style?: {
@@ -175,7 +175,7 @@ export type NodeObjExport = Omit<NodeObj, 'parent'>
  *
  * @public
  */
-export interface MindElixirData {
+export type MindElixirData = {
   nodeData: NodeObj
   arrows?: Arrow[]
   summaries?: Summary[]
