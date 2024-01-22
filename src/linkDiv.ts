@@ -9,7 +9,7 @@ import type { MindElixirInstance } from './types/index'
  *
  * procedure:
  * 1. generate main link
- * 2. generate links inside main node, if `mainNode` is present, only generate the link of the specific main node
+ * 2. generate links inside main node, if `mainNode` is presented, only generate the link of the specific main node
  * 3. generate custom link
  * 4. generate summary
  * @param mainNode regenerate sublink of the specific main node
@@ -17,38 +17,28 @@ import type { MindElixirInstance } from './types/index'
 const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   console.time('linkDiv')
 
-  const root = this.map.querySelector('me-root') as HTMLElement
   // pin center
   this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
-  this.nodes.style.left = `${10000 - root.offsetLeft - root.offsetWidth / 2}px`
+  this.nodes.style.left = `${10000 - this.nodes.offsetWidth / 2}px`
 
   const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
   this.lines.innerHTML = ''
 
+  const root = this.map.querySelector('me-root') as HTMLElement
+  const pT = root.offsetTop
+  const pL = root.offsetLeft
+  const pW = root.offsetWidth
+  const pH = root.offsetHeight
+
   for (let i = 0; i < mainNodeList.length; i++) {
     const el = mainNodeList[i] as Wrapper
     const tpc = el.querySelector<Topic>('me-tpc') as Topic
-    const p = el.firstChild
+    const { offsetLeft: cL, offsetTop: cT } = getOffsetLT(this.nodes, tpc)
+    const cW = tpc.offsetWidth
+    const cH = tpc.offsetHeight
     const direction = el.parentNode.className as 'lhs' | 'rhs'
-    let x1 = root.offsetLeft + root.offsetWidth / 2
-    const y1 = root.offsetTop + root.offsetHeight / 2
-    let x2
-    const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, p)
-    if (direction === 'lhs') {
-      x2 = offsetLeft + p.offsetWidth
-    } else {
-      x2 = offsetLeft
-    }
-    const y2 = offsetTop + p.offsetHeight / 2
 
-    const pct = Math.abs(y2 - el.parentElement.offsetTop - el.parentElement.offsetHeight / 2) / el.parentElement.offsetHeight
-    const offset = (1 - pct) * 0.25 * (root.offsetWidth / 2)
-    if (direction === 'lhs') {
-      x1 = x1 - root.offsetWidth / 10 - offset
-    } else {
-      x1 = x1 + root.offsetWidth / 10 + offset
-    }
-    const mainPath = this.generateMainBranch({ x1, y1, x2, y2, direction })
+    const mainPath = this.generateMainBranch({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeight: this.nodes.offsetHeight })
     const palette = this.theme.palette
     const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
     tpc.style.borderColor = branchColor
