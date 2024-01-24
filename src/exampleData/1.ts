@@ -250,26 +250,6 @@ const aboutMindElixir: MindElixirData = {
         ],
       },
       {
-        topic: 'TODO',
-        id: 'bd1facea32a1967c',
-        direction: 1,
-        expanded: true,
-        children: [
-          {
-            topic: 'Add image',
-            id: 'bd1fb1ec53010749',
-          },
-          {
-            topic: 'Free node (position)',
-            id: 'bd42d3e3bee992b9',
-          },
-          {
-            topic: 'Style adjustment',
-            id: 'beeb7f3db6ad6496',
-          },
-        ],
-      },
-      {
         topic: 'Export data',
         id: 'beeb7586973430db',
         direction: 1,
@@ -282,6 +262,10 @@ const aboutMindElixir: MindElixirData = {
           {
             topic: 'HTML',
             id: 'beeb7a6bec2d68f5',
+          },
+          {
+            topic: 'SVG',
+            id: 'beeb7a6bec2d68e6',
           },
         ],
       },
