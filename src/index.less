@@ -33,6 +33,9 @@
   width: 100%;
   overflow: scroll;
   font-size: 15px;
+  * {
+    box-sizing: border-box; // must have, to make getComputedStyle work right
+  }
   &::-webkit-scrollbar {
     width: 0px;
     height: 0px;

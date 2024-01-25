@@ -3,11 +3,12 @@ import type { MindElixirInstance } from '../types'
 import { setAttributes } from '../utils'
 import { getOffsetLT, isTopic } from '../utils'
 
+const ns = 'http://www.w3.org/2000/svg'
 function createSvgDom(height: string, width: string) {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+  const svg = document.createElementNS(ns, 'svg')
   setAttributes(svg, {
     version: '1.1',
-    xmlns: 'http://www.w3.org/2000/svg',
+    xmlns: ns,
     height,
     width,
   })
@@ -19,7 +20,7 @@ function lineHightToPadding(lineHeight: string, fontSize: string) {
 }
 
 function generateSvgText(tpc: HTMLElement, tpcStyle: CSSStyleDeclaration, x: number, y: number) {
-  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+  const g = document.createElementNS(ns, 'g')
   let content = ''
   if ((tpc as Topic).text) {
     content = (tpc as Topic).text.textContent!
@@ -28,7 +29,7 @@ function generateSvgText(tpc: HTMLElement, tpcStyle: CSSStyleDeclaration, x: num
   }
   const lines = content!.split('\n')
   lines.forEach((line, index) => {
-    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+    const text = document.createElementNS(ns, 'text')
     setAttributes(text, {
       x: x + parseInt(tpcStyle.paddingLeft) + '',
       y:
@@ -58,7 +59,7 @@ function generateSvgTextUsingForeignObject(tpc: HTMLElement, tpcStyle: CSSStyleD
   } else {
     content = tpc.childNodes[0].textContent!
   }
-  const foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject')
+  const foreignObject = document.createElementNS(ns, 'foreignObject')
   setAttributes(foreignObject, {
     x: x + parseInt(tpcStyle.paddingLeft) + '',
     y: y + parseInt(tpcStyle.paddingTop) + '',
@@ -75,11 +76,11 @@ function generateSvgTextUsingForeignObject(tpc: HTMLElement, tpcStyle: CSSStyleD
   return foreignObject
 }
 
-function convertDivToSvg(mei: MindElixirInstance, tpc: HTMLElement, useForeignObject = false) {
+function createElBox(mei: MindElixirInstance, tpc: Topic) {
   const tpcStyle = getComputedStyle(tpc)
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, tpc)
 
-  const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+  const bg = document.createElementNS(ns, 'rect')
   setAttributes(bg, {
     x: x + '',
     y: y + '',
@@ -91,7 +92,25 @@ function convertDivToSvg(mei: MindElixirInstance, tpc: HTMLElement, useForeignOb
     stroke: tpcStyle.borderColor,
     'stroke-width': tpcStyle.borderWidth,
   })
-  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g')
+  return bg
+}
+function convertDivToSvg(mei: MindElixirInstance, tpc: HTMLElement, useForeignObject = false) {
+  const tpcStyle = getComputedStyle(tpc)
+  const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, tpc)
+
+  const bg = document.createElementNS(ns, 'rect')
+  setAttributes(bg, {
+    x: x + '',
+    y: y + '',
+    rx: tpcStyle.borderRadius,
+    ry: tpcStyle.borderRadius,
+    width: tpcStyle.width,
+    height: tpcStyle.height,
+    fill: tpcStyle.backgroundColor,
+    stroke: tpcStyle.borderColor,
+    'stroke-width': tpcStyle.borderWidth,
+  })
+  const g = document.createElementNS(ns, 'g')
   g.appendChild(bg)
   let text: SVGGElement | null
   if (useForeignObject) {
@@ -104,8 +123,8 @@ function convertDivToSvg(mei: MindElixirInstance, tpc: HTMLElement, useForeignOb
 function convertAToSvg(mei: MindElixirInstance, a: HTMLAnchorElement) {
   const aStyle = getComputedStyle(a)
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, a)
-  const svgA = document.createElementNS('http://www.w3.org/2000/svg', 'a')
-  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  const svgA = document.createElementNS(ns, 'a')
+  const text = document.createElementNS(ns, 'text')
   setAttributes(text, {
     x: x + '',
     y: y + parseInt(aStyle.fontSize) + '',
@@ -121,6 +140,20 @@ function convertAToSvg(mei: MindElixirInstance, a: HTMLAnchorElement) {
   return svgA
 }
 
+function convertImgToSvg(mei: MindElixirInstance, a: HTMLImageElement) {
+  const aStyle = getComputedStyle(a)
+  const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, a)
+  const svgI = document.createElementNS(ns, 'image')
+  setAttributes(svgI, {
+    x: x + '',
+    y: y + '',
+    width: aStyle.width + '',
+    height: aStyle.height + '',
+    href: a.src,
+  })
+  return svgI
+}
+
 const padding = 100
 
 const head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`
@@ -130,8 +163,8 @@ const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
   const height = mapDiv.offsetHeight + padding * 2
   const width = mapDiv.offsetWidth + padding * 2
   const svg = createSvgDom(height + 'px', width + 'px')
-  const g = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-  const bgColor = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+  const g = document.createElementNS(ns, 'svg')
+  const bgColor = document.createElementNS(ns, 'rect')
   setAttributes(bgColor, {
     x: '0',
     y: '0',
@@ -155,8 +188,13 @@ const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
   const summaries = mapDiv.querySelector('.summary')?.cloneNode(true)
   summaries && g.appendChild(summaries)
 
-  mapDiv.querySelectorAll('me-tpc').forEach(tpc => {
-    g.appendChild(convertDivToSvg(mei, tpc as Topic, noForiegnObject ? false : true))
+  mapDiv.querySelectorAll<Topic>('me-tpc').forEach(tpc => {
+    if (tpc.nodeObj.dangerouslySetInnerHTML) {
+      g.appendChild(convertDivToSvg(mei, tpc, noForiegnObject ? false : true))
+    } else {
+      g.appendChild(createElBox(mei, tpc))
+      g.appendChild(convertDivToSvg(mei, tpc.text, noForiegnObject ? false : true))
+    }
   })
   mapDiv.querySelectorAll('.tags > span').forEach(tag => {
     g.appendChild(convertDivToSvg(mei, tag as HTMLElement))
@@ -166,6 +204,9 @@ const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
   })
   mapDiv.querySelectorAll('.hyper-link').forEach(hl => {
     g.appendChild(convertAToSvg(mei, hl as HTMLAnchorElement))
+  })
+  mapDiv.querySelectorAll('img').forEach(img => {
+    g.appendChild(convertImgToSvg(mei, img))
   })
   setAttributes(g, {
     x: padding + '',
