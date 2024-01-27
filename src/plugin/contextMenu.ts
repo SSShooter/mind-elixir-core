@@ -140,7 +140,7 @@ export default function (mind: MindElixirInstance, option: any) {
   }
   add_sibling.onclick = () => {
     if (isRoot) return
-    mind.insertSibling()
+    mind.insertSibling('after')
     menuContainer.hidden = true
   }
   remove_child.onclick = () => {
@@ -179,7 +179,7 @@ export default function (mind: MindElixirInstance, option: any) {
         tips.remove()
         const target = e.target as Topic
         if (target.parentElement.tagName === 'ME-PARENT' || target.parentElement.tagName === 'ME-ROOT') {
-          mind.createLink(from, target)
+          mind.createArrow(from, target)
         } else {
           console.log('link cancel')
         }

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Mind Elixir</title>
+  <style>
+    /* test tailwind compatibility */
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+      border-width: 0;
+      border-style: solid;
+      border-color: #e5e7eb;
+    }
+
+    #map {
+      margin-top: 50px;
+      height: 300px;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map"></div>
+  <script type="module">
+    import MindElixir from '/src/index.ts'
+    window.MindElixir = MindElixir
+    window.E = MindElixir.E
+  </script>
+</body>
+
+</html>

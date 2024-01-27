@@ -38,10 +38,7 @@ export default function (mei: MindElixirInstance) {
     })
     .on('start', ({ event }) => {
       if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
-        mei.unselectNode()
-        mei.unselectNodes()
-        mei.unselectSummary()
-        mei.unselectLink()
+        mei.clearSelection()
         selection.clearSelection(true, true)
       }
     })

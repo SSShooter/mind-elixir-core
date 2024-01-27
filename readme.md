@@ -34,9 +34,10 @@ Mind elixir is a free open source mind map core.
 - Export as SVG or PNG
 - Build-in drag and drop / node edit plugin
 - Summarize nodes
-- Styling your node with CSS
+- Bulk operations supported
 - Undo / Redo
 - Efficient shortcuts
+- Styling your node with CSS
 
 <details>
 <summary>Table of Contents</summary>

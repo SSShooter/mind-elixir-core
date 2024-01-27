@@ -1,10 +1,15 @@
-import type { LinkItem } from '../customLink'
+import type { Arrow } from '../arrow'
 import type { Summary } from '../summary'
 import type { NodeObj } from '../types/index'
 
 type NodeOperation =
   | {
-      name: 'moveNode' | 'moveDownNode' | 'moveUpNode' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'insertSibling' | 'beginEdit'
+      name: 'moveNodeIn' | 'moveDownNode' | 'moveUpNode' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'beginEdit'
+      obj: NodeObj
+    }
+  | {
+      name: 'insertSibling'
+      type: 'before' | 'after'
       obj: NodeObj
     }
   | {
@@ -18,10 +23,9 @@ type NodeOperation =
       origin: string
     }
   | {
-      name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNode'
-      obj: NodeObj
+      name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNodeIn'
+      objs: NodeObj[]
       toObj: NodeObj
-      originParentId?: string
     }
   | {
       name: 'removeNode'
@@ -29,8 +33,14 @@ type NodeOperation =
       originIndex?: number
       originParentId?: string
     }
+
+type MultipleNodeOperation =
   | {
       name: 'removeNodes'
+      objs: NodeObj[]
+    }
+  | {
+      name: 'copyNodes'
       objs: NodeObj[]
     }
 
@@ -48,21 +58,21 @@ export type SummaryOperation =
       obj: Summary
     }
 
-export type CustomLinkOperation =
+export type ArrowOperation =
   | {
-      name: 'createCustomLink'
-      obj: LinkItem
+      name: 'createArrow'
+      obj: Arrow
     }
   | {
-      name: 'removeCustomLink'
+      name: 'removeArrow'
       obj: { id: string }
     }
   | {
-      name: 'finishEditCustomLinkLabel'
-      obj: LinkItem
+      name: 'finishEditArrowLabel'
+      obj: Arrow
     }
 
-export type Operation = NodeOperation | SummaryOperation | CustomLinkOperation
+export type Operation = NodeOperation | MultipleNodeOperation | SummaryOperation | ArrowOperation
 export type OperationType = Operation['name']
 
 export type EventMap = {

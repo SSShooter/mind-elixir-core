@@ -4,6 +4,11 @@ import { defineConfig } from 'vite'
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 export default defineConfig({
   plugins: [cssInjectedByJsPlugin()],
+  server: {
+    host: true,
+    port: 23333,
+    strictPort: true,
+  },
   // build: {
   //   cssCodeSplit: false,
   //   lib: {

@@ -13,8 +13,8 @@ import { layout } from './utils/layout'
 import changeTheme from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
-import * as customLink from './customLink'
-import * as summaryOperation from './summary'
+import * as arrow from './arrow'
+import * as summary from './summary'
 import * as exportImage from './plugin/exportImage'
 
 export type OperationMap = typeof nodeOperation
@@ -67,8 +67,8 @@ const methods = {
   changeTheme,
   ...interact,
   ...(nodeOperationHooked as NodeOperation),
-  ...customLink,
-  ...summaryOperation,
+  ...arrow,
+  ...summary,
   ...exportImage,
   init(this: MindElixirInstance, data: MindElixirData) {
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
@@ -78,9 +78,9 @@ const methods = {
     this.changeTheme(data.theme || this.theme, false)
     this.nodeData = data.nodeData
     fillParent(this.nodeData)
-    this.linkData = data.linkData || {}
+    this.arrows = data.arrows || []
     this.summaries = data.summaries || []
-    this.tidyCustomLink()
+    this.tidyArrow()
     // plugins
     this.toolBar && toolBar(this)
     if (import.meta.env.MODE !== 'lite') {

@@ -11,6 +11,7 @@ export * from './types/index'
 export * from './types/dom'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
+import { sub, main } from './utils/generateBranch'
 
 // TODO show up animation
 const $d = document
@@ -31,8 +32,8 @@ function MindElixir(
     before,
     newTopicName,
     allowUndo,
-    mainLinkStyle,
-    subLinkStyle,
+    generateMainBranch,
+    generateSubBranch,
     overflowHidden,
     mobileMenu,
     theme,
@@ -68,11 +69,11 @@ function MindElixir(
   this.allowUndo = allowUndo === undefined ? false : allowUndo
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNode = null // the selected <tpc/> element
-  this.currentLink = null // the selected link svg element
+  this.currentArrow = null // the selected link svg element
   this.scaleVal = 1
   this.tempDirection = null
-  this.mainLinkStyle = mainLinkStyle || 0
-  this.subLinkStyle = subLinkStyle || 0
+  this.generateMainBranch = generateMainBranch || main
+  this.generateSubBranch = generateSubBranch || sub
   this.overflowHidden = overflowHidden || false
 
   this.bus = Bus.create()
@@ -155,7 +156,6 @@ if (import.meta.env.MODE !== 'lite') {
       root: true,
       children: [],
     },
-    linkData: {},
   })
 }
 

@@ -3,36 +3,25 @@ import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
 import { findEle } from './utils/dom'
 import { fillParent } from './utils/index'
 
-/**
- * @exports MapInteraction
- * @namespace MapInteraction
- */
 function collectData(instance: MindElixirInstance) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
-    linkData: instance.linkData,
+    arrows: instance.arrows,
     summaries: instance.summaries,
     direction: instance.direction,
     theme: instance.theme,
   }
 }
-/**
- * @function
- * @instance
- * @name selectNode
- * @memberof MapInteraction
- * @description Select a node and add solid border to it.
- * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
- */
+
 export const selectNode = function (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   if (!targetElement) return
   console.time('selectNode')
+  this.clearSelection()
   if (typeof targetElement === 'string') {
     const el = findEle(targetElement)
     if (!el) return
     return this.selectNode(el)
   }
-  if (this.currentNode) this.currentNode.className = ''
   targetElement.className = 'selected'
   targetElement.scrollIntoView({ block: 'nearest', inline: 'nearest' })
   this.currentNode = targetElement
@@ -44,6 +33,7 @@ export const selectNode = function (this: MindElixirInstance, targetElement: Top
   }
   console.timeEnd('selectNode')
 }
+
 export const unselectNode = function (this: MindElixirInstance) {
   if (this.currentNode) {
     this.currentNode.className = ''
@@ -52,16 +42,16 @@ export const unselectNode = function (this: MindElixirInstance) {
   this.bus.fire('unselectNode')
 }
 
-export const selectNodes = function (this: MindElixirInstance, targetElements: Topic[]): void {
-  if (!targetElements) return
+export const selectNodes = function (this: MindElixirInstance, tpc: Topic[]): void {
   console.time('selectNodes')
-  for (const el of targetElements) {
+  this.clearSelection()
+  for (const el of tpc) {
     el.className = 'selected'
   }
-  this.currentNodes = targetElements
+  this.currentNodes = tpc
   this.bus.fire(
     'selectNodes',
-    targetElements.map(el => el.nodeObj)
+    tpc.map(el => el.nodeObj)
   )
   console.timeEnd('selectNodes')
 }
@@ -76,49 +66,13 @@ export const unselectNodes = function (this: MindElixirInstance) {
   this.bus.fire('unselectNodes')
 }
 
-export const selectNextSibling = function (this: MindElixirInstance) {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
+export const clearSelection = function (this: MindElixirInstance) {
+  this.unselectNode()
+  this.unselectNodes()
+  this.unselectSummary()
+  this.unselectArrow()
+}
 
-  const sibling = this.currentNode.parentElement.parentElement.nextSibling
-  let target: Topic
-  if (sibling) {
-    target = sibling.firstChild.firstChild
-  } else {
-    return false
-  }
-  this.selectNode(target)
-  return true
-}
-export const selectPrevSibling = function (this: MindElixirInstance) {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return false
-
-  const sibling = this.currentNode.parentElement.parentElement.previousSibling
-  let target: Topic
-  if (sibling) {
-    target = sibling.firstChild.firstChild
-  } else {
-    return false
-  }
-  this.selectNode(target)
-  return true
-}
-export const selectFirstChild = function (this: MindElixirInstance) {
-  if (!this.currentNode) return
-  const children = this.currentNode.parentElement.nextSibling
-  if (children && children.firstChild) {
-    const target = children.firstChild.firstChild.firstChild
-    this.selectNode(target)
-  }
-}
-export const selectParent = function (this: MindElixirInstance) {
-  if (!this.currentNode || this.currentNode.dataset.nodeid === 'meroot') return
-
-  const parent = this.currentNode.parentElement.parentElement.parentElement.previousSibling
-  if (parent) {
-    const target = parent.firstChild
-    this.selectNode(target)
-  }
-}
 /**
  * @function
  * @instance
@@ -343,7 +297,7 @@ export const refresh = function (this: MindElixirInstance, data?: MindElixirData
   if (data) {
     data = JSON.parse(JSON.stringify(data)) as MindElixirData // it shouldn't contanimate the original data
     this.nodeData = data.nodeData
-    this.linkData = data.linkData || {}
+    this.arrows = data.arrows || []
     this.summaries = data.summaries || []
   }
   fillParent(this.nodeData)

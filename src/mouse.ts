@@ -19,10 +19,7 @@ export default function (mind: MindElixirInstance) {
       dragMoveHelper.clear()
       return
     }
-    mind.unselectNode()
-    mind.unselectNodes()
-    mind.unselectSummary()
-    mind.unselectLink()
+    mind.clearSelection()
     // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as any
     if (target.tagName === 'ME-EPD') {
@@ -33,15 +30,12 @@ export default function (mind: MindElixirInstance) {
       mind.selectNode(target, false, e)
     } else if (target.tagName === 'text') {
       if (target.dataset.type === 'custom-link') {
-        mind.selectLink(target.parentElement as CustomSvg)
+        mind.selectArrow(target.parentElement as CustomSvg)
       } else {
         mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
       }
     } else if (target.className === 'circle') {
       // skip circle
-    } else {
-      // lite version doesn't have hideLinkController
-      mind.hideLinkController && mind.hideLinkController()
     }
   })
 
@@ -53,7 +47,7 @@ export default function (mind: MindElixirInstance) {
       mind.beginEdit(target)
     } else if (target.tagName === 'text') {
       if (target.dataset.type === 'custom-link') {
-        mind.editCutsomLinkLabel(target.parentElement as unknown as CustomSvg)
+        mind.editArrowLabel(target.parentElement as unknown as CustomSvg)
       } else {
         mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
       }

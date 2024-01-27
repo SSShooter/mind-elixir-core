@@ -8,7 +8,7 @@ type History = {
   next: MindElixirData
   currentObject:
     | {
-        type: 'node' | 'summary' | 'customLink'
+        type: 'node' | 'summary' | 'arrow'
         value: string
       }
     | {
@@ -23,12 +23,12 @@ const calcCurentObject = function (operation: Operation): History['currentObject
       type: 'summary',
       value: (operation as any).obj.id,
     }
-  } else if (['createCustomLink', 'removeCustomLink', 'finishEditCustomLinkLabel'].includes(operation.name)) {
+  } else if (['createArrow', 'removeArrow', 'finishEditArrowLabel'].includes(operation.name)) {
     return {
-      type: 'customLink',
+      type: 'arrow',
       value: (operation as any).obj.id,
     }
-  } else if (['removeNodes'].includes(operation.name)) {
+  } else if (['removeNodes', 'copyNodes', 'moveNodeBefore', 'moveNodeAfter', 'moveNodeIn'].includes(operation.name)) {
     return {
       type: 'nodes',
       value: (operation as any).objs.map((obj: NodeObj) => obj.id),
@@ -60,6 +60,7 @@ export default function (mei: MindElixirInstance) {
       current = h.prev
       mei.refresh(h.prev)
       if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
+      else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
       currentIndex--
       console.log('current', current)
     }
@@ -71,6 +72,7 @@ export default function (mei: MindElixirInstance) {
       current = h.next
       mei.refresh(h.next)
       if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
+      else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
     }
   }
   mei.map.addEventListener('keydown', (e: KeyboardEvent) => {

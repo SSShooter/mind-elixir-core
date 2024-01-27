@@ -33,6 +33,9 @@
   width: 100%;
   overflow: scroll;
   font-size: 15px;
+  * {
+    box-sizing: border-box; // must have, to make getComputedStyle work right
+  }
   &::-webkit-scrollbar {
     width: 0px;
     height: 0px;
@@ -67,7 +70,6 @@
       me-tpc {
         display: block;
         font-size: 25px;
-        line-height: 1.2em;
         color: var(--root-color);
         padding: 10px var(--gap);
         border-radius: var(--root-radius);
@@ -83,18 +85,18 @@
     // main node
     & > me-wrapper {
       position: relative; // make subline svg's offsetParent be the main node
-      margin: 20px 65px;
+      margin: 45px 65px;
       & > me-parent {
-        margin: var(--gap);
+        margin: 10px;
         padding: 0;
         & > me-tpc {
           border-radius: var(--main-radius);
           background-color: var(--main-bgcolor);
           border: 2px solid var(--main-color);
           color: var(--main-color);
-          padding: 8px var(--gap);
+          padding: 8px 25px;
           #input-box {
-            padding: 8px var(--gap);
+            padding: 8px 25px;
           }
         }
       }
@@ -125,7 +127,6 @@
       max-width: 35em;
       white-space: pre-wrap;
       padding: var(--topic-padding);
-      line-height: 1.2em; // assure the line-height consistency between different languages
 
       // drag preview
       .insert-preview {
@@ -238,9 +239,7 @@
   }
 
   me-tpc {
-    & > div,
-    & > span,
-    & > img {
+    & > * {
       // tags,icons,images should not response to click event
       pointer-events: none;
     }
@@ -287,6 +286,7 @@
     margin-right: 10px;
     span {
       display: inline-block;
+      line-height: 1.3em;
     }
   }
 

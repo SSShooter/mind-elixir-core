@@ -3,16 +3,17 @@ import type { Topic, CustomSvg } from './dom'
 import type { EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
-import type { LinkItem } from '../customLink'
+import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
 import type SelectionArea from '@viselect/vanilla'
+import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 export * from '../methods'
 
 type Before = Partial<{
   [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
 }>
 
-export interface Theme {
+export type Theme = {
   name: string
   palette: string[]
   cssVar: Partial<{
@@ -43,15 +44,15 @@ export interface MindElixirInstance extends MindElixirMethods {
   mindElixirBox: HTMLElement
 
   nodeData: NodeObj
-  linkData: LinkObj
+  arrows: Arrow[]
   summaries: Summary[]
 
   currentNode: Topic | null
   currentNodes: Topic[] | null
   currentSummary: SummarySvgGroup | null
+  currentArrow: CustomSvg | null
 
-  waitCopy: Topic | null
-  currentLink: CustomSvg | null
+  waitCopy: Topic[] | null
   scaleVal: number
   tempDirection: number | null
   theme: Theme
@@ -69,9 +70,11 @@ export interface MindElixirInstance extends MindElixirMethods {
   newTopicName: string
   allowUndo: boolean
   overflowHidden: boolean
-  mainLinkStyle: number
-  subLinkStyle: number
+  mainBranchStyle: number
+  subBranchStyle: number
   mobileMenu: boolean
+  generateMainBranch: (params: MainLineParams) => PathString
+  generateSubBranch: (params: SubLineParams) => PathString
 
   container: HTMLElement
   map: HTMLElement
@@ -101,13 +104,13 @@ export interface MindElixirInstance extends MindElixirMethods {
 
   selection: SelectionArea
 }
-
+type PathString = string
 /**
  * The MindElixir options
  *
  * @public
  */
-export interface Options {
+export type Options = {
   el: string | HTMLElement
   direction?: number
   locale?: string
@@ -122,8 +125,8 @@ export interface Options {
   newTopicName?: string
   allowUndo?: boolean
   overflowHidden?: boolean
-  mainLinkStyle?: number
-  subLinkStyle?: number
+  generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => PathString
+  generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => PathString
   mobileMenu?: boolean
   theme?: Theme
   nodeMenu?: boolean
@@ -136,7 +139,7 @@ export type Uid = string
  *
  * @public
  */
-export interface NodeObj {
+export type NodeObj = {
   topic: string
   id: Uid
   style?: {
@@ -163,19 +166,18 @@ export interface NodeObj {
   parent?: NodeObj // root node has no parent
   // TODO: checkbox
   // checkbox?: boolean | undefined
+  dangerouslySetInnerHTML?: string
 }
 export type NodeObjExport = Omit<NodeObj, 'parent'>
-
-export type LinkObj = Record<string, LinkItem>
 
 /**
  * The exported data of MindElixir
  *
  * @public
  */
-export interface MindElixirData {
+export type MindElixirData = {
   nodeData: NodeObj
-  linkData?: LinkObj
+  arrows?: Arrow[]
   summaries?: Summary[]
   direction?: number
   theme?: Theme
