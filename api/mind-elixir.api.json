@@ -790,7 +790,7 @@
             },
             {
               "kind": "Content",
-              "text": ", noForiegnObject?: boolean, injectCss?: string | undefined) => "
+              "text": ", noForeignObject?: boolean, injectCss?: string | undefined) => "
             },
             {
               "kind": "Reference",
@@ -808,7 +808,7 @@
             },
             {
               "kind": "Content",
-              "text": ", noForiegnObject?: boolean, injectCss?: string | undefined) => "
+              "text": ", noForeignObject?: boolean, injectCss?: string | undefined) => "
             },
             {
               "kind": "Reference",

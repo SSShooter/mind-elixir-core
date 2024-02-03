@@ -74,8 +74,8 @@ export type MainLineParams = {
 // @public
 export const methods: {
     init(this: MindElixirInstance, data: MindElixirData): Error | undefined;
-    exportSvg: (this: MindElixirInstance, noForiegnObject?: boolean, injectCss?: string | undefined) => Blob;
-    exportPng: (this: MindElixirInstance, noForiegnObject?: boolean, injectCss?: string | undefined) => Promise<Blob | null>;
+    exportSvg: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string | undefined) => Blob;
+    exportPng: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string | undefined) => Promise<Blob | null>;
     createSummary: (this: MindElixirInstance) => void;
     removeSummary: (this: MindElixirInstance, id: string) => void;
     selectSummary: (this: MindElixirInstance, el: summary.SummarySvgGroup) => void;

@@ -158,7 +158,7 @@ const padding = 100
 
 const head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`
 
-const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
+const generateSvg = (mei: MindElixirInstance, noForeignObject = false) => {
   const mapDiv = mei.nodes
   const height = mapDiv.offsetHeight + padding * 2
   const width = mapDiv.offsetWidth + padding * 2
@@ -190,10 +190,10 @@ const generateSvg = (mei: MindElixirInstance, noForiegnObject = false) => {
 
   mapDiv.querySelectorAll<Topic>('me-tpc').forEach(tpc => {
     if (tpc.nodeObj.dangerouslySetInnerHTML) {
-      g.appendChild(convertDivToSvg(mei, tpc, noForiegnObject ? false : true))
+      g.appendChild(convertDivToSvg(mei, tpc, noForeignObject ? false : true))
     } else {
       g.appendChild(createElBox(mei, tpc))
-      g.appendChild(convertDivToSvg(mei, tpc.text, noForiegnObject ? false : true))
+      g.appendChild(convertDivToSvg(mei, tpc.text, noForeignObject ? false : true))
     }
   })
   mapDiv.querySelectorAll('.tags > span').forEach(tag => {
@@ -235,15 +235,15 @@ function blobToUrl(blob: Blob): Promise<string> {
   })
 }
 
-export const exportSvg = function (this: MindElixirInstance, noForiegnObject = false, injectCss?: string) {
-  const svgEl = generateSvg(this, noForiegnObject)
+export const exportSvg = function (this: MindElixirInstance, noForeignObject = false, injectCss?: string) {
+  const svgEl = generateSvg(this, noForeignObject)
   const svgString = generateSvgStr(svgEl, injectCss)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   return blob
 }
 
-export const exportPng = async function (this: MindElixirInstance, noForiegnObject = false, injectCss?: string): Promise<Blob | null> {
-  const blob = this.exportSvg(noForiegnObject, injectCss)
+export const exportPng = async function (this: MindElixirInstance, noForeignObject = false, injectCss?: string): Promise<Blob | null> {
+  const blob = this.exportSvg(noForeignObject, injectCss)
   // use base64 to bypass canvas taint
   const url = await blobToUrl(blob)
   return new Promise((resolve, reject) => {
