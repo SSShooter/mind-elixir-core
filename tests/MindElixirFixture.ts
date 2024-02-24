@@ -18,24 +18,35 @@ export class MindElixirFixture {
   async goto() {
     await this.page.goto('http://localhost:23333/test.html')
   }
-  async init(data: MindElixirData) {
-    const mind = await this.page.evaluate(data => {
-      const MindElixir = window.MindElixir
-      const options: Options = {
-        el: '#map',
-        direction: MindElixir.SIDE,
-      }
-      const mind = new MindElixir(options)
-      mind.init(JSON.parse(JSON.stringify(data)))
-      window.m = mind
-      return mind
-    }, data)
-    this.m = mind
+  async init(data: MindElixirData, el = '#map') {
+    // evaluate return Serializable value
+    await this.page.evaluate(
+      ({ data, el }) => {
+        const MindElixir = window.MindElixir
+        const options: Options = {
+          el,
+          direction: MindElixir.SIDE,
+        }
+        const mind = new MindElixir(options)
+        mind.init(JSON.parse(JSON.stringify(data)))
+        window[el] = mind
+        return mind
+      },
+      { data, el }
+    )
   }
-  async getData() {
-    return await this.page.evaluate(() => {
-      return window.m.getData()
-    })
+  async getInstance(el = '#map') {
+    const instanceHandle = await this.page.evaluateHandle(el => Promise.resolve(window[el] as MindElixirInstance), el)
+    return instanceHandle
+  }
+  async getData(el = '#map') {
+    const data = await this.page.evaluate(el => {
+      return window[el].getData()
+    }, el)
+    // console.log(a)
+    // const dataHandle = await this.page.evaluateHandle(() => Promise.resolve(window.m.getData()))
+    // const data = await dataHandle.jsonValue()
+    return data
   }
   async dblclick(topic: string) {
     await this.page.getByText(topic).dblclick({
