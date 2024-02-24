@@ -40,9 +40,9 @@ export const realAddChild = function (mei: MindElixirInstance, to: Topic, wrappe
   } else if (top.tagName === 'ME-ROOT') {
     const direction = judgeDirection(mei.direction, tpc.nodeObj)
     if (direction === LEFT) {
-      document.querySelector('.lhs')?.appendChild(wrapper)
+      mei.container.querySelector('.lhs')?.appendChild(wrapper)
     } else {
-      document.querySelector('.rhs')?.appendChild(wrapper)
+      mei.container.querySelector('.rhs')?.appendChild(wrapper)
     }
     mei.linkDiv()
   }
