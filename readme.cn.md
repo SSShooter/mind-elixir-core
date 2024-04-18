@@ -204,4 +204,4 @@ let mind = new MindElixir({
 
 ## 文档
 
-https://doc.mind-elixir.com/
+https://docs.mind-elixir.com/zh-Hans/
