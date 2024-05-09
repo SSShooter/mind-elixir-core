@@ -93,7 +93,7 @@ import MindElixir from 'mind-elixir'
 #### Script tag
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
 ```
 
 ### Init
