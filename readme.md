@@ -44,6 +44,7 @@ Mind elixir is a free open source mind map core.
 
 - [Try now](#try-now)
   - [Playground](#playground)
+- [Documentation](#documentation)
 - [Usage](#usage)
   - [Install](#install)
     - [NPM](#npm)
@@ -75,6 +76,10 @@ https://mind-elixir.com/
 - React - https://codesandbox.io/s/mind-elixir-3-x-react-18-x-vy9fcq
 - Vue3 - https://codesandbox.io/s/mind-elixir-3-x-vue3-lth484
 - Vue2 - https://codesandbox.io/s/mind-elixir-3-x-vue-2-x-5kdfjp
+
+## Documentation
+
+https://docs.mind-elixir.com/
 
 ## Usage
 
