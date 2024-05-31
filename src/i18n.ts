@@ -92,6 +92,32 @@ const i18n: Record<string, LangPack> = {
     clickTips: 'Favor clicar no item alvo',
     summary: 'Resumo',
   },
+  it: {
+    addChild: 'Aggiungi figlio',
+    addParent: 'Aggiungi genitore',
+    addSibling: 'Aggiungi fratello',
+    removeNode: 'Rimuovi nodo',
+    focus: 'Modalità Focus',
+    cancelFocus: 'Annulla Modalità Focus',
+    moveUp: 'Sposta su',
+    moveDown: 'Sposta giù',
+    link: 'Collega',
+    clickTips: 'Si prega di fare clic sul nodo di destinazione',
+    summary: 'Unisci nodi',
+  },
+  es: {
+    addChild: 'Agregar hijo',
+    addParent: 'Agregar padre',
+    addSibling: 'Agregar hermano',
+    removeNode: 'Eliminar nodo',
+    focus: 'Modo Enfoque',
+    cancelFocus: 'Cancelar Modo Enfoque',
+    moveUp: 'Mover hacia arriba',
+    moveDown: 'Mover hacia abajo',
+    link: 'Enlace',
+    clickTips: 'Por favor haga clic en el nodo de destino',
+    summary: 'Resumen',
+  },
 }
 
 export default i18n
