@@ -38,7 +38,7 @@ function beforeHook<T extends Operations>(
 }
 
 const operations = Object.keys(nodeOperation) as Array<Operations>
-const nodeOperationHooked: Partial<NodeOperation> = {}
+const nodeOperationHooked = {} as NodeOperation
 if (import.meta.env.MODE !== 'lite') {
   for (let i = 0; i < operations.length; i++) {
     const operation = operations[i]
