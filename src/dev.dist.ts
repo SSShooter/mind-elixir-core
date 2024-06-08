@@ -38,7 +38,6 @@ const options: Options = {
       return true
     },
     async addChild(el, obj) {
-      await sleep()
       return true
     },
   },

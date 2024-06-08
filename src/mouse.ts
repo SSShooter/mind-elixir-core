@@ -24,10 +24,10 @@ export default function (mind: MindElixirInstance) {
     const target = e.target as any
     if (target.tagName === 'ME-EPD') {
       mind.expandNode((target as Expander).previousSibling)
-    } else if (!mind.editable) {
-      return
     } else if (isTopic(target)) {
       mind.selectNode(target, false, e)
+    } else if (!mind.editable) {
+      return
     } else if (target.tagName === 'text') {
       if (target.dataset.type === 'custom-link') {
         mind.selectArrow(target.parentElement as CustomSvg)
