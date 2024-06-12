@@ -1,3 +1,4 @@
+import { rmSubline } from './nodeOperation'
 import type { Topic } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
 import { findEle } from './utils/dom'
@@ -278,8 +279,26 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   } else {
     node.expanded = true
   }
+  const parent = el.parentNode
+  const expander = parent.children[1]!
+  expander.expanded = node.expanded
+  expander.className = node.expanded ? 'minus' : ''
+
+  rmSubline(el)
+  if (node.expanded) {
+    const children = this.createChildren(
+      node.children!.map(child => {
+        const wrapper = this.createWrapper(child)
+        return wrapper.grp
+      })
+    )
+    parent.parentNode.appendChild(children)
+  } else {
+    const children = parent.parentNode.children[1]
+    children.remove()
+  }
   // TODO 在此函数构造 html 结构，而非调用 layout
-  this.layout()
+  // this.layout()
   // linkDiv 已实现只更新特定主节点
   this.linkDiv()
   this.bus.fire('expandNode', node)

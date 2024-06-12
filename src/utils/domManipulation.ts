@@ -1,6 +1,6 @@
 import { fillParent } from '.'
 import { LEFT, RIGHT, SIDE } from '../const'
-import { mainToSub } from '../nodeOperation'
+import { rmSubline } from '../nodeOperation'
 import type { MindElixirInstance, NodeObj } from '../types'
 import type { Topic, Wrapper } from '../types/dom'
 import { findEle, createExpander } from './dom'
@@ -28,7 +28,7 @@ export const realAddChild = function (mei: MindElixirInstance, to: Topic, wrappe
   const tpc = wrapper.children[0].children[0]
   const top = to.parentElement
   if (top.tagName === 'ME-PARENT') {
-    mainToSub(tpc)
+    rmSubline(tpc)
     if (top.children[1]) {
       top.nextSibling.appendChild(wrapper)
     } else {

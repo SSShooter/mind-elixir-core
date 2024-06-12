@@ -59,15 +59,14 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     if (mainNode && mainNode !== el) {
       continue
     }
-    if (el.childElementCount) {
-      const svg = createLinkSvg('subLines')
-      // svg tag name is lower case
-      const svgLine = el.lastChild as SVGSVGElement
-      if (svgLine.tagName === 'svg') svgLine.remove()
-      el.appendChild(svg)
 
-      traverseChildren(this, svg, branchColor, el, direction, true)
-    }
+    const svg = createLinkSvg('subLines')
+    // svg tag name is lower case
+    const svgLine = el.lastChild as SVGSVGElement
+    if (svgLine.tagName === 'svg') svgLine.remove()
+    el.appendChild(svg)
+
+    traverseChildren(this, svg, branchColor, el, direction, true)
   }
 
   this.renderArrow()
@@ -87,6 +86,7 @@ const traverseChildren = function (
 ) {
   const parent = wrapper.firstChild
   const children = wrapper.children[1].children
+  if (children.length === 0) return
 
   const pT = parent.offsetTop
   const pL = parent.offsetLeft
@@ -120,10 +120,7 @@ const traverseChildren = function (
       continue
     }
 
-    const nextChildren = child.children[1].children
-    if (nextChildren.length > 0) {
-      traverseChildren(mei, svgContainer, bc, child, direction)
-    }
+    traverseChildren(mei, svgContainer, bc, child, direction)
   }
 }
 

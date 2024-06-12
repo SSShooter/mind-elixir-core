@@ -1006,7 +1006,7 @@
             },
             {
               "kind": "Content",
-              "text": ") => void;\n    mainToSub: (this: "
+              "text": ") => void;\n    rmSubline: (this: "
             },
             {
               "kind": "Reference",

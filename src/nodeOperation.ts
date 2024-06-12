@@ -11,7 +11,7 @@ const typeMap: Record<string, InsertPosition> = {
   after: 'afterend',
 }
 
-export const mainToSub = function (tpc: Topic) {
+export const rmSubline = function (tpc: Topic) {
   const mainNode = tpc.parentElement.parentElement
   const lc = mainNode.lastElementChild
   if (lc?.tagName === 'svg') lc?.remove() // clear svg group of main node
@@ -73,7 +73,7 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
 export const insertParent = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  mainToSub(nodeEle)
+  rmSubline(nodeEle)
   const nodeObj = nodeEle.nodeObj
   if (nodeObj.root === true) {
     return
@@ -82,7 +82,6 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   insertParentNodeObj(nodeObj, newNodeObj)
   fillParent(this.nodeData)
 
-  // warning: the tricky part
   const grp0 = nodeEle.parentElement.parentElement
   console.time('insertParent_DOM')
   const { grp, top } = this.createWrapper(newNodeObj, true)
@@ -274,7 +273,7 @@ const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindE
     const obj = f.nodeObj
     moveNodeObj(type, obj, toObj)
     fillParent(mei.nodeData)
-    mainToSub(f)
+    rmSubline(f)
     const fromGrp = f.parentElement.parentNode
     const toGrp = to.parentElement.parentNode
     toGrp.insertAdjacentElement(typeMap[type], fromGrp)
