@@ -24,7 +24,7 @@ export const judgeDirection = function (direction: number, obj: NodeObj) {
   }
 }
 
-export const realAddChild = function (mei: MindElixirInstance, to: Topic, wrapper: Wrapper) {
+export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper: Wrapper) {
   const tpc = wrapper.children[0].children[0]
   const top = to.parentElement
   if (top.tagName === 'ME-PARENT') {
@@ -46,24 +46,6 @@ export const realAddChild = function (mei: MindElixirInstance, to: Topic, wrappe
     }
     mei.linkDiv()
   }
-}
-
-export const addChildDom = function (mei: MindElixirInstance, tpc: Topic, node?: NodeObj) {
-  if (!tpc) return null
-  const nodeObj = tpc.nodeObj
-  if (nodeObj.expanded === false) {
-    mei.expandNode(tpc, true)
-    // dom had resetted
-    tpc = findEle(nodeObj.id) as Topic
-  }
-  const newNodeObj = node || mei.generateNewObj()
-  if (nodeObj.children) nodeObj.children.push(newNodeObj)
-  else nodeObj.children = [newNodeObj]
-  fillParent(mei.nodeData)
-
-  const { grp, top: newTop } = mei.createWrapper(newNodeObj)
-  realAddChild(mei, tpc, grp)
-  return { newTop, newNodeObj }
 }
 
 export const removeNodeDom = function (tpc: Topic, siblingLength: number) {

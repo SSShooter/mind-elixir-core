@@ -4,7 +4,7 @@ import { deepClone } from './utils/index'
 import type { Topic } from './types/dom'
 import type { MindElixirInstance, NodeObj } from './types/index'
 import { insertNodeObj, insertParentNodeObj, moveUpObj, moveDownObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
-import { addChildDom, realAddChild, removeNodeDom } from './utils/domManipulation'
+import { addChildDom, removeNodeDom } from './utils/domManipulation'
 
 const typeMap: Record<string, InsertPosition> = {
   before: 'beforebegin',
@@ -32,6 +32,24 @@ export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patch
     obj: newObj,
     origin,
   })
+}
+
+const addChildFunc = function (mei: MindElixirInstance, tpc: Topic, node?: NodeObj) {
+  if (!tpc) return null
+  const nodeObj = tpc.nodeObj
+  if (nodeObj.expanded === false) {
+    mei.expandNode(tpc, true)
+    // dom had resetted
+    tpc = findEle(nodeObj.id) as Topic
+  }
+  const newNodeObj = node || mei.generateNewObj()
+  if (nodeObj.children) nodeObj.children.push(newNodeObj)
+  else nodeObj.children = [newNodeObj]
+  fillParent(mei.nodeData)
+
+  const { grp, top: newTop } = mei.createWrapper(newNodeObj)
+  addChildDom(mei, tpc, grp)
+  return { newTop, newNodeObj }
 }
 
 export const insertSibling = function (this: MindElixirInstance, type: 'before' | 'after', el?: Topic, node?: NodeObj) {
@@ -108,7 +126,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
-  const res = addChildDom(this, nodeEle, node)
+  const res = addChildFunc(this, nodeEle, node)
   if (!res) return
   const { newTop, newNodeObj } = res
   this.bus.fire('operation', {
@@ -126,7 +144,7 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   console.time('copyNode')
   const deepCloneObj = deepClone(node.nodeObj)
   refreshIds(deepCloneObj)
-  const res = addChildDom(this, to, deepCloneObj)
+  const res = addChildFunc(this, to, deepCloneObj)
   if (!res) return
   const { newNodeObj } = res
   console.timeEnd('copyNode')
@@ -144,7 +162,7 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
     const node = tpcs[i]
     const deepCloneObj = deepClone(node.nodeObj)
     refreshIds(deepCloneObj)
-    const res = addChildDom(this, to, deepCloneObj)
+    const res = addChildFunc(this, to, deepCloneObj)
     if (!res) return
     const { newNodeObj } = res
     objs.push(newNodeObj)
@@ -252,7 +270,7 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to:
     moveNodeObj('in', obj, toObj)
     fillParent(this.nodeData) // update parent property
     const fromTop = f.parentElement
-    realAddChild(this, to, fromTop.parentElement)
+    addChildDom(this, to, fromTop.parentElement)
   }
   this.linkDiv()
   this.bus.fire('operation', {
