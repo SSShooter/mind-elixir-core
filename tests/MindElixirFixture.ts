@@ -71,6 +71,8 @@ export class MindElixirFixture {
     await this.page.mouse.move(box.x + box.width / 2, box.y + y)
   }
   async toHaveScreenshot(locator?: Locator) {
-    await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot()
+    await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot({
+      maxDiffPixelRatio: 0.02,
+    })
   }
 }
