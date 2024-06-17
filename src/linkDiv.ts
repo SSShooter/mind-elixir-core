@@ -17,18 +17,18 @@ import type { MindElixirInstance } from './types/index'
 const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   console.time('linkDiv')
 
-  // pin center
-  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
-  this.nodes.style.left = `${10000 - this.nodes.offsetWidth / 2}px`
-
-  const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
-  this.lines.innerHTML = ''
-
   const root = this.map.querySelector('me-root') as HTMLElement
   const pT = root.offsetTop
   const pL = root.offsetLeft
   const pW = root.offsetWidth
   const pH = root.offsetHeight
+
+  // pin center
+  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
+  this.nodes.style.left = `${10000 - pL - pW / 2}px`
+
+  const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
+  this.lines.innerHTML = ''
 
   for (let i = 0; i < mainNodeList.length; i++) {
     const el = mainNodeList[i] as Wrapper
