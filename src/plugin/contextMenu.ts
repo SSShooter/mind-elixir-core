@@ -28,8 +28,8 @@ export default function (mind: MindElixirInstance, option: any) {
   const unfocus = createLi('cm-unfucus', lang.cancelFocus, '')
   const up = createLi('cm-up', lang.moveUp, 'PgUp')
   const down = createLi('cm-down', lang.moveDown, 'Pgdn')
-  const link = createLi('cm-down', lang.link, '')
-  const summary = createLi('cm-down', lang.summary, '')
+  const link = createLi('cm-link', lang.link, '')
+  const summary = createLi('cm-summary', lang.summary, '')
 
   const menuUl = document.createElement('ul')
   menuUl.className = 'menu-list'
