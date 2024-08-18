@@ -7,6 +7,7 @@ import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
 import type SelectionArea from '@viselect/vanilla'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
+import type { Locale } from '../i18n'
 export * from '../methods'
 
 type Before = Partial<{
@@ -113,7 +114,7 @@ type PathString = string
 export type Options = {
   el: string | HTMLElement
   direction?: number
-  locale?: string
+  locale?: Locale
   draggable?: boolean
   editable?: boolean
   contextMenu?: boolean

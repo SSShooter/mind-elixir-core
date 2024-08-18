@@ -11,6 +11,7 @@ type LangPack = {
   clickTips: string
   summary: string
 }
+export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es'
 const cn = {
   addChild: '插入子节点',
   addParent: '插入父节点',
@@ -24,7 +25,7 @@ const cn = {
   clickTips: '请点击目标节点',
   summary: '摘要',
 }
-const i18n: Record<string, LangPack> = {
+const i18n: Record<Locale, LangPack> = {
   cn,
   zh_CN: cn,
   zh_TW: {
