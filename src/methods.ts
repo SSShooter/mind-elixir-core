@@ -91,8 +91,8 @@ const methods = {
       }
       if (isMobile() && this.mobileMenu) {
         mobileMenu(this)
-      } else {
-        this.contextMenu && contextMenu(this, this.contextMenuOption)
+      } else if (this.contextMenu) {
+        this.disposable.push(contextMenu(this, this.contextMenuOption))
       }
       this.draggable && nodeDraggable(this)
       this.allowUndo && operationHistory(this)
@@ -100,6 +100,34 @@ const methods = {
     this.toCenter()
     this.layout()
     this.linkDiv()
+  },
+  destroy(this: Partial<MindElixirInstance>) {
+    this.disposable!.forEach(fn => fn())
+    this.mindElixirBox?.remove()
+    this.mindElixirBox = undefined
+    this.nodeData = undefined
+    this.arrows = undefined
+    this.summaries = undefined
+    this.currentArrow = undefined
+    this.currentNode = undefined
+    this.currentNodes = undefined
+    this.currentSummary = undefined
+    this.waitCopy = undefined
+    this.theme = undefined
+    this.direction = undefined
+    this.bus = undefined
+    this.container = undefined
+    this.map = undefined
+    this.lines = undefined
+    this.linkController = undefined
+    this.linkSvgGroup = undefined
+    this.P2 = undefined
+    this.P3 = undefined
+    this.line1 = undefined
+    this.line2 = undefined
+    this.nodes = undefined
+    this.selection?.destroy()
+    this.selection = undefined
   },
 }
 

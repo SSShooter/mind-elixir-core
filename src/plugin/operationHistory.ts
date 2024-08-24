@@ -62,7 +62,7 @@ export default function (mei: MindElixirInstance) {
       if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
       else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
       currentIndex--
-      console.log('current', current)
+      // console.log('current', current)
     }
   }
   mei.redo = function () {

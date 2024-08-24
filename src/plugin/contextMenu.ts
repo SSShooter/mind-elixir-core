@@ -194,4 +194,19 @@ export default function (mind: MindElixirInstance, option: any) {
     mind.createSummary()
     mind.unselectNodes()
   }
+  return () => {
+    // maybe usefull?
+    add_child.onclick = null
+    add_parent.onclick = null
+    add_sibling.onclick = null
+    remove_child.onclick = null
+    focus.onclick = null
+    unfocus.onclick = null
+    up.onclick = null
+    down.onclick = null
+    link.onclick = null
+    summary.onclick = null
+    menuContainer.onclick = null
+    mind.container.oncontextmenu = null
+  }
 }

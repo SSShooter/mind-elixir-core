@@ -172,7 +172,6 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
     if (!div) return
     const node = el.nodeObj
     const topic = div.textContent?.trim() || ''
-    console.log(topic)
     if (topic === '') node.topic = origin
     else node.topic = topic
     div.remove()

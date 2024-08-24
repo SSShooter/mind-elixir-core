@@ -40,6 +40,7 @@ export type Theme = {
  * @public
  */
 export interface MindElixirInstance extends MindElixirMethods {
+  disposable: Array<() => void>
   isFocusMode: boolean
   nodeDataBackup: NodeObj
   mindElixirBox: HTMLElement
@@ -59,7 +60,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   theme: Theme
   userTheme?: Theme
   direction: number
-  locale: string
+  locale: Locale
   draggable: boolean
   editable: boolean
   contextMenu: boolean

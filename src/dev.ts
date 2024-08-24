@@ -9,11 +9,12 @@ import style from '../index.css?raw'
 import katex from '../katex.css?raw'
 
 interface Window {
-  m: MindElixirInstance
+  m?: MindElixirInstance
   M: MindElixirCtor
   E: typeof MindElixir.E
   downloadPng: ReturnType<typeof download>
   downloadSvg: ReturnType<typeof download>
+  destroy: () => void
 }
 
 declare let window: Window
@@ -58,7 +59,7 @@ const options: Options = {
   },
 }
 
-const mind = new MindElixir(options)
+let mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
 mind.init(example)
@@ -73,7 +74,7 @@ function sleep() {
     setTimeout(() => res(), 1000)
   })
 }
-console.log('test E function', E('bd4313fbac40284b'))
+// console.log('test E function', E('bd4313fbac40284b'))
 
 mind.bus.addListener('operation', (operation: Operation) => {
   console.log(operation)
@@ -120,3 +121,11 @@ window.m = mind
 // window.m2 = mind2
 window.M = MindElixir
 window.E = MindElixir.E
+
+window.destroy = () => {
+  mind.destroy()
+  // @ts-expect-error remove reference
+  mind = null
+  // @ts-expect-error remove reference
+  window.m = null
+}

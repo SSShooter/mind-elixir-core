@@ -39,7 +39,6 @@ function MindElixir(
     theme,
   }: Options
 ): void {
-  console.log('ME_version ' + MindElixir.version, this)
   let ele: HTMLElement | null = null
   const elType = Object.prototype.toString.call(el)
   if (elType === '[object HTMLDivElement]') {
@@ -53,6 +52,7 @@ function MindElixir(
   ele.innerHTML = ''
   ele.style.setProperty('--gap', GAP + 'px')
   this.mindElixirBox = ele as HTMLElement
+  this.disposable = []
   this.before = before || {}
   this.locale = locale || 'en'
   this.contextMenuOption = contextMenuOption
@@ -129,7 +129,7 @@ MindElixir.DARK_THEME = DARK_THEME
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '4.0.5'
+MindElixir.version = '4.1.0'
 /**
  * @function
  * @memberof MindElixir

@@ -308,7 +308,6 @@ export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   console.time('editSummary')
   if (!el) return
   const textEl = el.children[2]
-  console.log(textEl, el)
   editSvgText(this, textEl, div => {
     const node = el.arrowObj
     const text = div.textContent?.trim() || ''
