@@ -1,3 +1,4 @@
+import type { Locale } from './i18n'
 import { rmSubline } from './nodeOperation'
 import type { Topic } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
@@ -265,7 +266,7 @@ export const initSide = function (this: MindElixirInstance) {
  * @name setLocale
  * @memberof MapInteraction
  */
-export const setLocale = function (this: MindElixirInstance, locale: string) {
+export const setLocale = function (this: MindElixirInstance, locale: Locale) {
   this.locale = locale
   this.refresh()
 }

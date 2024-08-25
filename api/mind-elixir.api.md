@@ -63,17 +63,26 @@ export interface Expander extends HTMLElement {
 }
 
 // @public (undocumented)
+export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es';
+
+// @public (undocumented)
 export type MainLineParams = {
-    x1: number;
-    y1: number;
-    x2: number;
-    y2: number;
+    pT: number;
+    pL: number;
+    pW: number;
+    pH: number;
+    cT: number;
+    cL: number;
+    cW: number;
+    cH: number;
     direction: 'lhs' | 'rhs';
+    containerHeight: number;
 };
 
 // @public
 export const methods: {
     init(this: MindElixirInstance, data: MindElixirData): Error | undefined;
+    destroy(this: Partial<MindElixirInstance>): void;
     exportSvg: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string | undefined) => Blob;
     exportPng: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string | undefined) => Promise<Blob | null>;
     createSummary: (this: MindElixirInstance) => void;
@@ -89,7 +98,7 @@ export const methods: {
     removeArrow: (this: MindElixirInstance, linkSvg?: CustomSvg | undefined) => void;
     selectArrow: (this: MindElixirInstance, link: CustomSvg) => void;
     unselectArrow: (this: MindElixirInstance) => void;
-    mainToSub: (this: MindElixirInstance, tpc: Topic) => Promise<void>;
+    rmSubline: (this: MindElixirInstance, tpc: Topic) => Promise<void>;
     reshapeNode: (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) => Promise<void>;
     insertSibling: (this: MindElixirInstance, type: "before" | "after", el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
     insertParent: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj | undefined) => Promise<void>;
@@ -123,7 +132,7 @@ export const methods: {
     initLeft: (this: MindElixirInstance) => void;
     initRight: (this: MindElixirInstance) => void;
     initSide: (this: MindElixirInstance) => void;
-    setLocale: (this: MindElixirInstance, locale: string) => void;
+    setLocale: (this: MindElixirInstance, locale: Locale) => void;
     expandNode: (this: MindElixirInstance, el: Topic, isExpand?: boolean | undefined) => void;
     refresh: (this: MindElixirInstance, data?: MindElixirData | undefined) => void;
     getObjById: (id: string, data: NodeObj) => NodeObj | null;
@@ -187,6 +196,8 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     direction: number;
     // (undocumented)
+    disposable: Array<() => void>;
+    // (undocumented)
     draggable: boolean;
     // (undocumented)
     editable: boolean;
@@ -221,7 +232,7 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     linkSvgGroup: SVGElement;
     // (undocumented)
-    locale: string;
+    locale: Locale;
     // (undocumented)
     mainBranchStyle: number;
     // (undocumented)
@@ -311,7 +322,7 @@ export type NodeObjExport = Omit<NodeObj, 'parent'>;
 export type Options = {
     el: string | HTMLElement;
     direction?: number;
-    locale?: string;
+    locale?: Locale;
     draggable?: boolean;
     editable?: boolean;
     contextMenu?: boolean;
@@ -441,7 +452,7 @@ export interface Wrapper extends HTMLElement {
 // Warnings were encountered during analysis:
 //
 // dist/types/arrow.d.ts:6:5 - (ae-forgotten-export) The symbol "Uid" needs to be exported by the entry point docs.d.ts
-// dist/types/methods.d.ts:18:5 - (ae-forgotten-export) The symbol "summary" needs to be exported by the entry point docs.d.ts
+// dist/types/methods.d.ts:19:5 - (ae-forgotten-export) The symbol "summary" needs to be exported by the entry point docs.d.ts
 
 // (No @packageDocumentation comment for this package)
 

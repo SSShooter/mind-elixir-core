@@ -368,6 +368,17 @@ pnpm build
 pnpm link ./
 ```
 
+Update docs:
+
+```
+# Install api-extractor
+pnpm install -g @microsoft/api-extractor
+# Maintain /src/docs.ts
+# Generate docs
+pnpm doc
+pnpm doc:md
+```
+
 ## Thanks
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)

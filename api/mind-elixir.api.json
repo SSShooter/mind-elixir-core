@@ -1,7 +1,7 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.39.1",
+    "toolVersion": "7.47.0",
     "schemaVersion": 1011,
     "oldestForwardsCompatibleVersion": 1001,
     "tsdocConfig": {
@@ -719,6 +719,32 @@
         },
         {
           "kind": "TypeAlias",
+          "canonicalReference": "mind-elixir!Locale:type",
+          "docComment": "",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type Locale = "
+            },
+            {
+              "kind": "Content",
+              "text": "'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es'"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "dist/types/i18n.d.ts",
+          "releaseTag": "Public",
+          "name": "Locale",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
+          "kind": "TypeAlias",
           "canonicalReference": "mind-elixir!MainLineParams:type",
           "docComment": "",
           "excerptTokens": [
@@ -728,7 +754,7 @@
             },
             {
               "kind": "Content",
-              "text": "{\n    x1: number;\n    y1: number;\n    x2: number;\n    y2: number;\n    direction: 'lhs' | 'rhs';\n}"
+              "text": "{\n    pT: number;\n    pL: number;\n    pW: number;\n    pH: number;\n    cT: number;\n    cL: number;\n    cW: number;\n    cH: number;\n    direction: 'lhs' | 'rhs';\n    containerHeight: number;\n}"
             },
             {
               "kind": "Content",
@@ -781,7 +807,25 @@
             },
             {
               "kind": "Content",
-              "text": " | undefined;\n    exportSvg: (this: "
+              "text": " | undefined;\n    destroy(this: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Partial",
+              "canonicalReference": "!Partial:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "MindElixirInstance",
+              "canonicalReference": "mind-elixir!MindElixirInstance:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ">): void;\n    exportSvg: (this: "
             },
             {
               "kind": "Reference",
@@ -1744,7 +1788,16 @@
             },
             {
               "kind": "Content",
-              "text": ", locale: string) => void;\n    expandNode: (this: "
+              "text": ", locale: import(\"./i18n\")."
+            },
+            {
+              "kind": "Reference",
+              "text": "Locale",
+              "canonicalReference": "mind-elixir!Locale:type"
+            },
+            {
+              "kind": "Content",
+              "text": ") => void;\n    expandNode: (this: "
             },
             {
               "kind": "Reference",
@@ -2041,7 +2094,7 @@
           "name": "methods",
           "variableTypeTokenRange": {
             "startIndex": 1,
-            "endIndex": 286
+            "endIndex": 292
           }
         },
         {
@@ -2506,6 +2559,38 @@
             },
             {
               "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#disposable:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "disposable: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Array",
+                  "canonicalReference": "!Array:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": "<() => void>"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "disposable",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#draggable:member",
               "docComment": "",
               "excerptTokens": [
@@ -2876,8 +2961,9 @@
                   "text": "locale: "
                 },
                 {
-                  "kind": "Content",
-                  "text": "string"
+                  "kind": "Reference",
+                  "text": "Locale",
+                  "canonicalReference": "mind-elixir!Locale:type"
                 },
                 {
                   "kind": "Content",
@@ -3742,7 +3828,16 @@
             },
             {
               "kind": "Content",
-              "text": ";\n    direction?: number;\n    locale?: string;\n    draggable?: boolean;\n    editable?: boolean;\n    contextMenu?: boolean;\n    contextMenuOption?: any;\n    toolBar?: boolean;\n    keypress?: boolean;\n    mouseSelectionButton?: 0 | 2;\n    before?: "
+              "text": ";\n    direction?: number;\n    locale?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Locale",
+              "canonicalReference": "mind-elixir!Locale:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    draggable?: boolean;\n    editable?: boolean;\n    contextMenu?: boolean;\n    contextMenuOption?: any;\n    toolBar?: boolean;\n    keypress?: boolean;\n    mouseSelectionButton?: 0 | 2;\n    before?: "
             },
             {
               "kind": "Reference",
@@ -3826,7 +3921,7 @@
           "name": "Options",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 20
+            "endIndex": 22
           }
         },
         {
