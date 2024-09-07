@@ -195,7 +195,7 @@ export const install = function (this: MindElixirInstance, plugin: (instance: Mi
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
 export const focusNode = function (this: MindElixirInstance, el: Topic) {
-  if (el.nodeObj.root) return
+  if (!el.nodeObj.parent) return
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
   }
@@ -204,7 +204,6 @@ export const focusNode = function (this: MindElixirInstance, el: Topic) {
     this.isFocusMode = true
   }
   this.nodeData = el.nodeObj
-  this.nodeData.root = true
   this.initRight()
   this.toCenter()
 }
@@ -218,7 +217,6 @@ export const focusNode = function (this: MindElixirInstance, el: Topic) {
 export const cancelFocus = function (this: MindElixirInstance) {
   this.isFocusMode = false
   if (this.tempDirection !== null) {
-    delete this.nodeData.root
     this.nodeData = this.nodeDataBackup
     this.direction = this.tempDirection
     this.tempDirection = null

@@ -31,12 +31,12 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: 'lhs' | 'r
   if (!current) return
   const nodeObj = current.nodeObj
   const main = current.offsetParent.offsetParent.parentElement
-  if (nodeObj.root) {
+  if (!nodeObj.parent) {
     direction === 'lhs' ? selectRootLeft(mei) : selectRootRight(mei)
   } else if (main.className === direction) {
     selectFirstChild(mei, current)
   } else {
-    if (nodeObj.parent?.root) {
+    if (!nodeObj.parent?.parent) {
       selectRoot(mei)
     } else {
       selectParent(mei, current)
@@ -47,7 +47,7 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
   const current = mei.currentNode || mei.currentNodes?.[0]
   if (!current) return
   const nodeObj = current.nodeObj
-  if (nodeObj.root) return
+  if (!nodeObj.parent) return
   const s = (direction + 'Sibling') as 'previousSibling' | 'nextSibling'
   const sibling = current.parentElement.parentElement[s]
   if (sibling) {

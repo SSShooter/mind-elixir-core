@@ -31,7 +31,7 @@ const clearPreview = function (el: Element | null) {
 const canMove = function (el: Element, dragged: Topic[]) {
   for (const node of dragged) {
     const isContain = node.parentElement.parentElement.contains(el)
-    const ok = el && el.tagName === 'ME-TPC' && el !== node && !isContain && (el as Topic).nodeObj.root !== true
+    const ok = el && el.tagName === 'ME-TPC' && el !== node && !isContain && (el as Topic).nodeObj.parent
     if (!ok) return false
   }
   return true

@@ -91,7 +91,7 @@ export default function (mind: MindElixirInstance, option?: any) {
   })
   mind.bus.addListener('selectNode', function (nodeObj: NodeObj) {
     menuContainer.hidden = false
-    if (nodeObj.root) {
+    if (!nodeObj.parent) {
       isRoot = true
     } else {
       isRoot = false

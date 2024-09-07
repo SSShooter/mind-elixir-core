@@ -156,7 +156,6 @@ export type NodeObj = {
   hyperLink?: string
   expanded?: boolean
   direction?: number
-  root?: boolean
   image?: {
     url: string
     width: number
@@ -165,7 +164,7 @@ export type NodeObj = {
   // main node specific properties
   branchColor?: string
   // add programatically
-  parent?: NodeObj // root node has no parent
+  parent?: NodeObj // root node has no parent!
   // TODO: checkbox
   // checkbox?: boolean | undefined
   dangerouslySetInnerHTML?: string

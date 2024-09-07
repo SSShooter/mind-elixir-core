@@ -59,7 +59,7 @@ const calcRange = function (nodes: Topic[]) {
   const min = range[0] || 0
   const max = range[range.length - 1] || 0
   const parent = parentChains[0][index - 1].node
-  if (parent.root) throw new Error('Please select nodes in the same main topic.')
+  if (!parent.parent) throw new Error('Please select nodes in the same main topic.')
 
   return {
     parent: parent.id,
@@ -104,10 +104,10 @@ const getDirection = function ({ parent, start }: Summary) {
   const parentEl = findEle(parent)
   const parentObj = parentEl.nodeObj
   let side: 'lhs' | 'rls'
-  if (parentObj.root === true) {
-    side = findEle(parentObj.children![start].id).closest('me-main')?.className as 'lhs' | 'rls'
-  } else {
+  if (parentObj.parent) {
     side = parentEl.closest('me-main')?.className as 'lhs' | 'rls'
+  } else {
+    side = findEle(parentObj.children![start].id).closest('me-main')?.className as 'lhs' | 'rls'
   }
   return side
 }

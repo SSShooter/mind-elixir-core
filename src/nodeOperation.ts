@@ -56,10 +56,10 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
+  if (!nodeObj.parent) {
     this.addChild()
     return
-  } else if (nodeObj.parent?.root === true && nodeObj.parent?.children?.length === 1) {
+  } else if (!nodeObj.parent?.parent && nodeObj.parent?.children?.length === 1) {
     // add at least one node to another side
     this.addChild(findEle(nodeObj.parent!.id), node)
     return
@@ -93,7 +93,7 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   if (!nodeEle) return
   rmSubline(nodeEle)
   const nodeObj = nodeEle.nodeObj
-  if (nodeObj.root === true) {
+  if (!nodeObj.parent) {
     return
   }
   const newNodeObj = node || this.generateNewObj()
@@ -210,7 +210,7 @@ export const removeNode = function (this: MindElixirInstance, el?: Topic) {
   const tpc = el || this.currentNode
   if (!tpc) return
   const nodeObj = tpc.nodeObj
-  if (nodeObj.root === true) {
+  if (!nodeObj.parent) {
     throw new Error('Can not remove root node')
   }
   const siblings = nodeObj.parent!.children!
@@ -239,7 +239,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   tpcs = unionTopics(tpcs)
   for (const tpc of tpcs) {
     const nodeObj = tpc.nodeObj
-    if (nodeObj.root === true) {
+    if (!nodeObj.parent) {
       continue
     }
     const siblingLength = removeNodeObj(nodeObj)

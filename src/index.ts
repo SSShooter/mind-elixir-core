@@ -153,7 +153,6 @@ if (import.meta.env.MODE !== 'lite') {
     nodeData: {
       id: generateUUID(),
       topic: topic || 'new topic',
-      root: true,
       children: [],
     },
   })
