@@ -59,9 +59,14 @@ export default function (mei: MindElixirInstance) {
       const h = history[currentIndex]
       current = h.prev
       mei.refresh(h.prev)
-      if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
-      else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
-      currentIndex--
+      try {
+        if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
+        else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
+      } catch (e) {
+        // undo add node cause node not found
+      } finally {
+        currentIndex--
+      }
       // console.log('current', current)
     }
   }
