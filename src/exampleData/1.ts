@@ -5,7 +5,6 @@ const aboutMindElixir: MindElixirData = {
   nodeData: {
     id: 'me-root',
     topic: 'Mind Elixir',
-    root: true,
     tags: ['Mind Map Core'],
     children: [
       {

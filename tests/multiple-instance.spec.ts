@@ -9,7 +9,6 @@ const data1 = {
   nodeData: {
     id: 'data1',
     topic: 'new topic',
-    root: true,
     children: [],
   },
 }
@@ -18,7 +17,6 @@ const data2 = {
   nodeData: {
     id: 'data2',
     topic: 'new topic',
-    root: true,
     children: [
       {
         id: 'child',

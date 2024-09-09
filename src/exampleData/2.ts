@@ -15,7 +15,6 @@ const mindElixirStruct: MindElixirData = {
   nodeData: {
     id: 'me-root',
     topic: 'HTML structure',
-    root: true,
     children: [
       {
         topic: 'div.map-container',

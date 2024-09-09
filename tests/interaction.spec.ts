@@ -7,7 +7,6 @@ const data = {
   nodeData: {
     topic,
     id,
-    root: true,
     children: [
       {
         id: 'middle',
