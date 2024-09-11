@@ -1,13 +1,14 @@
 import type { NodeObj } from '../types'
 
-const getSibling = (obj: NodeObj): { siblings: NodeObj[]; index: number } => {
+const getSibling = (obj: NodeObj): { siblings: NodeObj[] | undefined; index: number } => {
   const siblings = obj.parent?.children as NodeObj[]
-  const index = siblings.indexOf(obj)
+  const index = siblings?.indexOf(obj) ?? 0
   return { siblings, index }
 }
 
 export function moveUpObj(obj: NodeObj) {
   const { siblings, index } = getSibling(obj)
+  if (siblings === undefined) return
   const t = siblings[index]
   if (index === 0) {
     siblings[index] = siblings[siblings.length - 1]
@@ -20,6 +21,7 @@ export function moveUpObj(obj: NodeObj) {
 
 export function moveDownObj(obj: NodeObj) {
   const { siblings, index } = getSibling(obj)
+  if (siblings === undefined) return
   const t = siblings[index]
   if (index === siblings.length - 1) {
     siblings[index] = siblings[0]
@@ -32,12 +34,14 @@ export function moveDownObj(obj: NodeObj) {
 
 export function removeNodeObj(obj: NodeObj) {
   const { siblings, index } = getSibling(obj)
+  if (siblings === undefined) return 0
   siblings.splice(index, 1)
   return siblings.length
 }
 
 export function insertNodeObj(newObj: NodeObj, type: 'before' | 'after', obj: NodeObj) {
   const { siblings, index } = getSibling(obj)
+  if (siblings === undefined) return
   if (type === 'before') {
     siblings.splice(index, 0, newObj)
   } else {
@@ -47,6 +51,7 @@ export function insertNodeObj(newObj: NodeObj, type: 'before' | 'after', obj: No
 
 export function insertParentNodeObj(obj: NodeObj, newObj: NodeObj) {
   const { siblings, index } = getSibling(obj)
+  if (siblings === undefined) return
   siblings[index] = newObj
   newObj.children = [obj]
 }
@@ -59,6 +64,7 @@ export function moveNodeObj(type: 'in' | 'before' | 'after', from: NodeObj, to: 
   } else {
     if (from.direction !== undefined) from.direction = to.direction
     const { siblings, index } = getSibling(to)
+    if (siblings === undefined) return
     if (type === 'before') {
       siblings.splice(index, 0, from)
     } else {
