@@ -54,6 +54,17 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
     mei.selectNode(sibling.firstChild.firstChild)
   }
 }
+const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out', factor = 1) {
+  switch (direction) {
+    case 'in':
+      if (mei.scaleVal * factor > 1.6) return
+      mei.scale((mei.scaleVal += 0.2))
+      break
+    case 'out':
+      if (mei.scaleVal * factor < 0.6) return
+      mei.scale((mei.scaleVal -= 0.2))
+  }
+}
 
 export default function (mind: MindElixirInstance) {
   const handleRemove = () => {
@@ -137,14 +148,12 @@ export default function (mind: MindElixirInstance) {
     },
     '+': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        if (mind.scaleVal > 1.6) return
-        mind.scale((mind.scaleVal += 0.2))
+        handleZoom(mind, 'in')
       }
     },
     '-': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        if (mind.scaleVal < 0.6) return
-        mind.scale((mind.scaleVal -= 0.2))
+        handleZoom(mind, 'out')
       }
     },
     '0': (e: KeyboardEvent) => {
@@ -165,5 +174,15 @@ export default function (mind: MindElixirInstance) {
     }
     const keyHandler = key2func[e.key]
     keyHandler && keyHandler(e)
+  }
+
+  mind.map.onwheel = e => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault()
+      const factor = Math.abs(e.deltaY / 100) // this can be tweaked
+      if (e.deltaY < 0) handleZoom(mind, 'in', factor)
+      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', factor)
+      e.stopPropagation()
+    }
   }
 }
