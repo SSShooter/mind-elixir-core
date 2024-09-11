@@ -66,7 +66,7 @@ export default function (mind: MindElixirInstance) {
     }
   }
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
-    13: e => {
+    Enter: e => {
       // enter
       if (e.shiftKey) {
         mind.insertSibling('before')
@@ -76,20 +76,16 @@ export default function (mind: MindElixirInstance) {
         mind.insertSibling('after')
       }
     },
-    9: () => {
-      // tab
+    Tab: () => {
       mind.addChild()
     },
-    112: () => {
-      // f1
+    F1: () => {
       mind.toCenter()
     },
-    113: () => {
-      // f2
+    F2: () => {
       mind.beginEdit()
     },
-    38: e => {
-      // up
+    ArrowUp: e => {
       if (e.altKey) {
         mind.moveUpNode()
       } else if (e.metaKey || e.ctrlKey) {
@@ -98,47 +94,40 @@ export default function (mind: MindElixirInstance) {
         handlePrevNext(mind, 'previous')
       }
     },
-    40: e => {
-      // down
+    ArrowDown: e => {
       if (e.altKey) {
         mind.moveDownNode()
       } else {
         handlePrevNext(mind, 'next')
       }
     },
-    37: e => {
-      // left
+    ArrowLeft: e => {
       if (e.metaKey || e.ctrlKey) {
         return mind.initLeft()
       }
       handleLeftRight(mind, 'lhs')
     },
-    39: e => {
-      // right
+    ArrowRight: e => {
       if (e.metaKey || e.ctrlKey) {
         return mind.initRight()
       }
       handleLeftRight(mind, 'rhs')
     },
-    33() {
-      // pageUp
-      mind.moveUpNode()
+    PageUp: () => {
+      return mind.moveUpNode()
     },
-    34() {
-      // pageDown
+    PageDown: () => {
       mind.moveDownNode()
     },
-    67: (e: KeyboardEvent) => {
+    c: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        // ctrl c
         if (mind.currentNode) mind.waitCopy = [mind.currentNode]
         else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
       }
     },
-    86: (e: KeyboardEvent) => {
+    v: (e: KeyboardEvent) => {
       if (!mind.waitCopy || !mind.currentNode) return
       if (e.metaKey || e.ctrlKey) {
-        // ctrl v
         if (mind.waitCopy.length === 1) {
           mind.copyNode(mind.waitCopy[0], mind.currentNode)
         } else {
@@ -146,29 +135,25 @@ export default function (mind: MindElixirInstance) {
         }
       }
     },
-    // ctrl +
-    187: (e: KeyboardEvent) => {
+    '+': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal > 1.6) return
         mind.scale((mind.scaleVal += 0.2))
       }
     },
-    // ctrl -
-    189: (e: KeyboardEvent) => {
+    '-': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         if (mind.scaleVal < 0.6) return
         mind.scale((mind.scaleVal -= 0.2))
       }
     },
-    // ctrl 0
-    48: (e: KeyboardEvent) => {
+    '0': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         mind.scale(1)
       }
     },
-    // del,backspace
-    8: handleRemove,
-    46: handleRemove,
+    Delete: handleRemove,
+    Backspace: handleRemove,
   }
   mind.map.onkeydown = e => {
     e.preventDefault()
@@ -178,7 +163,7 @@ export default function (mind: MindElixirInstance) {
       // input
       return
     }
-    const keyHandler = key2func[e.keyCode]
+    const keyHandler = key2func[e.key]
     keyHandler && keyHandler(e)
   }
 }
