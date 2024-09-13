@@ -87,8 +87,8 @@ test('Multiple Move In', async ({ page, me }) => {
 
 test('Multiple Copy', async ({ page, me }) => {
   await select(page)
-  await page.keyboard.press('Control+C')
+  await page.keyboard.press('Control+c')
   await me.click('child3')
-  await page.keyboard.press('Control+V')
+  await page.keyboard.press('Control+v')
   await me.toHaveScreenshot()
 })

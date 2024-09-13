@@ -91,8 +91,8 @@ test('Add Child', async ({ page, me }) => {
 
 test('Copy and Paste', async ({ page, me }) => {
   await me.click('middle')
-  await page.keyboard.press('Control+C')
+  await page.keyboard.press('Control+c')
   await me.click('child-topic')
-  await page.keyboard.press('Control+V')
+  await page.keyboard.press('Control+v')
   await me.toHaveScreenshot()
 })
