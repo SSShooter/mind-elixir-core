@@ -13,12 +13,12 @@
     "prepare": "husky install",
     "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,json,ts}\" --fix",
     "dev": "vite",
-    "build": "node build.js && tsc",
+    "build": "tsc && node build.js",
     "tsc": "tsc",
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "doc": "npm run build && tsc && api-extractor run --local --verbose",
+    "doc": "api-extractor run --local --verbose",
     "doc:md": "api-documenter markdown --input-folder ./api --output-folder ./md",
     "beta": "npm run build && npm publish --tag beta"
   },
@@ -87,5 +87,8 @@
     "typescript": "^5.4.5",
     "vite": "^4.5.3",
     "vite-plugin-css-injected-by-js": "^3.5.1"
+  },
+  "dependencies": {
+    "@microsoft/api-documenter": "^7.25.14"
   }
 }

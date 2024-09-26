@@ -27,3 +27,32 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
 
+      - name: Checkout docs repository
+        uses: actions/checkout@v3
+        with:
+          repository: mind-elixir/docs
+          token: ${{ secrets.PAT }}
+          path: me-docs
+
+      - name: Generate API documentation
+        run: | 
+          npm run doc
+          npm run doc:md
+
+      - name: Copy build results to docs repository
+        run: | 
+          cp -r ./md/* ./me-docs/docs/api   
+
+      - name: Push changes to docs repository
+        run: |
+          cd me-docs
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff-index --quiet HEAD; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update API documentation"
+            git push
+          fi
+
