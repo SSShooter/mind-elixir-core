@@ -195,7 +195,7 @@ export default function (mind: MindElixirInstance, option: any) {
     mind.unselectNodes()
   }
   return () => {
-    // maybe usefull?
+    // maybe useful?
     add_child.onclick = null
     add_parent.onclick = null
     add_sibling.onclick = null

@@ -136,6 +136,13 @@ export default function (mind: MindElixirInstance) {
         else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
       }
     },
+    x: (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey) {
+        if (mind.currentNode) mind.waitCopy = [mind.currentNode]
+        else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
+        handleRemove()
+      }
+    },
     v: (e: KeyboardEvent) => {
       if (!mind.waitCopy || !mind.currentNode) return
       if (e.metaKey || e.ctrlKey) {
