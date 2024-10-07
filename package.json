@@ -13,7 +13,7 @@
     "prepare": "husky install",
     "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,json,ts}\" --fix",
     "dev": "vite",
-    "build": "tsc && node build.js",
+    "build": "node build.js && tsc",
     "tsc": "tsc",
     "preview": "vite preview",
     "test": "playwright test",
