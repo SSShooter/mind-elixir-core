@@ -12,6 +12,8 @@ export * from './types/dom'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
 import { sub, main } from './utils/generateBranch'
+// @ts-expect-error json file
+import { version } from '../package.json'
 
 // TODO show up animation
 const $d = document
@@ -129,7 +131,7 @@ MindElixir.DARK_THEME = DARK_THEME
  * @memberof MindElixir
  * @static
  */
-MindElixir.version = '4.1.3'
+MindElixir.version = version
 /**
  * @function
  * @memberof MindElixir

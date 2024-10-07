@@ -122,6 +122,8 @@ window.m = mind
 window.M = MindElixir
 window.E = MindElixir.E
 
+console.log('MindElixir Version', MindElixir.version)
+
 window.destroy = () => {
   mind.destroy()
   // @ts-expect-error remove reference
