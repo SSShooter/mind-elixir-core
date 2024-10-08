@@ -11,7 +11,7 @@ type LangPack = {
   clickTips: string
   summary: string
 }
-export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es'
+export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr'
 const cn = {
   addChild: '插入子节点',
   addParent: '插入父节点',
@@ -118,6 +118,19 @@ const i18n: Record<Locale, LangPack> = {
     link: 'Enlace',
     clickTips: 'Por favor haga clic en el nodo de destino',
     summary: 'Resumen',
+  },
+  fr: {
+    addChild: 'Ajout enfant',
+    addParent: 'Ajout parent',
+    addSibling: 'Ajout voisin',
+    removeNode: 'Supprimer',
+    focus: 'Cibler',
+    cancelFocus: 'Retour',
+    moveUp: 'Monter',
+    moveDown: 'Descendre',
+    link: 'Lier',
+    clickTips: 'Cliquer sur le noeud cible',
+    summary: 'Annoter',
   },
 }
 
