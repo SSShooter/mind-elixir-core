@@ -5,7 +5,17 @@ import { encodeHTML, isTopic } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
 import './contextMenu.less'
 
-export default function (mind: MindElixirInstance, option: any) {
+type Options = {
+  focus?: boolean
+  link?: boolean
+  extend?: {
+    name: string
+    key?: string
+    onclick: (e: MouseEvent) => void
+  }[]
+}
+
+export default function (mind: MindElixirInstance, option: Options) {
   const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words
@@ -15,15 +25,15 @@ export default function (mind: MindElixirInstance, option: any) {
   const createLi = (id: string, name: string, keyname: string) => {
     const li = document.createElement('li')
     li.id = id
-    li.innerHTML = `<span>${encodeHTML(name)}</span><span>${encodeHTML(keyname)}</span>`
+    li.innerHTML = `<span>${encodeHTML(name)}</span><span ${keyname ? 'class="key"' : ''}>${encodeHTML(keyname)}</span>`
     return li
   }
   const locale = i18n[mind.locale] ? mind.locale : 'en'
   const lang = i18n[locale]
-  const add_child = createLi('cm-add_child', lang.addChild, 'tab')
-  const add_parent = createLi('cm-add_parent', lang.addParent, '')
-  const add_sibling = createLi('cm-add_sibling', lang.addSibling, 'enter')
-  const remove_child = createLi('cm-remove_child', lang.removeNode, 'delete')
+  const add_child = createLi('cm-add_child', lang.addChild, 'Tab')
+  const add_parent = createLi('cm-add_parent', lang.addParent, 'Ctrl + Enter')
+  const add_sibling = createLi('cm-add_sibling', lang.addSibling, 'Enter')
+  const remove_child = createLi('cm-remove_child', lang.removeNode, 'Delete')
   const focus = createLi('cm-fucus', lang.focus, '')
   const unfocus = createLi('cm-unfucus', lang.cancelFocus, '')
   const up = createLi('cm-up', lang.moveUp, 'PgUp')
