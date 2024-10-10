@@ -70,6 +70,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
+    "@microsoft/api-documenter": "^7.25.14",
     "@microsoft/api-extractor": "^7.47.0",
     "@playwright/test": "^1.44.1",
     "@rollup/plugin-strip": "^3.0.4",
@@ -87,8 +88,5 @@
     "typescript": "^5.4.5",
     "vite": "^4.5.3",
     "vite-plugin-css-injected-by-js": "^3.5.1"
-  },
-  "dependencies": {
-    "@microsoft/api-documenter": "^7.25.14"
   }
 }

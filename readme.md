@@ -25,7 +25,9 @@
 
 [中文 README](https://github.com/ssshooter/mind-elixir-core/blob/master/readme.cn.md)
 
-Mind elixir is a free open source mind map core.
+Mind elixir is a open source JavaScript mind map core. You can use it with any frontend framework you like.
+
+Features:
 
 - Lightweight
 - High performance
@@ -55,6 +57,8 @@ Mind elixir is a free open source mind map core.
   - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
 - [Export as a Image](#export-as-a-image)
+  - [Solution 1](#solution-1)
+  - [Solution 2](#solution-2)
 - [APIs](#apis)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
@@ -265,6 +269,8 @@ let mind = new MindElixir({
 
 ## Export as a Image
 
+### Solution 1
+
 ```typescript
 const mind = {
   /** mind elixir instance */
@@ -278,6 +284,33 @@ const downloadPng = async () => {
   a.download = 'filename.png'
   a.click()
   URL.revokeObjectURL(url)
+}
+```
+
+### Solution 2
+
+Install `@ssshooter/modern-screenshot`, then:
+
+```typescript
+import { domToPng } from '@ssshooter/modern-screenshot'
+
+const download = async () => {
+  const dataUrl = await domToPng(mind.nodes, {
+    onCloneNode: node => {
+      const n = node as HTMLDivElement
+      n.style.position = ''
+      n.style.top = ''
+      n.style.left = ''
+      n.style.bottom = ''
+      n.style.right = ''
+    },
+    padding: 300,
+    quality: 1,
+  })
+  const link = document.createElement('a')
+  link.download = 'screenshot.png'
+  link.href = dataUrl
+  link.click()
 }
 ```
 
