@@ -11,7 +11,7 @@ type LangPack = {
   clickTips: string
   summary: string
 }
-export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr'
+export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr' | 'ko'
 const cn = {
   addChild: '插入子节点',
   addParent: '插入父节点',
@@ -131,6 +131,19 @@ const i18n: Record<Locale, LangPack> = {
     link: 'Lier',
     clickTips: 'Cliquer sur le noeud cible',
     summary: 'Annoter',
+  },
+  ko: {
+    addChild: '자식 추가',
+    addParent: '부모 추가',
+    addSibling: '형제 추가',
+    removeNode: '노드 삭제',
+    focus: '포커스 모드',
+    cancelFocus: '포커스 모드 취소',
+    moveUp: '위로 이동',
+    moveDown: '아래로 이동',
+    link: '연결',
+    clickTips: '대상 노드를 클릭하십시오',
+    summary: '요약',
   },
 }
 
