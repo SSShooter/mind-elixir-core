@@ -105,6 +105,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   redo: () => void
 
   selection: SelectionArea
+  selectionContainer?: string | HTMLElement
 }
 type PathString = string
 /**
@@ -132,6 +133,7 @@ export type Options = {
   mobileMenu?: boolean
   theme?: Theme
   nodeMenu?: boolean
+  selectionContainer?: string | HTMLElement
 }
 
 export type Uid = string

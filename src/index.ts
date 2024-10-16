@@ -31,6 +31,7 @@ function MindElixir(
     toolBar,
     keypress,
     mouseSelectionButton,
+    selectionContainer,
     before,
     newTopicName,
     allowUndo,
@@ -81,6 +82,8 @@ function MindElixir(
   this.bus = Bus.create()
 
   this.container = $d.createElement('div') // map container
+  this.selectionContainer = selectionContainer || this.container
+
   this.container.className = 'map-container'
 
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')

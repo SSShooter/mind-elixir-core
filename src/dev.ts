@@ -26,6 +26,7 @@ const options: Options = {
   direction: MindElixir.SIDE,
   // direction: MindElixir.RIGHT,
   locale: 'en',
+  mouseSelectionButton: 2,
   draggable: true,
   editable: true,
   contextMenu: true,
@@ -66,6 +67,7 @@ mind.init(example)
 
 const m2 = new MindElixir({
   el: '#map2',
+  selectionContainer: 'body', // use body to make selection usable when transform is not 0
 })
 m2.init(data)
 
