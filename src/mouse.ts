@@ -80,7 +80,4 @@ export default function (mind: MindElixirInstance) {
     if (e.button !== mouseMoveButton) return
     dragMoveHelper.clear()
   })
-  mind.map.addEventListener('contextmenu', e => {
-    e.preventDefault()
-  })
 }

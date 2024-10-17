@@ -29,7 +29,8 @@ const options: Options = {
   // mouseSelectionButton: 2,
   draggable: true,
   editable: true,
-  contextMenu: false,
+  // if you set contextMenu to false, you should handle contextmenu event by yourself, e.g. preventDefault
+  contextMenu: true,
   contextMenuOption: {
     focus: true,
     link: true,
