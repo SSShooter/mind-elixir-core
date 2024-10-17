@@ -40,7 +40,6 @@ export default function (mind: MindElixirInstance) {
   })
 
   mind.map.addEventListener('dblclick', e => {
-    e.preventDefault()
     if (!mind.editable) return
     const target = e.target as HTMLElement
     if (isTopic(target)) {

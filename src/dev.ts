@@ -26,10 +26,10 @@ const options: Options = {
   direction: MindElixir.SIDE,
   // direction: MindElixir.RIGHT,
   locale: 'en',
-  mouseSelectionButton: 2,
+  // mouseSelectionButton: 2,
   draggable: true,
   editable: true,
-  contextMenu: true,
+  contextMenu: false,
   contextMenuOption: {
     focus: true,
     link: true,
