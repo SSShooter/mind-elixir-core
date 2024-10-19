@@ -72,6 +72,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   this.renderArrow()
   this.renderSummary()
   console.timeEnd('linkDiv')
+  this.bus.fire('linkDiv')
 }
 
 // core function of generate subLines
