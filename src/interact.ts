@@ -160,10 +160,12 @@ export const disableEdit = function (this: MindElixirInstance) {
 export const scale = function (this: MindElixirInstance, scaleVal: number) {
   // TODO: recalculate the position of the map
   // plan A: use transform-origin
+  // deprecated, center will be changed even if the scale function is doing well, which is very difficult to solve
   // plan B: use transform: translate
   // https://github.com/markmap/markmap/blob/e3071bc34da850ed7283b7d5b1a79b6c9b631a0e/packages/markmap-view/src/view.tsx#L640
   this.scaleVal = scaleVal
   this.map.style.transform = 'scale(' + scaleVal + ')'
+  this.bus.fire('scale', scaleVal)
 }
 /**
  * @function

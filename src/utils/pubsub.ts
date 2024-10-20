@@ -84,6 +84,7 @@ export type EventMap = {
   unselectNodes: () => void
   expandNode: (nodeObj: NodeObj) => void
   linkDiv: () => void
+  scale: (scale: number) => void
 }
 
 const Bus = {

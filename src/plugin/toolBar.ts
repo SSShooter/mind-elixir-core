@@ -32,11 +32,11 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
   }
   zo.onclick = () => {
     if (mind.scaleVal < 0.6) return
-    mind.scale((mind.scaleVal -= 0.2))
+    mind.scale(mind.scaleVal - 0.2)
   }
   zi.onclick = () => {
     if (mind.scaleVal > 1.6) return
-    mind.scale((mind.scaleVal += 0.2))
+    mind.scale(mind.scaleVal + 0.2)
   }
   return toolBarRBContainer
 }
