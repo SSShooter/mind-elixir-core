@@ -74,7 +74,6 @@ export interface MindElixirInstance extends MindElixirMethods {
   overflowHidden: boolean
   mainBranchStyle: number
   subBranchStyle: number
-  mobileMenu: boolean
   generateMainBranch: (params: MainLineParams) => PathString
   generateSubBranch: (params: SubLineParams) => PathString
 
@@ -130,7 +129,6 @@ export type Options = {
   overflowHidden?: boolean
   generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => PathString
   generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => PathString
-  mobileMenu?: boolean
   theme?: Theme
   nodeMenu?: boolean
   selectionContainer?: string | HTMLElement

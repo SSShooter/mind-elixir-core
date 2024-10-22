@@ -38,7 +38,6 @@ function MindElixir(
     generateMainBranch,
     generateSubBranch,
     overflowHidden,
-    mobileMenu,
     theme,
   }: Options
 ): void {
@@ -63,7 +62,6 @@ function MindElixir(
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
   this.mouseSelectionButton = mouseSelectionButton || 0
-  this.mobileMenu = mobileMenu || false
   // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
   this.direction = typeof direction === 'number' ? direction : 1
   this.draggable = draggable === undefined ? true : draggable

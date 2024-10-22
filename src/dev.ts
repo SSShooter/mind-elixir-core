@@ -43,7 +43,6 @@ const options: Options = {
       },
     ],
   },
-  mobileMenu: true,
   toolBar: true,
   nodeMenu: true,
   keypress: true,

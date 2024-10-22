@@ -2,13 +2,12 @@ import type { MindElixirInstance, MindElixirData } from './index'
 import linkDiv from './linkDiv'
 import contextMenu from './plugin/contextMenu'
 import keypress from './plugin/keypress'
-import mobileMenu from './plugin/mobileMenu'
 import nodeDraggable from './plugin/nodeDraggable'
 import operationHistory from './plugin/operationHistory'
 import toolBar from './plugin/toolBar'
 import selection from './plugin/selection'
 import { editTopic, createWrapper, createParent, createChildren, createTopic, findEle } from './utils/dom'
-import { getObjById, generateNewObj, fillParent, isMobile } from './utils/index'
+import { getObjById, generateNewObj, fillParent } from './utils/index'
 import { layout } from './utils/layout'
 import changeTheme from './utils/theme'
 import * as interact from './interact'
@@ -89,9 +88,7 @@ const methods = {
       if (this.editable) {
         selection(this)
       }
-      if (isMobile() && this.mobileMenu) {
-        mobileMenu(this)
-      } else if (this.contextMenu) {
+      if (this.contextMenu) {
         this.disposable.push(contextMenu(this, this.contextMenuOption))
       }
       this.draggable && nodeDraggable(this)
