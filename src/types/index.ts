@@ -23,13 +23,14 @@ export type Theme = {
     '--color': string
     '--bgcolor': string
     '--selected': string
-    '--panel-color': string
-    '--panel-bgcolor': string
     '--root-color': string
     '--root-bgcolor': string
+    '--root-border-color': string
     '--root-radius': string
     '--main-radius': string
     '--topic-padding': string
+    '--panel-color': string
+    '--panel-bgcolor': string
     '--panel-border-color': string
   }>
 }

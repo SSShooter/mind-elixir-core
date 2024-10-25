@@ -33,13 +33,13 @@ Features:
 - High performance
 - Framework agnostic
 - Pluginable
-- Export as SVG or PNG
 - Build-in drag and drop / node edit plugin
+- Export as SVG / PNG / Html
 - Summarize nodes
 - Bulk operations supported
 - Undo / Redo
 - Efficient shortcuts
-- Styling your node with CSS
+- Easily Styling your node with CSS
 
 <details>
 <summary>Table of Contents</summary>

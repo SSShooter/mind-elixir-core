@@ -144,7 +144,14 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   div.textContent = origin
   div.contentEditable = 'true'
   div.spellcheck = false
-  div.style.cssText = `min-width:${el.offsetWidth - 8}px;`
+  const style = getComputedStyle(el)
+  div.style.cssText = `min-width:${el.offsetWidth - 8}px;
+  color:${style.color};
+  padding:${style.padding};
+  margin:${style.margin};
+  font:${style.font};
+  background-color:${style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor};
+  border-radius:${style.borderRadius};`
   if (this.direction === LEFT) div.style.right = '0'
   div.focus()
 
