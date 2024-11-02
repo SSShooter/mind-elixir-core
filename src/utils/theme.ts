@@ -1,7 +1,9 @@
+import { THEME } from '../const'
 import type { MindElixirInstance } from '../types/index'
 import type { Theme } from '../types/index'
 
 const changeTheme = function (this: MindElixirInstance, theme: Theme, shouldRefresh = true) {
+  theme.cssVar = { ...THEME.cssVar, ...theme.cssVar }
   this.theme = theme
   const cssVar = this.theme.cssVar
   const keys = Object.keys(cssVar)
