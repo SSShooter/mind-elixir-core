@@ -1,6 +1,6 @@
 import './index.less'
 import './iconfont/iconfont.js'
-import { LEFT, RIGHT, SIDE, GAP, DARK_THEME, THEME } from './const'
+import { LEFT, RIGHT, SIDE, DARK_THEME, THEME } from './const'
 import { generateUUID } from './utils/index'
 import initMouseEvent from './mouse'
 import Bus from './utils/pubsub'
@@ -52,7 +52,6 @@ function MindElixir(
 
   ele.className += ' mind-elixir'
   ele.innerHTML = ''
-  ele.style.setProperty('--gap', GAP + 'px')
   this.mindElixirBox = ele as HTMLElement
   this.disposable = []
   this.before = before || {}

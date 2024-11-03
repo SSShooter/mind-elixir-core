@@ -1,5 +1,4 @@
 import type { MindElixirInstance } from '..'
-import { GAP } from '../const'
 
 export type MainLineParams = {
   pT: number
@@ -50,6 +49,8 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
 }
 
 export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+  const GAP = parseInt(this.mindElixirBox.style.getPropertyValue('--gap')) // cache?
+  // const GAP = 30
   let y1 = 0
   let end = 0
   if (isFirst) {

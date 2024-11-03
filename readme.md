@@ -39,7 +39,7 @@ Features:
 - Bulk operations supported
 - Undo / Redo
 - Efficient shortcuts
-- Easily Styling your node with CSS
+- Easily Styling your node with CSS variables
 
 <details>
 <summary>Table of Contents</summary>

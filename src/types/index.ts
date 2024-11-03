@@ -18,6 +18,7 @@ export type Theme = {
   name: string
   palette: string[]
   cssVar: Partial<{
+    '--gap': string
     '--main-color': string
     '--main-bgcolor': string
     '--color': string
