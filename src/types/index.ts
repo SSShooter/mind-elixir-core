@@ -174,6 +174,7 @@ export type NodeObj = {
     url: string
     width: number
     height: number
+    fit?: 'fill' | 'contain' | 'cover'
   }
   // main node specific properties
   branchColor?: string

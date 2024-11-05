@@ -17,7 +17,7 @@ export const rmSubline = function (tpc: Topic) {
   if (lc?.tagName === 'svg') lc?.remove() // clear svg group of main node
 }
 
-export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patchData: NodeObj) {
+export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patchData: Partial<NodeObj>) {
   const nodeObj = tpc.nodeObj
   const origin = deepClone(nodeObj)
   // merge styles

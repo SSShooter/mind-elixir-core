@@ -31,55 +31,56 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   if (nodeObj.image) {
     const img = nodeObj.image
     if (img.url && img.width && img.height) {
-      const imgContainer = $d.createElement('img')
-      imgContainer.src = img.url
-      imgContainer.style.width = img.width + 'px'
-      imgContainer.style.height = img.height + 'px'
-      tpc.appendChild(imgContainer)
-      tpc.image = imgContainer
+      const imgEl = $d.createElement('img')
+      imgEl.src = img.url
+      imgEl.style.width = img.width + 'px'
+      imgEl.style.height = img.height + 'px'
+      if (img.fit) imgEl.style.objectFit = img.fit
+      tpc.appendChild(imgEl)
+      tpc.image = imgEl
     } else {
-      console.warn('image url/width/height are required')
+      console.warn('Image url/width/height are required')
     }
   } else if (tpc.image) {
     tpc.image = undefined
   }
 
   {
-    const textContainer = $d.createElement('span')
-    textContainer.className = 'text'
-    textContainer.textContent = nodeObj.topic
-    tpc.appendChild(textContainer)
-    tpc.text = textContainer
+    const textEl = $d.createElement('span')
+    textEl.className = 'text'
+    textEl.textContent = nodeObj.topic
+    tpc.appendChild(textEl)
+    tpc.text = textEl
   }
 
   if (nodeObj.hyperLink) {
-    const linkContainer = $d.createElement('a')
-    linkContainer.className = 'hyper-link'
-    linkContainer.target = '_blank'
-    linkContainer.innerText = '🔗'
-    linkContainer.href = nodeObj.hyperLink
-    tpc.appendChild(linkContainer)
-    tpc.linkContainer = linkContainer
-  } else if (tpc.linkContainer) {
-    tpc.linkContainer = undefined
+    const linkEl = $d.createElement('a')
+    linkEl.className = 'hyper-link'
+    linkEl.target = '_blank'
+    linkEl.innerText = '🔗'
+    linkEl.href = nodeObj.hyperLink
+    tpc.appendChild(linkEl)
+    tpc.link = linkEl
+  } else if (tpc.link) {
+    tpc.link = undefined
   }
 
   if (nodeObj.icons && nodeObj.icons.length) {
-    const iconsContainer = $d.createElement('span')
-    iconsContainer.className = 'icons'
-    iconsContainer.innerHTML = nodeObj.icons.map(icon => `<span>${encodeHTML(icon)}</span>`).join('')
-    tpc.appendChild(iconsContainer)
-    tpc.icons = iconsContainer
+    const iconsEl = $d.createElement('span')
+    iconsEl.className = 'icons'
+    iconsEl.innerHTML = nodeObj.icons.map(icon => `<span>${encodeHTML(icon)}</span>`).join('')
+    tpc.appendChild(iconsEl)
+    tpc.icons = iconsEl
   } else if (tpc.icons) {
     tpc.icons = undefined
   }
 
   if (nodeObj.tags && nodeObj.tags.length) {
-    const tagsContainer = $d.createElement('div')
-    tagsContainer.className = 'tags'
-    tagsContainer.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
-    tpc.appendChild(tagsContainer)
-    tpc.tags = tagsContainer
+    const tagsEl = $d.createElement('div')
+    tagsEl.className = 'tags'
+    tagsEl.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
+    tpc.appendChild(tagsEl)
+    tpc.tags = tagsEl
   } else if (tpc.tags) {
     tpc.tags = undefined
   }
