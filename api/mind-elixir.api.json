@@ -1,7 +1,7 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.47.0",
+    "toolVersion": "7.47.11",
     "schemaVersion": 1011,
     "oldestForwardsCompatibleVersion": 1001,
     "tsdocConfig": {
@@ -728,7 +728,7 @@
             },
             {
               "kind": "Content",
-              "text": "'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es'"
+              "text": "'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr' | 'ko'"
             },
             {
               "kind": "Content",
@@ -3064,33 +3064,6 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#mobileMenu:member",
-              "docComment": "",
-              "excerptTokens": [
-                {
-                  "kind": "Content",
-                  "text": "mobileMenu: "
-                },
-                {
-                  "kind": "Content",
-                  "text": "boolean"
-                },
-                {
-                  "kind": "Content",
-                  "text": ";"
-                }
-              ],
-              "isReadonly": false,
-              "isOptional": false,
-              "releaseTag": "Public",
-              "name": "mobileMenu",
-              "propertyTypeTokenRange": {
-                "startIndex": 1,
-                "endIndex": 2
-              }
-            },
-            {
-              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#mouseSelectionButton:member",
               "docComment": "",
               "excerptTokens": [
@@ -3422,6 +3395,38 @@
             },
             {
               "kind": "PropertySignature",
+              "canonicalReference": "mind-elixir!MindElixirInstance#selectionContainer:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "selectionContainer?: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string | "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "HTMLElement",
+                  "canonicalReference": "!HTMLElement:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isReadonly": false,
+              "isOptional": true,
+              "releaseTag": "Public",
+              "name": "selectionContainer",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 3
+              }
+            },
+            {
+              "kind": "PropertySignature",
               "canonicalReference": "mind-elixir!MindElixirInstance#subBranchStyle:member",
               "docComment": "",
               "excerptTokens": [
@@ -3744,7 +3749,7 @@
             },
             {
               "kind": "Content",
-              "text": "[];\n    tags?: string[];\n    icons?: string[];\n    hyperLink?: string;\n    expanded?: boolean;\n    direction?: number;\n    root?: boolean;\n    image?: {\n        url: string;\n        width: number;\n        height: number;\n    };\n    branchColor?: string;\n    parent?: "
+              "text": "[];\n    tags?: string[];\n    icons?: string[];\n    hyperLink?: string;\n    expanded?: boolean;\n    direction?: number;\n    image?: {\n        url: string;\n        width: number;\n        height: number;\n    };\n    branchColor?: string;\n    parent?: "
             },
             {
               "kind": "Reference",
@@ -3900,7 +3905,7 @@
             },
             {
               "kind": "Content",
-              "text": ";\n    mobileMenu?: boolean;\n    theme?: "
+              "text": ";\n    theme?: "
             },
             {
               "kind": "Reference",
@@ -3909,7 +3914,16 @@
             },
             {
               "kind": "Content",
-              "text": ";\n    nodeMenu?: boolean;\n}"
+              "text": ";\n    nodeMenu?: boolean;\n    selectionContainer?: string | "
+            },
+            {
+              "kind": "Reference",
+              "text": "HTMLElement",
+              "canonicalReference": "!HTMLElement:interface"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
             },
             {
               "kind": "Content",
@@ -3921,7 +3935,7 @@
           "name": "Options",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 22
+            "endIndex": 24
           }
         },
         {
@@ -4259,7 +4273,7 @@
         {
           "kind": "TypeAlias",
           "canonicalReference": "mind-elixir!Theme:type",
-          "docComment": "",
+          "docComment": "/**\n * MindElixir Theme\n *\n * @public\n */\n",
           "excerptTokens": [
             {
               "kind": "Content",
@@ -4267,7 +4281,7 @@
             },
             {
               "kind": "Content",
-              "text": "{\n    name: string;\n    palette: string[];\n    cssVar: "
+              "text": "{\n    name: string;\n    type?: 'light' | 'dark';\n    palette: string[];\n    cssVar: "
             },
             {
               "kind": "Reference",
@@ -4276,7 +4290,7 @@
             },
             {
               "kind": "Content",
-              "text": "<{\n        '--main-color': string;\n        '--main-bgcolor': string;\n        '--color': string;\n        '--bgcolor': string;\n        '--selected': string;\n        '--panel-color': string;\n        '--panel-bgcolor': string;\n        '--root-color': string;\n        '--root-bgcolor': string;\n        '--root-radius': string;\n        '--main-radius': string;\n        '--topic-padding': string;\n        '--panel-border-color': string;\n    }>;\n}"
+              "text": "<{\n        '--gap': string;\n        '--main-color': string;\n        '--main-bgcolor': string;\n        '--color': string;\n        '--bgcolor': string;\n        '--selected': string;\n        '--root-color': string;\n        '--root-bgcolor': string;\n        '--root-border-color': string;\n        '--root-radius': string;\n        '--main-radius': string;\n        '--topic-padding': string;\n        '--panel-color': string;\n        '--panel-bgcolor': string;\n        '--panel-border-color': string;\n    }>;\n}"
             },
             {
               "kind": "Content",

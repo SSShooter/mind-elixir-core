@@ -63,7 +63,7 @@ export interface Expander extends HTMLElement {
 }
 
 // @public (undocumented)
-export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es';
+export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr' | 'ko';
 
 // @public (undocumented)
 export type MainLineParams = {
@@ -240,8 +240,6 @@ export interface MindElixirInstance extends MindElixirMethods {
     // (undocumented)
     mindElixirBox: HTMLElement;
     // (undocumented)
-    mobileMenu: boolean;
-    // (undocumented)
     mouseSelectionButton: 0 | 2;
     // (undocumented)
     newTopicName: string;
@@ -265,6 +263,8 @@ export interface MindElixirInstance extends MindElixirMethods {
     scaleVal: number;
     // (undocumented)
     selection: SelectionArea;
+    // (undocumented)
+    selectionContainer?: string | HTMLElement;
     // (undocumented)
     subBranchStyle: number;
     // (undocumented)
@@ -304,7 +304,6 @@ export type NodeObj = {
     hyperLink?: string;
     expanded?: boolean;
     direction?: number;
-    root?: boolean;
     image?: {
         url: string;
         width: number;
@@ -336,9 +335,9 @@ export type Options = {
     overflowHidden?: boolean;
     generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => PathString;
     generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => PathString;
-    mobileMenu?: boolean;
     theme?: Theme;
     nodeMenu?: boolean;
+    selectionContainer?: string | HTMLElement;
 };
 
 // @public (undocumented)
@@ -386,23 +385,26 @@ export type SummarySvgGroup = SVGGElement & {
     summaryObj: Summary;
 };
 
-// @public (undocumented)
+// @public
 export type Theme = {
     name: string;
+    type?: 'light' | 'dark';
     palette: string[];
     cssVar: Partial<{
+        '--gap': string;
         '--main-color': string;
         '--main-bgcolor': string;
         '--color': string;
         '--bgcolor': string;
         '--selected': string;
-        '--panel-color': string;
-        '--panel-bgcolor': string;
         '--root-color': string;
         '--root-bgcolor': string;
+        '--root-border-color': string;
         '--root-radius': string;
         '--main-radius': string;
         '--topic-padding': string;
+        '--panel-color': string;
+        '--panel-bgcolor': string;
         '--panel-border-color': string;
     }>;
 };

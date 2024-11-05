@@ -14,8 +14,20 @@ type Before = Partial<{
   [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
 }>
 
+/**
+ * MindElixir Theme
+ *
+ * @public
+ */
 export type Theme = {
   name: string
+  /**
+   * Hint for developers to use the correct theme
+   */
+  type?: 'light' | 'dark'
+  /**
+   * Color palette for main branches
+   */
   palette: string[]
   cssVar: Partial<{
     '--gap': string

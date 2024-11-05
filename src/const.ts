@@ -7,6 +7,7 @@ export const DOWN = 3
 
 export const THEME: Theme = {
   name: 'Latte',
+  type: 'light',
   palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],
   cssVar: {
     '--gap': '30px',
@@ -22,6 +23,7 @@ export const THEME: Theme = {
 
 export const DARK_THEME: Theme = {
   name: 'Dark',
+  type: 'dark',
   palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
   cssVar: {
     '--main-color': '#ffffff',

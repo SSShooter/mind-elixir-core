@@ -70,8 +70,8 @@
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
     "@commitlint/config-conventional": "^17.8.1",
-    "@microsoft/api-documenter": "^7.25.14",
-    "@microsoft/api-extractor": "^7.47.0",
+    "@microsoft/api-documenter": "^7.25.21",
+    "@microsoft/api-extractor": "^7.47.11",
     "@playwright/test": "^1.44.1",
     "@rollup/plugin-strip": "^3.0.4",
     "@types/node": "^20.14.2",
