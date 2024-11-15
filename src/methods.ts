@@ -100,7 +100,7 @@ const methods = {
   },
   destroy(this: Partial<MindElixirInstance>) {
     this.disposable!.forEach(fn => fn())
-    this.mindElixirBox?.remove()
+    if (this.mindElixirBox) this.mindElixirBox.innerHTML = ''
     this.mindElixirBox = undefined
     this.nodeData = undefined
     this.arrows = undefined
