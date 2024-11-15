@@ -150,6 +150,9 @@ export type Options = {
 
 export type Uid = string
 
+export type Left = 0
+export type Right = 1
+
 /**
  * MindElixir node object
  *
@@ -169,7 +172,7 @@ export type NodeObj = {
   icons?: string[]
   hyperLink?: string
   expanded?: boolean
-  direction?: number
+  direction?: Left | Right
   image?: {
     url: string
     width: number

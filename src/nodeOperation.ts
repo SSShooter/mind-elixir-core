@@ -5,6 +5,7 @@ import type { Topic } from './types/dom'
 import type { MindElixirInstance, NodeObj } from './types/index'
 import { insertNodeObj, insertParentNodeObj, moveUpObj, moveDownObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
 import { addChildDom, removeNodeDom } from './utils/domManipulation'
+import { LEFT, RIGHT } from './const'
 
 const typeMap: Record<string, InsertPosition> = {
   before: 'beforebegin',
@@ -65,6 +66,10 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
     return
   }
   const newNodeObj = node || this.generateNewObj()
+  if (!nodeObj.parent?.parent) {
+    const direction = nodeEle.offsetParent.offsetParent.parentElement.className === 'lhs' ? LEFT : RIGHT
+    newNodeObj.direction = direction
+  }
   insertNodeObj(newNodeObj, type, nodeObj)
   fillParent(this.nodeData)
   const t = nodeEle.parentElement
