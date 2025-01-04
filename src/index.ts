@@ -6,6 +6,7 @@ import initMouseEvent from './mouse'
 import Bus from './utils/pubsub'
 import { findEle } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
+import dragMoveHelper from './utils/dragMoveHelper'
 // types
 export * from './types/index'
 export * from './types/dom'
@@ -160,6 +161,8 @@ if (import.meta.env.MODE !== 'lite') {
   })
 }
 
+MindElixir.dragMoveHelper = dragMoveHelper
+
 export interface MindElixirCtor {
   new (options: Options): MindElixirInstance
   E: typeof findEle
@@ -171,6 +174,7 @@ export interface MindElixirCtor {
   THEME: typeof THEME
   DARK_THEME: typeof DARK_THEME
   prototype: MindElixirMethods
+  dragMoveHelper: typeof dragMoveHelper
 }
 
 export default MindElixir as unknown as MindElixirCtor

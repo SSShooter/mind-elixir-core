@@ -21,7 +21,7 @@ export default function (mind: MindElixirInstance) {
     }
     mind.clearSelection()
     // e.preventDefault() // can cause <a /> tags don't work
-    const target = e.target as any
+    const target = e.target as HTMLElement
     if (target.tagName === 'ME-EPD') {
       mind.expandNode((target as Expander).previousSibling)
     } else if (isTopic(target)) {
@@ -30,7 +30,7 @@ export default function (mind: MindElixirInstance) {
       return
     } else if (target.tagName === 'text') {
       if (target.dataset.type === 'custom-link') {
-        mind.selectArrow(target.parentElement as CustomSvg)
+        mind.selectArrow(target.parentElement as unknown as CustomSvg)
       } else {
         mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
       }
