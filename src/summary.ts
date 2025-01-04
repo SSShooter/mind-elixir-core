@@ -203,7 +203,6 @@ export const selectSummary = function (this: MindElixirInstance, el: SummarySvgG
     'stroke-width': '2',
     fill: 'none',
   })
-  rect.classList.add('selected')
   el.appendChild(rect)
   this.currentSummary = el
 }
