@@ -131,8 +131,9 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
     }
     const wrapper = getWrapper(child.id)
     const { offsetLeft, offsetTop } = getOffsetLT(container, wrapper)
-    if (i === start) startTop = offsetTop + 20
-    if (i === end) endBottom = offsetTop + wrapper.offsetHeight - 20
+    const offset = start === end ? 10 : 20
+    if (i === start) startTop = offsetTop + offset
+    if (i === end) endBottom = offsetTop + wrapper.offsetHeight - offset
     if (offsetLeft < left) left = offsetLeft
     if (wrapper.offsetWidth + offsetLeft > right) right = wrapper.offsetWidth + offsetLeft
   }
