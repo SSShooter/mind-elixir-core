@@ -10,7 +10,10 @@ export default {
     }
   },
   clear() {
-    this.moved = false
-    this.mousedown = false
+    // delay to avoid trigger contextmenu
+    setTimeout(() => {
+      this.moved = false
+      this.mousedown = false
+    }, 0)
   },
 }

@@ -77,6 +77,7 @@ export default function (mind: MindElixirInstance, option: Options) {
   mind.container.oncontextmenu = function (e) {
     e.preventDefault()
     if (!mind.editable) return
+    if (dragMoveHelper.moved) return
     // console.log(e.pageY, e.screenY, e.clientY)
     const target = e.target as HTMLElement
     if (isTopic(target)) {
