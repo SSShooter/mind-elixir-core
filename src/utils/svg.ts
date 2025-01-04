@@ -67,13 +67,16 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
   div.textContent = origin
   div.contentEditable = 'true'
   div.spellcheck = false
-  const l = textEl.getAttribute('x')
-  const t = textEl.getAttribute('y')
-  div.style.cssText = `min-width:${88}px;position:absolute;left:${l}px;top:${t}px;`
-  const anchor = textEl.getAttribute('text-anchor')
-  if (anchor === 'end') div.style.cssText += 'transform: translate(-100%, -100%);'
-  else if (anchor === 'middle') div.style.cssText += 'transform: translate(-50%, -100%);'
-  else div.style.cssText += 'transform: translate(0, -100%);'
+  const bbox = textEl.getBBox()
+  console.log(bbox)
+  div.style.cssText = `
+    min-width:${Math.max(88, bbox.width)}px;
+    position:absolute;
+    left:${bbox.x}px;
+    top:${bbox.y}px;
+    padding: 2px 4px;
+    margin: -2px -4px; 
+  `
   div.focus()
 
   selectText(div)

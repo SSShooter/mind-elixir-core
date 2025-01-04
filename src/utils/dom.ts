@@ -172,7 +172,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
       if (e.shiftKey) return
 
       e.preventDefault()
-      div?.blur()
+      div.blur()
       this.map.focus()
     }
   })
