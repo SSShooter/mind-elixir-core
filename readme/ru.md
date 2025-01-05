@@ -23,7 +23,6 @@
   </a>
 </p>
 
-[English](/readme.md)
 [中文](/readme/zh.md)
 [Español](/readme/es.md)
 [Français](/readme/fr.md)
@@ -31,51 +30,51 @@
 [Русский](/readme/ru.md)
 [日本語](/readme/ja.md)
 
-Mind elixir is a open source JavaScript mind map core. You can use it with any frontend framework you like.
+Mind Elixir - это библиотека с открытым исходным кодом для создания интеллект-карт на JavaScript. Вы можете использовать её с любым frontend-фреймворком.
 
-Features:
+Особенности:
 
-- Lightweight
-- High performance
-- Framework agnostic
-- Pluginable
-- Build-in drag and drop / node edit plugin
-- Export as SVG / PNG / Html
-- Summarize nodes
-- Bulk operations supported
-- Undo / Redo
-- Efficient shortcuts
-- Easily Styling your node with CSS variables
+- Легковесность
+- Высокая производительность 
+- Независимость от фреймворков
+- Расширяемость с помощью плагинов
+- Встроенные плагины для перетаскивания и редактирования узлов
+- Экспорт в SVG / PNG / HTML
+- Возможность сворачивать узлы
+- Поддержка массовых операций
+- Отмена / Повтор действий
+- Эффективные горячие клавиши
+- Простая стилизация узлов с помощью CSS переменных
 
 <details>
-<summary>Table of Contents</summary>
+<summary>Содержание</summary>
 
-- [Try now](#try-now)
+- [Попробовать сейчас](#попробовать-сейчас)
   - [Playground](#playground)
-- [Documentation](#documentation)
-- [Usage](#usage)
-  - [Install](#install)
+- [Документация](#документация)
+- [Использование](#использование)
+  - [Установка](#установка)
     - [NPM](#npm)
     - [Script tag](#script-tag)
-  - [Init](#init)
-  - [Data Structure](#data-structure)
-  - [Event Handling](#event-handling)
-  - [Data Export And Import](#data-export-and-import)
-  - [Operation Guards](#operation-guards)
-- [Export as a Image](#export-as-a-image)
-  - [Solution 1](#solution-1)
-  - [Solution 2](#solution-2)
-- [APIs](#apis)
-- [Theme](#theme)
-- [Shortcuts](#shortcuts)
-- [Ecosystem](#ecosystem)
-- [Development](#development)
-- [Thanks](#thanks)
-- [Contributors](#contributors)
+  - [Инициализация](#инициализация)
+  - [Структура данных](#структура-данных)
+  - [Обработка событий](#обработка-событий)
+  - [Экспорт и импорт данных](#экспорт-и-импорт-данных)
+  - [Контроль операций](#контроль-операций)
+- [Экспорт в изображение](#экспорт-в-изображение)
+  - [Способ 1](#способ-1)
+  - [Способ 2](#способ-2)
+- [API](#api)
+- [Тема](#тема)
+- [Горячие клавиши](#горячие-клавиши)
+- [Экосистема](#экосистема)
+- [Разработка](#разработка)
+- [Благодарности](#благодарности)
+- [Контрибьюторы](#контрибьюторы)
 
 </details>
 
-## Try now
+## Попробовать сейчас
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
 
@@ -88,13 +87,13 @@ https://mind-elixir.com/
 - Vue3 - https://codesandbox.io/s/mind-elixir-3-x-vue3-lth484
 - Vue2 - https://codesandbox.io/s/mind-elixir-3-x-vue-2-x-5kdfjp
 
-## Documentation
+## Документация
 
 https://docs.mind-elixir.com/
 
-## Usage
+## Использование
 
-### Install
+### Установка
 
 #### NPM
 
@@ -112,7 +111,7 @@ import MindElixir from 'mind-elixir'
 <script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
 ```
 
-### Init
+### Инициализация
 
 ```html
 <div id="map"></div>
@@ -179,7 +178,7 @@ mind.init(data)
 MindElixir.E('node-id')
 ```
 
-### Data Structure
+### Структура данных
 
 ```javascript
 // whole node data structure up to now
@@ -208,7 +207,7 @@ const nodeData = {
 }
 ```
 
-### Event Handling
+### Обработка событий
 
 ```javascript
 mind.bus.addListener('operation', operation => {
@@ -234,7 +233,7 @@ mind.bus.addListener('expandNode', node => {
 })
 ```
 
-### Data Export And Import
+### Экспорт и импорт данных
 
 ```javascript
 // data export
@@ -250,7 +249,7 @@ mind.init(data)
 mind.refresh(data)
 ```
 
-### Operation Guards
+### Контроль операций
 
 ```javascript
 let mind = new MindElixir({
@@ -274,9 +273,9 @@ let mind = new MindElixir({
 })
 ```
 
-## Export as a Image
+## Экспорт в изображение
 
-### Solution 1
+### Способ 1
 
 ```typescript
 const mind = {
@@ -294,7 +293,7 @@ const downloadPng = async () => {
 }
 ```
 
-### Solution 2
+### Способ 2
 
 Install `@ssshooter/modern-screenshot`, then:
 
@@ -321,11 +320,11 @@ const download = async () => {
 }
 ```
 
-## APIs
+## API
 
 https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
 
-## Theme
+## Тема
 
 ```javascript
 const options = {
@@ -364,29 +363,29 @@ mind.changeTheme({
 
 Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`. Please change the theme **manually** when the scheme changes.
 
-## Shortcuts
+## Горячие клавиши
 
-| Shortcut           | Function                         |
-| ------------------ | -------------------------------- |
-| Enter              | Insert Sibling Node              |
-| Tab                | Insert Child Node                |
-| F1                 | Center the Map                   |
-| F2                 | Begin Editing the Current Node   |
-| ↑                  | Select the Previous Sibling Node |
-| ↓                  | Select the Next Sibling Node     |
-| ← / →              | Select Parent or First Child     |
-| PageUp / Alt + ↑   | Move Up Node                     |
-| PageDown / Alt + ↓ | Move Down Node                   |
-| Ctrl + ↑           | Change Layout Pattern to Side    |
-| Ctrl + ←           | Change Layout Pattern to Left    |
-| Ctrl + →           | Change Layout Pattern to Right   |
-| Ctrl + C           | Copy the Current Node            |
-| Ctrl + V           | Paste the Copied Node            |
-| Ctrl + "+"         | Zoom In Mind Map                 |
-| Ctrl + "-"         | Zoom Out Mind Map                |
-| Ctrl + 0           | Reset Zoom Level                 |
+| Комбинация клавиш   | Функция                                |
+| ------------------- | -------------------------------------- |
+| Enter               | Вставить соседний узел                 |
+| Tab                 | Вставить дочерний узел                 |
+| F1                  | Центрировать карту                     |
+| F2                  | Начать редактирование текущего узла    |
+| ↑                   | Выбрать предыдущий узел               |
+| ↓                   | Выбрать следующий узел                |
+| ← / →               | Выбрать родительский или первый дочерний узел |
+| PageUp / Alt + ↑    | Переместить узел вверх                 |
+| PageDown / Alt + ↓  | Переместить узел вниз                  |
+| Ctrl + ↑            | Изменить шаблон расположения на боковой|
+| Ctrl + ←            | Изменить шаблон расположения на левый  |
+| Ctrl + →            | Изменить шаблон расположения на правый |
+| Ctrl + C            | Копировать текущий узел                |
+| Ctrl + V            | Вставить скопированный узел            |
+| Ctrl + "+"          | Увеличить масштаб карты                |
+| Ctrl + "-"          | Уменьшить масштаб карты                |
+| Ctrl + 0            | Сбросить масштаб                       |
 
-## Ecosystem
+## Экосистема
 
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
@@ -396,7 +395,7 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 
 PRs are welcome!
 
-## Development
+## Разработка
 
 ```
 pnpm i
@@ -421,13 +420,13 @@ pnpm doc
 pnpm doc:md
 ```
 
-## Thanks
+## Благодарности
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)
 
-## Contributors
+## Контрибьюторы
 
-Thanks for your contributions to Mind Elixir! Your support and dedication make this project better.
+Спасибо за ваш вклад в Mind Elixir! Ваша поддержка и преданность делают этот проект лучше.
 
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />

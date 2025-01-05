@@ -23,7 +23,6 @@
   </a>
 </p>
 
-[English](/readme.md)
 [中文](/readme/zh.md)
 [Español](/readme/es.md)
 [Français](/readme/fr.md)
@@ -31,70 +30,70 @@
 [Русский](/readme/ru.md)
 [日本語](/readme/ja.md)
 
-Mind elixir is a open source JavaScript mind map core. You can use it with any frontend framework you like.
+Mind Elixirは、オープンソースのJavaScriptマインドマップコアです。お好みのフロントエンドフレームワークと組み合わせて使用できます。
 
-Features:
+特徴：
 
-- Lightweight
-- High performance
-- Framework agnostic
-- Pluginable
-- Build-in drag and drop / node edit plugin
-- Export as SVG / PNG / Html
-- Summarize nodes
-- Bulk operations supported
-- Undo / Redo
-- Efficient shortcuts
-- Easily Styling your node with CSS variables
+- 軽量
+- 高パフォーマンス
+- フレームワーク非依存
+- プラグイン対応
+- ドラッグ＆ドロップ/ノード編集プラグイン内蔵
+- SVG/PNG/HTMLとしてエクスポート可能
+- ノードの要約
+- 一括操作対応
+- 元に戻す/やり直し
+- 効率的なショートカット
+- CSSカスタマイズが容易
 
 <details>
-<summary>Table of Contents</summary>
+<summary>目次</summary>
 
-- [Try now](#try-now)
-  - [Playground](#playground)
-- [Documentation](#documentation)
-- [Usage](#usage)
-  - [Install](#install)
+- [デモを試す](#デモを試す)
+  - [プレイグラウンド](#プレイグラウンド)
+- [ドキュメント](#ドキュメント)
+- [使い方](#使い方)
+  - [インストール](#インストール)
     - [NPM](#npm)
-    - [Script tag](#script-tag)
-  - [Init](#init)
-  - [Data Structure](#data-structure)
-  - [Event Handling](#event-handling)
-  - [Data Export And Import](#data-export-and-import)
-  - [Operation Guards](#operation-guards)
-- [Export as a Image](#export-as-a-image)
-  - [Solution 1](#solution-1)
-  - [Solution 2](#solution-2)
-- [APIs](#apis)
-- [Theme](#theme)
-- [Shortcuts](#shortcuts)
-- [Ecosystem](#ecosystem)
-- [Development](#development)
-- [Thanks](#thanks)
-- [Contributors](#contributors)
+    - [スクリプトタグ](#スクリプトタグ)
+  - [初期化](#初期化)
+  - [データ構造](#データ構造)
+  - [イベントハンドリング](#イベントハンドリング)
+  - [データのエクスポートとインポート](#データのエクスポートとインポート)
+  - [操作ガード](#操作ガード)
+- [画像としてエクスポート](#画像としてエクスポート)
+  - [方法1](#方法1)
+  - [方法2](#方法2)
+- [API](#api)
+- [テーマ](#テーマ)
+- [ショートカット](#ショートカット)
+- [エコシステム](#エコシステム)
+- [開発](#開発)
+- [謝辞](#謝辞)
+- [貢献者](#貢献者)
 
 </details>
 
-## Try now
+## デモを試す
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
 
 https://mind-elixir.com/
 
-### Playground
+### プレイグラウンド
 
 - Vanilla JS - https://codepen.io/ssshooter/pen/OJrJowN
 - React - https://codesandbox.io/s/mind-elixir-3-x-react-18-x-vy9fcq
 - Vue3 - https://codesandbox.io/s/mind-elixir-3-x-vue3-lth484
 - Vue2 - https://codesandbox.io/s/mind-elixir-3-x-vue-2-x-5kdfjp
 
-## Documentation
+## ドキュメント
 
 https://docs.mind-elixir.com/
 
-## Usage
+## 使い方
 
-### Install
+### インストール
 
 #### NPM
 
@@ -106,13 +105,13 @@ npm i mind-elixir -S
 import MindElixir from 'mind-elixir'
 ```
 
-#### Script tag
+#### スクリプトタグ
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
 ```
 
-### Init
+### 初期化
 
 ```html
 <div id="map"></div>
@@ -124,32 +123,32 @@ import MindElixir from 'mind-elixir'
 </style>
 ```
 
-**Breaking Change** since 1.0.0, `data` should be passed to `init()`, not `options`.
+**重要な変更** バージョン1.0.0以降、`data`は`options`ではなく`init()`に渡す必要があります。
 
 ```javascript
 import MindElixir from 'mind-elixir'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
-  el: '#map', // or HTMLDivElement
+  el: '#map', // またはHTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // default true
-  contextMenu: true, // default true
-  toolBar: true, // default true
-  nodeMenu: true, // default true
-  keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
-  overflowHidden: false, // default false
-  mainLinkStyle: 2, // [1,2] default 1
-  mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
+  draggable: true, // デフォルトはtrue
+  contextMenu: true, // デフォルトはtrue
+  toolBar: true, // デフォルトはtrue
+  nodeMenu: true, // デフォルトはtrue
+  keypress: true, // デフォルトはtrue
+  locale: 'ja', // [zh_CN,zh_TW,en,ja,pt,ru] PRs募集中
+  overflowHidden: false, // デフォルトはfalse
+  mainLinkStyle: 2, // [1,2] デフォルトは1
+  mouseSelectionButton: 0, // 0は左クリック、2は右クリック、デフォルトは0
   contextMenuOption: {
     focus: true,
     link: true,
     extend: [
       {
-        name: 'Node edit',
+        name: 'ノード編集',
         onclick: () => {
-          alert('extend menu')
+          alert('拡張メニュー')
         },
       },
     ],
@@ -167,40 +166,39 @@ let options = {
 
 let mind = new MindElixir(options)
 
-mind.install(plugin) // install your plugin
+mind.install(plugin) // プラグインのインストール
 
-// create new map data
-const data = MindElixir.new('new topic')
-// or `example`
-// or the data return from `.getData()`
+// 新しいマップデータの作成
+const data = MindElixir.new('新しいトピック')
+// または `example`
+// または `.getData()`の戻り値
 mind.init(data)
 
-// get a node
+// ノードの取得
 MindElixir.E('node-id')
 ```
 
-### Data Structure
+### データ構造
 
 ```javascript
-// whole node data structure up to now
+// 現在のノードデータ構造
 const nodeData = {
-  topic: 'node topic',
+  topic: 'ノードのトピック',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
   expanded: true,
   parent: null,
-  tags: ['Tag'],
+  tags: ['タグ'],
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
   image: {
-    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png', // required
-    // you need to query the height and width of the image and calculate the appropriate value to display the image
-    height: 90, // required
-    width: 90, // required
+    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png', // 必須
+    height: 90, // 必須
+    width: 90, // 必須
   },
   children: [
     {
-      topic: 'child',
+      topic: '子ノード',
       id: 'xxxx',
       // ...
     },
@@ -208,7 +206,7 @@ const nodeData = {
 }
 ```
 
-### Event Handling
+### イベントハンドリング
 
 ```javascript
 mind.bus.addListener('operation', operation => {
@@ -234,23 +232,23 @@ mind.bus.addListener('expandNode', node => {
 })
 ```
 
-### Data Export And Import
+### データのエクスポートとインポート
 
 ```javascript
-// data export
-const data = mind.getData() // javascript object, see src/example.js
-mind.getDataString() // stringify object
-mind.getDataMd() // markdown
+// データのエクスポート
+const data = mind.getData() // JavaScriptオブジェクト、src/example.jsを参照
+mind.getDataString() // オブジェクトを文字列化
+mind.getDataMd() // Markdown
 
-// data import
-// initiate
+// データのインポート
+// 初期化
 let mind = new MindElixir(options)
 mind.init(data)
-// data update
+// データの更新
 mind.refresh(data)
 ```
 
-### Operation Guards
+### 操作ガード
 
 ```javascript
 let mind = new MindElixir({
@@ -274,16 +272,16 @@ let mind = new MindElixir({
 })
 ```
 
-## Export as a Image
+## 画像としてエクスポート
 
-### Solution 1
+### 方法1
 
 ```typescript
 const mind = {
   /** mind elixir instance */
 }
 const downloadPng = async () => {
-  const blob = await mind.exportPng() // Get a Blob!
+  const blob = await mind.exportPng() // Blobを取得
   if (!blob) return
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -294,9 +292,9 @@ const downloadPng = async () => {
 }
 ```
 
-### Solution 2
+### 方法2
 
-Install `@ssshooter/modern-screenshot`, then:
+`@ssshooter/modern-screenshot`をインストールし、次に実行します：
 
 ```typescript
 import { domToPng } from '@ssshooter/modern-screenshot'
@@ -321,20 +319,20 @@ const download = async () => {
 }
 ```
 
-## APIs
+## API
 
 https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
 
-## Theme
+## テーマ
 
 ```javascript
 const options = {
   // ...
   theme: {
     name: 'Dark',
-    // main lines color palette
+    // メインラインのカラーパレット
     palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
-    // overwrite css variables
+    // CSS変数の上書き
     cssVar: {
       '--main-color': '#ffffff',
       '--main-bgcolor': '#4c4f69',
@@ -343,7 +341,7 @@ const options = {
       '--panel-color': '255, 255, 255',
       '--panel-bgcolor': '45, 55, 72',
     },
-    // all variables see /src/index.less
+    // すべての変数は/src/index.lessを参照
   },
   // ...
 }
@@ -362,31 +360,31 @@ mind.changeTheme({
 })
 ```
 
-Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`. Please change the theme **manually** when the scheme changes.
+Mind Elixirは`prefers-color-scheme`の変更を監視しません。スキームが変更された場合は、テーマを**手動で**変更してください。
 
-## Shortcuts
+## ショートカット
 
-| Shortcut           | Function                         |
+| ショートカット       | 機能                           |
 | ------------------ | -------------------------------- |
-| Enter              | Insert Sibling Node              |
-| Tab                | Insert Child Node                |
-| F1                 | Center the Map                   |
-| F2                 | Begin Editing the Current Node   |
-| ↑                  | Select the Previous Sibling Node |
-| ↓                  | Select the Next Sibling Node     |
-| ← / →              | Select Parent or First Child     |
-| PageUp / Alt + ↑   | Move Up Node                     |
-| PageDown / Alt + ↓ | Move Down Node                   |
-| Ctrl + ↑           | Change Layout Pattern to Side    |
-| Ctrl + ←           | Change Layout Pattern to Left    |
-| Ctrl + →           | Change Layout Pattern to Right   |
-| Ctrl + C           | Copy the Current Node            |
-| Ctrl + V           | Paste the Copied Node            |
-| Ctrl + "+"         | Zoom In Mind Map                 |
-| Ctrl + "-"         | Zoom Out Mind Map                |
-| Ctrl + 0           | Reset Zoom Level                 |
+| Enter              | 兄弟ノードを挿入                |
+| Tab                | 子ノードを挿入                  |
+| F1                 | マップを中央に配置              |
+| F2                 | 現在のノードの編集を開始        |
+| ↑                  | 前の兄弟ノードを選択            |
+| ↓                  | 次の兄弟ノードを選択            |
+| ← / →              | 親または最初の子ノードを選択    |
+| PageUp / Alt + ↑   | ノードを上に移動                |
+| PageDown / Alt + ↓ | ノードを下に移動                |
+| Ctrl + ↑           | レイアウトパターンをサイドに変更 |
+| Ctrl + ←           | レイアウトパターンを左に変更    |
+| Ctrl + →           | レイアウトパターンを右に変更    |
+| Ctrl + C           | 現在のノードをコピー            |
+| Ctrl + V           | コピーしたノードを貼り付け      |
+| Ctrl + "+"         | マインドマップをズームイン      |
+| Ctrl + "-"         | マインドマップをズームアウト    |
+| Ctrl + 0           | ズームレベルをリセット          |
 
-## Ecosystem
+## エコシステム
 
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
@@ -394,40 +392,40 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 - [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
 
-PRs are welcome!
+PRsは大歓迎です！
 
-## Development
+## 開発
 
 ```
 pnpm i
 pnpm dev
 ```
 
-Test generated files with `dev.dist.ts`:
+`dev.dist.ts`で生成されたファイルをテストします：
 
 ```
 pnpm build
 pnpm link ./
 ```
 
-Update docs:
+ドキュメントを更新します：
 
 ```
-# Install api-extractor
+# api-extractorをインストール
 pnpm install -g @microsoft/api-extractor
-# Maintain /src/docs.ts
-# Generate docs
+# /src/docs.tsを維持
+# ドキュメントを生成
 pnpm doc
 pnpm doc:md
 ```
 
-## Thanks
+## 謝辞
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)
 
-## Contributors
+## 貢献者
 
-Thanks for your contributions to Mind Elixir! Your support and dedication make this project better.
+Mind Elixirへの貢献に感謝します！あなたのサポートと献身がこのプロジェクトをより良くします。
 
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />

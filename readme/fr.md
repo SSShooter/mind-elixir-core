@@ -23,7 +23,6 @@
   </a>
 </p>
 
-[English](/readme.md)
 [中文](/readme/zh.md)
 [Español](/readme/es.md)
 [Français](/readme/fr.md)
@@ -31,51 +30,51 @@
 [Русский](/readme/ru.md)
 [日本語](/readme/ja.md)
 
-Mind elixir is a open source JavaScript mind map core. You can use it with any frontend framework you like.
+Mind Elixir est un noyau JavaScript open source pour créer des cartes mentales. Vous pouvez l'utiliser avec n'importe quel framework frontend de votre choix.
 
-Features:
+Caractéristiques :
 
-- Lightweight
-- High performance
-- Framework agnostic
-- Pluginable
-- Build-in drag and drop / node edit plugin
-- Export as SVG / PNG / Html
-- Summarize nodes
-- Bulk operations supported
-- Undo / Redo
-- Efficient shortcuts
-- Easily Styling your node with CSS variables
+- Léger
+- Haute performance
+- Indépendant du framework
+- Extensible via plugins
+- Plugin intégré pour le glisser-déposer / édition de nœuds
+- Export en SVG / PNG / Html
+- Résumé des nœuds
+- Opérations en masse supportées
+- Annuler / Refaire
+- Raccourcis efficaces
+- Stylisation facile des nœuds avec les variables CSS
 
 <details>
-<summary>Table of Contents</summary>
+<summary>Table des matières</summary>
 
-- [Try now](#try-now)
+- [Essayer maintenant](#essayer-maintenant)
   - [Playground](#playground)
 - [Documentation](#documentation)
-- [Usage](#usage)
-  - [Install](#install)
+- [Utilisation](#utilisation)
+  - [Installation](#installation)
     - [NPM](#npm)
-    - [Script tag](#script-tag)
-  - [Init](#init)
-  - [Data Structure](#data-structure)
-  - [Event Handling](#event-handling)
-  - [Data Export And Import](#data-export-and-import)
-  - [Operation Guards](#operation-guards)
-- [Export as a Image](#export-as-a-image)
+    - [Balise script](#balise-script)
+  - [Initialisation](#initialisation)
+  - [Structure des données](#structure-des-données)
+  - [Gestion des événements](#gestion-des-événements)
+  - [Export et import des données](#export-et-import-des-données)
+  - [Gardes d'opération](#gardes-dopération)
+- [Exporter en image](#exporter-en-image)
   - [Solution 1](#solution-1)
   - [Solution 2](#solution-2)
 - [APIs](#apis)
-- [Theme](#theme)
-- [Shortcuts](#shortcuts)
-- [Ecosystem](#ecosystem)
-- [Development](#development)
-- [Thanks](#thanks)
-- [Contributors](#contributors)
+- [Thème](#thème)
+- [Raccourcis](#raccourcis)
+- [Écosystème](#écosystème)
+- [Développement](#développement)
+- [Remerciements](#remerciements)
+- [Contributeurs](#contributeurs)
 
 </details>
 
-## Try now
+## Essayer maintenant
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
 
@@ -92,9 +91,9 @@ https://mind-elixir.com/
 
 https://docs.mind-elixir.com/
 
-## Usage
+## Utilisation
 
-### Install
+### Installation
 
 #### NPM
 
@@ -106,13 +105,13 @@ npm i mind-elixir -S
 import MindElixir from 'mind-elixir'
 ```
 
-#### Script tag
+#### Balise script
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
 ```
 
-### Init
+### Initialisation
 
 ```html
 <div id="map"></div>
@@ -124,32 +123,32 @@ import MindElixir from 'mind-elixir'
 </style>
 ```
 
-**Breaking Change** since 1.0.0, `data` should be passed to `init()`, not `options`.
+**Changement majeur** depuis la version 1.0.0, `data` doit être passé à `init()`, et non `options`.
 
 ```javascript
 import MindElixir from 'mind-elixir'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
-  el: '#map', // or HTMLDivElement
+  el: '#map', // ou HTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // default true
-  contextMenu: true, // default true
-  toolBar: true, // default true
-  nodeMenu: true, // default true
-  keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
-  overflowHidden: false, // default false
-  mainLinkStyle: 2, // [1,2] default 1
-  mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
+  draggable: true, // par défaut true
+  contextMenu: true, // par défaut true
+  toolBar: true, // par défaut true
+  nodeMenu: true, // par défaut true
+  keypress: true, // par défaut true
+  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] en attente de PRs
+  overflowHidden: false, // par défaut false
+  mainLinkStyle: 2, // [1,2] par défaut 1
+  mouseSelectionButton: 0, // 0 pour le bouton gauche, 2 pour le bouton droit, par défaut 0
   contextMenuOption: {
     focus: true,
     link: true,
     extend: [
       {
-        name: 'Node edit',
+        name: 'Édition de nœud',
         onclick: () => {
-          alert('extend menu')
+          alert('menu étendu')
         },
       },
     ],
@@ -167,24 +166,24 @@ let options = {
 
 let mind = new MindElixir(options)
 
-mind.install(plugin) // install your plugin
+mind.install(plugin) // installer votre plugin
 
-// create new map data
-const data = MindElixir.new('new topic')
-// or `example`
-// or the data return from `.getData()`
+// créer de nouvelles données de carte
+const data = MindElixir.new('nouveau sujet')
+// ou `example`
+// ou les données retournées par `.getData()`
 mind.init(data)
 
-// get a node
+// obtenir un nœud
 MindElixir.E('node-id')
 ```
 
-### Data Structure
+### Structure des données
 
 ```javascript
-// whole node data structure up to now
+// structure complète des données de nœud jusqu'à présent
 const nodeData = {
-  topic: 'node topic',
+  topic: 'sujet du nœud',
   id: 'bd1c24420cd2c2f5',
   style: { fontSize: '32', color: '#3298db', background: '#ecf0f1' },
   expanded: true,
@@ -193,14 +192,14 @@ const nodeData = {
   icons: ['😀'],
   hyperLink: 'https://github.com/ssshooter/mind-elixir-core',
   image: {
-    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png', // required
-    // you need to query the height and width of the image and calculate the appropriate value to display the image
-    height: 90, // required
-    width: 90, // required
+    url: 'https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/logo2.png', // requis
+    // vous devez interroger la hauteur et la largeur de l'image et calculer la valeur appropriée pour afficher l'image
+    height: 90, // requis
+    width: 90, // requis
   },
   children: [
     {
-      topic: 'child',
+      topic: 'enfant',
       id: 'xxxx',
       // ...
     },
@@ -208,21 +207,21 @@ const nodeData = {
 }
 ```
 
-### Event Handling
+### Gestion des événements
 
 ```javascript
 mind.bus.addListener('operation', operation => {
   console.log(operation)
   // return {
-  //   name: action name,
-  //   obj: target object
+  //   name: nom de l'action,
+  //   obj: objet cible
   // }
 
   // name: [insertSibling|addChild|removeNode|beginEdit|finishEdit]
-  // obj: target
+  // obj: cible
 
   // name: moveNode
-  // obj: {from:target1,to:target2}
+  // obj: {from:cible1,to:cible2}
 })
 
 mind.bus.addListener('selectNode', node => {
@@ -234,23 +233,23 @@ mind.bus.addListener('expandNode', node => {
 })
 ```
 
-### Data Export And Import
+### Export et import des données
 
 ```javascript
-// data export
-const data = mind.getData() // javascript object, see src/example.js
-mind.getDataString() // stringify object
+// export des données
+const data = mind.getData() // objet javascript, voir src/example.js
+mind.getDataString() // objet en chaîne
 mind.getDataMd() // markdown
 
-// data import
-// initiate
+// import des données
+// initialisation
 let mind = new MindElixir(options)
 mind.init(data)
-// data update
+// mise à jour des données
 mind.refresh(data)
 ```
 
-### Operation Guards
+### Gardes d'opération
 
 ```javascript
 let mind = new MindElixir({
@@ -274,16 +273,16 @@ let mind = new MindElixir({
 })
 ```
 
-## Export as a Image
+## Exporter en image
 
 ### Solution 1
 
 ```typescript
 const mind = {
-  /** mind elixir instance */
+  /** instance mind elixir */
 }
 const downloadPng = async () => {
-  const blob = await mind.exportPng() // Get a Blob!
+  const blob = await mind.exportPng() // Obtenez un Blob !
   if (!blob) return
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -296,7 +295,7 @@ const downloadPng = async () => {
 
 ### Solution 2
 
-Install `@ssshooter/modern-screenshot`, then:
+Installer `@ssshooter/modern-screenshot`, puis :
 
 ```typescript
 import { domToPng } from '@ssshooter/modern-screenshot'
@@ -325,16 +324,16 @@ const download = async () => {
 
 https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
 
-## Theme
+## Thème
 
 ```javascript
 const options = {
   // ...
   theme: {
     name: 'Dark',
-    // main lines color palette
+    // palette de couleurs des lignes principales
     palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
-    // overwrite css variables
+    // remplacer les variables css
     cssVar: {
       '--main-color': '#ffffff',
       '--main-bgcolor': '#4c4f69',
@@ -343,7 +342,7 @@ const options = {
       '--panel-color': '255, 255, 255',
       '--panel-bgcolor': '45, 55, 72',
     },
-    // all variables see /src/index.less
+    // toutes les variables voir /src/index.less
   },
   // ...
 }
@@ -362,31 +361,31 @@ mind.changeTheme({
 })
 ```
 
-Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`. Please change the theme **manually** when the scheme changes.
+Soyez conscient que Mind Elixir n'observera pas le changement de `prefers-color-scheme`. Veuillez changer le thème **manuellement** lorsque le schéma change.
 
-## Shortcuts
+## Raccourcis
 
-| Shortcut           | Function                         |
-| ------------------ | -------------------------------- |
-| Enter              | Insert Sibling Node              |
-| Tab                | Insert Child Node                |
-| F1                 | Center the Map                   |
-| F2                 | Begin Editing the Current Node   |
-| ↑                  | Select the Previous Sibling Node |
-| ↓                  | Select the Next Sibling Node     |
-| ← / →              | Select Parent or First Child     |
-| PageUp / Alt + ↑   | Move Up Node                     |
-| PageDown / Alt + ↓ | Move Down Node                   |
-| Ctrl + ↑           | Change Layout Pattern to Side    |
-| Ctrl + ←           | Change Layout Pattern to Left    |
-| Ctrl + →           | Change Layout Pattern to Right   |
-| Ctrl + C           | Copy the Current Node            |
-| Ctrl + V           | Paste the Copied Node            |
-| Ctrl + "+"         | Zoom In Mind Map                 |
-| Ctrl + "-"         | Zoom Out Mind Map                |
-| Ctrl + 0           | Reset Zoom Level                 |
+| Raccourci          | Fonction                                  |
+| ------------------ | ----------------------------------------- |
+| Entrée            | Insérer un nœud frère                    |
+| Tab               | Insérer un nœud enfant                    |
+| F1                | Centrer la carte                          |
+| F2                | Commencer l'édition du nœud actuel        |
+| ↑                 | Sélectionner le nœud frère précédent      |
+| ↓                 | Sélectionner le nœud frère suivant        |
+| ← / →             | Sélectionner le parent ou le premier enfant|
+| PageUp / Alt + ↑  | Déplacer le nœud vers le haut            |
+| PageDown / Alt + ↓| Déplacer le nœud vers le bas             |
+| Ctrl + ↑          | Changer la disposition en mode latéral    |
+| Ctrl + ←          | Changer la disposition vers la gauche     |
+| Ctrl + →          | Changer la disposition vers la droite     |
+| Ctrl + C          | Copier le nœud actuel                    |
+| Ctrl + V          | Coller le nœud copié                     |
+| Ctrl + "+"        | Zoomer la carte mentale                  |
+| Ctrl + "-"        | Dézoomer la carte mentale                |
+| Ctrl + 0          | Réinitialiser le niveau de zoom          |
 
-## Ecosystem
+## Écosystème
 
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
@@ -394,40 +393,40 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 - [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
 - [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
 
-PRs are welcome!
+Les PRs sont les bienvenues !
 
-## Development
+## Développement
 
 ```
 pnpm i
 pnpm dev
 ```
 
-Test generated files with `dev.dist.ts`:
+Tester les fichiers générés avec `dev.dist.ts` :
 
 ```
 pnpm build
 pnpm link ./
 ```
 
-Update docs:
+Mettre à jour la documentation :
 
 ```
-# Install api-extractor
+# Installer api-extractor
 pnpm install -g @microsoft/api-extractor
-# Maintain /src/docs.ts
-# Generate docs
+# Maintenir /src/docs.ts
+# Générer la documentation
 pnpm doc
 pnpm doc:md
 ```
 
-## Thanks
+## Remerciements
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)
 
-## Contributors
+## Contributeurs
 
-Thanks for your contributions to Mind Elixir! Your support and dedication make this project better.
+Merci pour vos contributions à Mind Elixir ! Votre soutien et votre dévouement rendent ce projet meilleur.
 
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />
