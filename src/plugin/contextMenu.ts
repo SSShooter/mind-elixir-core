@@ -5,7 +5,7 @@ import { encodeHTML, isTopic } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
 import './contextMenu.less'
 
-type Options = {
+export type ContextMenuOption = {
   focus?: boolean
   link?: boolean
   extend?: {
@@ -15,7 +15,7 @@ type Options = {
   }[]
 }
 
-export default function (mind: MindElixirInstance, option: Options) {
+export default function (mind: MindElixirInstance, option: ContextMenuOption) {
   const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words

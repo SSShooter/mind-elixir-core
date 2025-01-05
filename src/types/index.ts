@@ -8,6 +8,7 @@ import type { Summary, SummarySvgGroup } from '../summary'
 import type SelectionArea from '@viselect/vanilla'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { Locale } from '../i18n'
+import type { ContextMenuOption } from '../plugin/contextMenu'
 export * from '../methods'
 
 type Before = Partial<{
@@ -133,7 +134,7 @@ export type Options = {
   draggable?: boolean
   editable?: boolean
   contextMenu?: boolean
-  contextMenuOption?: any
+  contextMenuOption?: ContextMenuOption
   toolBar?: boolean
   keypress?: boolean
   mouseSelectionButton?: 0 | 2
