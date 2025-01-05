@@ -23,6 +23,7 @@
   </a>
 </p>
 
+[English](/readme.md)
 [中文](/readme/zh.md)
 [Español](/readme/es.md)
 [Français](/readme/fr.md)
