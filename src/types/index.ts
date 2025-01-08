@@ -9,7 +9,7 @@ import type SelectionArea from '@viselect/vanilla'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { Locale } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
-export * from '../methods'
+export { type MindElixirMethods } from '../methods'
 
 export enum DirectionClass {
   LHS = 'lhs',
@@ -84,7 +84,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   draggable: boolean
   editable: boolean
   contextMenu: boolean
-  contextMenuOption: object
+  contextMenuOption?: ContextMenuOption
   toolBar: boolean
   keypress: boolean
   mouseSelectionButton: 0 | 2

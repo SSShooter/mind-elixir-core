@@ -15,7 +15,7 @@ export type ContextMenuOption = {
   }[]
 }
 
-export default function (mind: MindElixirInstance, option: ContextMenuOption) {
+export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words
