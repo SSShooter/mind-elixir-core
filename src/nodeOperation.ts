@@ -67,7 +67,7 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   }
   const newNodeObj = node || this.generateNewObj()
   if (!nodeObj.parent?.parent) {
-    const direction = nodeEle.offsetParent.offsetParent.parentElement.className === DirectionClass.LHS ? LEFT : RIGHT
+    const direction = nodeEle.closest('me-main')!.className === DirectionClass.LHS ? LEFT : RIGHT
     newNodeObj.direction = direction
   }
   insertNodeObj(newNodeObj, type, nodeObj)
