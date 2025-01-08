@@ -11,6 +11,11 @@ import type { Locale } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
 export * from '../methods'
 
+export enum DirectionClass {
+  LHS = 'lhs',
+  RHS = 'rhs',
+}
+
 type Before = Partial<{
   [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
 }>

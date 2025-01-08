@@ -2,7 +2,7 @@ import { fillParent, refreshIds, unionTopics } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Topic } from './types/dom'
-import type { MindElixirInstance, NodeObj } from './types/index'
+import { DirectionClass, type MindElixirInstance, type NodeObj } from './types/index'
 import { insertNodeObj, insertParentNodeObj, moveUpObj, moveDownObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
 import { addChildDom, removeNodeDom } from './utils/domManipulation'
 import { LEFT, RIGHT } from './const'
@@ -67,7 +67,7 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   }
   const newNodeObj = node || this.generateNewObj()
   if (!nodeObj.parent?.parent) {
-    const direction = nodeEle.offsetParent.offsetParent.parentElement.className === 'lhs' ? LEFT : RIGHT
+    const direction = nodeEle.offsetParent.offsetParent.parentElement.className === DirectionClass.LHS ? LEFT : RIGHT
     newNodeObj.direction = direction
   }
   insertNodeObj(newNodeObj, type, nodeObj)

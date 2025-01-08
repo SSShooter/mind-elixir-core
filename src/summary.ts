@@ -1,4 +1,5 @@
 import type { MindElixirInstance, Topic } from '.'
+import { DirectionClass } from '.'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { findEle } from './utils/dom'
 import { editSvgText } from './utils/svg'
@@ -103,11 +104,11 @@ const getWrapper = (id: string) => findEle(id).parentElement.parentElement
 const getDirection = function ({ parent, start }: Summary) {
   const parentEl = findEle(parent)
   const parentObj = parentEl.nodeObj
-  let side: 'lhs' | 'rls'
+  let side: DirectionClass
   if (parentObj.parent) {
-    side = parentEl.closest('me-main')?.className as 'lhs' | 'rls'
+    side = parentEl.closest('me-main')!.className as DirectionClass
   } else {
-    side = findEle(parentObj.children![start].id).closest('me-main')?.className as 'lhs' | 'rls'
+    side = findEle(parentObj.children![start].id).closest('me-main')!.className as DirectionClass
   }
   return side
 }
@@ -143,7 +144,7 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const bottom = endBottom + 10
   const md = (top + bottom) / 2
   const color = mei.theme.cssVar['--color']
-  if (side === 'lhs') {
+  if (side === DirectionClass.LHS) {
     path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
     text = createText(summaryText, left - 20, md + 6, 'end', color)
   } else {

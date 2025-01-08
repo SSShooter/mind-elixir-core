@@ -1,4 +1,5 @@
 import type { MindElixirInstance } from '..'
+import { DirectionClass } from '..'
 
 export interface MainLineParams {
   pT: number
@@ -9,7 +10,7 @@ export interface MainLineParams {
   cL: number
   cW: number
   cH: number
-  direction: 'lhs' | 'rhs'
+  direction: DirectionClass
   containerHeight: number
 }
 
@@ -22,7 +23,7 @@ export interface SubLineParams {
   cL: number
   cW: number
   cH: number
-  direction: 'lhs' | 'rhs'
+  direction: DirectionClass
   isFirst: boolean | undefined
 }
 
@@ -32,7 +33,7 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
   let x1 = pL + pW / 2
   const y1 = pT + pH / 2
   let x2
-  if (direction === 'lhs') {
+  if (direction === DirectionClass.LHS) {
     x2 = cL + cW
   } else {
     x2 = cL
@@ -40,7 +41,7 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
   const y2 = cT + cH / 2
   const pct = Math.abs(y2 - y1) / containerHeight
   const offset = (1 - pct) * 0.25 * (pW / 2)
-  if (direction === 'lhs') {
+  if (direction === DirectionClass.LHS) {
     x1 = x1 - pW / 10 - offset
   } else {
     x1 = x1 + pW / 10 + offset
@@ -63,7 +64,7 @@ export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, 
   let x2 = 0
   let xMid = 0
   const offset = (Math.abs(y1 - y2) / 300) * GAP
-  if (direction === 'lhs') {
+  if (direction === DirectionClass.LHS) {
     xMid = pL
     x1 = xMid + GAP
     x2 = xMid - GAP

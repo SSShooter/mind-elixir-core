@@ -1,6 +1,6 @@
 import { LEFT, RIGHT, SIDE } from '../const'
 import type { Children } from '../types/dom'
-import type { MindElixirInstance, NodeObj } from '../types/index'
+import { DirectionClass, type MindElixirInstance, type NodeObj } from '../types/index'
 import { shapeTpc } from './dom'
 
 const $d = document
@@ -43,9 +43,9 @@ export const layout = function (this: MindElixirInstance) {
 
 const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root: HTMLElement) {
   const leftPart = $d.createElement('me-main')
-  leftPart.className = 'lhs'
+  leftPart.className = DirectionClass.LHS
   const rightPart = $d.createElement('me-main')
-  rightPart.className = 'rhs'
+  rightPart.className = DirectionClass.RHS
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
     const { grp: w } = mei.createWrapper(nodeObj)

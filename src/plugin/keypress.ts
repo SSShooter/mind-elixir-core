@@ -1,5 +1,6 @@
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
+import { DirectionClass } from '../types/index'
 
 const selectRootLeft = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
@@ -26,13 +27,13 @@ const selectFirstChild = function (mei: MindElixirInstance, currentNode: Topic) 
     mei.selectNode(target)
   }
 }
-const handleLeftRight = function (mei: MindElixirInstance, direction: 'lhs' | 'rhs') {
+const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionClass) {
   const current = mei.currentNode || mei.currentNodes?.[0]
   if (!current) return
   const nodeObj = current.nodeObj
   const main = current.offsetParent.offsetParent.parentElement
   if (!nodeObj.parent) {
-    direction === 'lhs' ? selectRootLeft(mei) : selectRootRight(mei)
+    direction === DirectionClass.LHS ? selectRootLeft(mei) : selectRootRight(mei)
   } else if (main.className === direction) {
     selectFirstChild(mei, current)
   } else {
@@ -116,13 +117,13 @@ export default function (mind: MindElixirInstance) {
       if (e.metaKey || e.ctrlKey) {
         return mind.initLeft()
       }
-      handleLeftRight(mind, 'lhs')
+      handleLeftRight(mind, DirectionClass.LHS)
     },
     ArrowRight: e => {
       if (e.metaKey || e.ctrlKey) {
         return mind.initRight()
       }
-      handleLeftRight(mind, 'rhs')
+      handleLeftRight(mind, DirectionClass.RHS)
     },
     PageUp: () => {
       return mind.moveUpNode()

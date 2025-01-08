@@ -1,7 +1,7 @@
 import { createPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
 import type { Wrapper, Topic } from './types/dom'
-import type { MindElixirInstance } from './types/index'
+import { DirectionClass, type MindElixirInstance } from './types/index'
 
 /**
  * Link nodes with svg,
@@ -36,7 +36,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const { offsetLeft: cL, offsetTop: cT } = getOffsetLT(this.nodes, tpc)
     const cW = tpc.offsetWidth
     const cH = tpc.offsetHeight
-    const direction = el.parentNode.className as 'lhs' | 'rhs'
+    const direction = el.parentNode.className as DirectionClass
 
     const mainPath = this.generateMainBranch({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeight: this.nodes.offsetHeight })
     const palette = this.theme.palette
@@ -48,7 +48,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const expander = el.children[0].children[1]
     if (expander) {
       expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
-      if (direction === 'lhs') {
+      if (direction === DirectionClass.LHS) {
         expander.style.left = -10 + 'px'
       } else {
         expander.style.right = -10 + 'px'
@@ -82,7 +82,7 @@ const traverseChildren = function (
   svgContainer: SVGSVGElement,
   branchColor: string,
   wrapper: Wrapper,
-  direction: 'lhs' | 'rhs',
+  direction: DirectionClass,
   isFirst?: boolean
 ) {
   const parent = wrapper.firstChild
@@ -109,9 +109,9 @@ const traverseChildren = function (
 
     if (expander) {
       expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
-      if (direction === 'lhs') {
+      if (direction === DirectionClass.LHS) {
         expander.style.left = 10 + 'px'
-      } else if (direction === 'rhs') {
+      } else if (direction === DirectionClass.RHS) {
         expander.style.right = 10 + 'px'
       }
       // this property is added in the layout phase
