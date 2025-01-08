@@ -1,6 +1,6 @@
 import type { MindElixirInstance } from '..'
 
-export type MainLineParams = {
+export interface MainLineParams {
   pT: number
   pL: number
   pW: number
@@ -13,7 +13,7 @@ export type MainLineParams = {
   containerHeight: number
 }
 
-export type SubLineParams = {
+export interface SubLineParams {
   pT: number
   pL: number
   pW: number
