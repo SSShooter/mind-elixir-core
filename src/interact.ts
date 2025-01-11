@@ -1,6 +1,6 @@
 import type { Locale } from './i18n'
 import { rmSubline } from './nodeOperation'
-import type { Topic } from './types/dom'
+import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
 import { findEle } from './utils/dom'
 import { fillParent } from './utils/index'
@@ -298,10 +298,8 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
     const children = parent.parentNode.children[1]
     children.remove()
   }
-  // TODO 在此函数构造 html 结构，而非调用 layout
-  // this.layout()
-  // linkDiv 已实现只更新特定主节点
-  this.linkDiv()
+
+  this.linkDiv(el.closest('me-main > me-wrapper') as Wrapper)
 
   // scroll into view if the node is out of view
   const elRect = el.getBoundingClientRect()
