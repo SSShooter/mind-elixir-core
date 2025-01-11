@@ -302,6 +302,16 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   // this.layout()
   // linkDiv 已实现只更新特定主节点
   this.linkDiv()
+
+  // scroll into view if the node is out of view
+  const elRect = el.getBoundingClientRect()
+  const containerRect = this.container.getBoundingClientRect()
+  const isOutOfView =
+    elRect.bottom > containerRect.bottom || elRect.top < containerRect.top || elRect.right > containerRect.right || elRect.left < containerRect.left
+  if (isOutOfView) {
+    el.scrollIntoView({ block: 'center', inline: 'center' })
+  }
+
   this.bus.fire('expandNode', node)
 }
 
