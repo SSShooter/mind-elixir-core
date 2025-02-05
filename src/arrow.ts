@@ -190,6 +190,8 @@ export const unselectArrow = function (this: MindElixirInstance) {
 }
 
 const hideLinkController = function (mei: MindElixirInstance) {
+  mei.helper1?.destory(mei.map)
+  mei.helper2?.destory(mei.map)
   mei.linkController.style.display = 'none'
   mei.P2.style.display = 'none'
   mei.P3.style.display = 'none'
@@ -223,11 +225,6 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     x2: p4x + '',
     y2: p4y + '',
   })
-
-  if (mei.helper1) {
-    mei.helper1.destory(mei.map)
-    mei.helper2?.destory(mei.map)
-  }
 
   mei.helper1 = LinkDragMoveHelper.create(mei.P2)
   mei.helper2 = LinkDragMoveHelper.create(mei.P3)
