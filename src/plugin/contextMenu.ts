@@ -4,6 +4,7 @@ import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
 import './contextMenu.less'
+import type { ArrowOptions } from '../arrow'
 
 export type ContextMenuOption = {
   focus?: boolean
@@ -39,6 +40,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   const up = createLi('cm-up', lang.moveUp, 'PgUp')
   const down = createLi('cm-down', lang.moveDown, 'Pgdn')
   const link = createLi('cm-link', lang.link, '')
+  const linkBidirectional = createLi('cm-link-bidirectional', 'Bidreactional Link', '')
   const summary = createLi('cm-summary', lang.summary, '')
 
   const menuUl = document.createElement('ul')
@@ -56,6 +58,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   menuUl.appendChild(summary)
   if (!option || option.link) {
     menuUl.appendChild(link)
+    menuUl.appendChild(linkBidirectional)
   }
   if (option && option.extend) {
     for (let i = 0; i < option.extend.length; i++) {
@@ -178,7 +181,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
     mind.moveDownNode()
     menuContainer.hidden = true
   }
-  link.onclick = () => {
+  const linkFunc = (options?: ArrowOptions) => {
     menuContainer.hidden = true
     const from = mind.currentNode as Topic
     const tips = createTips(lang.clickTips)
@@ -190,7 +193,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
         tips.remove()
         const target = e.target as Topic
         if (target.parentElement.tagName === 'ME-PARENT' || target.parentElement.tagName === 'ME-ROOT') {
-          mind.createArrow(from, target)
+          mind.createArrow(from, target, options)
         } else {
           console.log('link cancel')
         }
@@ -200,6 +203,8 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
       }
     )
   }
+  link.onclick = () => linkFunc()
+  linkBidirectional.onclick = () => linkFunc({ bidirectional: true })
   summary.onclick = () => {
     menuContainer.hidden = true
     mind.createSummary()

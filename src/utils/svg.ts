@@ -32,7 +32,7 @@ export const createLine = function () {
   return line
 }
 
-export const createSvgGroup = function (d: string, arrowd: string): CustomSvg {
+export const createSvgGroup = function (d: string, arrowd1: string, arrowd2: string): CustomSvg {
   const pathAttrs = {
     stroke: 'rgb(235, 95, 82)',
     fill: 'none',
@@ -40,20 +40,18 @@ export const createSvgGroup = function (d: string, arrowd: string): CustomSvg {
     'stroke-width': '2',
   }
   const g = $d.createElementNS(svgNS, 'g') as CustomSvg
-  const path = $d.createElementNS(svgNS, 'path')
-  const arrow = $d.createElementNS(svgNS, 'path')
-  setAttributes(arrow, {
-    d: arrowd,
-    ...pathAttrs,
+  ;[d, arrowd1, arrowd2].forEach((d, i) => {
+    const path = $d.createElementNS(svgNS, 'path')
+    const attrs = {
+      d,
+      ...pathAttrs,
+    }
+    setAttributes(path, attrs)
+    if (i === 0) {
+      path.setAttribute('stroke-dasharray', '8,2')
+    }
+    g.appendChild(path)
   })
-  setAttributes(path, {
-    d,
-    ...pathAttrs,
-    'stroke-dasharray': '8,2',
-  })
-
-  g.appendChild(path)
-  g.appendChild(arrow)
   return g
 }
 

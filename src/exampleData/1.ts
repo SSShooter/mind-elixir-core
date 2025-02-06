@@ -354,6 +354,7 @@ const aboutMindElixir: MindElixirData = {
         x: 146.1171875,
         y: 45,
       },
+      bidirectional: false,
     },
   ],
   summaries: [

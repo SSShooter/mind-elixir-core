@@ -5,10 +5,13 @@ import { createSvgGroup, editSvgText } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
 
-// p1: starting point
-// p2: control point of starting point
-// p3: control point of ending point
-// p4: ending point
+/**
+ * FYI
+ * p1: starting point
+ * p2: control point of starting point
+ * p3: control point of ending point
+ * p4: ending point
+ */
 
 export type Arrow = {
   id: string
@@ -23,6 +26,7 @@ export type Arrow = {
     x: number
     y: number
   }
+  bidirectional?: boolean
 }
 export type DivData = {
   cx: number // center x
@@ -32,7 +36,13 @@ export type DivData = {
   ctrlX: number // control point x
   ctrlY: number // control point y
 }
+export type ArrowOptions = {
+  bidirectional?: boolean
+}
 
+/**
+ * calc control point, center point and div size
+ */
 function calcCtrlP(mei: MindElixirInstance, tpc: Topic, delta: { x: number; y: number }) {
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, tpc)
   const w = tpc.offsetWidth
@@ -51,7 +61,9 @@ function calcCtrlP(mei: MindElixirInstance, tpc: Topic, delta: { x: number; y: n
   }
 }
 
-// calc starting and ending point using control point and div status
+/**
+ * calc starting and ending point using control point and div status
+ */
 function calcP(data: DivData) {
   let x, y
   const k = (data.cy - data.ctrlY) / (data.ctrlX - data.cx)
@@ -104,12 +116,15 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const { ctrlX: p3x, ctrlY: p3y } = toData
   const { x: p4x, y: p4y } = calcP(toData)
 
-  const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
+  const arrowT = getArrowPoints(p3x, p3y, p4x, p4y)
 
-  const newSvgGroup = createSvgGroup(
-    `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`,
-    `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
-  )
+  const toArrow = `M ${arrowT.x1} ${arrowT.y1} L ${p4x} ${p4y} L ${arrowT.x2} ${arrowT.y2}`
+  let fromArrow = ''
+  if (obj.bidirectional) {
+    const arrowF = getArrowPoints(p2x, p2y, p1x, p1y)
+    fromArrow = `M ${arrowF.x1} ${arrowF.y1} L ${p1x} ${p1y} L ${arrowF.x2} ${arrowF.y2}`
+  }
+  const newSvgGroup = createSvgGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow)
 
   const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
   const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
@@ -128,7 +143,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   console.log(`DrawArrow Execution time: ${end - start} ms`)
 }
 
-export const createArrow = function (this: MindElixirInstance, from: Topic, to: Topic) {
+export const createArrow = function (this: MindElixirInstance, from: Topic, to: Topic, options: ArrowOptions = {}) {
   const arrowObj = {
     id: generateUUID(),
     label: 'Custom Link',
@@ -142,6 +157,7 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
       x: 0,
       y: -200,
     },
+    ...options,
   }
   drawArrow(this, from, to, arrowObj)
 
@@ -229,8 +245,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   mei.helper1 = LinkDragMoveHelper.create(mei.P2)
   mei.helper2 = LinkDragMoveHelper.create(mei.P3)
 
-  // TODO: generate cb function
   mei.helper1.init(mei.map, (deltaX, deltaY) => {
+    if (!mei.currentArrow) return
     // recalc key points
     p2x = p2x + deltaX / mei.scaleVal
     p2y = p2y + deltaY / mei.scaleVal
@@ -242,8 +258,12 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     // update dom position
     mei.P2.style.top = p2y + 'px'
     mei.P2.style.left = p2x + 'px'
-    mei.currentArrow?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-    setAttributes(mei.currentArrow!.children[2], {
+    mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+    if (linkItem.bidirectional) {
+      const arrowPoint = getArrowPoints(p2x, p2y, p1x, p1y)
+      mei.currentArrow.children[2].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p1x} ${p1y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+    }
+    setAttributes(mei.currentArrow.children[3], {
       x: halfx + '',
       y: halfy + '',
     })
@@ -259,6 +279,7 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   })
 
   mei.helper2.init(mei.map, (deltaX, deltaY) => {
+    if (!mei.currentArrow) return
     p3x = p3x + deltaX / mei.scaleVal
     p3y = p3y + deltaY / mei.scaleVal
     const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
@@ -270,9 +291,9 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
 
     mei.P3.style.top = p3y + 'px'
     mei.P3.style.left = p3x + 'px'
-    mei.currentArrow?.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-    mei.currentArrow?.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
-    setAttributes(mei.currentArrow!.children[2], {
+    mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+    mei.currentArrow.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+    setAttributes(mei.currentArrow.children[3], {
       x: halfx + '',
       y: halfy + '',
     })
@@ -304,7 +325,7 @@ export function renderArrow(this: MindElixirInstance) {
 export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   console.time('editSummary')
   if (!el) return
-  const textEl = el.children[2]
+  const textEl = el.children[3]
   editSvgText(this, textEl, div => {
     const node = el.arrowObj
     const text = div.textContent?.trim() || ''

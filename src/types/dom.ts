@@ -54,5 +54,5 @@ export type CustomLine = SVGPathElement
 export type CustomArrow = SVGPathElement
 export interface CustomSvg extends SVGGElement {
   arrowObj: Arrow
-  children: HTMLCollection & [CustomLine, CustomArrow, SVGTextElement]
+  children: HTMLCollection & [CustomLine, CustomArrow, CustomArrow, SVGTextElement]
 }
