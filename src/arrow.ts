@@ -323,6 +323,7 @@ export function renderArrow(this: MindElixirInstance) {
 }
 
 export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
+  hideLinkController(this)
   console.time('editSummary')
   if (!el) return
   const textEl = el.children[3]
