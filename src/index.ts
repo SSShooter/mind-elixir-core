@@ -7,9 +7,6 @@ import Bus from './utils/pubsub'
 import { findEle } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
 import dragMoveHelper from './utils/dragMoveHelper'
-// types
-export * from './types/index'
-export * from './types/dom'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
 import { sub, main } from './utils/generateBranch'
@@ -178,3 +175,8 @@ export interface MindElixirCtor {
 }
 
 export default MindElixir as unknown as MindElixirCtor
+
+// types
+export type * from './utils/pubsub'
+export type * from './types/index'
+export type * from './types/dom'

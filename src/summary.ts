@@ -1,5 +1,5 @@
 import type { MindElixirInstance, Topic } from '.'
-import { DirectionClass } from '.'
+import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { findEle } from './utils/dom'
 import { editSvgText } from './utils/svg'

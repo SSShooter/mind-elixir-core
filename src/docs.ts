@@ -5,7 +5,6 @@ import type { Summary, SummarySvgGroup } from './summary'
 import type { MindElixirData, MindElixirInstance, NodeObj, NodeObjExport, Options, Theme } from './types'
 import type { MainLineParams, SubLineParams } from './utils/generateBranch'
 import type { Locale } from './i18n'
-
 export {
   methods,
   Theme,
@@ -23,4 +22,5 @@ export {
   Locale,
 }
 
-export * from './types/dom'
+export type * from './types/dom'
+export type * from './utils/pubsub'

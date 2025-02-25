@@ -1,5 +1,5 @@
 import type { MindElixirInstance } from '..'
-import { DirectionClass } from '..'
+import { DirectionClass } from '../types/index'
 
 export interface MainLineParams {
   pT: number
