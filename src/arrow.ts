@@ -273,9 +273,10 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
       x2: p2x + '',
       y2: p2y + '',
     })
-    // update linkItem
     linkItem.delta1.x = p2x - fromData.cx
     linkItem.delta1.y = p2y - fromData.cy
+
+    mei.bus.fire('updateArrowDelta', linkItem)
   })
 
   mei.helper2.init(mei.map, (deltaX, deltaY) => {
@@ -306,6 +307,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     })
     linkItem.delta2.x = p3x - toData.cx
     linkItem.delta2.y = p3y - toData.cy
+
+    mei.bus.fire('updateArrowDelta', linkItem)
   })
 }
 

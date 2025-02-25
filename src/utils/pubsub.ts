@@ -85,6 +85,10 @@ export type EventMap = {
   expandNode: (nodeObj: NodeObj) => void
   linkDiv: () => void
   scale: (scale: number) => void
+  /**
+   *  please use throttling to prevent performance degradation
+   */
+  updateArrowDelta: (arrow: Arrow) => void
 }
 
 const Bus = {
