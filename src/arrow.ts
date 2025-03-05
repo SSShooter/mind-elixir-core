@@ -5,27 +5,37 @@ import { createSvgGroup, editSvgText } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
 
-/**
- * FYI
- * p1: starting point
- * p2: control point of starting point
- * p3: control point of ending point
- * p4: ending point
- */
-
-export type Arrow = {
+export interface Arrow {
   id: string
+  /**
+   * label of arrow
+   */
   label: string
+  /**
+   * id of start node
+   */
   from: Uid
+  /**
+   * id of end node
+   */
   to: Uid
+  /**
+   *  offset of control point from start point
+   */
   delta1: {
     x: number
     y: number
   }
+  /**
+   * offset of control point from end point
+   */
   delta2: {
     x: number
     y: number
   }
+  /**
+   * whether the arrow is bidirectional
+   */
   bidirectional?: boolean
 }
 export type DivData = {
@@ -62,7 +72,7 @@ function calcCtrlP(mei: MindElixirInstance, tpc: Topic, delta: { x: number; y: n
 }
 
 /**
- * calc starting and ending point using control point and div status
+ * calc start and end point using control point and div status
  */
 function calcP(data: DivData) {
   let x, y
@@ -103,6 +113,13 @@ const createText = function (string: string, x: number, y: number, color?: strin
   return text
 }
 
+/**
+ * FYI
+ * p1: start point
+ * p2: control point of start point
+ * p3: control point of end point
+ * p4: end point
+ */
 const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj: Arrow, isInitPaint?: boolean) {
   if (!from || !to) {
     return // not expand

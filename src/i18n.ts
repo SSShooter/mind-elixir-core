@@ -11,6 +11,10 @@ type LangPack = {
   clickTips: string
   summary: string
 }
+
+/**
+ * @public
+ */
 export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr' | 'ko'
 const cn = {
   addChild: '插入子节点',

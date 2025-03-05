@@ -4,11 +4,23 @@ import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { findEle } from './utils/dom'
 import { editSvgText } from './utils/svg'
 
-export type Summary = {
+/**
+ * @public
+ */
+export interface Summary {
   id: string
   text: string
+  /**
+   * parent node id of the summary
+   */
   parent: string
+  /**
+   * start index of the summary
+   */
   start: number
+  /**
+   * end index of the summary
+   */
   end: number
 }
 
