@@ -23,13 +23,14 @@
   </a>
 </p>
 
-[English](/readme.md)
-[中文](/readme/zh.md)
-[Español](/readme/es.md)
-[Français](/readme/fr.md)
-[Português](/readme/pt.md)
-[Русский](/readme/ru.md)
-[日本語](/readme/ja.md)
+[English](/readme.md) |
+[中文](/readme/zh.md) |
+[Español](/readme/es.md) |
+[Français](/readme/fr.md) |
+[Português](/readme/pt.md) |
+[Русский](/readme/ru.md) |
+[日本語](/readme/ja.md) |
+[한국어](/readme/ko.md)
 
 Mind Elixir est un noyau JavaScript open source pour créer des cartes mentales. Vous pouvez l'utiliser avec n'importe quel framework frontend de votre choix.
 

@@ -23,13 +23,14 @@
   </a>
 </p>
 
-[English](/readme.md)
-[中文](/readme/zh.md)
-[Español](/readme/es.md)
-[Français](/readme/fr.md)
-[Português](/readme/pt.md)
-[Русский](/readme/ru.md)
-[日本語](/readme/ja.md)
+[English](/readme.md) |
+[中文](/readme/zh.md) |
+[Español](/readme/es.md) |
+[Français](/readme/fr.md) |
+[Português](/readme/pt.md) |
+[Русский](/readme/ru.md) |
+[日本語](/readme/ja.md) |
+[한국어](/readme/ko.md)
 
 Mind Elixir - это библиотека с открытым исходным кодом для создания интеллект-карт на JavaScript. Вы можете использовать её с любым frontend-фреймворком.
 
