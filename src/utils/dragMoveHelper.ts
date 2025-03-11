@@ -14,8 +14,8 @@ export default {
       if (scaleVal < 1) {
         const minScrollLeft = (container.scrollWidth - map.clientWidth * scaleVal) / 2
         const minScrollTop = (container.scrollHeight - map.clientHeight * scaleVal) / 2
-        scrollLeft = Math.max(minScrollLeft, Math.min(container.scrollWidth - minScrollLeft, scrollLeft))
-        scrollTop = Math.max(minScrollTop, Math.min(container.scrollHeight - minScrollTop, scrollTop))
+        scrollLeft = Math.max(minScrollLeft, Math.min(container.scrollWidth - minScrollLeft - container.clientWidth, scrollLeft))
+        scrollTop = Math.max(minScrollTop, Math.min(container.scrollHeight - minScrollTop - container.clientHeight, scrollTop))
       }
       container.scrollTo(scrollLeft, scrollTop)
     }
