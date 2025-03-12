@@ -81,7 +81,7 @@ export default function (mei: MindElixirInstance) {
     }
   }
   mei.map.addEventListener('keydown', (e: KeyboardEvent) => {
-    if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key === 'Z') mei.redo()
+    if ((e.metaKey || e.ctrlKey) && ((e.shiftKey && e.key === 'Z') || e.key === 'y')) mei.redo()
     else if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
   })
 }
