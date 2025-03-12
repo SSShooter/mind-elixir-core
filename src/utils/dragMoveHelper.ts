@@ -1,12 +1,23 @@
+import type { MindElixirInstance } from '../types/index'
+
 export default {
   moved: false, // diffrentiate click and move
   mousedown: false,
-  onMove(e: MouseEvent, container: HTMLElement) {
+  onMove(e: MouseEvent, mind: MindElixirInstance) {
     if (this.mousedown) {
       this.moved = true
       const deltaX = e.movementX
       const deltaY = e.movementY
-      container.scrollTo(container.scrollLeft - deltaX, container.scrollTop - deltaY)
+      const { container, map, scaleVal } = mind
+      let scrollLeft = container.scrollLeft - deltaX
+      let scrollTop = container.scrollTop - deltaY
+      if (scaleVal < 1) {
+        const minScrollLeft = (container.scrollWidth - map.clientWidth * scaleVal) / 2
+        const minScrollTop = (container.scrollHeight - map.clientHeight * scaleVal) / 2
+        scrollLeft = Math.max(minScrollLeft, Math.min(container.scrollWidth - minScrollLeft - container.clientWidth, scrollLeft))
+        scrollTop = Math.max(minScrollTop, Math.min(container.scrollHeight - minScrollTop - container.clientHeight, scrollTop))
+      }
+      container.scrollTo(scrollLeft, scrollTop)
     }
   },
   clear() {
