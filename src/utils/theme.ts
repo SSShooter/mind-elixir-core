@@ -5,6 +5,7 @@ const changeTheme = function (this: MindElixirInstance, theme: Theme, shouldRefr
   this.theme = theme
   const cssVar = this.theme.cssVar
   const keys = Object.keys(cssVar)
+  // TODO: clear all cssText is too aggressive
   this.mindElixirBox.style.cssText = ''
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i] as keyof typeof cssVar
