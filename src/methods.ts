@@ -70,6 +70,7 @@ const methods = {
   ...summary,
   ...exportImage,
   init(this: MindElixirInstance, data: MindElixirData) {
+    data = JSON.parse(JSON.stringify(data))
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
       this.direction = data.direction
