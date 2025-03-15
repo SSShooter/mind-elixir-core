@@ -1,4 +1,4 @@
-.mind-elixir {
+.map-container {
   // May overwrited by js
   --gap: 30px; // child node horizontal gap
   --root-radius: 30px;
@@ -17,17 +17,9 @@
   --panel-border-color: #eaeaea;
   // ---
 
-  position: relative;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC,
     WenQuanYi Micro Hei, sans-serif;
-  .hyper-link {
-    text-decoration: none;
-    margin-left: 0.3em;
-  }
-}
-
-.map-container {
   user-select: none;
   height: 100%;
   width: 100%;
@@ -43,6 +35,10 @@
   .selected {
     outline: 2px solid var(--selected);
     outline-offset: 1px;
+  }
+  .hyper-link {
+    text-decoration: none;
+    margin-left: 0.3em;
   }
   .lhs {
     direction: rtl;

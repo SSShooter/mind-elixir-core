@@ -5,14 +5,13 @@ const changeTheme = function (this: MindElixirInstance, theme: Theme, shouldRefr
   this.theme = theme
   const cssVar = this.theme.cssVar
   const keys = Object.keys(cssVar)
-  // TODO: clear all cssText is too aggressive
-  this.mindElixirBox.style.cssText = ''
+  this.container.style.cssText = ''
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i] as keyof typeof cssVar
-    this.mindElixirBox.style.setProperty(key, cssVar[key] as string)
+    this.container.style.setProperty(key, cssVar[key] as string)
   }
   if (!theme.cssVar['--gap']) {
-    this.mindElixirBox.style.setProperty('--gap', '30px')
+    this.container.style.setProperty('--gap', '30px')
   }
   shouldRefresh && this.refresh()
 }

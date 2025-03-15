@@ -48,7 +48,7 @@ function MindElixir(
   }
   if (!ele) throw new Error('MindElixir: el is not a valid element')
 
-  ele.className += ' mind-elixir'
+  ele.style.position = 'relative'
   ele.innerHTML = ''
   this.mindElixirBox = ele as HTMLElement
   this.disposable = []
