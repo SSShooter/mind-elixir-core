@@ -37,6 +37,7 @@ function MindElixir(
     generateSubBranch,
     overflowHidden,
     theme,
+    alignment,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -108,6 +109,7 @@ function MindElixir(
   this.linkController.appendChild(this.line1)
   this.linkController.appendChild(this.line2)
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
+  this.alignment = alignment ?? 'root'
 
   this.map.appendChild(this.nodes)
 

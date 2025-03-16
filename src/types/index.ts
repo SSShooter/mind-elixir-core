@@ -54,6 +54,8 @@ export type Theme = {
   }>
 }
 
+export type Alignment = 'root' | 'nodes'
+
 /**
  * The MindElixir instance
  *
@@ -125,6 +127,8 @@ export interface MindElixirInstance extends MindElixirMethods {
 
   selection: SelectionArea
   selectionContainer?: string | HTMLElement
+
+  alignment: Alignment
 }
 type PathString = string
 /**
@@ -152,6 +156,7 @@ export type Options = {
   theme?: Theme
   nodeMenu?: boolean
   selectionContainer?: string | HTMLElement
+  alignment?: Alignment
 }
 
 export type Uid = string
