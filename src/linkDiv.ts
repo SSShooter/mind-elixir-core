@@ -28,7 +28,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
 
   // pin center
   this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
-  if (this.alignment === 'nodes') {
+  if (this.alignment === 'root') {
     this.nodes.style.left = `${10000 - pL - pW / 2}px`
   } else {
     this.nodes.style.left = `${10000 - nw / 2}px`
