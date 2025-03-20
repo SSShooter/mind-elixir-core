@@ -94,8 +94,6 @@ export interface MindElixirInstance extends MindElixirMethods {
   newTopicName: string
   allowUndo: boolean
   overflowHidden: boolean
-  mainBranchStyle: number
-  subBranchStyle: number
   generateMainBranch: (params: MainLineParams) => PathString
   generateSubBranch: (params: SubLineParams) => PathString
 

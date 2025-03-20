@@ -41,7 +41,6 @@ const options: Options = {
       return true
     },
   },
-  // mainBranchStyle: 2,
 }
 const mind = new MindElixir(options)
 mind.init(example)
