@@ -57,6 +57,7 @@ export const removeNodeDom = function (tpc: Topic, siblingLength: number) {
     if (c.tagName !== 'ME-MAIN') {
       c.previousSibling.children[1]!.remove()
     }
+    // FIXME: me-children is not removed
   }
   p.parentNode.remove()
 }
