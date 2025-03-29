@@ -167,6 +167,19 @@ export const scale = function (this: MindElixirInstance, scaleVal: number) {
   this.map.style.transform = 'scale(' + scaleVal + ')'
   this.bus.fire('scale', scaleVal)
 }
+
+/**
+ * Better to use with option `alignment: 'nodes'`.
+ */
+export const scaleFit = function (this: MindElixirInstance) {
+  const heightPercent = this.nodes.offsetHeight / this.container.offsetHeight
+  const widthPercent = this.nodes.offsetWidth / this.container.offsetWidth
+  const scale = 1 / Math.max(1, Math.max(heightPercent, widthPercent))
+  this.scaleVal = scale
+  this.map.style.transform = 'scale(' + scale + ')'
+  this.bus.fire('scale', scale)
+}
+
 /**
  * @function
  * @instance
