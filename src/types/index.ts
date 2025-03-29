@@ -167,7 +167,7 @@ export type Right = 1
  *
  * @public
  */
-export type NodeObj = {
+export interface NodeObj {
   topic: string
   id: Uid
   style?: {
@@ -188,13 +188,28 @@ export type NodeObj = {
     height: number
     fit?: 'fill' | 'contain' | 'cover'
   }
-  // main node specific properties
+  /**
+   * The color of the branch.
+   */
   branchColor?: string
-  // add programatically
-  parent?: NodeObj // root node has no parent!
+  /**
+   * This property is added programatically, do not set it manually.
+   *
+   * the Root node has no parent!
+   */
+  parent?: NodeObj
+  /**
+   * Render custom HTML in the node.
+   *
+   * Everything in the node will be replaced by this property.
+   */
+  dangerouslySetInnerHTML?: string
+  /**
+   * Extra data for the node, which can be used to store any custom data.
+   */
+  note?: string
   // TODO: checkbox
   // checkbox?: boolean | undefined
-  dangerouslySetInnerHTML?: string
 }
 export type NodeObjExport = Omit<NodeObj, 'parent'>
 
