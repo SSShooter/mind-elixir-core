@@ -66,7 +66,6 @@ Mind elixir 是一个开源的 JavaScript 思维导图核心。你可以在任�
 - [导出为图片](#导出为图片)
   - [方案 1](#方案-1)
   - [方案 2](#方案-2)
-- [API](#api)
 - [主题](#主题)
 - [快捷键](#快捷键)
 - [生态](#生态)
@@ -321,10 +320,6 @@ const download = async () => {
   link.click()
 }
 ```
-
-## API
-
-https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
 
 ## 主题
 

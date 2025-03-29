@@ -66,7 +66,6 @@ Características:
 - [Exportar como Imagem](#exportar-como-imagem)
   - [Solução 1](#solução-1)
   - [Solução 2](#solução-2)
-- [APIs](#apis)
 - [Tema](#tema)
 - [Atalhos](#atalhos)
 - [Ecossistema](#ecossistema)
@@ -321,10 +320,6 @@ const download = async () => {
   link.click()
 }
 ```
-
-## APIs
-
-https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
 
 ## Tema
 

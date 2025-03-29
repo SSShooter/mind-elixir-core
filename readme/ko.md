@@ -66,7 +66,6 @@ Mind Elixir는 오픈 소스 JavaScript 마인드맵 코어입니다. 원하는 
 - [이미지로 내보내기](#이미지로-내보내기)
   - [방법 1](#방법-1)
   - [방법 2](#방법-2)
-- [API](#api)
 - [테마](#테마)
 - [단축키](#단축키)
 - [생태계](#생태계)
@@ -321,10 +320,6 @@ const download = async () => {
   link.click()
 }
 ```
-
-## API
-
-https://github.com/ssshooter/mind-elixir-core/blob/master/api/mind-elixir.api.md
 
 ## 테마
 
