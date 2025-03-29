@@ -1,7 +1,7 @@
 import { fillParent, refreshIds, unionTopics } from './utils/index'
 import { findEle, createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
-import type { Topic } from './types/dom'
+import type { Children, Topic } from './types/dom'
 import { DirectionClass, type MindElixirInstance, type NodeObj } from './types/index'
 import { insertNodeObj, insertParentNodeObj, moveUpObj, moveDownObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
 import { addChildDom, removeNodeDom } from './utils/domManipulation'
@@ -292,14 +292,25 @@ const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindE
     from = from.reverse()
   }
   const toObj = to.nodeObj
+  const c: Children[] = []
   for (const f of from) {
     const obj = f.nodeObj
     moveNodeObj(type, obj, toObj)
     fillParent(mei.nodeData)
     rmSubline(f)
-    const fromGrp = f.parentElement.parentNode
-    const toGrp = to.parentElement.parentNode
-    toGrp.insertAdjacentElement(typeMap[type], fromGrp)
+    const fromWrp = f.parentElement.parentNode
+    if (!c.includes(fromWrp.parentElement)) {
+      c.push(fromWrp.parentElement)
+    }
+    const toWrp = to.parentElement.parentNode
+    toWrp.insertAdjacentElement(typeMap[type], fromWrp)
+  }
+  // remove expander and empty wrapper
+  for (const item of c) {
+    if (item.childElementCount === 0 && item.tagName !== 'ME-MAIN') {
+      item.previousSibling.children[1]!.remove()
+      item.remove()
+    }
   }
   mei.linkDiv()
   mei.bus.fire('operation', {

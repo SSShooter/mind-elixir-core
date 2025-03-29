@@ -53,11 +53,11 @@ export const removeNodeDom = function (tpc: Topic, siblingLength: number) {
   if (siblingLength === 0) {
     // remove epd when children length === 0
     const c = p.parentNode.parentNode
-    // root doesn't have epd
     if (c.tagName !== 'ME-MAIN') {
-      c.previousSibling.children[1]!.remove()
+      // Root
+      c.previousSibling.children[1]!.remove() // remove epd
+      c.remove() // remove Children div
     }
-    // FIXME: me-children is not removed
   }
   p.parentNode.remove()
 }
