@@ -58,6 +58,9 @@ export function insertParentNodeObj(obj: NodeObj, newObj: NodeObj) {
 
 export function moveNodeObj(type: 'in' | 'before' | 'after', from: NodeObj, to: NodeObj) {
   removeNodeObj(from)
+  if (!to.parent?.parent) {
+    from.direction = to.direction
+  }
   if (type === 'in') {
     if (to.children) to.children.push(from)
     else to.children = [from]
