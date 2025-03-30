@@ -63,7 +63,7 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
   const origin = textEl.innerHTML
   div.id = 'input-box'
   div.textContent = origin
-  div.contentEditable = 'true'
+  div.contentEditable = 'plaintext-only'
   div.spellcheck = false
   const bbox = textEl.getBBox()
   console.log(bbox)

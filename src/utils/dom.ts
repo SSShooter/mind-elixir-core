@@ -143,7 +143,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   el.appendChild(div)
   div.id = 'input-box'
   div.textContent = origin
-  div.contentEditable = 'true'
+  div.contentEditable = 'plaintext-only'
   div.spellcheck = false
   const style = getComputedStyle(el)
   div.style.cssText = `min-width:${el.offsetWidth - 8}px;

@@ -58,14 +58,14 @@ export default function (mind: MindElixirInstance) {
    */
   mind.map.addEventListener('mousemove', e => {
     // click trigger mousemove in windows chrome
-    if ((e.target as HTMLElement).contentEditable !== 'true') {
+    if ((e.target as HTMLElement).contentEditable === 'inherit') {
       dragMoveHelper.onMove(e, mind)
     }
   })
   mind.map.addEventListener('mousedown', e => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton) return
-    if ((e.target as HTMLElement).contentEditable !== 'true') {
+    if ((e.target as HTMLElement).contentEditable === 'inherit') {
       dragMoveHelper.moved = false
       dragMoveHelper.mousedown = true
     }
