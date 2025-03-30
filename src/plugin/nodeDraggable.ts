@@ -64,7 +64,7 @@ export default function (mind: MindElixirInstance) {
     }
     if (mind.currentNodes) {
       dragged = mind.currentNodes
-      ghost.innerHTML = mind.currentNodes.length + ' nodes'
+      ghost.innerHTML = mind.currentNodes.length + ''
     } else {
       dragged = [target]
       ghost.innerHTML = target.innerHTML
@@ -72,7 +72,8 @@ export default function (mind: MindElixirInstance) {
     for (const node of dragged) {
       node.parentElement.parentElement.style.opacity = '0.5'
     }
-    e.dataTransfer?.setDragImage(ghost, 0, 0)
+    e.dataTransfer!.setDragImage(ghost, 0, 0)
+    e.dataTransfer!.dropEffect = 'move'
     dragMoveHelper.clear()
   })
 
@@ -95,36 +96,34 @@ export default function (mind: MindElixirInstance) {
     dragged = null
   })
 
-  mind.map.addEventListener(
-    'dragover',
-    throttle(function (e: DragEvent) {
-      if (!dragged) return
-      clearPreview(meet)
-      // minus threshold infer that postion of the cursor is above topic
-      const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
-      if (canMove(topMeet, dragged)) {
-        meet = topMeet
-        const y = topMeet.getBoundingClientRect().y
-        if (e.clientY > y + topMeet.clientHeight) {
-          insertTpye = 'after'
+  mind.map.addEventListener('dragover', function (e: DragEvent) {
+    e.preventDefault()
+    if (!dragged) return
+    clearPreview(meet)
+    // minus threshold infer that postion of the cursor is above topic
+    const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
+    if (canMove(topMeet, dragged)) {
+      meet = topMeet
+      const y = topMeet.getBoundingClientRect().y
+      if (e.clientY > y + topMeet.clientHeight) {
+        insertTpye = 'after'
+      } else {
+        insertTpye = 'in'
+      }
+    } else {
+      const bottomMeet = $d.elementFromPoint(e.clientX, e.clientY + threshold) as Topic
+      if (canMove(bottomMeet, dragged)) {
+        meet = bottomMeet
+        const y = bottomMeet.getBoundingClientRect().y
+        if (e.clientY < y) {
+          insertTpye = 'before'
         } else {
           insertTpye = 'in'
         }
       } else {
-        const bottomMeet = $d.elementFromPoint(e.clientX, e.clientY + threshold) as Topic
-        if (canMove(bottomMeet, dragged)) {
-          meet = bottomMeet
-          const y = bottomMeet.getBoundingClientRect().y
-          if (e.clientY < y) {
-            insertTpye = 'before'
-          } else {
-            insertTpye = 'in'
-          }
-        } else {
-          insertTpye = meet = null
-        }
+        insertTpye = meet = null
       }
-      if (meet) insertPreview(meet, insertTpye)
-    }, 100)
-  )
+    }
+    if (meet) insertPreview(meet, insertTpye)
+  })
 }
