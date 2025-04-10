@@ -55,14 +55,14 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
     mei.selectNode(sibling.firstChild.firstChild)
   }
 }
-const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out', factor = 1) {
+const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out') {
   switch (direction) {
     case 'in':
-      if (mei.scaleVal * factor > 1.6) return
+      if (mei.scaleVal > 1.6) return
       mei.scale((mei.scaleVal += 0.2))
       break
     case 'out':
-      if (mei.scaleVal * factor < 0.6) return
+      if (mei.scaleVal < 0.6) return
       mei.scale((mei.scaleVal -= 0.2))
   }
 }
@@ -187,9 +187,8 @@ export default function (mind: MindElixirInstance) {
   mind.map.onwheel = e => {
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault()
-      const factor = Math.abs(e.deltaY / 100) // this can be tweaked
-      if (e.deltaY < 0) handleZoom(mind, 'in', factor)
-      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', factor)
+      if (e.deltaY < 0) handleZoom(mind, 'in')
+      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out')
       e.stopPropagation()
     }
   }
