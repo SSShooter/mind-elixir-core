@@ -189,6 +189,18 @@ export const createSummary = function (this: MindElixirInstance) {
   })
 }
 
+export const createSummaryFrom = function (this: MindElixirInstance, summary: Omit<Summary, 'id'>) {
+  // now I know the goodness of overloading
+  const id = generateUUID()
+  const newSummary = { ...summary, id }
+  drawSummary(this, newSummary)
+  this.summaries.push(newSummary)
+  this.bus.fire('operation', {
+    name: 'createSummary',
+    obj: newSummary,
+  })
+}
+
 export const removeSummary = function (this: MindElixirInstance, id: string) {
   const index = this.summaries.findIndex(summary => summary.id === id)
   if (index > -1) {
