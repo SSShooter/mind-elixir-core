@@ -16,7 +16,7 @@ export default function (mind: MindElixirInstance) {
       return
     }
     if (dragMoveHelper.moved) {
-      dragMoveHelper.clear()
+      dragMoveHelper.clear(mind)
       return
     }
     mind.clearSelection()
@@ -68,16 +68,17 @@ export default function (mind: MindElixirInstance) {
     if ((e.target as HTMLElement).contentEditable === 'inherit') {
       dragMoveHelper.moved = false
       dragMoveHelper.mousedown = true
+      mind.map.style.transition = 'none'
     }
   })
   mind.map.addEventListener('mouseleave', e => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton) return
-    dragMoveHelper.clear()
+    dragMoveHelper.clear(mind)
   })
   mind.map.addEventListener('mouseup', e => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton) return
-    dragMoveHelper.clear()
+    dragMoveHelper.clear(mind)
   })
 }

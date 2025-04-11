@@ -1,4 +1,3 @@
-import { throttle } from '../utils/index'
 import dragMoveHelper from '../utils/dragMoveHelper'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
@@ -74,7 +73,7 @@ export default function (mind: MindElixirInstance) {
     }
     e.dataTransfer!.setDragImage(ghost, 0, 0)
     e.dataTransfer!.dropEffect = 'move'
-    dragMoveHelper.clear()
+    dragMoveHelper.clear(mind)
   })
 
   mind.map.addEventListener('dragend', async e => {

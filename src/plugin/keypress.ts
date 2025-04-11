@@ -56,14 +56,15 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
   }
 }
 const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out') {
+  // TODO
   switch (direction) {
     case 'in':
       if (mei.scaleVal > 1.6) return
-      mei.scale((mei.scaleVal += 0.2))
+      mei.scale(mei.scaleVal + 0.2)
       break
     case 'out':
       if (mei.scaleVal < 0.6) return
-      mei.scale((mei.scaleVal -= 0.2))
+      mei.scale(mei.scaleVal - 0.2)
   }
 }
 

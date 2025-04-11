@@ -3,7 +3,7 @@ import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
 import { findEle } from './utils/dom'
-import { fillParent } from './utils/index'
+import { fillParent, getTranslate } from './utils/index'
 
 function collectData(instance: MindElixirInstance) {
   return {
@@ -157,14 +157,25 @@ export const disableEdit = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  * @param {number}
  */
-export const scale = function (this: MindElixirInstance, scaleVal: number) {
-  // TODO: recalculate the position of the map
-  // plan A: use transform-origin
-  // deprecated, center will be changed even if the scale function is doing well, which is very difficult to solve
-  // plan B: use transform: translate
-  // https://github.com/markmap/markmap/blob/e3071bc34da850ed7283b7d5b1a79b6c9b631a0e/packages/markmap-view/src/view.tsx#L640
+export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
+  const containerRect = this.container.getBoundingClientRect()
+  const centerX = containerRect.width / 2 - 10000
+  const centerY = containerRect.height / 2 - 10000
+
+  const oldScale = this.scaleVal
+  const oldTransform = this.map.style.transform
+
+  const { x: x0, y: y0 } = getTranslate(oldTransform)
+  const x = x0 + offset.x
+  const y = y0 + offset.y
+
+  // debugger
+  const newTranslateX = (centerX - x) * (1 - scaleVal / oldScale)
+  const newTranslateY = (centerY - y) * (1 - scaleVal / oldScale)
+  // const newTranslateX = (centerX - x) / oldScale
+  // const newTranslateY = (centerY - y) / oldScale
+  this.map.style.transform = `translate(${x + newTranslateX}px, ${y + newTranslateY}px) scale(${scaleVal})`
   this.scaleVal = scaleVal
-  this.map.style.transform = 'scale(' + scaleVal + ')'
   this.bus.fire('scale', scaleVal)
 }
 
@@ -188,7 +199,11 @@ export const scaleFit = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  */
 export const toCenter = function (this: MindElixirInstance) {
-  this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
+  // this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
+  const containerRect = this.container.getBoundingClientRect()
+  const centerX = containerRect.width / 2 - 10000
+  const centerY = containerRect.height / 2 - 10000
+  this.map.style.transform = `translate(${centerX}px, ${centerY}px) scale(${this.scaleVal})`
 }
 
 /**
@@ -201,6 +216,7 @@ export const toCenter = function (this: MindElixirInstance) {
 export const install = function (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) {
   plugin(this)
 }
+
 /**
  * @function
  * @instance

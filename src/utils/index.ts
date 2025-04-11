@@ -144,3 +144,9 @@ export const unionTopics = (nodes: Topic[]) => {
     return true
   })
 }
+
+export const getTranslate = (styleText: string) => {
+  const regex = /translate\(([^,]+),\s*([^)]+)\)/
+  const match = styleText.match(regex)
+  return match ? { x: parseFloat(match[1]), y: parseFloat(match[2]) } : { x: 0, y: 0 }
+}

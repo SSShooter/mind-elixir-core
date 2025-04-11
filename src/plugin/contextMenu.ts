@@ -107,10 +107,6 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
       if (!mind.currentNodes) mind.selectNode(target)
       menuContainer.hidden = false
 
-      if (dragMoveHelper.mousedown) {
-        dragMoveHelper.mousedown = false
-      }
-
       menuUl.style.top = ''
       menuUl.style.bottom = ''
       menuUl.style.left = ''

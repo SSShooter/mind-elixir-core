@@ -1,3 +1,4 @@
+import { getTranslate } from '.'
 import type { MindElixirInstance } from '../types/index'
 
 export default {
@@ -8,23 +9,20 @@ export default {
       this.moved = true
       const deltaX = e.movementX
       const deltaY = e.movementY
-      const { container, map, scaleVal } = mind
-      let scrollLeft = container.scrollLeft - deltaX
-      let scrollTop = container.scrollTop - deltaY
-      if (scaleVal < 1) {
-        const minScrollLeft = (container.scrollWidth - map.clientWidth * scaleVal) / 2
-        const minScrollTop = (container.scrollHeight - map.clientHeight * scaleVal) / 2
-        scrollLeft = Math.max(minScrollLeft, Math.min(container.scrollWidth - minScrollLeft - container.clientWidth, scrollLeft))
-        scrollTop = Math.max(minScrollTop, Math.min(container.scrollHeight - minScrollTop - container.clientHeight, scrollTop))
-      }
-      container.scrollTo(scrollLeft, scrollTop)
+      const { map, scaleVal } = mind
+      const transform = map.style.transform
+      const { x, y } = getTranslate(transform)
+      const newTranslateX = x + deltaX
+      const newTranslateY = y + deltaY
+      mind.map.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px) scale(${scaleVal})`
     }
   },
-  clear() {
+  clear(mind: MindElixirInstance) {
     // delay to avoid trigger contextmenu
     setTimeout(() => {
       this.moved = false
       this.mousedown = false
+      mind.map.style.transition = 'transform 0.3s'
     }, 0)
   },
 }
