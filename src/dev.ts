@@ -68,6 +68,7 @@ mind.init(example)
 const m2 = new MindElixir({
   el: '#map2',
   selectionContainer: 'body', // use body to make selection usable when transform is not 0
+  direction: MindElixir.SIDE,
 })
 m2.init(data)
 
