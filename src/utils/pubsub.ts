@@ -85,6 +85,7 @@ export type EventMap = {
   expandNode: (nodeObj: NodeObj) => void
   linkDiv: () => void
   scale: (scale: number) => void
+  move: (data: { dx: number; dy: number }) => void
   /**
    *  please use throttling to prevent performance degradation
    */

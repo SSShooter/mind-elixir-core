@@ -195,6 +195,7 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number) 
   const newTranslateX = x + dx
   const newTranslateY = y + dy
   this.map.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px) scale(${scaleVal})`
+  this.bus.fire('move', { dx, dy })
 }
 
 /**
