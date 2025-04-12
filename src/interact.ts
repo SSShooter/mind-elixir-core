@@ -188,6 +188,15 @@ export const scaleFit = function (this: MindElixirInstance) {
   this.bus.fire('scale', scale)
 }
 
+export const move = function (this: MindElixirInstance, dx: number, dy: number) {
+  const { map, scaleVal } = this
+  const transform = map.style.transform
+  const { x, y } = getTranslate(transform)
+  const newTranslateX = x + dx
+  const newTranslateY = y + dy
+  this.map.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px) scale(${scaleVal})`
+}
+
 /**
  * @function
  * @instance

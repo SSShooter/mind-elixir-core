@@ -1,4 +1,4 @@
-import dragMoveHelper, { handleMove } from '../utils/dragMoveHelper'
+import dragMoveHelper from '../utils/dragMoveHelper'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
@@ -55,7 +55,7 @@ class EdgeMoveController {
     if (this.isMoving) return
     this.isMoving = true
     this.interval = setInterval(() => {
-      handleMove(this.mind, dx * this.speed * this.mind.scaleVal, dy * this.speed * this.mind.scaleVal)
+      this.mind.move(dx * this.speed * this.mind.scaleVal, dy * this.speed * this.mind.scaleVal)
     }, 100)
   }
   stop() {
