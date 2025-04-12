@@ -21,7 +21,7 @@ const data2 = {
       {
         id: 'child',
         topic: 'child',
-        direction: 0,
+        direction: 0 as 0 | 1 | undefined,
       },
     ],
   },
