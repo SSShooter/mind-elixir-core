@@ -1,7 +1,17 @@
 import { getTranslate } from '.'
 import type { MindElixirInstance } from '../types/index'
 
+export const handleMove = function (mind: MindElixirInstance, dx: number, dy: number) {
+  const { map, scaleVal } = mind
+  const transform = map.style.transform
+  const { x, y } = getTranslate(transform)
+  const newTranslateX = x + dx
+  const newTranslateY = y + dy
+  mind.map.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px) scale(${scaleVal})`
+}
 export default {
+  x: 0,
+  y: 0,
   moved: false, // diffrentiate click and move
   mousedown: false,
   onMove(e: MouseEvent, mind: MindElixirInstance) {
@@ -9,12 +19,7 @@ export default {
       this.moved = true
       const deltaX = e.movementX
       const deltaY = e.movementY
-      const { map, scaleVal } = mind
-      const transform = map.style.transform
-      const { x, y } = getTranslate(transform)
-      const newTranslateX = x + deltaX
-      const newTranslateY = y + deltaY
-      mind.map.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px) scale(${scaleVal})`
+      handleMove(mind, deltaX, deltaY)
     }
   },
   clear(mind: MindElixirInstance) {

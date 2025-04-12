@@ -1,4 +1,4 @@
-import dragMoveHelper from '../utils/dragMoveHelper'
+import dragMoveHelper, { handleMove } from '../utils/dragMoveHelper'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
@@ -43,12 +43,34 @@ const createGhost = function (mei: MindElixirInstance) {
   return ghost
 }
 
+class EdgeMoveController {
+  private mind: MindElixirInstance
+  private isMoving = false
+  private interval: NodeJS.Timeout | null = null
+  private speed = 20
+  constructor(mind: MindElixirInstance) {
+    this.mind = mind
+  }
+  move(dx: number, dy: number) {
+    if (this.isMoving) return
+    this.isMoving = true
+    this.interval = setInterval(() => {
+      handleMove(this.mind, dx * this.speed * this.mind.scaleVal, dy * this.speed * this.mind.scaleVal)
+    }, 100)
+  }
+  stop() {
+    this.isMoving = false
+    clearInterval(this.interval!)
+  }
+}
+
 export default function (mind: MindElixirInstance) {
   let dragged: Topic[] | null = null
   let insertTpye: InsertType = null
   let meet: Topic | null = null
   const ghost = createGhost(mind)
   const threshold = 12
+  const edgeMoveController = new EdgeMoveController(mind)
 
   mind.map.addEventListener('dragstart', e => {
     const target = e.target as Topic
@@ -96,8 +118,24 @@ export default function (mind: MindElixirInstance) {
   })
 
   mind.map.addEventListener('dragover', function (e: DragEvent) {
+    console.log('dragover', e)
     e.preventDefault()
     if (!dragged) return
+
+    // border detection
+    const rect = mind.container.getBoundingClientRect()
+    if (e.clientX < rect.x + 50) {
+      edgeMoveController.move(1, 0)
+    } else if (e.clientX > rect.x + rect.width - 50) {
+      edgeMoveController.move(-1, 0)
+    } else if (e.clientY < rect.y + 50) {
+      edgeMoveController.move(0, 1)
+    } else if (e.clientY > rect.y + rect.height - 50) {
+      edgeMoveController.move(0, -1)
+    } else {
+      edgeMoveController.stop()
+    }
+
     clearPreview(meet)
     // minus threshold infer that postion of the cursor is above topic
     const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic

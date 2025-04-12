@@ -61,6 +61,8 @@ export default function (mind: MindElixirInstance) {
     if ((e.target as HTMLElement).contentEditable === 'inherit') {
       dragMoveHelper.onMove(e, mind)
     }
+    dragMoveHelper.x = e.clientX
+    dragMoveHelper.y = e.clientY
   })
   mind.map.addEventListener('mousedown', e => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0

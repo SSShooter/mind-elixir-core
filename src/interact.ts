@@ -158,23 +158,20 @@ export const disableEdit = function (this: MindElixirInstance) {
  * @param {number}
  */
 export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
-  const containerRect = this.container.getBoundingClientRect()
-  const centerX = containerRect.width / 2 - 10000
-  const centerY = containerRect.height / 2 - 10000
+  const rect = this.container.getBoundingClientRect()
+  const centerX = rect.width / 2 - 10000
+  const centerY = rect.height / 2 - 10000
 
   const oldScale = this.scaleVal
   const oldTransform = this.map.style.transform
 
   const { x: x0, y: y0 } = getTranslate(oldTransform)
-  const x = x0 + offset.x
-  const y = y0 + offset.y
+  const x = x0 - (offset.x - rect.left - rect.width / 2)
+  const y = y0 - (offset.y - rect.top - rect.height / 2)
 
-  // debugger
   const newTranslateX = (centerX - x) * (1 - scaleVal / oldScale)
   const newTranslateY = (centerY - y) * (1 - scaleVal / oldScale)
-  // const newTranslateX = (centerX - x) / oldScale
-  // const newTranslateY = (centerY - y) / oldScale
-  this.map.style.transform = `translate(${x + newTranslateX}px, ${y + newTranslateY}px) scale(${scaleVal})`
+  this.map.style.transform = `translate(${x0 + newTranslateX}px, ${y0 + newTranslateY}px) scale(${scaleVal})`
   this.scaleVal = scaleVal
   this.bus.fire('scale', scaleVal)
 }

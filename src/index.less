@@ -23,7 +23,7 @@
   user-select: none;
   height: 100%;
   width: 100%;
-  overflow: scroll;
+  overflow: hidden; // prevent browser scroll container while dragging
   font-size: 15px;
   * {
     box-sizing: border-box; // must have, to make getComputedStyle work right
@@ -51,7 +51,6 @@
     width: 20000px;
     position: relative;
     user-select: none;
-    transition: transform 0.3s;
     transform: scale(1);
     background-color: var(--bgcolor);
     me-nodes {

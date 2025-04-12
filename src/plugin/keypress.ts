@@ -1,6 +1,7 @@
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 import { DirectionClass } from '../types/index'
+import dragMoveHelper, { handleMove } from '../utils/dragMoveHelper'
 
 const selectRootLeft = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
@@ -55,16 +56,22 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
     mei.selectNode(sibling.firstChild.firstChild)
   }
 }
-const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out') {
-  // TODO
+const handleZoom = function (
+  mei: MindElixirInstance,
+  direction: 'in' | 'out',
+  offset?: {
+    x: number
+    y: number
+  }
+) {
   switch (direction) {
     case 'in':
       if (mei.scaleVal > 1.6) return
-      mei.scale(mei.scaleVal + 0.2)
+      mei.scale(mei.scaleVal + 0.2, offset)
       break
     case 'out':
       if (mei.scaleVal < 0.6) return
-      mei.scale(mei.scaleVal - 0.2)
+      mei.scale(mei.scaleVal - 0.2, offset)
   }
 }
 
@@ -155,7 +162,7 @@ export default function (mind: MindElixirInstance) {
         }
       }
     },
-    '+': (e: KeyboardEvent) => {
+    '=': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         handleZoom(mind, 'in')
       }
@@ -186,11 +193,15 @@ export default function (mind: MindElixirInstance) {
   }
 
   mind.map.onwheel = e => {
+    e.stopPropagation()
+    e.preventDefault()
     if (e.ctrlKey || e.metaKey) {
-      e.preventDefault()
-      if (e.deltaY < 0) handleZoom(mind, 'in')
-      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out')
-      e.stopPropagation()
+      if (e.deltaY < 0) handleZoom(mind, 'in', dragMoveHelper)
+      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', dragMoveHelper)
+    } else if (e.shiftKey) {
+      handleMove(mind, -e.deltaY, 0)
+    } else {
+      handleMove(mind, 0, -e.deltaY)
     }
   }
 }
