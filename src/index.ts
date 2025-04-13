@@ -88,10 +88,10 @@ function MindElixir(
   // infrastructure
   const canvas = $d.createElement('div') // map-canvas Element
   canvas.className = 'map-canvas'
-  requestAnimationFrame(() => {
+  setTimeout(() => {
     // prevent map move when initialized
     canvas.style.transition = 'all 0.3s'
-  })
+  }, 300)
   this.map = canvas
   this.map.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)

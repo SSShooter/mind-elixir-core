@@ -184,6 +184,16 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
   })
 }
 
+export const createArrowFrom = function (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) {
+  const arrowObj = { ...arrow, id: generateUUID() }
+  drawArrow(this, findEle(arrowObj.from), findEle(arrowObj.to), arrowObj)
+
+  this.bus.fire('operation', {
+    name: 'createArrow',
+    obj: arrowObj,
+  })
+}
+
 export const removeArrow = function (this: MindElixirInstance, linkSvg?: CustomSvg) {
   let link
   if (linkSvg) {
