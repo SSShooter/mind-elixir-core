@@ -188,14 +188,25 @@ export const scaleFit = function (this: MindElixirInstance) {
   this.bus.fire('scale', scale)
 }
 
+/**
+ * Move the map by `dx` and `dy`.
+ */
 export const move = function (this: MindElixirInstance, dx: number, dy: number) {
-  const { map, scaleVal } = this
+  const { map, scaleVal, container, bus } = this
   const transform = map.style.transform
   const { x, y } = getTranslate(transform)
   const newTranslateX = x + dx
   const newTranslateY = y + dy
-  this.map.style.transform = `translate(${newTranslateX}px, ${newTranslateY}px) scale(${scaleVal})`
-  this.bus.fire('move', { dx, dy })
+  const overflow = (1 - scaleVal) * 10000
+  const min = 0 - overflow
+  const maxX = -20000 + container.offsetWidth + overflow
+  const maxY = -20000 + container.offsetHeight + overflow
+
+  const tx = Math.min(min, Math.max(maxX, newTranslateX))
+  const ty = Math.min(min, Math.max(maxY, newTranslateY))
+
+  map.style.transform = `translate(${tx}px, ${ty}px) scale(${scaleVal})`
+  bus.fire('move', { dx, dy })
 }
 
 /**
