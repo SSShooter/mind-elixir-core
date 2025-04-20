@@ -56,6 +56,7 @@ export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: numbe
   const deltay = p4y - p3y
   const deltax = p3x - p4x
   let angle = (Math.atan(Math.abs(deltay) / Math.abs(deltax)) / 3.14) * 180
+  if (isNaN(angle)) return
   if (deltax < 0 && deltay > 0) {
     angle = 180 - angle
   }

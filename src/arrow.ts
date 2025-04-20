@@ -134,11 +134,13 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const { x: p4x, y: p4y } = calcP(toData)
 
   const arrowT = getArrowPoints(p3x, p3y, p4x, p4y)
+  if (!arrowT) return
 
   const toArrow = `M ${arrowT.x1} ${arrowT.y1} L ${p4x} ${p4y} L ${arrowT.x2} ${arrowT.y2}`
   let fromArrow = ''
   if (obj.bidirectional) {
     const arrowF = getArrowPoints(p2x, p2y, p1x, p1y)
+    if (!arrowF) return
     fromArrow = `M ${arrowF.x1} ${arrowF.y1} L ${p1x} ${p1y} L ${arrowF.x2} ${arrowF.y2}`
   }
   const newSvgGroup = createSvgGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow)
@@ -167,12 +169,12 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
     from: from.nodeObj.id,
     to: to.nodeObj.id,
     delta1: {
-      x: 0,
-      y: -200,
+      x: from.offsetWidth / 2 + 100,
+      y: 0,
     },
     delta2: {
-      x: 0,
-      y: -200,
+      x: to.offsetWidth / 2 + 100,
+      y: 0,
     },
     ...options,
   }
@@ -288,6 +290,7 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
     if (linkItem.bidirectional) {
       const arrowPoint = getArrowPoints(p2x, p2y, p1x, p1y)
+      if (!arrowPoint) return
       mei.currentArrow.children[2].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p1x} ${p1y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
     }
     setAttributes(mei.currentArrow.children[3], {
@@ -316,7 +319,7 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
     const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
     const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
-
+    if (!arrowPoint) return
     mei.P3.style.top = p3y + 'px'
     mei.P3.style.left = p3x + 'px'
     mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
