@@ -33,24 +33,47 @@ export const createLine = function () {
 }
 
 export const createSvgGroup = function (d: string, arrowd1: string, arrowd2: string): CustomSvg {
-  const pathAttrs = {
-    stroke: 'rgb(235, 95, 82)',
-    fill: 'none',
-    'stroke-linecap': 'cap',
-    'stroke-width': '2',
-  }
   const g = $d.createElementNS(svgNS, 'g') as CustomSvg
-  ;[d, arrowd1, arrowd2].forEach((d, i) => {
+  const svgs = [
+    {
+      name: 'line',
+      d,
+    },
+    {
+      name: 'arrow1',
+      d: arrowd1,
+    },
+    {
+      name: 'arrow2',
+      d: arrowd2,
+    },
+  ] as const
+  svgs.forEach((item, i) => {
+    const d = item.d
     const path = $d.createElementNS(svgNS, 'path')
     const attrs = {
       d,
-      ...pathAttrs,
+      stroke: 'rgb(235, 95, 82)',
+      fill: 'none',
+      'stroke-linecap': 'cap',
+      'stroke-width': '2',
     }
     setAttributes(path, attrs)
     if (i === 0) {
       path.setAttribute('stroke-dasharray', '8,2')
     }
+    const hotzone = $d.createElementNS(svgNS, 'path')
+    const hotzoneAttrs = {
+      d,
+      stroke: 'transparent',
+      fill: 'none',
+      'stroke-width': '15',
+    }
+    setAttributes(hotzone, hotzoneAttrs)
+    g.appendChild(hotzone)
+
     g.appendChild(path)
+    g[item.name] = path
   })
   return g
 }

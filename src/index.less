@@ -190,13 +190,17 @@
   .linkcontroller,
   .summary {
     pointer-events: none;
-    text {
-      pointer-events: all;
-    }
     .selected {
       pointer-events: none;
     }
   }
+
+  .summary > g,
+  .topiclinks > g {
+    cursor: pointer;
+    pointer-events: stroke;
+  }
+
   .lines,
   .subLines {
     pointer-events: none;
@@ -207,11 +211,6 @@
   .linkcontroller {
     * {
       z-index: 100;
-    }
-  }
-  .topiclinks {
-    g {
-      cursor: pointer;
     }
   }
   #input-box {

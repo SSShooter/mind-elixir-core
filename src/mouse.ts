@@ -28,14 +28,12 @@ export default function (mind: MindElixirInstance) {
       mind.selectNode(target, false, e)
     } else if (!mind.editable) {
       return
-    } else if (target.tagName === 'text') {
-      if (target.dataset.type === 'custom-link') {
-        mind.selectArrow(target.parentElement as unknown as CustomSvg)
-      } else {
-        mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
-      }
-    } else if (target.className === 'circle') {
-      // skip circle
+    }
+    const trySvg = target.parentElement?.parentElement as unknown as SVGElement
+    if (trySvg.getAttribute('class') === 'topiclinks') {
+      mind.selectArrow(target.parentElement as unknown as CustomSvg)
+    } else if (trySvg.getAttribute('class') === 'summary') {
+      mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
     }
   })
 
@@ -44,12 +42,12 @@ export default function (mind: MindElixirInstance) {
     const target = e.target as HTMLElement
     if (isTopic(target)) {
       mind.beginEdit(target)
-    } else if (target.tagName === 'text') {
-      if (target.dataset.type === 'custom-link') {
-        mind.editArrowLabel(target.parentElement as unknown as CustomSvg)
-      } else {
-        mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
-      }
+    }
+    const trySvg = target.parentElement?.parentElement as unknown as SVGElement
+    if (trySvg.getAttribute('class') === 'topiclinks') {
+      mind.editArrowLabel(target.parentElement as unknown as CustomSvg)
+    } else if (trySvg.getAttribute('class') === 'summary') {
+      mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
     }
   })
 

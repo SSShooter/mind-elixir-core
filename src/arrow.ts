@@ -149,6 +149,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
   const label = createText(obj.label, halfx, halfy, mei.theme.cssVar['--color'])
   newSvgGroup.appendChild(label)
+  newSvgGroup.label = label
 
   newSvgGroup.arrowObj = obj
   newSvgGroup.dataset.linkid = obj.id
@@ -287,13 +288,13 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     // update dom position
     mei.P2.style.top = p2y + 'px'
     mei.P2.style.left = p2x + 'px'
-    mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+    mei.currentArrow.line.setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
     if (linkItem.bidirectional) {
       const arrowPoint = getArrowPoints(p2x, p2y, p1x, p1y)
       if (!arrowPoint) return
-      mei.currentArrow.children[2].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p1x} ${p1y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+      mei.currentArrow.arrow2.setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p1x} ${p1y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
     }
-    setAttributes(mei.currentArrow.children[3], {
+    setAttributes(mei.currentArrow.label, {
       x: halfx + '',
       y: halfy + '',
     })
@@ -322,9 +323,9 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     if (!arrowPoint) return
     mei.P3.style.top = p3y + 'px'
     mei.P3.style.left = p3x + 'px'
-    mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-    mei.currentArrow.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
-    setAttributes(mei.currentArrow.children[3], {
+    mei.currentArrow.line.setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+    mei.currentArrow.arrow1.setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+    setAttributes(mei.currentArrow.label, {
       x: halfx + '',
       y: halfy + '',
     })
