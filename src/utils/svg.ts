@@ -1,4 +1,6 @@
 import { setAttributes } from '.'
+import type { Arrow } from '../arrow'
+import type { Summary } from '../summary'
 import type { MindElixirInstance } from '../types'
 import type { CustomSvg } from '../types/dom'
 import { selectText } from './dom'
@@ -78,7 +80,7 @@ export const createSvgGroup = function (d: string, arrowd1: string, arrowd2: str
   return g
 }
 
-export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextElement, onblur: (div: HTMLDivElement) => void) {
+export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextElement, node: Summary | Arrow) {
   console.time('editSummary')
   if (!textEl) return
   const div = document.createElement('div')
@@ -117,7 +119,24 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
   })
   div.addEventListener('blur', () => {
     if (!div) return
-    onblur(div)
+    const text = div.textContent?.trim() || ''
+    if (text === '') node.label = origin
+    else node.label = text
+    div.remove()
+    if (text === origin) return
+    textEl.innerHTML = node.label
+    mei.linkDiv()
+
+    if ('parent' in node) {
+      mei.bus.fire('operation', {
+        name: 'finishEditSummary',
+        obj: node,
+      })
+    } else {
+      mei.bus.fire('operation', {
+        name: 'finishEditArrowLabel',
+        obj: node,
+      })
+    }
   })
-  console.timeEnd('editSummary')
 }

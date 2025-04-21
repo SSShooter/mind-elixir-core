@@ -9,7 +9,7 @@ import { editSvgText } from './utils/svg'
  */
 export interface Summary {
   id: string
-  text: string
+  label: string
   /**
    * parent node id of the summary
    */
@@ -126,7 +126,7 @@ const getDirection = function ({ parent, start }: Summary) {
 }
 
 const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
-  const { id, text: summaryText, parent, start, end } = summary
+  const { id, label: summaryText, parent, start, end } = summary
   const container = mei.nodes
   const parentEl = findEle(parent)
   const parentObj = parentEl.nodeObj
@@ -179,7 +179,7 @@ export const createSummary = function (this: MindElixirInstance) {
     nodes = this.currentNodes
   }
   const { parent, start, end } = calcRange(nodes)
-  const summary = { id: generateUUID(), parent, start, end, text: 'summary' }
+  const summary = { id: generateUUID(), parent, start, end, label: 'summary' }
   const g = drawSummary(this, summary) as SummarySvgGroup
   this.summaries.push(summary)
   this.editSummary(g)
@@ -253,19 +253,6 @@ export const editSummary = function (this: MindElixirInstance, el: SummarySvgGro
   console.time('editSummary')
   if (!el) return
   const textEl = el.childNodes[1] as SVGTextElement
-  editSvgText(this, textEl, div => {
-    const node = el.summaryObj
-    const text = div.textContent?.trim() || ''
-    if (text === '') node.text = origin
-    else node.text = text
-    div.remove()
-    if (text === origin) return
-    textEl.innerHTML = node.text
-    this.linkDiv()
-    this.bus.fire('operation', {
-      name: 'finishEditSummary',
-      obj: node,
-    })
-  })
+  editSvgText(this, textEl, el.summaryObj)
   console.timeEnd('editSummary')
 }

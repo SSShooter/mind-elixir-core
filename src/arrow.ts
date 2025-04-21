@@ -360,21 +360,8 @@ export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   hideLinkController(this)
   console.time('editSummary')
   if (!el) return
-  const textEl = el.children[3]
-  editSvgText(this, textEl, div => {
-    const node = el.arrowObj
-    const text = div.textContent?.trim() || ''
-    if (text === '') node.label = origin
-    else node.label = text
-    div.remove()
-    if (text === origin) return
-    textEl.innerHTML = node.label
-    this.linkDiv()
-    this.bus.fire('operation', {
-      name: 'finishEditArrowLabel',
-      obj: node,
-    })
-  })
+  const textEl = el.label
+  editSvgText(this, textEl, el.arrowObj)
   console.timeEnd('editSummary')
 }
 

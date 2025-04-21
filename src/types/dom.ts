@@ -58,5 +58,4 @@ export interface CustomSvg extends SVGGElement {
   line: SVGPathElement
   arrow1: SVGPathElement
   arrow2: SVGPathElement
-  children: HTMLCollection & [CustomLine, CustomArrow, CustomArrow, SVGTextElement]
 }
