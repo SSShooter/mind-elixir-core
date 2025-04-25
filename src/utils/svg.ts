@@ -83,7 +83,7 @@ export const createSvgGroup = function (d: string, arrowd1: string, arrowd2: str
 export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextElement, node: Summary | Arrow) {
   console.time('editSummary')
   if (!textEl) return
-  const div = document.createElement('div')
+  const div = $d.createElement('div')
   mei.nodes.appendChild(div)
   const origin = textEl.innerHTML
   div.id = 'input-box'

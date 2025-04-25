@@ -1,19 +1,18 @@
-import { fillParent } from '.'
 import { LEFT, RIGHT, SIDE } from '../const'
 import { rmSubline } from '../nodeOperation'
 import type { MindElixirInstance, NodeObj } from '../types'
 import type { Topic, Wrapper } from '../types/dom'
-import { findEle, createExpander } from './dom'
+import { createExpander } from './dom'
 
 // Judge new added node L or R
-export const judgeDirection = function (direction: number, obj: NodeObj) {
+export const judgeDirection = function ({ map, direction }: MindElixirInstance, obj: NodeObj) {
   if (direction === LEFT) {
     return LEFT
   } else if (direction === RIGHT) {
     return RIGHT
   } else if (direction === SIDE) {
-    const l = document.querySelector('.lhs')?.childElementCount || 0
-    const r = document.querySelector('.rhs')?.childElementCount || 0
+    const l = map.querySelector('.lhs')?.childElementCount || 0
+    const r = map.querySelector('.rhs')?.childElementCount || 0
     if (l <= r) {
       obj.direction = LEFT
       return LEFT
@@ -38,7 +37,7 @@ export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper
     }
     mei.linkDiv(wrapper.offsetParent as Wrapper)
   } else if (top.tagName === 'ME-ROOT') {
-    const direction = judgeDirection(mei.direction, tpc.nodeObj)
+    const direction = judgeDirection(mei, tpc.nodeObj)
     if (direction === LEFT) {
       mei.container.querySelector('.lhs')?.appendChild(wrapper)
     } else {
