@@ -2,9 +2,9 @@ import type { SummarySvgGroup } from './summary'
 import type { Expander, CustomSvg } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 import { isTopic } from './utils'
-import dragMoveHelper from './utils/dragMoveHelper'
 
 export default function (mind: MindElixirInstance) {
+  const { dragMoveHelper } = mind
   mind.map.addEventListener('click', e => {
     if (e.button !== 0) return
     if (mind.helper1?.moved) {
@@ -16,7 +16,7 @@ export default function (mind: MindElixirInstance) {
       return
     }
     if (dragMoveHelper.moved) {
-      dragMoveHelper.clear(mind)
+      dragMoveHelper.clear()
       return
     }
     mind.clearSelection()
@@ -51,17 +51,6 @@ export default function (mind: MindElixirInstance) {
     }
   })
 
-  /**
-   * drag and move the map
-   */
-  mind.map.addEventListener('mousemove', e => {
-    // click trigger mousemove in windows chrome
-    if ((e.target as HTMLElement).contentEditable === 'inherit') {
-      dragMoveHelper.onMove(e, mind)
-    }
-    dragMoveHelper.x = e.clientX
-    dragMoveHelper.y = e.clientY
-  })
   mind.map.addEventListener('mousedown', e => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton) return
@@ -71,14 +60,25 @@ export default function (mind: MindElixirInstance) {
       mind.map.style.transition = 'none'
     }
   })
-  mind.map.addEventListener('mouseleave', e => {
-    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    if (e.button !== mouseMoveButton) return
-    dragMoveHelper.clear(mind)
+
+  // to handle mouse move outside of map, add event listener to document
+  document.addEventListener('mousemove', e => {
+    // click trigger mousemove in windows chrome
+    if ((e.target as HTMLElement).contentEditable === 'inherit') {
+      // drag and move the map
+      dragMoveHelper.onMove(e)
+    }
+    dragMoveHelper.x = e.clientX
+    dragMoveHelper.y = e.clientY
   })
-  mind.map.addEventListener('mouseup', e => {
+  document.addEventListener('mouseup', e => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton) return
-    dragMoveHelper.clear(mind)
+    dragMoveHelper.clear()
+  })
+  document.addEventListener('contextmenu', e => {
+    if (dragMoveHelper.moved) {
+      e.preventDefault()
+    }
   })
 }

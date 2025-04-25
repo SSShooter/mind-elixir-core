@@ -3,15 +3,15 @@ import './iconfont/iconfont.js'
 import { LEFT, RIGHT, SIDE, DARK_THEME, THEME } from './const'
 import { generateUUID } from './utils/index'
 import initMouseEvent from './mouse'
-import Bus from './utils/pubsub'
+import { createBus } from './utils/pubsub'
 import { findEle } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
-import dragMoveHelper from './utils/dragMoveHelper'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
 import { sub, main } from './utils/generateBranch'
 // @ts-expect-error json file
 import { version } from '../package.json'
+import { createDragMoveHelper } from './utils/dragMoveHelper'
 
 // TODO show up animation
 const $d = document
@@ -75,7 +75,8 @@ function MindElixir(
   this.generateSubBranch = generateSubBranch || sub
   this.overflowHidden = overflowHidden || false
 
-  this.bus = Bus.create()
+  this.dragMoveHelper = createDragMoveHelper(this)
+  this.bus = createBus()
 
   this.container = $d.createElement('div') // map container
   this.selectionContainer = selectionContainer || this.container
@@ -164,8 +165,6 @@ if (import.meta.env.MODE !== 'lite') {
   })
 }
 
-MindElixir.dragMoveHelper = dragMoveHelper
-
 export interface MindElixirCtor {
   new (options: Options): MindElixirInstance
   E: typeof findEle
@@ -177,7 +176,6 @@ export interface MindElixirCtor {
   THEME: typeof THEME
   DARK_THEME: typeof DARK_THEME
   prototype: MindElixirMethods
-  dragMoveHelper: typeof dragMoveHelper
 }
 
 export default MindElixir as unknown as MindElixirCtor

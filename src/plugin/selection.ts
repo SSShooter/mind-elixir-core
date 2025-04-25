@@ -1,7 +1,6 @@
 import type { Trigger } from '@viselect/vanilla'
 import SelectionArea from '@viselect/vanilla'
 import type { MindElixirInstance, Topic } from '..'
-import dragMoveHelper from '../utils/dragMoveHelper'
 
 export default function (mei: MindElixirInstance) {
   const triggers: Trigger[] = mei.mouseSelectionButton === 2 ? [2] : [0]
@@ -51,7 +50,7 @@ export default function (mei: MindElixirInstance) {
           changed: { added, removed },
         },
       }) => {
-        dragMoveHelper.moved = true
+        mei.dragMoveHelper.moved = true
         for (const el of added) {
           el.classList.add('selected')
         }

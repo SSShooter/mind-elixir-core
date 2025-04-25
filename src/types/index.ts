@@ -1,6 +1,5 @@
-import type Bus from '../utils/pubsub'
 import type { Topic, CustomSvg } from './dom'
-import type { EventMap, Operation } from '../utils/pubsub'
+import type { createBus, EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { Arrow } from '../arrow'
@@ -9,6 +8,7 @@ import type SelectionArea from '@viselect/vanilla'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { Locale } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
+import type { createDragMoveHelper } from '../utils/dragMoveHelper'
 export { type MindElixirMethods } from '../methods'
 
 export enum DirectionClass {
@@ -118,7 +118,7 @@ export interface MindElixirInstance extends MindElixirMethods {
    */
   helper2?: LinkDragMoveHelperInstance
 
-  bus: ReturnType<typeof Bus.create<EventMap>>
+  bus: ReturnType<typeof createBus<EventMap>>
   history: Operation[]
   undo: () => void
   redo: () => void
@@ -127,6 +127,7 @@ export interface MindElixirInstance extends MindElixirMethods {
   selectionContainer?: string | HTMLElement
 
   alignment: Alignment
+  dragMoveHelper: ReturnType<typeof createDragMoveHelper>
 }
 type PathString = string
 /**

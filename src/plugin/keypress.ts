@@ -1,7 +1,6 @@
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 import { DirectionClass } from '../types/index'
-import dragMoveHelper from '../utils/dragMoveHelper'
 
 const selectRootLeft = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
@@ -196,8 +195,8 @@ export default function (mind: MindElixirInstance) {
     e.stopPropagation()
     e.preventDefault()
     if (e.ctrlKey || e.metaKey) {
-      if (e.deltaY < 0) handleZoom(mind, 'in', dragMoveHelper)
-      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', dragMoveHelper)
+      if (e.deltaY < 0) handleZoom(mind, 'in', mind.dragMoveHelper)
+      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', mind.dragMoveHelper)
     } else if (e.shiftKey) {
       mind.move(-e.deltaY, 0)
     } else {

@@ -1,4 +1,3 @@
-import dragMoveHelper from '../utils/dragMoveHelper'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
@@ -95,7 +94,7 @@ export default function (mind: MindElixirInstance) {
     }
     e.dataTransfer!.setDragImage(ghost, 0, 0)
     e.dataTransfer!.dropEffect = 'move'
-    dragMoveHelper.clear(mind)
+    mind.dragMoveHelper.clear()
   })
 
   mind.map.addEventListener('dragend', async e => {

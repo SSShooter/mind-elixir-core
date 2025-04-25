@@ -2,7 +2,6 @@ import i18n from '../i18n'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
-import dragMoveHelper from '../utils/dragMoveHelper'
 import './contextMenu.less'
 import type { ArrowOptions } from '../arrow'
 
@@ -80,7 +79,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   mind.container.oncontextmenu = function (e) {
     e.preventDefault()
     if (!mind.editable) return
-    if (dragMoveHelper.moved) return
+    if (mind.dragMoveHelper.moved) return
     // console.log(e.pageY, e.screenY, e.clientY)
     const target = e.target as HTMLElement
     if (isTopic(target)) {
