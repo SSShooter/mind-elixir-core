@@ -69,6 +69,7 @@ const m2 = new MindElixir({
   el: '#map2',
   selectionContainer: 'body', // use body to make selection usable when transform is not 0
   direction: MindElixir.SIDE,
+  theme: MindElixir.DARK_THEME,
 })
 m2.init(data)
 
