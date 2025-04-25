@@ -105,33 +105,6 @@ export const getData = function (this: MindElixirInstance) {
 /**
  * @function
  * @instance
- * @name getDataMd
- * @description Get all node data as markdown.
- * @memberof MapInteraction
- * @return {String}
- */
-export const getDataMd = function (this: MindElixirInstance) {
-  const data = collectData(this).nodeData
-  let mdString = '# ' + data.topic + '\n\n'
-  function writeMd(children: NodeObj[], deep: number) {
-    for (let i = 0; i < children.length; i++) {
-      if (deep <= 6) {
-        mdString += ''.padStart(deep, '#') + ' ' + children[i].topic + '\n\n'
-      } else {
-        mdString += ''.padStart(deep - 7, '\t') + '- ' + children[i].topic + '\n'
-      }
-      if (children[i].children) {
-        writeMd(children[i].children || [], deep + 1)
-      }
-    }
-  }
-  writeMd(data.children || [], 2)
-  return mdString
-}
-
-/**
- * @function
- * @instance
  * @name enableEdit
  * @memberof MapInteraction
  */
