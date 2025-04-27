@@ -250,6 +250,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
     const siblingLength = removeNodeObj(nodeObj)
     removeNodeDom(tpc, siblingLength)
   }
+  this.clearSelection()
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'removeNodes',
