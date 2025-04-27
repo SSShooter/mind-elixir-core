@@ -36,11 +36,13 @@ Mind elixir is a open source JavaScript mind map core. You can use it with any f
 
 Features:
 
+- Fluent UX
+- Well designed
 - Lightweight
 - High performance
 - Framework agnostic
 - Pluginable
-- Build-in drag and drop / node edit plugin
+- Built-in drag and drop / node edit plugin
 - Export as SVG / PNG / Html
 - Summarize nodes
 - Bulk operations supported
@@ -428,3 +430,10 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />
 </a>
+
+## v5 Breaking Changes
+
+- Move scroll-based movement to transition-based movement
+- Summary.text -> Summary.label
+- Remove getDataMd
+- MindElixir.dragMoveHelper -> instance.dragMoveHelper
