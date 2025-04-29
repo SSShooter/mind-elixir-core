@@ -64,7 +64,6 @@ class EdgeMoveController {
 }
 
 export default function (mind: MindElixirInstance) {
-  let dragged: Topic[] | null = null
   let insertTpye: InsertType = null
   let meet: Topic | null = null
   const ghost = createGhost(mind)
@@ -78,18 +77,17 @@ export default function (mind: MindElixirInstance) {
       e.preventDefault()
       return
     }
-    if (!mind.currentNodes?.includes(target)) {
-      mind.unselectNodes()
+    let nodes = mind.currentNodes
+    if (!nodes?.includes(target)) {
+      mind.unselectNodes(mind.currentNodes)
       mind.selectNode(target)
+      nodes = mind.currentNodes
     }
-    if (mind.currentNodes) {
-      dragged = mind.currentNodes
-      ghost.innerHTML = mind.currentNodes.length + ''
-    } else {
-      dragged = [target]
-      ghost.innerHTML = target.innerHTML
-    }
-    for (const node of dragged) {
+    mind.dragged = nodes
+    if (nodes.length > 1) ghost.innerHTML = nodes.length + ''
+    else ghost.innerHTML = target.innerHTML
+
+    for (const node of nodes) {
       node.parentElement.parentElement.style.opacity = '0.5'
     }
     e.dataTransfer!.setDragImage(ghost, 0, 0)
@@ -98,6 +96,8 @@ export default function (mind: MindElixirInstance) {
   })
 
   mind.map.addEventListener('dragend', async e => {
+    console.log('node dragend')
+    const { dragged } = mind
     if (!dragged) return
     for (const node of dragged) {
       node.parentElement.parentElement.style.opacity = '1'
@@ -113,12 +113,13 @@ export default function (mind: MindElixirInstance) {
     } else if (insertTpye === 'in') {
       mind.moveNodeIn(dragged, meet)
     }
-    dragged = null
+    mind.dragged = null
   })
 
   mind.map.addEventListener('dragover', function (e: DragEvent) {
-    console.log('dragover', e)
     e.preventDefault()
+    const { dragged } = mind
+
     if (!dragged) return
 
     // border detection

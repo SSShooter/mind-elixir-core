@@ -78,9 +78,7 @@ export default function (mind: MindElixirInstance) {
   const handleRemove = () => {
     if (mind.currentArrow) mind.removeArrow()
     else if (mind.currentSummary) mind.removeSummary(mind.currentSummary.summaryObj.id)
-    else if (mind.currentNode) {
-      mind.removeNode()
-    } else if (mind.currentNodes) {
+    else if (mind.currentNodes) {
       mind.removeNodes(mind.currentNodes)
     }
   }

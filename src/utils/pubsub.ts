@@ -27,12 +27,6 @@ type NodeOperation =
       objs: NodeObj[]
       toObj: NodeObj
     }
-  | {
-      name: 'removeNode'
-      obj: NodeObj
-      originIndex?: number
-      originParentId?: string
-    }
 
 type MultipleNodeOperation =
   | {
@@ -80,8 +74,7 @@ export type EventMap = {
   selectNode: (nodeObj: NodeObj, e?: MouseEvent) => void
   selectNewNode: (nodeObj: NodeObj) => void
   selectNodes: (nodeObj: NodeObj[]) => void
-  unselectNode: () => void
-  unselectNodes: () => void
+  unselectNodes: (nodeObj: NodeObj[]) => void
   expandNode: (nodeObj: NodeObj) => void
   linkDiv: () => void
   scale: (scale: number) => void

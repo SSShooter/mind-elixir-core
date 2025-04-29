@@ -19,13 +19,11 @@ export default function (mind: MindElixirInstance) {
       dragMoveHelper.clear()
       return
     }
-    mind.clearSelection()
+    // mind.clearSelection()
     // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as HTMLElement
     if (target.tagName === 'ME-EPD') {
       mind.expandNode((target as Expander).previousSibling)
-    } else if (isTopic(target)) {
-      mind.selectNode(target, false, e)
     } else if (!mind.editable) {
       return
     }

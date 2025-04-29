@@ -77,7 +77,10 @@ export default function (mei: MindElixirInstance) {
       current = h.next
       mei.refresh(h.next)
       if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
-      else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
+      else if (h.currentObject.type === 'nodes') {
+        mei.unselectNodes(this.currentNodes)
+        mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
+      }
     }
   }
   mei.map.addEventListener('keydown', (e: KeyboardEvent) => {

@@ -1,6 +1,6 @@
-import type { Trigger } from '@viselect/vanilla'
-import SelectionArea from '@viselect/vanilla'
+import SelectionArea from '../vanilla/src/index'
 import type { MindElixirInstance, Topic } from '..'
+import type { Trigger } from '../vanilla/src/utils/matchesTrigger'
 
 export default function (mei: MindElixirInstance) {
   const triggers: Trigger[] = mei.mouseSelectionButton === 2 ? [2] : [0]
@@ -8,6 +8,10 @@ export default function (mei: MindElixirInstance) {
     selectables: ['.map-container me-tpc'],
     boundaries: [mei.container],
     container: mei.selectionContainer,
+    features: {
+      // deselectOnBlur: true,
+      touch: false,
+    },
     behaviour: {
       triggers,
       // Scroll configuration.
@@ -26,9 +30,20 @@ export default function (mei: MindElixirInstance) {
     },
   })
     .on('beforestart', ({ event }) => {
-      if (((event as MouseEvent).target as Topic).tagName === 'ME-TPC') return false
-      if (((event as MouseEvent).target as HTMLElement).id === 'input-box') return false
-      if (((event as MouseEvent).target as HTMLElement).className === 'circle') return false
+      const target = event!.target as HTMLElement
+      if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
+        if (target.tagName === 'ME-TPC' && target.classList.contains('selected')) {
+          // Normal click cannot deselect
+          // Also, deselection CANNOT be triggered before dragging, otherwise we can't drag multiple targets!!
+          return false
+        }
+        // trigger `move` event here
+        mei.clearSelection()
+      }
+      console.log('isSelected', target.classList.contains('selected'))
+      console.log('beforestart')
+      if (target.id === 'input-box') return false
+      if (target.className === 'circle') return false
       const selectionAreaElement = selection.getSelectionArea()
       selectionAreaElement.style.background = '#4f90f22d'
       selectionAreaElement.style.border = '1px solid #4f90f2'
@@ -37,12 +52,7 @@ export default function (mei: MindElixirInstance) {
       }
       return true
     })
-    .on('start', ({ event }) => {
-      if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
-        mei.clearSelection()
-        selection.clearSelection(true, true)
-      }
-    })
+    // .on('beforedrag', ({ event }) => {})
     .on(
       'move',
       ({
@@ -50,18 +60,32 @@ export default function (mei: MindElixirInstance) {
           changed: { added, removed },
         },
       }) => {
-        mei.dragMoveHelper.moved = true
-        for (const el of added) {
-          el.classList.add('selected')
+        if (added.length > 0 || removed.length > 0) {
+          console.log('added ', added)
+          console.log('removed ', removed)
         }
-
-        for (const el of removed) {
-          el.classList.remove('selected')
+        mei.dragMoveHelper.moved = true
+        if (added.length > 0) {
+          for (const el of added) {
+            el.className = 'selected'
+          }
+          mei.currentNodes = [...mei.currentNodes, ...(added as Topic[])]
+          mei.bus.fire(
+            'selectNodes',
+            (added as Topic[]).map(el => el.nodeObj)
+          )
+        }
+        if (removed.length > 0) {
+          for (const el of removed) {
+            el.classList.remove('selected')
+          }
+          mei.currentNodes = mei.currentNodes!.filter(el => !removed?.includes(el))
+          mei.bus.fire(
+            'unselectNodes',
+            (removed as Topic[]).map(el => el.nodeObj)
+          )
         }
       }
     )
-    .on('stop', ({ store: { stored } }) => {
-      mei.selectNodes(stored as Topic[])
-    })
   mei.selection = selection
 }

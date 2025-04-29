@@ -172,12 +172,8 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
 }
 
 export const createSummary = function (this: MindElixirInstance) {
-  let nodes: Topic[] = []
-  if (this.currentNode) {
-    nodes = [this.currentNode]
-  } else if (this.currentNodes) {
-    nodes = this.currentNodes
-  }
+  if (!this.currentNodes) return
+  const nodes: Topic[] = this.currentNodes
   const { parent, start, end } = calcRange(nodes)
   const summary = { id: generateUUID(), parent, start, end, label: 'summary' }
   const g = drawSummary(this, summary) as SummarySvgGroup

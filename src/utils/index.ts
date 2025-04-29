@@ -134,16 +134,18 @@ export const isTopic = (target?: HTMLElement): target is Topic => {
 }
 
 export const unionTopics = (nodes: Topic[]) => {
-  return nodes.filter(node => {
-    for (let i = 0; i < nodes.length; i++) {
-      if (node === nodes[i]) continue
-      const parent = nodes[i].parentElement.parentElement
-      if (parent.contains(node)) {
-        return false
+  return nodes
+    .filter(node => node.nodeObj.parent)
+    .filter((node, _, nodes) => {
+      for (let i = 0; i < nodes.length; i++) {
+        if (node === nodes[i]) continue
+        const { parent } = node.nodeObj
+        if (parent === nodes[i].nodeObj) {
+          return false
+        }
       }
-    }
-    return true
-  })
+      return true
+    })
 }
 
 export const getTranslate = (styleText: string) => {

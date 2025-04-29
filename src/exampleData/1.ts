@@ -317,18 +317,18 @@ const aboutMindElixir: MindElixirData = {
               },
             ],
           },
-          {
-            topic: 'Video',
-            id: 'c00a2264ffadw19',
-            children: [
-              {
-                topic: '',
-                id: 'c00a2264f453fv14',
-                dangerouslySetInnerHTML:
-                  '<iframe src="//player.bilibili.com/player.html?bvid=BV1aTxMehEjK&poster=1&autoplay=0&danmaku=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>',
-              },
-            ],
-          },
+          // {
+          //   topic: 'Video',
+          //   id: 'c00a2264ffadw19',
+          //   children: [
+          //     {
+          //       topic: '',
+          //       id: 'c00a2264f453fv14',
+          //       dangerouslySetInnerHTML:
+          //         '<iframe src="//player.bilibili.com/player.html?bvid=BV1aTxMehEjK&poster=1&autoplay=0&danmaku=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>',
+          //     },
+          //   ],
+          // },
         ],
         direction: 1,
       },

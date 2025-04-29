@@ -434,6 +434,8 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 ## v5 Breaking Changes
 
 - Move scroll-based movement to transition-based movement
-- Summary.text -> Summary.label
-- Remove getDataMd
+- `Summary.text` -> `Summary.label`
+- Remove `getDataMd()`
 - MindElixir.dragMoveHelper -> instance.dragMoveHelper
+- Remove `unselectNode()`
+- Remove `removeNode()`

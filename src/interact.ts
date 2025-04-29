@@ -15,62 +15,27 @@ function collectData(instance: MindElixirInstance) {
   }
 }
 
-export const selectNode = function (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent): void {
-  if (!targetElement) return
-  console.time('selectNode')
+export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
+  // selectNode clears all selected nodes by default
   this.clearSelection()
-  if (typeof targetElement === 'string') {
-    const el = findEle(targetElement)
-    if (!el) return
-    return this.selectNode(el)
-  }
-  targetElement.className = 'selected'
-  targetElement.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-  this.currentNode = targetElement
+  tpc.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  this.selection.select(tpc)
   if (isNewNode) {
-    this.bus.fire('selectNewNode', targetElement.nodeObj)
-  } else {
-    // the variable e indicates that the action is triggered by a click
-    this.bus.fire('selectNode', targetElement.nodeObj, e)
+    this.bus.fire('selectNewNode', tpc.nodeObj)
   }
-  console.timeEnd('selectNode')
-}
-
-export const unselectNode = function (this: MindElixirInstance) {
-  if (this.currentNode) {
-    this.currentNode.className = ''
-  }
-  this.currentNode = null
-  this.bus.fire('unselectNode')
 }
 
 export const selectNodes = function (this: MindElixirInstance, tpc: Topic[]): void {
-  console.time('selectNodes')
-  this.clearSelection()
-  for (const el of tpc) {
-    el.className = 'selected'
-  }
-  this.currentNodes = tpc
-  this.bus.fire(
-    'selectNodes',
-    tpc.map(el => el.nodeObj)
-  )
-  console.timeEnd('selectNodes')
+  // update currentNodes in selection.ts to keep sync with SelectionArea cache
+  this.selection.select(tpc)
 }
 
-export const unselectNodes = function (this: MindElixirInstance) {
-  if (this.currentNodes) {
-    for (const el of this.currentNodes) {
-      el.classList.remove('selected')
-    }
-  }
-  this.currentNodes = null
-  this.bus.fire('unselectNodes')
+export const unselectNodes = function (this: MindElixirInstance, tpc: Topic[]) {
+  this.selection.deselect(tpc)
 }
 
 export const clearSelection = function (this: MindElixirInstance) {
-  this.unselectNode()
-  this.unselectNodes()
+  this.unselectNodes(this.currentNodes)
   this.unselectSummary()
   this.unselectArrow()
 }

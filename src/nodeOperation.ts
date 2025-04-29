@@ -172,6 +172,7 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
     const { newNodeObj } = res
     objs.push(newNodeObj)
   }
+  this.unselectNodes(this.currentNodes)
   this.selectNodes(objs.map(obj => findEle(obj.id)))
   this.bus.fire('operation', {
     name: 'copyNodes',
@@ -211,46 +212,16 @@ export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
   })
 }
 
-export const removeNode = function (this: MindElixirInstance, el?: Topic) {
-  const tpc = el || this.currentNode
-  if (!tpc) return
-  const nodeObj = tpc.nodeObj
-  if (!nodeObj.parent) {
-    throw new Error('Can not remove root node')
-  }
-  const siblings = nodeObj.parent!.children!
-  const i = siblings.findIndex(node => node === nodeObj)
-  const siblingLength = removeNodeObj(nodeObj)
-  removeNodeDom(tpc, siblingLength)
-
-  // automatically select sibling or parent
-  if (siblings.length !== 0) {
-    const sibling = siblings[i] || siblings[i - 1]
-    this.selectNode(findEle(sibling.id))
-  } else {
-    this.selectNode(findEle(nodeObj.parent!.id))
-  }
-
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'removeNode',
-    obj: nodeObj,
-    originIndex: i,
-    originParentId: nodeObj?.parent?.id,
-  })
-}
-
 export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
+  if (tpcs.length === 0) return
   tpcs = unionTopics(tpcs)
   for (const tpc of tpcs) {
     const nodeObj = tpc.nodeObj
-    if (!nodeObj.parent) {
-      continue
-    }
     const siblingLength = removeNodeObj(nodeObj)
     removeNodeDom(tpc, siblingLength)
   }
-  this.clearSelection()
+  const last = tpcs[tpcs.length - 1]
+  this.selectNode(findEle(last.nodeObj.parent!.id))
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'removeNodes',

@@ -154,7 +154,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   }
   remove_child.onclick = () => {
     if (isRoot) return
-    mind.removeNode()
+    mind.removeNodes(mind.currentNodes || [])
     menuContainer.hidden = true
   }
   focus.onclick = () => {
@@ -203,7 +203,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   summary.onclick = () => {
     menuContainer.hidden = true
     mind.createSummary()
-    mind.unselectNodes()
+    mind.unselectNodes(mind.currentNodes)
   }
   return () => {
     // maybe useful?

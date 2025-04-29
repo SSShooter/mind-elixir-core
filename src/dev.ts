@@ -94,10 +94,10 @@ mind.bus.addListener('operation', (operation: Operation) => {
   // obj: {from:target1,to:target2}
 })
 mind.bus.addListener('selectNodes', nodes => {
-  console.log(nodes)
+  console.log('selectNodes', nodes)
 })
-mind.bus.addListener('unselectNodes', () => {
-  console.log()
+mind.bus.addListener('unselectNodes', nodes => {
+  console.log('unselectNodes', nodes)
 })
 mind.bus.addListener('expandNode', node => {
   console.log('expandNode: ', node)

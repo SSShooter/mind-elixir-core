@@ -4,11 +4,11 @@ import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
-import type SelectionArea from '@viselect/vanilla'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { Locale } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
 import type { createDragMoveHelper } from '../utils/dragMoveHelper'
+import type SelectionArea from '../vanilla/src'
 export { type MindElixirMethods } from '../methods'
 
 export enum DirectionClass {
@@ -62,6 +62,7 @@ export type Alignment = 'root' | 'nodes'
  * @public
  */
 export interface MindElixirInstance extends MindElixirMethods {
+  dragged: Topic[] | null // currently dragged nodes
   disposable: Array<() => void>
   isFocusMode: boolean
   nodeDataBackup: NodeObj
