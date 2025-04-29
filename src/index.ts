@@ -67,7 +67,7 @@ function MindElixir(
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? false : allowUndo
   // this.parentMap = {} // deal with large amount of nodes
-  this.currentNode = null // the selected <tpc/> element
+  this.currentNodes = [] // selected <tpc/> elements
   this.currentArrow = null // the selected link svg element
   this.scaleVal = 1
   this.tempDirection = null
@@ -124,6 +124,13 @@ function MindElixir(
 }
 
 MindElixir.prototype = methods
+
+Object.defineProperty(MindElixir.prototype, 'currentNode', {
+  get() {
+    return this.currentNodes.at(-1)
+  },
+  enumerable: true,
+})
 
 MindElixir.LEFT = LEFT
 MindElixir.RIGHT = RIGHT

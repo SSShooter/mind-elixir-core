@@ -107,7 +107,6 @@ const methods = {
     this.arrows = undefined
     this.summaries = undefined
     this.currentArrow = undefined
-    this.currentNode = undefined
     this.currentNodes = undefined
     this.currentSummary = undefined
     this.waitCopy = undefined

@@ -71,8 +71,8 @@ export interface MindElixirInstance extends MindElixirMethods {
   arrows: Arrow[]
   summaries: Summary[]
 
-  currentNode: Topic | null
-  currentNodes: Topic[] | null
+  readonly currentNode: Topic | null
+  currentNodes: Topic[]
   currentSummary: SummarySvgGroup | null
   currentArrow: CustomSvg | null
 
