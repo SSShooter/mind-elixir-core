@@ -45,7 +45,7 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionC
   }
 }
 const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' | 'next') {
-  const current = mei.currentNode || mei.currentNodes?.[0]
+  const current = mei.currentNode
   if (!current) return
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) return
@@ -53,6 +53,9 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
   const sibling = current.parentElement.parentElement[s]
   if (sibling) {
     mei.selectNode(sibling.firstChild.firstChild)
+  } else {
+    // handle multiple nodes including last node
+    mei.selectNode(current)
   }
 }
 const handleZoom = function (
@@ -138,14 +141,12 @@ export default function (mind: MindElixirInstance) {
     },
     c: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        if (mind.currentNode) mind.waitCopy = [mind.currentNode]
-        else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
+        mind.waitCopy = mind.currentNodes
       }
     },
     x: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        if (mind.currentNode) mind.waitCopy = [mind.currentNode]
-        else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
+        mind.waitCopy = mind.currentNodes
         handleRemove()
       }
     },
