@@ -67,7 +67,6 @@ export default function (mind: MindElixirInstance) {
   let insertTpye: InsertType = null
   let meet: Topic | null = null
   const ghost = createGhost(mind)
-  const threshold = 12
   const edgeMoveController = new EdgeMoveController(mind)
 
   mind.map.addEventListener('dragstart', e => {
@@ -99,6 +98,7 @@ export default function (mind: MindElixirInstance) {
     console.log('node dragend')
     const { dragged } = mind
     if (!dragged) return
+    edgeMoveController.stop()
     for (const node of dragged) {
       node.parentElement.parentElement.style.opacity = '1'
     }
@@ -118,6 +118,7 @@ export default function (mind: MindElixirInstance) {
 
   mind.map.addEventListener('dragover', function (e: DragEvent) {
     e.preventDefault()
+    const threshold = 12 * mind.scaleVal
     const { dragged } = mind
 
     if (!dragged) return
@@ -141,17 +142,19 @@ export default function (mind: MindElixirInstance) {
     const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
     if (canMove(topMeet, dragged)) {
       meet = topMeet
-      const y = topMeet.getBoundingClientRect().y
-      if (e.clientY > y + topMeet.clientHeight) {
+      const rect = topMeet.getBoundingClientRect()
+      const y = rect.y
+      if (e.clientY > y + rect.height) {
         insertTpye = 'after'
       } else {
         insertTpye = 'in'
       }
     } else {
       const bottomMeet = $d.elementFromPoint(e.clientX, e.clientY + threshold) as Topic
+      const rect = bottomMeet.getBoundingClientRect()
       if (canMove(bottomMeet, dragged)) {
         meet = bottomMeet
-        const y = bottomMeet.getBoundingClientRect().y
+        const y = rect.y
         if (e.clientY < y) {
           insertTpye = 'before'
         } else {
