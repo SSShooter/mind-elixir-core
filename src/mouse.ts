@@ -5,7 +5,7 @@ import { isTopic } from './utils'
 
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
-  mind.map.addEventListener('click', e => {
+  const handleClick = (e: MouseEvent) => {
     if (e.button !== 0) return
     if (mind.helper1?.moved) {
       mind.helper1.clear()
@@ -19,7 +19,6 @@ export default function (mind: MindElixirInstance) {
       dragMoveHelper.clear()
       return
     }
-    // mind.clearSelection()
     // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as HTMLElement
     if (target.tagName === 'ME-EPD') {
@@ -33,9 +32,8 @@ export default function (mind: MindElixirInstance) {
     } else if (trySvg.getAttribute('class') === 'summary') {
       mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
     }
-  })
-
-  mind.map.addEventListener('dblclick', e => {
+  }
+  const handleDblClick = (e: MouseEvent) => {
     if (!mind.editable) return
     const target = e.target as HTMLElement
     if (isTopic(target)) {
@@ -47,9 +45,8 @@ export default function (mind: MindElixirInstance) {
     } else if (trySvg.getAttribute('class') === 'summary') {
       mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
     }
-  })
-
-  mind.map.addEventListener('mousedown', e => {
+  }
+  const handleMouseDown = (e: MouseEvent) => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton) return
     if ((e.target as HTMLElement).contentEditable === 'inherit') {
@@ -57,10 +54,8 @@ export default function (mind: MindElixirInstance) {
       dragMoveHelper.mousedown = true
       mind.map.style.transition = 'none'
     }
-  })
-
-  // to handle mouse move outside of map, add event listener to document
-  document.addEventListener('mousemove', e => {
+  }
+  const handleMouseMove = (e: MouseEvent) => {
     // click trigger mousemove in windows chrome
     if ((e.target as HTMLElement).contentEditable === 'inherit') {
       // drag and move the map
@@ -68,15 +63,30 @@ export default function (mind: MindElixirInstance) {
     }
     dragMoveHelper.x = e.clientX
     dragMoveHelper.y = e.clientY
-  })
-  document.addEventListener('mouseup', e => {
+  }
+  const handleMouseUp = (e: MouseEvent) => {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton) return
     dragMoveHelper.clear()
-  })
-  document.addEventListener('contextmenu', e => {
+  }
+  const handleContextMenu = (e: MouseEvent) => {
     if (dragMoveHelper.moved) {
       e.preventDefault()
     }
-  })
+  }
+  mind.map.addEventListener('click', handleClick)
+  mind.map.addEventListener('dblclick', handleDblClick)
+  mind.map.addEventListener('mousedown', handleMouseDown)
+  // to handle mouse move outside of map, add event listener to document
+  document.addEventListener('mousemove', handleMouseMove)
+  document.addEventListener('mouseup', handleMouseUp)
+  document.addEventListener('contextmenu', handleContextMenu)
+  return () => {
+    mind.map.removeEventListener('click', handleClick)
+    mind.map.removeEventListener('dblclick', handleDblClick)
+    mind.map.removeEventListener('mousedown', handleMouseDown)
+    document.removeEventListener('mousemove', handleMouseMove)
+    document.removeEventListener('mouseup', handleMouseUp)
+    document.removeEventListener('contextmenu', handleContextMenu)
+  }
 }

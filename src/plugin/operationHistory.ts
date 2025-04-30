@@ -45,15 +45,6 @@ export default function (mei: MindElixirInstance) {
   let history = [] as History[]
   let currentIndex = -1
   let current = mei.getData()
-  mei.bus.addListener('operation', (operation: Operation) => {
-    if (operation.name === 'beginEdit') return
-    history = history.slice(0, currentIndex + 1)
-    const next = mei.getData()
-    history.push({ prev: current, currentObject: calcCurentObject(operation), next })
-    current = next
-    currentIndex = history.length - 1
-    // console.log('operation', operation.obj.id, history)
-  })
   mei.undo = function () {
     if (currentIndex > -1) {
       const h = history[currentIndex]
@@ -83,8 +74,23 @@ export default function (mei: MindElixirInstance) {
       }
     }
   }
-  mei.map.addEventListener('keydown', (e: KeyboardEvent) => {
+  const handleOperation = function (operation: Operation) {
+    if (operation.name === 'beginEdit') return
+    history = history.slice(0, currentIndex + 1)
+    const next = mei.getData()
+    history.push({ prev: current, currentObject: calcCurentObject(operation), next })
+    current = next
+    currentIndex = history.length - 1
+    // console.log('operation', operation.obj.id, history)
+  }
+  const handleKeyDown = function (e: KeyboardEvent) {
     if ((e.metaKey || e.ctrlKey) && ((e.shiftKey && e.key === 'Z') || e.key === 'y')) mei.redo()
     else if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
-  })
+  }
+  mei.bus.addListener('operation', handleOperation)
+  mei.map.addEventListener('keydown', handleKeyDown)
+  return () => {
+    mei.bus.removeListener('operation', handleOperation)
+    mei.map.removeEventListener('keydown', handleKeyDown)
+  }
 }

@@ -93,7 +93,7 @@ const methods = {
         this.disposable.push(contextMenu(this, this.contextMenuOption))
       }
       this.draggable && this.disposable.push(nodeDraggable(this))
-      this.allowUndo && operationHistory(this)
+      this.allowUndo && this.disposable.push(operationHistory(this))
     }
     this.toCenter()
     this.layout()

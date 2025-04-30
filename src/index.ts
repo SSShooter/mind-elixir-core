@@ -120,7 +120,9 @@ function MindElixir(
 
   if (this.overflowHidden) {
     this.container.style.overflow = 'hidden'
-  } else initMouseEvent(this)
+  } else {
+    this.disposable.push(initMouseEvent(this))
+  }
 }
 
 MindElixir.prototype = methods
