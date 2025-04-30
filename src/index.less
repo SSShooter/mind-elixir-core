@@ -128,8 +128,9 @@
       }
       .show {
         background: #7ad5ff;
-        pointer-events: none; // 不加会识别为不可移动
+        pointer-events: none;
         opacity: 0.7;
+        border-radius: 3px;
       }
       .before {
         height: 14px;
@@ -223,6 +224,7 @@
     direction: ltr;
     user-select: auto;
     pointer-events: auto;
+    color: var(--color);
     background-color: var(--bgcolor);
   }
 

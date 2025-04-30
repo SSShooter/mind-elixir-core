@@ -69,7 +69,7 @@ export default function (mind: MindElixirInstance) {
   const ghost = createGhost(mind)
   const edgeMoveController = new EdgeMoveController(mind)
 
-  mind.map.addEventListener('dragstart', e => {
+  const handleDragStart = (e: DragEvent) => {
     const target = e.target as Topic
     if (target?.tagName !== 'ME-TPC') {
       // it should be a topic element, return if not
@@ -92,9 +92,8 @@ export default function (mind: MindElixirInstance) {
     e.dataTransfer!.setDragImage(ghost, 0, 0)
     e.dataTransfer!.dropEffect = 'move'
     mind.dragMoveHelper.clear()
-  })
-
-  mind.map.addEventListener('dragend', async e => {
+  }
+  const handleDragEnd = (e: DragEvent) => {
     console.log('node dragend')
     const { dragged } = mind
     if (!dragged) return
@@ -114,9 +113,8 @@ export default function (mind: MindElixirInstance) {
       mind.moveNodeIn(dragged, meet)
     }
     mind.dragged = null
-  })
-
-  mind.map.addEventListener('dragover', function (e: DragEvent) {
+  }
+  const handleDragOver = (e: DragEvent) => {
     e.preventDefault()
     const threshold = 12 * mind.scaleVal
     const { dragged } = mind
@@ -165,5 +163,13 @@ export default function (mind: MindElixirInstance) {
       }
     }
     if (meet) insertPreview(meet, insertTpye)
-  })
+  }
+  mind.map.addEventListener('dragstart', handleDragStart)
+  mind.map.addEventListener('dragend', handleDragEnd)
+  mind.map.addEventListener('dragover', handleDragOver)
+  return () => {
+    mind.map.removeEventListener('dragstart', handleDragStart)
+    mind.map.removeEventListener('dragend', handleDragEnd)
+    mind.map.removeEventListener('dragover', handleDragOver)
+  }
 }

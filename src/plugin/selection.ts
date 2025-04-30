@@ -40,7 +40,6 @@ export default function (mei: MindElixirInstance) {
         // trigger `move` event here
         mei.clearSelection()
       }
-      console.log('isSelected', target.classList.contains('selected'))
       console.log('beforestart')
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false
