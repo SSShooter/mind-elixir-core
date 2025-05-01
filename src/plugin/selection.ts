@@ -1,6 +1,6 @@
-import SelectionArea from '../vanilla/src/index'
+import type { Trigger } from '@viselect/vanilla'
+import SelectionArea from '@viselect/vanilla'
 import type { MindElixirInstance, Topic } from '..'
-import type { Trigger } from '../vanilla/src/utils/matchesTrigger'
 
 export default function (mei: MindElixirInstance) {
   const triggers: Trigger[] = mei.mouseSelectionButton === 2 ? [2] : [0]

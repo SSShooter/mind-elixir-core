@@ -71,6 +71,7 @@ export default function (mind: MindElixirInstance) {
   const edgeMoveController = new EdgeMoveController(mind)
 
   const handleDragStart = (e: DragEvent) => {
+    mind.selection.cancel()
     const target = e.target as Topic
     if (target?.tagName !== 'ME-TPC') {
       // it should be a topic element, return if not
@@ -95,7 +96,6 @@ export default function (mind: MindElixirInstance) {
     mind.dragMoveHelper.clear()
   }
   const handleDragEnd = (e: DragEvent) => {
-    console.log('node dragend')
     const { dragged } = mind
     if (!dragged) return
     edgeMoveController.stop()

@@ -8,7 +8,7 @@ import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { Locale } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
 import type { createDragMoveHelper } from '../utils/dragMoveHelper'
-import type SelectionArea from '../vanilla/src'
+import type SelectionArea from '@viselect/vanilla'
 export { type MindElixirMethods } from '../methods'
 
 export enum DirectionClass {
