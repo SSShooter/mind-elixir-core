@@ -37,6 +37,10 @@ export default function (mei: MindElixirInstance) {
           // Also, deselection CANNOT be triggered before dragging, otherwise we can't drag multiple targets!!
           return false
         }
+        if (!mei.map.contains(target)) {
+          // prevent context menu click clear selection
+          return false
+        }
         // trigger `move` event here
         mei.clearSelection()
       }
@@ -63,7 +67,6 @@ export default function (mei: MindElixirInstance) {
           console.log('added ', added)
           console.log('removed ', removed)
         }
-        mei.dragMoveHelper.moved = true
         if (added.length > 0) {
           for (const el of added) {
             el.className = 'selected'

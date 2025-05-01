@@ -183,6 +183,7 @@ export const install = function (this: MindElixirInstance, plugin: (instance: Mi
  */
 export const focusNode = function (this: MindElixirInstance, el: Topic) {
   if (!el.nodeObj.parent) return
+  this.clearSelection()
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
   }

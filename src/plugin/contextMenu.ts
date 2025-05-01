@@ -103,7 +103,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
         add_sibling.className = ''
         remove_child.className = ''
       }
-      if (!mind.currentNodes) mind.selectNode(target)
+      if (!target.classList.contains('selected')) mind.selectNode(target)
       menuContainer.hidden = false
 
       menuUl.style.top = ''
