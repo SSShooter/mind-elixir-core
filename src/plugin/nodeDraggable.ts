@@ -1,5 +1,6 @@
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
+import { on } from '../utils'
 // https://html.spec.whatwg.org/multipage/dnd.html#drag-and-drop-processing-model
 type InsertType = 'before' | 'after' | 'in' | null
 const $d = document
@@ -164,12 +165,10 @@ export default function (mind: MindElixirInstance) {
     }
     if (meet) insertPreview(meet, insertTpye)
   }
-  mind.map.addEventListener('dragstart', handleDragStart)
-  mind.map.addEventListener('dragend', handleDragEnd)
-  mind.map.addEventListener('dragover', handleDragOver)
-  return () => {
-    mind.map.removeEventListener('dragstart', handleDragStart)
-    mind.map.removeEventListener('dragend', handleDragEnd)
-    mind.map.removeEventListener('dragover', handleDragOver)
-  }
+  const off = on([
+    { dom: mind.map, evt: 'dragstart', func: handleDragStart },
+    { dom: mind.map, evt: 'dragend', func: handleDragEnd },
+    { dom: mind.map, evt: 'dragover', func: handleDragOver },
+  ])
+  return off
 }

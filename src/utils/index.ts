@@ -153,3 +153,18 @@ export const getTranslate = (styleText: string) => {
   const match = styleText.match(regex)
   return match ? { x: parseFloat(match[1]), y: parseFloat(match[2]) } : { x: 0, y: 0 }
 }
+
+export const on = function <K extends keyof GlobalEventHandlersEventMap>(
+  list: { dom: EventTarget; evt: K; func: (this: EventTarget, ev: GlobalEventHandlersEventMap[K]) => void }[]
+) {
+  for (let i = 0; i < list.length; i++) {
+    const { dom, evt, func } = list[i]
+    dom.addEventListener(evt, func as EventListener)
+  }
+  return function off() {
+    for (let i = 0; i < list.length; i++) {
+      const { dom, evt, func } = list[i]
+      dom.removeEventListener(evt, func as EventListener)
+    }
+  }
+}

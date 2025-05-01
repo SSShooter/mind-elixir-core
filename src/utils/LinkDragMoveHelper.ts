@@ -1,3 +1,5 @@
+import { on } from '.'
+
 const create = function (dom: HTMLElement) {
   return {
     dom,
@@ -25,17 +27,14 @@ const create = function (dom: HTMLElement) {
       this.handleClear = this.handleClear.bind(this)
       this.handleMouseMove = this.handleMouseMove.bind(this)
       this.handleMouseDown = this.handleMouseDown.bind(this)
-      map.addEventListener('mousemove', this.handleMouseMove)
-      map.addEventListener('mouseleave', this.handleClear)
-      map.addEventListener('mouseup', this.handleClear)
-      this.dom.addEventListener('mousedown', this.handleMouseDown)
+      this.destory = on([
+        { dom: map, evt: 'mousemove', func: this.handleMouseMove },
+        { dom: map, evt: 'mouseleave', func: this.handleClear },
+        { dom: map, evt: 'mouseup', func: this.handleClear },
+        { dom: this.dom, evt: 'mousedown', func: this.handleMouseDown },
+      ])
     },
-    destory(map: HTMLElement) {
-      map.removeEventListener('mousemove', this.handleMouseMove)
-      map.removeEventListener('mouseleave', this.handleClear)
-      map.removeEventListener('mouseup', this.handleClear)
-      this.dom.removeEventListener('mousedown', this.handleMouseDown)
-    },
+    destory: null as (() => void) | null,
     clear() {
       this.moved = false
       this.mousedown = false

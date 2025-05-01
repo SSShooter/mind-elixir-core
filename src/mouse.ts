@@ -1,7 +1,7 @@
 import type { SummarySvgGroup } from './summary'
 import type { Expander, CustomSvg } from './types/dom'
 import type { MindElixirInstance } from './types/index'
-import { isTopic } from './utils'
+import { isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
@@ -74,20 +74,15 @@ export default function (mind: MindElixirInstance) {
       e.preventDefault()
     }
   }
-  // TODO: abstract on and off
-  mind.map.addEventListener('click', handleClick)
-  mind.map.addEventListener('dblclick', handleDblClick)
-  mind.map.addEventListener('mousedown', handleMouseDown)
-  // to handle mouse move outside of map, add event listener to document
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mouseup', handleMouseUp)
-  document.addEventListener('contextmenu', handleContextMenu)
-  return () => {
-    mind.map.removeEventListener('click', handleClick)
-    mind.map.removeEventListener('dblclick', handleDblClick)
-    mind.map.removeEventListener('mousedown', handleMouseDown)
-    document.removeEventListener('mousemove', handleMouseMove)
-    document.removeEventListener('mouseup', handleMouseUp)
-    document.removeEventListener('contextmenu', handleContextMenu)
-  }
+  const map = mind.map
+  const off = on([
+    { dom: map, evt: 'click', func: handleClick },
+    { dom: map, evt: 'dblclick', func: handleDblClick },
+    { dom: map, evt: 'mousedown', func: handleMouseDown },
+    // to handle mouse move outside of map, add event listener to document
+    { dom: document, evt: 'mousemove', func: handleMouseMove },
+    { dom: document, evt: 'mouseup', func: handleMouseUp },
+    { dom: document, evt: 'contextmenu', func: handleContextMenu },
+  ])
+  return off
 }
