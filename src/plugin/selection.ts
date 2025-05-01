@@ -31,6 +31,8 @@ export default function (mei: MindElixirInstance) {
   })
     .on('beforestart', ({ event }) => {
       const target = event!.target as HTMLElement
+      if (target.id === 'input-box') return false
+      if (target.className === 'circle') return false
       if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
         if (target.tagName === 'ME-TPC' && target.classList.contains('selected')) {
           // Normal click cannot deselect
@@ -45,8 +47,6 @@ export default function (mei: MindElixirInstance) {
         mei.clearSelection()
       }
       console.log('beforestart')
-      if (target.id === 'input-box') return false
-      if (target.className === 'circle') return false
       const selectionAreaElement = selection.getSelectionArea()
       selectionAreaElement.style.background = '#4f90f22d'
       selectionAreaElement.style.border = '1px solid #4f90f2'

@@ -74,6 +74,7 @@ export default function (mind: MindElixirInstance) {
       e.preventDefault()
     }
   }
+  // TODO: abstract on and off
   mind.map.addEventListener('click', handleClick)
   mind.map.addEventListener('dblclick', handleDblClick)
   mind.map.addEventListener('mousedown', handleMouseDown)
