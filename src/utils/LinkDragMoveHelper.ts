@@ -27,14 +27,14 @@ const create = function (dom: HTMLElement) {
       this.handleClear = this.handleClear.bind(this)
       this.handleMouseMove = this.handleMouseMove.bind(this)
       this.handleMouseDown = this.handleMouseDown.bind(this)
-      this.destory = on([
+      this.destroy = on([
         { dom: map, evt: 'mousemove', func: this.handleMouseMove },
         { dom: map, evt: 'mouseleave', func: this.handleClear },
         { dom: map, evt: 'mouseup', func: this.handleClear },
         { dom: this.dom, evt: 'mousedown', func: this.handleMouseDown },
       ])
     },
-    destory: null as (() => void) | null,
+    destroy: null as (() => void) | null,
     clear() {
       this.moved = false
       this.mousedown = false

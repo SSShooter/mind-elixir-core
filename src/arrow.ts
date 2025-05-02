@@ -236,8 +236,8 @@ export const unselectArrow = function (this: MindElixirInstance) {
 }
 
 const hideLinkController = function (mei: MindElixirInstance) {
-  mei.helper1?.destory!()
-  mei.helper2?.destory!()
+  mei.helper1?.destroy!()
+  mei.helper2?.destroy!()
   mei.linkController.style.display = 'none'
   mei.P2.style.display = 'none'
   mei.P3.style.display = 'none'
