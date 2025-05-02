@@ -1,5 +1,5 @@
 import type { SummarySvgGroup } from './summary'
-import type { Expander, CustomSvg } from './types/dom'
+import type { Expander, CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 import { isTopic, on } from './utils'
 
@@ -19,10 +19,13 @@ export default function (mind: MindElixirInstance) {
       dragMoveHelper.clear()
       return
     }
-    // e.preventDefault() // can cause <a /> tags don't work
     const target = e.target as HTMLElement
     if (target.tagName === 'ME-EPD') {
       mind.expandNode((target as Expander).previousSibling)
+    } else if (target.tagName === 'ME-TPC' && mind.currentNodes.length > 1) {
+      // This is a bit complex, intertwined with selection and nodeDraggable
+      // The main conflict is between multi-node dragging and selecting a single node when multiple nodes are already selected
+      mind.selectNode(target as Topic)
     } else if (!mind.editable) {
       return
     }

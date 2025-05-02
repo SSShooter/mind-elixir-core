@@ -33,14 +33,14 @@ export default function (mei: MindElixirInstance) {
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false
+      if (!mei.map.contains(target)) {
+        // prevent context menu click clear selection
+        return false
+      }
       if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
         if (target.tagName === 'ME-TPC' && target.classList.contains('selected')) {
           // Normal click cannot deselect
           // Also, deselection CANNOT be triggered before dragging, otherwise we can't drag multiple targets!!
-          return false
-        }
-        if (!mei.map.contains(target)) {
-          // prevent context menu click clear selection
           return false
         }
         // trigger `move` event here

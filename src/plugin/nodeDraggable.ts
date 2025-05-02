@@ -80,7 +80,6 @@ export default function (mind: MindElixirInstance) {
     }
     let nodes = mind.currentNodes
     if (!nodes?.includes(target)) {
-      mind.unselectNodes(mind.currentNodes)
       mind.selectNode(target)
       nodes = mind.currentNodes
     }
