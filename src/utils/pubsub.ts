@@ -88,9 +88,6 @@ export type EventMap = {
 export function createBus<T extends Record<string, (...args: any[]) => void> = EventMap>() {
   return {
     handlers: {} as Record<keyof T, ((...arg: any[]) => void)[]>,
-    showHandler: function () {
-      console.log(this.handlers)
-    },
     addListener: function <K extends keyof T>(type: K, handler: T[K]) {
       if (this.handlers[type] === undefined) this.handlers[type] = []
       this.handlers[type].push(handler)
