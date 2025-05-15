@@ -15,6 +15,25 @@ function collectData(instance: MindElixirInstance) {
   }
 }
 
+export const scrollIntoView = function (this: MindElixirInstance, el: Topic, options?: ScrollIntoViewOptions) {
+  // scrollIntoView needs to be implemented manually because native scrollIntoView behaves incorrectly after transform
+  const container = this.container
+  const rect = el.getBoundingClientRect()
+  const containerRect = container.getBoundingClientRect()
+  const isOutOfView =
+    rect.bottom > containerRect.bottom || rect.top < containerRect.top || rect.right > containerRect.right || rect.left < containerRect.left
+  if (isOutOfView) {
+    // Calculate the offset between container center and element center
+    const elCenterX = rect.left + rect.width / 2
+    const elCenterY = rect.top + rect.height / 2
+    const containerCenterX = containerRect.left + containerRect.width / 2
+    const containerCenterY = containerRect.top + containerRect.height / 2
+    const offsetX = elCenterX - containerCenterX
+    const offsetY = elCenterY - containerCenterY
+    this.move(-offsetX, -offsetY)
+  }
+}
+
 export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   // selectNode clears all selected nodes by default
   this.clearSelection()
@@ -155,7 +174,6 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number) 
  * @memberof MapInteraction
  */
 export const toCenter = function (this: MindElixirInstance) {
-  // this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
   const containerRect = this.container.getBoundingClientRect()
   const centerX = containerRect.width / 2 - 10000
   const centerY = containerRect.height / 2 - 10000
