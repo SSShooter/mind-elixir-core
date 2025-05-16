@@ -15,7 +15,7 @@ function collectData(instance: MindElixirInstance) {
   }
 }
 
-export const scrollIntoView = function (this: MindElixirInstance, el: Topic, options?: ScrollIntoViewOptions) {
+export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElement) {
   // scrollIntoView needs to be implemented manually because native scrollIntoView behaves incorrectly after transform
   const container = this.container
   const rect = el.getBoundingClientRect()
@@ -37,7 +37,7 @@ export const scrollIntoView = function (this: MindElixirInstance, el: Topic, opt
 export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   // selectNode clears all selected nodes by default
   this.clearSelection()
-  tpc.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  this.scrollIntoView(tpc)
   this.selection.select(tpc)
   if (isNewNode) {
     this.bus.fire('selectNewNode', tpc.nodeObj)
@@ -311,7 +311,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   const isOutOfView =
     elRect.bottom > containerRect.bottom || elRect.top < containerRect.top || elRect.right > containerRect.right || elRect.left < containerRect.left
   if (isOutOfView) {
-    el.scrollIntoView({ block: 'center', inline: 'center' })
+    this.scrollIntoView(el)
   }
 
   this.bus.fire('expandNode', node)

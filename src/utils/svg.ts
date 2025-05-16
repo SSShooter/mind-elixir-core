@@ -100,9 +100,8 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
     padding: 2px 4px;
     margin: -2px -4px; 
   `
-  div.focus()
-
   selectText(div)
+  mei.scrollIntoView(div)
 
   div.addEventListener('keydown', e => {
     e.stopPropagation()

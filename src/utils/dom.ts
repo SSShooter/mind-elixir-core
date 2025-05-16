@@ -154,7 +154,6 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   background-color:${style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor};
   border-radius:${style.borderRadius};`
   if (this.direction === LEFT) div.style.right = '0'
-  div.focus()
 
   selectText(div)
 
