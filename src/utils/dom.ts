@@ -13,6 +13,8 @@ export const findEle = (id: string, instance?: MindElixirInstance) => {
   return ele
 }
 
+// TODO: expand all parent nodes of target node to make it visible
+
 export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = ''
 
