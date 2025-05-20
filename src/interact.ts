@@ -317,6 +317,26 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   this.bus.fire('expandNode', node)
 }
 
+export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
+  const node = el.nodeObj
+  const setExpand = (node: NodeObj, isExpand: boolean) => {
+    node.expanded = isExpand
+    if (node.children) {
+      node.children.forEach(child => {
+        setExpand(child, isExpand)
+      })
+    }
+  }
+  if (typeof isExpand === 'boolean') {
+    setExpand(node, isExpand)
+  } else if (node.expanded !== false) {
+    setExpand(node, false)
+  } else {
+    setExpand(node, true)
+  }
+  this.refresh()
+}
+
 /**
  * @function
  * @instance
