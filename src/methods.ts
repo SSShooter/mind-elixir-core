@@ -1,7 +1,7 @@
 import type { MindElixirInstance, MindElixirData } from './index'
 import linkDiv from './linkDiv'
 import contextMenu from './plugin/contextMenu'
-import keypress from './plugin/keypress'
+import keypressInit from './plugin/keypress'
 import nodeDraggable from './plugin/nodeDraggable'
 import operationHistory from './plugin/operationHistory'
 import toolBar from './plugin/toolBar'
@@ -84,13 +84,13 @@ const methods = {
     // plugins
     this.toolBar && toolBar(this)
     if (import.meta.env.MODE !== 'lite') {
-      this.keypress && keypress(this)
+      this.keypress && keypressInit(this, this.keypress)
 
       if (this.editable) {
         selection(this)
       }
       if (this.contextMenu) {
-        this.disposable.push(contextMenu(this, this.contextMenuOption))
+        this.disposable.push(contextMenu(this, this.contextMenu))
       }
       this.draggable && nodeDraggable(this)
       this.allowUndo && operationHistory(this)
@@ -101,8 +101,8 @@ const methods = {
   },
   destroy(this: Partial<MindElixirInstance>) {
     this.disposable!.forEach(fn => fn())
-    if (this.mindElixirBox) this.mindElixirBox.innerHTML = ''
-    this.mindElixirBox = undefined
+    if (this.el) this.el.innerHTML = ''
+    this.el = undefined
     this.nodeData = undefined
     this.arrows = undefined
     this.summaries = undefined

@@ -16,7 +16,14 @@ export type ContextMenuOption = {
   }[]
 }
 
-export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
+export default function (mind: MindElixirInstance, option: true | ContextMenuOption) {
+  option =
+    option === true
+      ? {
+          focus: true,
+          link: true,
+        }
+      : option
   const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words
@@ -49,14 +56,14 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   menuUl.appendChild(add_parent)
   menuUl.appendChild(add_sibling)
   menuUl.appendChild(remove_child)
-  if (!option || option.focus) {
+  if (option.focus) {
     menuUl.appendChild(focus)
     menuUl.appendChild(unfocus)
   }
   menuUl.appendChild(up)
   menuUl.appendChild(down)
   menuUl.appendChild(summary)
-  if (!option || option.link) {
+  if (option.link) {
     menuUl.appendChild(link)
     menuUl.appendChild(linkBidirectional)
   }

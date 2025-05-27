@@ -2377,12 +2377,12 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#contextMenuOption:member",
+              "canonicalReference": "mind-elixir!MindElixirInstance#contextMenu:member",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "contextMenuOption: "
+                  "text": "contextMenu: "
                 },
                 {
                   "kind": "Content",
@@ -2396,7 +2396,7 @@
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Public",
-              "name": "contextMenuOption",
+              "name": "contextMenu",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -3036,12 +3036,12 @@
             },
             {
               "kind": "PropertySignature",
-              "canonicalReference": "mind-elixir!MindElixirInstance#mindElixirBox:member",
+              "canonicalReference": "mind-elixir!MindElixirInstance#el:member",
               "docComment": "",
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "mindElixirBox: "
+                  "text": "el: "
                 },
                 {
                   "kind": "Reference",
@@ -3056,7 +3056,7 @@
               "isReadonly": false,
               "isOptional": false,
               "releaseTag": "Public",
-              "name": "mindElixirBox",
+              "name": "el",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
@@ -3842,7 +3842,7 @@
             },
             {
               "kind": "Content",
-              "text": ";\n    draggable?: boolean;\n    editable?: boolean;\n    contextMenu?: boolean;\n    contextMenuOption?: any;\n    toolBar?: boolean;\n    keypress?: boolean;\n    mouseSelectionButton?: 0 | 2;\n    before?: "
+              "text": ";\n    draggable?: boolean;\n    editable?: boolean;\n    contextMenu?: boolean;\n    contextMenu?: any;\n    toolBar?: boolean;\n    keypress?: boolean;\n    mouseSelectionButton?: 0 | 2;\n    before?: "
             },
             {
               "kind": "Reference",

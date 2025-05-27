@@ -12,8 +12,7 @@ const options: Options = {
   locale: 'en',
   draggable: true,
   editable: true,
-  contextMenu: true,
-  contextMenuOption: {
+  contextMenu: {
     focus: true,
     link: true,
     extend: [
@@ -26,7 +25,6 @@ const options: Options = {
     ],
   },
   toolBar: true,
-  nodeMenu: true,
   keypress: true,
   allowUndo: false,
   before: {

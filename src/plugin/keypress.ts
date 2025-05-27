@@ -1,5 +1,5 @@
 import type { Topic } from '../types/dom'
-import type { MindElixirInstance } from '../types/index'
+import type { KeypressOptions, MindElixirInstance } from '../types/index'
 import { DirectionClass } from '../types/index'
 
 const selectRootLeft = (mei: MindElixirInstance) => {
@@ -67,7 +67,8 @@ const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out') {
   }
 }
 
-export default function (mind: MindElixirInstance) {
+export default function (mind: MindElixirInstance, options: boolean | KeypressOptions) {
+  options = options === true ? {} : options
   const handleRemove = () => {
     if (mind.currentArrow) mind.removeArrow()
     else if (mind.currentSummary) mind.removeSummary(mind.currentSummary.summaryObj.id)
@@ -171,6 +172,7 @@ export default function (mind: MindElixirInstance) {
     },
     Delete: handleRemove,
     Backspace: handleRemove,
+    ...options,
   }
   mind.map.onkeydown = e => {
     e.preventDefault()
