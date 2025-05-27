@@ -25,7 +25,6 @@ function MindElixir(
     draggable,
     editable,
     contextMenu,
-    contextMenuOption,
     toolBar,
     keypress,
     mouseSelectionButton,
@@ -51,11 +50,10 @@ function MindElixir(
 
   ele.style.position = 'relative'
   ele.innerHTML = ''
-  this.mindElixirBox = ele as HTMLElement
+  this.el = ele as HTMLElement
   this.disposable = []
   this.before = before || {}
   this.locale = locale || 'en'
-  this.contextMenuOption = contextMenuOption
   this.contextMenu = contextMenu === undefined ? true : contextMenu
   this.toolBar = toolBar === undefined ? true : toolBar
   this.keypress = keypress === undefined ? true : keypress
@@ -96,7 +94,7 @@ function MindElixir(
   this.map = canvas
   this.map.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
-  this.mindElixirBox.appendChild(this.container)
+  this.el.appendChild(this.container)
 
   this.nodes = $d.createElement('me-nodes')
   this.nodes.className = 'main-node-container'

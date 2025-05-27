@@ -30,8 +30,7 @@ const options: Options = {
   draggable: true,
   editable: true,
   // if you set contextMenu to false, you should handle contextmenu event by yourself, e.g. preventDefault
-  contextMenu: true,
-  contextMenuOption: {
+  contextMenu: {
     focus: true,
     link: true,
     extend: [
@@ -44,8 +43,24 @@ const options: Options = {
     ],
   },
   toolBar: true,
-  nodeMenu: true,
-  keypress: true,
+  keypress: {
+    e(e) {
+      if (!mind.currentNode) return
+      if (e.metaKey || e.ctrlKey) {
+        mind.expandNode(mind.currentNode)
+      }
+    },
+    f(e) {
+      if (!mind.currentNode) return
+      if (e.altKey) {
+        if (mind.isFocusMode) {
+          mind.cancelFocus()
+        } else {
+          mind.focusNode(mind.currentNode)
+        }
+      }
+    },
+  },
   allowUndo: true,
   before: {
     insertSibling(el, obj) {

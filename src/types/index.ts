@@ -56,17 +56,21 @@ export type Theme = {
 
 export type Alignment = 'root' | 'nodes'
 
+export interface KeypressOptions {
+  [key: string]: (e: KeyboardEvent) => void
+}
+
 /**
  * The MindElixir instance
  *
  * @public
  */
-export interface MindElixirInstance extends MindElixirMethods {
+export interface MindElixirInstance extends Required<Options>, MindElixirMethods {
   dragged: Topic[] | null // currently dragged nodes
+  el: HTMLElement
   disposable: Array<() => void>
   isFocusMode: boolean
   nodeDataBackup: NodeObj
-  mindElixirBox: HTMLElement
 
   nodeData: NodeObj
   arrows: Arrow[]
@@ -76,27 +80,10 @@ export interface MindElixirInstance extends MindElixirMethods {
   currentNodes: Topic[]
   currentSummary: SummarySvgGroup | null
   currentArrow: CustomSvg | null
-
   waitCopy: Topic[] | null
+
   scaleVal: number
   tempDirection: number | null
-  theme: Theme
-  userTheme?: Theme
-  direction: number
-  locale: Locale
-  draggable: boolean
-  editable: boolean
-  contextMenu: boolean
-  contextMenuOption?: ContextMenuOption
-  toolBar: boolean
-  keypress: boolean
-  mouseSelectionButton: 0 | 2
-  before: Before
-  newTopicName: string
-  allowUndo: boolean
-  overflowHidden: boolean
-  generateMainBranch: (params: MainLineParams) => PathString
-  generateSubBranch: (params: SubLineParams) => PathString
 
   container: HTMLElement
   map: HTMLElement
@@ -125,9 +112,6 @@ export interface MindElixirInstance extends MindElixirMethods {
   redo: () => void
 
   selection: SelectionArea
-  selectionContainer?: string | HTMLElement
-
-  alignment: Alignment
   dragMoveHelper: ReturnType<typeof createDragMoveHelper>
 }
 type PathString = string
@@ -136,16 +120,15 @@ type PathString = string
  *
  * @public
  */
-export type Options = {
+export interface Options {
   el: string | HTMLElement
   direction?: number
   locale?: Locale
   draggable?: boolean
   editable?: boolean
-  contextMenu?: boolean
-  contextMenuOption?: ContextMenuOption
+  contextMenu?: boolean | ContextMenuOption
   toolBar?: boolean
-  keypress?: boolean
+  keypress?: boolean | KeypressOptions
   mouseSelectionButton?: 0 | 2
   before?: Before
   newTopicName?: string
@@ -154,7 +137,6 @@ export type Options = {
   generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => PathString
   generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => PathString
   theme?: Theme
-  nodeMenu?: boolean
   selectionContainer?: string | HTMLElement
   alignment?: Alignment
 }

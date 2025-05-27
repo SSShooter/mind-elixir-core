@@ -15,7 +15,14 @@ export type ContextMenuOption = {
   }[]
 }
 
-export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
+export default function (mind: MindElixirInstance, option: true | ContextMenuOption) {
+  option =
+    option === true
+      ? {
+          focus: true,
+          link: true,
+        }
+      : option
   const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words
@@ -39,7 +46,7 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   const up = createLi('cm-up', lang.moveUp, 'PgUp')
   const down = createLi('cm-down', lang.moveDown, 'Pgdn')
   const link = createLi('cm-link', lang.link, '')
-  const linkBidirectional = createLi('cm-link-bidirectional', 'Bidreactional Link', '')
+  const linkBidirectional = createLi('cm-link-bidirectional', 'Bidirectional Link', '')
   const summary = createLi('cm-summary', lang.summary, '')
 
   const menuUl = document.createElement('ul')
@@ -48,14 +55,14 @@ export default function (mind: MindElixirInstance, option?: ContextMenuOption) {
   menuUl.appendChild(add_parent)
   menuUl.appendChild(add_sibling)
   menuUl.appendChild(remove_child)
-  if (!option || option.focus) {
+  if (option.focus) {
     menuUl.appendChild(focus)
     menuUl.appendChild(unfocus)
   }
   menuUl.appendChild(up)
   menuUl.appendChild(down)
   menuUl.appendChild(summary)
-  if (!option || option.link) {
+  if (option.link) {
     menuUl.appendChild(link)
     menuUl.appendChild(linkBidirectional)
   }
