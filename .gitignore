@@ -4,6 +4,7 @@ dist
 doc
 .nyc_output
 coverage
+api
 # local env files
 .env.local
 .env.*.local
