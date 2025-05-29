@@ -5,7 +5,13 @@ import { isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
-  const handleClick = (e: MouseEvent) => {
+
+  // Track previous touch position for calculating movement delta
+  let previousTouchX = 0
+  let previousTouchY = 0
+  const handleClick = (e: MouseEvent | TouchEvent) => {
+    // Only handle mouse clicks, not touch events for click
+    if (e instanceof TouchEvent) return
     if (e.button !== 0) return
     if (mind.helper1?.moved) {
       mind.helper1.clear()
@@ -40,7 +46,9 @@ export default function (mind: MindElixirInstance) {
       mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
     }
   }
-  const handleDblClick = (e: MouseEvent) => {
+  const handleDblClick = (e: MouseEvent | TouchEvent) => {
+    // Only handle mouse double clicks, not touch events
+    // if (e instanceof TouchEvent) return
     if (!mind.editable) return
     const target = e.target as HTMLElement
     if (isTopic(target)) {
@@ -53,30 +61,93 @@ export default function (mind: MindElixirInstance) {
       mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
     }
   }
-  const handleMouseDown = (e: MouseEvent) => {
-    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    if (e.button !== mouseMoveButton) return
+  let lastTap = 0
+  const handleTouchDblClick = (e: MouseEvent | TouchEvent) => {
+    const currentTime = new Date().getTime()
+    const tapLength = currentTime - lastTap
+    console.log('tapLength', tapLength)
+    if (tapLength < 300 && tapLength > 0) {
+      handleDblClick(e)
+    }
+
+    lastTap = currentTime
+  }
+  // Unified handlers that can handle both mouse and touch events
+  const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+    if (e instanceof MouseEvent) {
+      const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
+      if (e.button !== mouseMoveButton) return
+    } else {
+      // For touch events, store initial position for movement calculation
+      previousTouchX = e.touches[0]?.clientX || 0
+      previousTouchY = e.touches[0]?.clientY || 0
+    }
+
     if ((e.target as HTMLElement).contentEditable === 'inherit') {
       dragMoveHelper.moved = false
       dragMoveHelper.mousedown = true
       mind.map.style.transition = 'none'
     }
   }
-  const handleMouseMove = (e: MouseEvent) => {
+
+  const handlePointerMove = (e: MouseEvent | TouchEvent) => {
     // click trigger mousemove in windows chrome
     if ((e.target as HTMLElement).contentEditable === 'inherit') {
       // drag and move the map
-      dragMoveHelper.onMove(e)
+      if (e instanceof MouseEvent) {
+        dragMoveHelper.onMove(e)
+        dragMoveHelper.x = e.clientX
+        dragMoveHelper.y = e.clientY
+      } else {
+        // TouchEvent - calculate movement delta and create a simulated mouse event
+        const currentTouchX = e.touches[0]?.clientX || 0
+        const currentTouchY = e.touches[0]?.clientY || 0
+
+        const movementX = currentTouchX - previousTouchX
+        const movementY = currentTouchY - previousTouchY
+
+        const simulatedMouseEvent = {
+          clientX: currentTouchX,
+          clientY: currentTouchY,
+          movementX: movementX,
+          movementY: movementY,
+          target: e.target,
+        } as MouseEvent
+
+        dragMoveHelper.onMove(simulatedMouseEvent)
+        dragMoveHelper.x = currentTouchX
+        dragMoveHelper.y = currentTouchY
+
+        // Update previous position for next movement calculation
+        previousTouchX = currentTouchX
+        previousTouchY = currentTouchY
+      }
+    } else if (e instanceof MouseEvent) {
+      dragMoveHelper.x = e.clientX
+      dragMoveHelper.y = e.clientY
+    } else {
+      // Update touch position even when not dragging
+      const currentTouchX = e.touches[0]?.clientX || 0
+      const currentTouchY = e.touches[0]?.clientY || 0
+      dragMoveHelper.x = currentTouchX
+      dragMoveHelper.y = currentTouchY
+      previousTouchX = currentTouchX
+      previousTouchY = currentTouchY
     }
-    dragMoveHelper.x = e.clientX
-    dragMoveHelper.y = e.clientY
   }
-  const handleMouseUp = (e: MouseEvent) => {
-    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    if (e.button !== mouseMoveButton) return
+
+  const handlePointerUp = (e: MouseEvent | TouchEvent) => {
+    if (e instanceof MouseEvent) {
+      const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
+      if (e.button !== mouseMoveButton) return
+    }
+    // For touch events, we don't check button since touches don't have buttons
     dragMoveHelper.clear()
   }
-  const handleContextMenu = (e: MouseEvent) => {
+
+  const handleContextMenu = (e: MouseEvent | TouchEvent) => {
+    // Only handle mouse context menu events, not touch events
+    if (e instanceof TouchEvent) return
     if (dragMoveHelper.moved) {
       e.preventDefault()
     }
@@ -85,11 +156,16 @@ export default function (mind: MindElixirInstance) {
   const off = on([
     { dom: map, evt: 'click', func: handleClick },
     { dom: map, evt: 'dblclick', func: handleDblClick },
-    { dom: map, evt: 'mousedown', func: handleMouseDown },
+    { dom: map, evt: 'mousedown', func: handlePointerDown },
     // to handle mouse move outside of map, add event listener to document
-    { dom: document, evt: 'mousemove', func: handleMouseMove },
-    { dom: document, evt: 'mouseup', func: handleMouseUp },
+    { dom: document, evt: 'mousemove', func: handlePointerMove },
+    { dom: document, evt: 'mouseup', func: handlePointerUp },
     { dom: document, evt: 'contextmenu', func: handleContextMenu },
+    // support touch events
+    { dom: map, evt: 'touchstart', func: handlePointerDown },
+    { dom: document, evt: 'touchmove', func: handlePointerMove },
+    { dom: document, evt: 'touchend', func: handlePointerUp },
+    { dom: map, evt: 'touchend', func: handleTouchDblClick },
   ])
   return off
 }
