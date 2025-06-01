@@ -154,8 +154,14 @@ export const getTranslate = (styleText: string) => {
   return match ? { x: parseFloat(match[1]), y: parseFloat(match[2]) } : { x: 0, y: 0 }
 }
 
-export const on = function <K extends keyof GlobalEventHandlersEventMap>(
-  list: { dom: EventTarget; evt: K; func: (this: EventTarget, ev: GlobalEventHandlersEventMap[K]) => void }[]
+export const on = function (
+  list: {
+    [K in keyof GlobalEventHandlersEventMap]: {
+      dom: EventTarget
+      evt: K
+      func: (this: EventTarget, ev: GlobalEventHandlersEventMap[K]) => void
+    }
+  }[keyof GlobalEventHandlersEventMap][]
 ) {
   for (let i = 0; i < list.length; i++) {
     const { dom, evt, func } = list[i]

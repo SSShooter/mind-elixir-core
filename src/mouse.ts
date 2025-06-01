@@ -1,3 +1,4 @@
+import { handleZoom } from './plugin/keypress'
 import type { SummarySvgGroup } from './summary'
 import type { Expander, CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
@@ -9,7 +10,7 @@ export default function (mind: MindElixirInstance) {
   // Track previous touch position for calculating movement delta
   let previousTouchX = 0
   let previousTouchY = 0
-  const handleClick = (e: MouseEvent | TouchEvent) => {
+  const handleClick = (e: MouseEvent) => {
     // Only handle mouse clicks, not touch events for click
     if (e instanceof TouchEvent) return
     if (e.button !== 0) return
@@ -152,6 +153,22 @@ export default function (mind: MindElixirInstance) {
       e.preventDefault()
     }
   }
+
+  const handleWheel = (e: WheelEvent) => {
+    e.stopPropagation()
+    e.preventDefault()
+    if (e.ctrlKey || e.metaKey) {
+      if (e.deltaY < 0) handleZoom(mind, 'in', mind.dragMoveHelper)
+      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', mind.dragMoveHelper)
+    } else if (e.shiftKey) {
+      mind.move(-e.deltaY, 0)
+    } else {
+      mind.map.style.transition = 'none'
+      mind.move(-e.deltaX, -e.deltaY)
+      mind.map.style.transition = 'transform 0.3s'
+    }
+  }
+
   const map = mind.map
   const off = on([
     { dom: map, evt: 'click', func: handleClick },
@@ -166,6 +183,8 @@ export default function (mind: MindElixirInstance) {
     { dom: document, evt: 'touchmove', func: handlePointerMove },
     { dom: document, evt: 'touchend', func: handlePointerUp },
     { dom: map, evt: 'touchend', func: handleTouchDblClick },
+    // support wheel event
+    { dom: map, evt: 'wheel', func: handleWheel },
   ])
   return off
 }

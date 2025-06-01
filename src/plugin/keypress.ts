@@ -58,7 +58,7 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
     mei.selectNode(current)
   }
 }
-const handleZoom = function (
+export const handleZoom = function (
   mei: MindElixirInstance,
   direction: 'in' | 'out',
   offset?: {
@@ -190,20 +190,5 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     }
     const keyHandler = key2func[e.key]
     keyHandler && keyHandler(e)
-  }
-
-  mind.map.onwheel = e => {
-    e.stopPropagation()
-    e.preventDefault()
-    if (e.ctrlKey || e.metaKey) {
-      if (e.deltaY < 0) handleZoom(mind, 'in', mind.dragMoveHelper)
-      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', mind.dragMoveHelper)
-    } else if (e.shiftKey) {
-      mind.move(-e.deltaY, 0)
-    } else {
-      mind.map.style.transition = 'none'
-      mind.move(-e.deltaX, -e.deltaY)
-      mind.map.style.transition = 'transform 0.3s'
-    }
   }
 }
