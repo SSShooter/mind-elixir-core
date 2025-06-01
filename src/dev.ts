@@ -153,3 +153,5 @@ window.destroy = () => {
   // @ts-expect-error remove reference
   window.m = null
 }
+
+ssr.innerHTML = window.m.renderSSRHTML(window.m.layoutSSR(window.m.nodeData))
