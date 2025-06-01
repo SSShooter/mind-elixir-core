@@ -201,7 +201,9 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     } else if (e.shiftKey) {
       mind.move(-e.deltaY, 0)
     } else {
-      mind.move(0, -e.deltaY)
+      mind.map.style.transition = 'none'
+      mind.move(-e.deltaX, -e.deltaY)
+      mind.map.style.transition = 'transform 0.3s'
     }
   }
 }
