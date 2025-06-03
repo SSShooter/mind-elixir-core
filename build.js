@@ -17,6 +17,10 @@ const buildList = [
     name: 'example',
     enrty: __dirname + './src/exampleData/1.ts',
   },
+  {
+    name: 'LayoutSsr',
+    enrty: __dirname + './src/utils/layout-ssr.ts',
+  },
 ]
 for (let i = 0; i < buildList.length; i++) {
   const info = buildList[i]

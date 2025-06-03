@@ -7,6 +7,7 @@ import type { Options, MindElixirData, MindElixirInstance } from './types/index'
 import type { Operation } from './utils/pubsub'
 import style from '../index.css?raw'
 import katex from '../katex.css?raw'
+import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
 
 interface Window {
   m?: MindElixirInstance
@@ -154,4 +155,4 @@ window.destroy = () => {
   window.m = null
 }
 
-ssr.innerHTML = window.m.renderSSRHTML(window.m.layoutSSR(window.m.nodeData))
+document.querySelector('#ssr')!.innerHTML = renderSSRHTML(layoutSSR(window.m.nodeData))

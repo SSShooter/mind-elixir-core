@@ -9,7 +9,6 @@ import selection from './plugin/selection'
 import { editTopic, createWrapper, createParent, createChildren, createTopic, findEle } from './utils/dom'
 import { getObjById, generateNewObj, fillParent } from './utils/index'
 import { layout } from './utils/layout'
-import * as layoutSSR from './utils/layout-ssr'
 import changeTheme from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
@@ -57,7 +56,6 @@ const methods = {
   getObjById,
   generateNewObj,
   layout,
-  ...layoutSSR,
   linkDiv,
   editTopic,
   createWrapper,
