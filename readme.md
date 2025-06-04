@@ -428,7 +428,7 @@ pnpm doc:md
 Thanks for your contributions to Mind Elixir! Your support and dedication make this project better.
 
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />
+  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core" />
 </a>
 
 ## v5 Breaking Changes
@@ -439,3 +439,4 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 - MindElixir.dragMoveHelper -> instance.dragMoveHelper
 - Remove `unselectNode()`
 - Remove `removeNode()`
+- `node.style.fontSize`: use string instead of number which means you should add `px` to the end

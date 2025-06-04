@@ -154,12 +154,16 @@ export type Right = 1
 export interface NodeObj {
   topic: string
   id: Uid
-  style?: {
-    fontSize?: string
-    color?: string
-    background?: string
-    fontWeight?: string
-  }
+  style?: Partial<{
+    fontSize: string
+    fontFamily: string
+    color: string
+    background: string
+    fontWeight: string
+    width: string
+    border: string
+    textDecoration: string
+  }>
   children?: NodeObj[]
   tags?: string[]
   icons?: string[]

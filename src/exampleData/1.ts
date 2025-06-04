@@ -201,7 +201,7 @@ const aboutMindElixir: MindElixirData = {
             topic: 'Font Size',
             id: 'bd1c24420cd2c2f5',
             style: {
-              fontSize: '32',
+              fontSize: '32px',
               color: '#3298db',
             },
           },

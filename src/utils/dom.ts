@@ -17,10 +17,11 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = ''
 
   if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color || ''
-    tpc.style.background = nodeObj.style.background || ''
-    tpc.style.fontSize = nodeObj.style.fontSize + 'px'
-    tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
+    const style = nodeObj.style
+    type KeyOfStyle = keyof typeof style
+    for (const key in style) {
+      tpc.style[key as KeyOfStyle] = style[key as KeyOfStyle]!
+    }
   }
 
   if (nodeObj.dangerouslySetInnerHTML) {
