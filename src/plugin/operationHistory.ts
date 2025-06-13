@@ -51,8 +51,8 @@ export default function (mei: MindElixirInstance) {
       current = h.prev
       mei.refresh(h.prev)
       try {
-        if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
-        else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
+        if (h.currentObject.type === 'node') mei.selectNode(this.findEle(h.currentObject.value))
+        else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => this.findEle(id)))
       } catch (e) {
         // undo add node cause node not found
       } finally {
@@ -67,10 +67,10 @@ export default function (mei: MindElixirInstance) {
       const h = history[currentIndex]
       current = h.next
       mei.refresh(h.next)
-      if (h.currentObject.type === 'node') mei.selectNode(findEle(h.currentObject.value))
+      if (h.currentObject.type === 'node') mei.selectNode(this.findEle(h.currentObject.value))
       else if (h.currentObject.type === 'nodes') {
         mei.unselectNodes(this.currentNodes)
-        mei.selectNodes(h.currentObject.value.map(id => findEle(id)))
+        mei.selectNodes(h.currentObject.value.map(id => this.findEle(id)))
       }
     }
   }

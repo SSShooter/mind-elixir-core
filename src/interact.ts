@@ -2,7 +2,6 @@ import type { Locale } from './i18n'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
-import { findEle } from './utils/dom'
 import { fillParent, getTranslate } from './utils/index'
 
 function collectData(instance: MindElixirInstance) {

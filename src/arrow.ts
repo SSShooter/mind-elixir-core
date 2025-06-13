@@ -259,7 +259,7 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
 
 export const createArrowFrom = function (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) {
   const arrowObj = { ...arrow, id: generateUUID() }
-  drawArrow(this, findEle(arrowObj.from), findEle(arrowObj.to), arrowObj)
+  drawArrow(this, this.findEle(arrowObj.from), this.findEle(arrowObj.to), arrowObj)
 
   this.bus.fire('operation', {
     name: 'createArrow',
@@ -291,8 +291,8 @@ export const selectArrow = function (this: MindElixirInstance, link: CustomSvg) 
   this.currentArrow = link
   const obj = link.arrowObj
 
-  const from = findEle(obj.from)
-  const to = findEle(obj.to)
+  const from = this.findEle(obj.from)
+  const to = this.findEle(obj.to)
 
   const fromData = calcCtrlP(this, from, obj.delta1)
   const toData = calcCtrlP(this, to, obj.delta2)
@@ -326,7 +326,6 @@ const addArrowHighlight = function (arrow: CustomSvg, highlightColor: string) {
   highlightGroup.setAttribute('class', 'arrow-highlight')
   highlightGroup.setAttribute('opacity', '0.45')
 
-  // Create highlight paths using the extracted helper function
   const highlightLine = createHighlightPath(arrow.line.getAttribute('d')!, highlightColor)
   highlightGroup.appendChild(highlightLine)
 
@@ -370,24 +369,23 @@ const hideLinkController = function (mei: MindElixirInstance) {
   mei.linkController.style.display = 'none'
   mei.P2.style.display = 'none'
   mei.P3.style.display = 'none'
-  // Remove arrow highlight
   if (mei.currentArrow) {
     removeArrowHighlight(mei.currentArrow)
   }
 }
 
 const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, fromData: DivData, toData: DivData) {
-  mei.linkController.style.display = 'initial'
-  mei.P2.style.display = 'initial'
-  mei.P3.style.display = 'initial'
-  mei.nodes.appendChild(mei.linkController)
-  mei.nodes.appendChild(mei.P2)
-  mei.nodes.appendChild(mei.P3)
+  const { linkController, P2, P3, line1, line2, nodes, map, currentArrow, bus } = mei
+  if (!currentArrow) return
+  linkController.style.display = 'initial'
+  P2.style.display = 'initial'
+  P3.style.display = 'initial'
+  nodes.appendChild(linkController)
+  nodes.appendChild(P2)
+  nodes.appendChild(P3)
 
-  if (mei.currentArrow) {
-    const highlightColor = '#4dc4ff'
-    addArrowHighlight(mei.currentArrow, highlightColor)
-  }
+  const highlightColor = '#4dc4ff'
+  addArrowHighlight(currentArrow, highlightColor)
 
   // init points
   let { x: p1x, y: p1y } = calcP(fromData)
@@ -395,56 +393,54 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   let { ctrlX: p3x, ctrlY: p3y } = toData
   let { x: p4x, y: p4y } = calcP(toData)
 
-  mei.P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
-  mei.P3.style.cssText = `top:${p3y}px;left:${p3x}px;`
-  updateControlLine(mei.line1, p1x, p1y, p2x, p2y)
-  updateControlLine(mei.line2, p3x, p3y, p4x, p4y)
+  P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
+  P3.style.cssText = `top:${p3y}px;left:${p3x}px;`
+  updateControlLine(line1, p1x, p1y, p2x, p2y)
+  updateControlLine(line2, p3x, p3y, p4x, p4y)
 
-  mei.helper1 = LinkDragMoveHelper.create(mei.P2)
-  mei.helper2 = LinkDragMoveHelper.create(mei.P3)
+  mei.helper1 = LinkDragMoveHelper.create(P2)
+  mei.helper2 = LinkDragMoveHelper.create(P3)
 
-  mei.helper1.init(mei.map, (deltaX, deltaY) => {
-    if (!mei.currentArrow) return
+  mei.helper1.init(map, (deltaX, deltaY) => {
     // recalc key points
-    p2x = p2x + deltaX / mei.scaleVal
+    p2x = p2x + deltaX / mei.scaleVal // scale should keep the latest value
     p2y = p2y + deltaY / mei.scaleVal
     const p1 = calcP({ ...fromData, ctrlX: p2x, ctrlY: p2y })
     p1x = p1.x
     p1y = p1.y
 
     // update dom position
-    mei.P2.style.top = p2y + 'px'
-    mei.P2.style.left = p2x + 'px'
+    P2.style.top = p2y + 'px'
+    P2.style.left = p2x + 'px'
 
     // Use extracted common function to update arrow
-    updateArrowPath(mei.currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
-    updateControlLine(mei.line1, p1x, p1y, p2x, p2y)
+    updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
+    updateControlLine(line1, p1x, p1y, p2x, p2y)
 
     linkItem.delta1.x = p2x - fromData.cx
     linkItem.delta1.y = p2y - fromData.cy
 
-    mei.bus.fire('updateArrowDelta', linkItem)
+    bus.fire('updateArrowDelta', linkItem)
   })
 
-  mei.helper2.init(mei.map, (deltaX, deltaY) => {
-    if (!mei.currentArrow) return
+  mei.helper2.init(map, (deltaX, deltaY) => {
     p3x = p3x + deltaX / mei.scaleVal
     p3y = p3y + deltaY / mei.scaleVal
     const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
     p4x = p4.x
     p4y = p4.y
 
-    mei.P3.style.top = p3y + 'px'
-    mei.P3.style.left = p3x + 'px'
+    P3.style.top = p3y + 'px'
+    P3.style.left = p3x + 'px'
 
     // Use extracted common function to update arrow
-    updateArrowPath(mei.currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
-    updateControlLine(mei.line2, p3x, p3y, p4x, p4y)
+    updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
+    updateControlLine(line2, p3x, p3y, p4x, p4y)
 
     linkItem.delta2.x = p3x - toData.cx
     linkItem.delta2.y = p3y - toData.cy
 
-    mei.bus.fire('updateArrowDelta', linkItem)
+    bus.fire('updateArrowDelta', linkItem)
   })
 }
 
@@ -453,7 +449,7 @@ export function renderArrow(this: MindElixirInstance) {
   for (let i = 0; i < this.arrows.length; i++) {
     const link = this.arrows[i]
     try {
-      drawArrow(this, findEle(link.from), findEle(link.to), link, true)
+      drawArrow(this, this.findEle(link.from), this.findEle(link.to), link, true)
     } catch (e) {
       console.warn('Node may not be expanded')
     }

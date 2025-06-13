@@ -12,6 +12,7 @@ import { sub, main } from './utils/generateBranch'
 // @ts-expect-error json file
 import { version } from '../package.json'
 import { createDragMoveHelper } from './utils/dragMoveHelper'
+import type { Topic } from './docs'
 
 // TODO show up animation
 const $d = document
@@ -174,7 +175,7 @@ if (import.meta.env.MODE !== 'lite') {
 
 export interface MindElixirCtor {
   new (options: Options): MindElixirInstance
-  E: typeof findEle
+  E: (id: string, el?: HTMLElement) => Topic
   new: typeof MindElixir.new
   version: string
   LEFT: typeof LEFT

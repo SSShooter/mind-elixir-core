@@ -1,7 +1,6 @@
 import type { MindElixirInstance, Topic } from '.'
 import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
-import { findEle } from './utils/dom'
 import { editSvgText, svgNS } from './utils/svg'
 
 /**
@@ -111,26 +110,26 @@ const createText = function (string: string, x: number, y: number, anchor: 'star
   return text
 }
 
-const getWrapper = (id: string) => findEle(id).parentElement.parentElement
+const getWrapper = (tpc: Topic) => tpc.parentElement.parentElement
 
-const getDirection = function ({ parent, start }: Summary) {
-  const parentEl = findEle(parent)
+const getDirection = function (mei: MindElixirInstance, { parent, start }: Summary) {
+  const parentEl = mei.findEle(parent)
   const parentObj = parentEl.nodeObj
   let side: DirectionClass
   if (parentObj.parent) {
     side = parentEl.closest('me-main')!.className as DirectionClass
   } else {
-    side = findEle(parentObj.children![start].id).closest('me-main')!.className as DirectionClass
+    side = mei.findEle(parentObj.children![start].id).closest('me-main')!.className as DirectionClass
   }
   return side
 }
 
 const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const { id, label: summaryText, parent, start, end } = summary
-  const container = mei.nodes
-  const parentEl = findEle(parent)
+  const { nodes, theme, summarySvg } = mei
+  const parentEl = mei.findEle(parent)
   const parentObj = parentEl.nodeObj
-  const side = getDirection(summary)
+  const side = getDirection(mei, summary)
   let left = Infinity
   let right = 0
   let startTop = 0
@@ -142,8 +141,8 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
       mei.removeSummary(id)
       return null
     }
-    const wrapper = getWrapper(child.id)
-    const { offsetLeft, offsetTop } = getOffsetLT(container, wrapper)
+    const wrapper = getWrapper(mei.findEle(child.id))
+    const { offsetLeft, offsetTop } = getOffsetLT(nodes, wrapper)
     const offset = start === end ? 10 : 20
     if (i === start) startTop = offsetTop + offset
     if (i === end) endBottom = offsetTop + wrapper.offsetHeight - offset
@@ -155,7 +154,7 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const top = startTop + 10
   const bottom = endBottom + 10
   const md = (top + bottom) / 2
-  const color = mei.theme.cssVar['--color']
+  const color = theme.cssVar['--color']
   if (side === DirectionClass.LHS) {
     path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
     text = createText(summaryText, left - 20, md + 6, 'end', color)
@@ -167,19 +166,19 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   group.appendChild(path)
   group.appendChild(text)
   group.summaryObj = summary
-  mei.summarySvg.appendChild(group)
+  summarySvg.appendChild(group)
   return group
 }
 
 export const createSummary = function (this: MindElixirInstance) {
   if (!this.currentNodes) return
-  const nodes: Topic[] = this.currentNodes
+  const { currentNodes: nodes, summaries, bus } = this
   const { parent, start, end } = calcRange(nodes)
   const summary = { id: generateUUID(), parent, start, end, label: 'summary' }
   const g = drawSummary(this, summary) as SummarySvgGroup
-  this.summaries.push(summary)
+  summaries.push(summary)
   this.editSummary(g)
-  this.bus.fire('operation', {
+  bus.fire('operation', {
     name: 'createSummary',
     obj: summary,
   })

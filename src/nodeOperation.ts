@@ -1,5 +1,5 @@
 import { fillParent, refreshIds, unionTopics } from './utils/index'
-import { findEle, createExpander, shapeTpc } from './utils/dom'
+import { createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Children, Topic } from './types/dom'
 import { DirectionClass, type MindElixirInstance, type NodeObj } from './types/index'
@@ -41,7 +41,7 @@ const addChildFunc = function (mei: MindElixirInstance, tpc: Topic, node?: NodeO
   if (nodeObj.expanded === false) {
     mei.expandNode(tpc, true)
     // dom had resetted
-    tpc = findEle(nodeObj.id) as Topic
+    tpc = mei.findEle(nodeObj.id) as Topic
   }
   const newNodeObj = node || mei.generateNewObj()
   if (nodeObj.children) nodeObj.children.push(newNodeObj)
@@ -62,7 +62,7 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
     return
   } else if (!nodeObj.parent?.parent && nodeObj.parent?.children?.length === 1) {
     // add at least one node to another side
-    this.addChild(findEle(nodeObj.parent!.id), node)
+    this.addChild(this.findEle(nodeObj.parent!.id), node)
     return
   }
   const newNodeObj = node || this.generateNewObj()
@@ -153,7 +153,7 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   if (!res) return
   const { newNodeObj } = res
   console.timeEnd('copyNode')
-  this.selectNode(findEle(newNodeObj.id))
+  this.selectNode(this.findEle(newNodeObj.id))
   this.bus.fire('operation', {
     name: 'copyNode',
     obj: newNodeObj,
@@ -173,7 +173,7 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
     objs.push(newNodeObj)
   }
   this.unselectNodes(this.currentNodes)
-  this.selectNodes(objs.map(obj => findEle(obj.id)))
+  this.selectNodes(objs.map(obj => this.findEle(obj.id)))
   this.bus.fire('operation', {
     name: 'copyNodes',
     objs,
@@ -221,7 +221,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
     removeNodeDom(tpc, siblingLength)
   }
   const last = tpcs[tpcs.length - 1]
-  this.selectNode(findEle(last.nodeObj.parent!.id))
+  this.selectNode(this.findEle(last.nodeObj.parent!.id))
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'removeNodes',
@@ -235,7 +235,7 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to:
   if (toObj.expanded === false) {
     // TODO
     this.expandNode(to, true)
-    to = findEle(toObj.id) as Topic
+    to = this.findEle(toObj.id) as Topic
   }
   // if (!checkMoveValid(obj, toObj)) {
   //   console.warn('Invalid move')
