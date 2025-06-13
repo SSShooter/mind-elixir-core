@@ -74,6 +74,7 @@ Features:
 - [Development](#development)
 - [Thanks](#thanks)
 - [Contributors](#contributors)
+- [v5 Breaking Changes](#v5-breaking-changes)
 
 </details>
 
@@ -440,3 +441,4 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 - Remove `unselectNode()`
 - Remove `removeNode()`
 - `node.style.fontSize`: use string instead of number which means you should add `px` to the end
+- Use `instance.findEl` instead of `MindElixir.E` to get a node element

@@ -175,7 +175,7 @@ if (import.meta.env.MODE !== 'lite') {
 
 export interface MindElixirCtor {
   new (options: Options): MindElixirInstance
-  E: (id: string, el?: HTMLElement) => Topic
+  E: (id: string, el: HTMLElement) => Topic
   new: typeof MindElixir.new
   version: string
   LEFT: typeof LEFT
