@@ -6,7 +6,7 @@ import type { CustomSvg } from '../types/dom'
 import { selectText } from './dom'
 
 const $d = document
-const svgNS = 'http://www.w3.org/2000/svg'
+export const svgNS = 'http://www.w3.org/2000/svg'
 
 export const createPath = function (d: string, color: string, width: string) {
   const path = $d.createElementNS(svgNS, 'path')
@@ -28,9 +28,10 @@ export const createLinkSvg = function (klass: string) {
 
 export const createLine = function () {
   const line = $d.createElementNS(svgNS, 'line')
-  line.setAttribute('stroke', '#bbb')
+  line.setAttribute('stroke', '#4dc4ff')
   line.setAttribute('fill', 'none')
   line.setAttribute('stroke-width', '2')
+  line.setAttribute('opacity', '0.45')
   return line
 }
 

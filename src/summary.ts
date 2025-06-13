@@ -2,7 +2,7 @@ import type { MindElixirInstance, Topic } from '.'
 import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { findEle } from './utils/dom'
-import { editSvgText } from './utils/svg'
+import { editSvgText, svgNS } from './utils/svg'
 
 /**
  * @public
@@ -82,13 +82,13 @@ const calcRange = function (nodes: Topic[]) {
 }
 
 const creatGroup = function (id: string) {
-  const group = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SummarySvgGroup
+  const group = document.createElementNS(svgNS, 'g') as SummarySvgGroup
   group.setAttribute('id', id)
   return group
 }
 
 const createPath = function (d: string, color?: string) {
-  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+  const path = document.createElementNS(svgNS, 'path')
   setAttributes(path, {
     d,
     stroke: color || '#666',
@@ -100,7 +100,7 @@ const createPath = function (d: string, color?: string) {
 }
 
 const createText = function (string: string, x: number, y: number, anchor: 'start' | 'end', color?: string) {
-  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  const text = document.createElementNS(svgNS, 'text')
   setAttributes(text, {
     'text-anchor': anchor,
     x: x + '',
@@ -213,7 +213,7 @@ export const selectSummary = function (this: MindElixirInstance, el: SummarySvgG
   const box = el.children[1].getBBox()
   const padding = 6
   const radius = 3
-  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+  const rect = document.createElementNS(svgNS, 'rect')
   setAttributes(rect, {
     x: box.x - padding + '',
     y: box.y - padding + '',
