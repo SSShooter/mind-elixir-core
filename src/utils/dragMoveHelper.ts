@@ -15,12 +15,8 @@ export function createDragMoveHelper(mei: MindElixirInstance) {
       }
     },
     clear() {
-      // delay to avoid trigger contextmenu on Windows
-      setTimeout(() => {
-        this.moved = false
-        this.mousedown = false
-        mei.map.style.transition = 'transform 0.3s'
-      }, 0)
+      this.mousedown = false
+      mei.map.style.transition = 'transform 0.3s'
     },
   }
 }

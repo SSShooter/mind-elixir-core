@@ -158,7 +158,7 @@ export default function (mind: MindElixirInstance) {
     if (isTouchEvent(e)) return
     if (!mind.editable) return
     setTimeout(() => {
-      // If during the delay a drag movement has started, do NOT show the menu.
+      // delay to avoid conflict with click event on Mac
       if (mind.dragMoveHelper.moved) return
       mind.bus.fire('showContextMenu', e)
     }, 100)
