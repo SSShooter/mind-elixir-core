@@ -154,14 +154,13 @@ export default function (mind: MindElixirInstance) {
   const handleContextMenu = (e: MouseEvent | TouchEvent) => {
     console.log('handleContextMenu', e)
     e.preventDefault()
-    // Only handle mouse context menu events, not touch events
     if (isTouchEvent(e)) return
     if (!mind.editable) return
     setTimeout(() => {
       // delay to avoid conflict with click event on Mac
       if (mind.dragMoveHelper.moved) return
       mind.bus.fire('showContextMenu', e)
-    }, 100)
+    }, 200)
   }
 
   const handleWheel = (e: WheelEvent) => {
