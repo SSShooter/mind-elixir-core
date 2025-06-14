@@ -19,7 +19,7 @@
     <img src="https://badgen.net/bundlephobia/dependency-count/mind-elixir" alt="dependency-count">
   </a>
   <a href="https://dependents.info/SSShooter/mind-elixir-core">
-    <img src="https://dependents.info/SSShooter/mind-elixir-core/badge" />
+    <img src="https://dependents.info/SSShooter/mind-elixir-core/badge" alt="dependents count badge" />
   </a>
   <a href="https://packagephobia.com/result?p=mind-elixir">
     <img src="https://packagephobia.com/badge?p=mind-elixir" alt="package size">
@@ -82,7 +82,7 @@ Features:
 ## Used by
 
 <a href="https://dependents.info/SSShooter/mind-elixir-core">
-  <img src="https://dependents.info/SSShooter/mind-elixir-core/image.svg" />
+  <img src="https://dependents.info/SSShooter/mind-elixir-core/image.svg" alt="network dependents image" />
 </a>
 
 ## Try now
