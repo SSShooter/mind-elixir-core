@@ -59,15 +59,16 @@ const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out') {
   switch (direction) {
     case 'in':
       if (mei.scaleVal > 1.6) return
-      mei.scale((mei.scaleVal += 0.2))
+      mei.scale((mei.scaleVal += mei.scaleSensitivity))
       break
     case 'out':
       if (mei.scaleVal < 0.6) return
-      mei.scale((mei.scaleVal -= 0.2))
+      mei.scale((mei.scaleVal -= mei.scaleSensitivity))
   }
 }
 
 export default function (mind: MindElixirInstance, options: boolean | KeypressOptions) {
+  debugger
   options = options === true ? {} : options
   const handleRemove = () => {
     if (mind.currentArrow) mind.removeArrow()
@@ -190,7 +191,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     if (e.ctrlKey || e.metaKey) {
       e.preventDefault()
       if (e.deltaY < 0) handleZoom(mind, 'in')
-      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out')
+      else if (mind.scaleVal - mind.scaleSensitivity > 0) handleZoom(mind, 'out')
       e.stopPropagation()
     }
   }
