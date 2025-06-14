@@ -83,14 +83,12 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
 
   mind.container.append(menuContainer)
   let isRoot = true
-  mind.container.oncontextmenu = function (e) {
-    e.preventDefault()
-    if (!mind.editable) return
-    if (mind.dragMoveHelper.moved) return
+  // Helper function to actually render and position context menu.
+  const showMenu = (e: MouseEvent) => {
     // console.log(e.pageY, e.screenY, e.clientY)
     const target = e.target as HTMLElement
     if (isTopic(target)) {
-      if (target.parentElement.tagName === 'ME-ROOT') {
+      if (target.parentElement!.tagName === 'ME-ROOT') {
         isRoot = true
       } else {
         isRoot = false
@@ -141,6 +139,8 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
       }
     }
   }
+
+  mind.bus.addListener('showContextMenu', showMenu)
 
   menuContainer.onclick = e => {
     if (e.target === menuContainer) menuContainer.hidden = true

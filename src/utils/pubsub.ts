@@ -83,6 +83,7 @@ export type EventMap = {
    *  please use throttling to prevent performance degradation
    */
   updateArrowDelta: (arrow: Arrow) => void
+  showContextMenu: (e: MouseEvent) => void
 }
 
 export function createBus<T extends Record<string, (...args: any[]) => void> = EventMap>() {

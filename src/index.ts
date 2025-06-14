@@ -122,6 +122,18 @@ function MindElixir(
   } else {
     this.disposable.push(initMouseEvent(this))
   }
+
+  this.container.addEventListener('contextmenu', e => {
+    e.preventDefault()
+    if (!this.editable) return
+    // Delay showing the menu so that we can detect drag movement first.
+    const evt = e as MouseEvent
+    setTimeout(() => {
+      // If during the delay a drag movement has started, do NOT show the menu.
+      if (this.dragMoveHelper.moved) return
+      this.bus.fire('showContextMenu', evt) 
+    }, 100) // use micro-task timing; feels instant for click but allows time for drag flag to flip
+  })
 }
 
 MindElixir.prototype = methods
