@@ -73,7 +73,7 @@ const options: Options = {
       return true
     },
   },
-  scaleSensitivity: 0.2
+  scaleSensitivity: 0.2,
 }
 
 let mind = new MindElixir(options)
