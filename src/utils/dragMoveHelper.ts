@@ -15,7 +15,7 @@ export function createDragMoveHelper(mei: MindElixirInstance) {
       }
     },
     clear() {
-      // delay to avoid trigger contextmenu
+      // delay to avoid trigger contextmenu on Windows
       setTimeout(() => {
         this.moved = false
         this.mousedown = false

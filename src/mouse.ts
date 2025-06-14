@@ -14,7 +14,7 @@ export default function (mind: MindElixirInstance) {
   // Track previous touch position for calculating movement delta
   let previousTouchX = 0
   let previousTouchY = 0
-  
+
   const handleClick = (e: MouseEvent) => {
     // Only handle mouse clicks, not touch events for click
     if (isTouchEvent(e)) return
@@ -80,6 +80,7 @@ export default function (mind: MindElixirInstance) {
   }
   // Unified handlers that can handle both mouse and touch events
   const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+    console.log('handlePointerDown', e)
     if (e instanceof MouseEvent) {
       const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
       if (e.button !== mouseMoveButton) return
@@ -147,15 +148,20 @@ export default function (mind: MindElixirInstance) {
       const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
       if (e.button !== mouseMoveButton) return
     }
-    // For touch events, we don't check button since touches don't have buttons
     dragMoveHelper.clear()
   }
+
   const handleContextMenu = (e: MouseEvent | TouchEvent) => {
+    console.log('handleContextMenu', e)
+    e.preventDefault()
     // Only handle mouse context menu events, not touch events
     if (isTouchEvent(e)) return
-    if (dragMoveHelper.moved) {
-      e.preventDefault()
-    }
+    if (!mind.editable) return
+    setTimeout(() => {
+      // If during the delay a drag movement has started, do NOT show the menu.
+      if (mind.dragMoveHelper.moved) return
+      mind.bus.fire('showContextMenu', e)
+    }, 100)
   }
 
   const handleWheel = (e: WheelEvent) => {
@@ -173,7 +179,7 @@ export default function (mind: MindElixirInstance) {
     }
   }
 
-  const map = mind.map
+  const { map, container } = mind
   const off = on([
     { dom: map, evt: 'click', func: handleClick },
     { dom: map, evt: 'dblclick', func: handleDblClick },
@@ -181,7 +187,7 @@ export default function (mind: MindElixirInstance) {
     // to handle mouse move outside of map, add event listener to document
     { dom: document, evt: 'mousemove', func: handlePointerMove },
     { dom: document, evt: 'mouseup', func: handlePointerUp },
-    { dom: document, evt: 'contextmenu', func: handleContextMenu },
+    { dom: container, evt: 'contextmenu', func: handleContextMenu },
     // support touch events
     { dom: map, evt: 'touchstart', func: handlePointerDown },
     { dom: document, evt: 'touchmove', func: handlePointerMove },
