@@ -68,7 +68,6 @@ const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out') {
 }
 
 export default function (mind: MindElixirInstance, options: boolean | KeypressOptions) {
-  debugger
   options = options === true ? {} : options
   const handleRemove = () => {
     if (mind.currentArrow) mind.removeArrow()
