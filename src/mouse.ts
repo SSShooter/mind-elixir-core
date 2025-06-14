@@ -4,15 +4,20 @@ import type { Expander, CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 import { isTopic, on } from './utils'
 
+// Helper function to safely check if event is TouchEvent
+const isTouchEvent = (e: Event): e is TouchEvent => {
+  return typeof TouchEvent !== 'undefined' && e instanceof TouchEvent
+}
+
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
-
   // Track previous touch position for calculating movement delta
   let previousTouchX = 0
   let previousTouchY = 0
+  
   const handleClick = (e: MouseEvent) => {
     // Only handle mouse clicks, not touch events for click
-    if (e instanceof TouchEvent) return
+    if (isTouchEvent(e)) return
     if (e.button !== 0) return
     if (mind.helper1?.moved) {
       mind.helper1.clear()
@@ -145,10 +150,9 @@ export default function (mind: MindElixirInstance) {
     // For touch events, we don't check button since touches don't have buttons
     dragMoveHelper.clear()
   }
-
   const handleContextMenu = (e: MouseEvent | TouchEvent) => {
     // Only handle mouse context menu events, not touch events
-    if (e instanceof TouchEvent) return
+    if (isTouchEvent(e)) return
     if (dragMoveHelper.moved) {
       e.preventDefault()
     }
