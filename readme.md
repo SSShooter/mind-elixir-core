@@ -18,6 +18,9 @@
   <a href="https://bundlephobia.com/result?p=mind-elixir">
     <img src="https://badgen.net/bundlephobia/dependency-count/mind-elixir" alt="dependency-count">
   </a>
+  <a href="https://dependents.info/SSShooter/mind-elixir-core">
+    <img src="https://dependents.info/SSShooter/mind-elixir-core/badge" />
+  </a>
   <a href="https://packagephobia.com/result?p=mind-elixir">
     <img src="https://packagephobia.com/badge?p=mind-elixir" alt="package size">
   </a>
@@ -51,6 +54,7 @@ Features:
 <details>
 <summary>Table of Contents</summary>
 
+- [Used by](#used-by)
 - [Try now](#try-now)
   - [Playground](#playground)
 - [Documentation](#documentation)
@@ -74,6 +78,12 @@ Features:
 - [Contributors](#contributors)
 
 </details>
+
+## Used by
+
+<a href="https://dependents.info/SSShooter/mind-elixir-core">
+  <img src="https://dependents.info/SSShooter/mind-elixir-core/image.svg" />
+</a>
 
 ## Try now
 
