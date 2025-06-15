@@ -16,6 +16,7 @@ export default function (mind: MindElixirInstance) {
   let previousTouchY = 0
 
   const handleClick = (e: MouseEvent) => {
+    console.log('handleClick', e)
     // Only handle mouse clicks, not touch events for click
     if (isTouchEvent(e)) return
     if (e.button !== 0) return
@@ -81,6 +82,7 @@ export default function (mind: MindElixirInstance) {
   // Unified handlers that can handle both mouse and touch events
   const handlePointerDown = (e: MouseEvent | TouchEvent) => {
     console.log('handlePointerDown', e)
+    dragMoveHelper.moved = false
     if (e instanceof MouseEvent) {
       const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
       if (e.button !== mouseMoveButton) return
@@ -89,9 +91,7 @@ export default function (mind: MindElixirInstance) {
       previousTouchX = e.touches[0]?.clientX || 0
       previousTouchY = e.touches[0]?.clientY || 0
     }
-
     if ((e.target as HTMLElement).contentEditable === 'inherit') {
-      dragMoveHelper.moved = false
       dragMoveHelper.mousedown = true
       mind.map.style.transition = 'none'
     }
