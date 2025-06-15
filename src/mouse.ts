@@ -156,6 +156,10 @@ export default function (mind: MindElixirInstance) {
     e.preventDefault()
     if (isTouchEvent(e)) return
     if (!mind.editable) return
+    const target = e.target as HTMLElement
+    if (isTopic(target) && !target.classList.contains('selected')) {
+      mind.selectNode(target)
+    }
     setTimeout(() => {
       // delay to avoid conflict with click event on Mac
       if (mind.dragMoveHelper.moved) return

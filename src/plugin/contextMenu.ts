@@ -108,7 +108,6 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
         add_sibling.className = ''
         remove_child.className = ''
       }
-      if (!target.classList.contains('selected')) mind.selectNode(target)
       menuContainer.hidden = false
 
       menuUl.style.top = ''
