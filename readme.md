@@ -82,7 +82,7 @@ Features:
 ## Used by
 
 <a href="https://dependents.info/SSShooter/mind-elixir-core">
-  <img src="https://dependents.info/SSShooter/mind-elixir-core/image.svg" alt="network dependents image" />
+  <img src="https://dependents.info/SSShooter/mind-elixir-core/image" alt="network dependents image" />
 </a>
 
 ## Try now
