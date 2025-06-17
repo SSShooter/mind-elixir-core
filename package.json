@@ -42,7 +42,8 @@
       "require": "./dist/LayoutSsr.js"
     },
     "./readme.md": "./readme.md",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./style": "./dist/style.css"
   },
   "typesVersions": {
     "*": {
@@ -91,7 +92,6 @@
     "lint-staged": "^13.3.0",
     "prettier": "2.8.4",
     "typescript": "^5.4.5",
-    "vite": "^4.5.3",
-    "vite-plugin-css-injected-by-js": "^3.5.1"
+    "vite": "^4.5.3"
   }
 }
