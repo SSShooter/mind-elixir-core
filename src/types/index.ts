@@ -137,6 +137,7 @@ export interface Options {
   theme?: Theme
   selectionContainer?: string | HTMLElement
   alignment?: Alignment
+  scaleSensitivity?: number
 }
 
 export type Uid = string
