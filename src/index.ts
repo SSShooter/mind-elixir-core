@@ -1,5 +1,4 @@
 import './index.less'
-import './iconfont/iconfont.js'
 import { LEFT, RIGHT, SIDE, DARK_THEME, THEME } from './const'
 import { generateUUID } from './utils/index'
 import initMouseEvent from './mouse'
