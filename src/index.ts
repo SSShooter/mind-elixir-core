@@ -38,6 +38,7 @@ function MindElixir(
     overflowHidden,
     theme,
     alignment,
+    scaleSensitivity,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -65,6 +66,7 @@ function MindElixir(
   this.newTopicName = newTopicName || 'new node'
   this.editable = editable === undefined ? true : editable
   this.allowUndo = allowUndo === undefined ? false : allowUndo
+  this.scaleSensitivity = typeof scaleSensitivity === 'number' ? scaleSensitivity : 0.2
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNodes = [] // selected <tpc/> elements
   this.currentArrow = null // the selected link svg element

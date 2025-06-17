@@ -39,6 +39,7 @@ const options: Options = {
       return true
     },
   },
+  scaleSensitivity: 0.2,
 }
 const mind = new MindElixir(options)
 mind.init(example)

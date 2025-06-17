@@ -69,11 +69,11 @@ export const handleZoom = function (
   switch (direction) {
     case 'in':
       if (mei.scaleVal > 1.6) return
-      mei.scale(mei.scaleVal + 0.2, offset)
+      mei.scale((mei.scaleVal += mei.scaleSensitivity))
       break
     case 'out':
       if (mei.scaleVal < 0.6) return
-      mei.scale(mei.scaleVal - 0.2, offset)
+      mei.scale((mei.scaleVal -= mei.scaleSensitivity))
   }
 }
 
