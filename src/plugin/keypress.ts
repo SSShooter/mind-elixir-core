@@ -66,14 +66,15 @@ export const handleZoom = function (
     y: number
   }
 ) {
+  const { scaleVal, scaleSensitivity } = mei
   switch (direction) {
     case 'in':
-      if (mei.scaleVal > 1.6) return
-      mei.scale((mei.scaleVal += mei.scaleSensitivity))
+      if (scaleVal > 1.6) return
+      mei.scale(scaleVal + scaleSensitivity, offset)
       break
     case 'out':
-      if (mei.scaleVal < 0.6) return
-      mei.scale((mei.scaleVal -= mei.scaleSensitivity))
+      if (scaleVal < 0.6) return
+      mei.scale(scaleVal - scaleSensitivity, offset)
   }
 }
 

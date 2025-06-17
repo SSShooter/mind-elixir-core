@@ -172,7 +172,7 @@ export default function (mind: MindElixirInstance) {
     e.preventDefault()
     if (e.ctrlKey || e.metaKey) {
       if (e.deltaY < 0) handleZoom(mind, 'in', mind.dragMoveHelper)
-      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out', mind.dragMoveHelper)
+      else if (mind.scaleVal - mind.scaleSensitivity > 0) handleZoom(mind, 'out', mind.dragMoveHelper)
     } else if (e.shiftKey) {
       mind.move(-e.deltaY, 0)
     } else {
