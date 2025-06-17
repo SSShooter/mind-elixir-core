@@ -442,3 +442,4 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 - Remove `removeNode()`
 - `node.style.fontSize`: use string instead of number which means you should add `px` to the end
 - Use `instance.findEl` instead of `MindElixir.E` to get a node element
+- CSS file is separated from JS file, you need to import it manually
