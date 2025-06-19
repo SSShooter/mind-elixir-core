@@ -116,19 +116,14 @@ export const disableEdit = function (this: MindElixirInstance) {
 export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
   const rect = this.container.getBoundingClientRect()
   console.log(rect.width, rect.height)
-  const centerX = rect.width / 2
-  const centerY = rect.height / 2
-
   const oldScale = this.scaleVal
   const oldTransform = this.map.style.transform
-
-  const { x: x0, y: y0 } = getTranslate(oldTransform)
-  const x = x0 - (offset.x - rect.left - rect.width / 2)
-  const y = y0 - (offset.y - rect.top - rect.height / 2)
-
-  const newTranslateX = (centerX - x) * (1 - scaleVal / oldScale)
-  const newTranslateY = (centerY - y) * (1 - scaleVal / oldScale)
-  this.map.style.transform = `translate(${x0 + newTranslateX}px, ${y0 + newTranslateY}px) scale(${scaleVal})`
+  const xc = offset.x - rect.left - rect.width / 2
+  const yc = offset.y - rect.top - rect.height / 2
+  const { x: xb, y: yb } = getTranslate(oldTransform)
+  const newTranslateX = (xc + xb) * (1 - scaleVal / oldScale)
+  const newTranslateY = (yc + yb) * (1 - scaleVal / oldScale)
+  this.map.style.transform = `translate(${xb + newTranslateX}px, ${yb + newTranslateY}px) scale(${scaleVal})`
   this.scaleVal = scaleVal
   this.bus.fire('scale', scaleVal)
 }
@@ -156,6 +151,7 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number) 
   y += dy
 
   map.style.transform = `translate(${x}px, ${y}px) scale(${scaleVal})`
+  console.log(`Map moved to: translate(${x}px, ${y}px) scale(${scaleVal})`)
   bus.fire('move', { dx, dy })
 }
 
