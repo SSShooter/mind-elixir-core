@@ -23,17 +23,6 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   const pW = root.offsetWidth
   const pH = root.offsetHeight
 
-  const nodes = this.nodes
-  const nw = (nodes as HTMLElement).offsetWidth
-
-  // pin center
-  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
-  if (this.alignment === 'root') {
-    this.nodes.style.left = `${10000 - pL - pW / 2}px`
-  } else {
-    this.nodes.style.left = `${10000 - nw / 2}px`
-  }
-
   const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
   this.lines.innerHTML = ''
 

@@ -46,20 +46,18 @@
       direction: ltr;
     }
   }
+  background-color: var(--bgcolor);
   .map-canvas {
-    height: 20000px;
-    width: 20000px;
     position: relative;
     user-select: none;
     transform: scale(1);
-    background-color: var(--bgcolor);
     me-nodes {
-      position: absolute;
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: fit-content;
-      width: fit-content;
+      height: max-content;
+      width: max-content;
     }
     me-root {
       position: relative;

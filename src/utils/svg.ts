@@ -114,7 +114,7 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
 
       e.preventDefault()
       div.blur()
-      mei.map.focus()
+      mei.container.focus()
     }
   })
   div.addEventListener('blur', () => {

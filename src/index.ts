@@ -94,7 +94,7 @@ function MindElixir(
     canvas.style.transition = 'all 0.3s'
   }, 300)
   this.map = canvas
-  this.map.setAttribute('tabindex', '0')
+  this.container.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.el.appendChild(this.container)
 

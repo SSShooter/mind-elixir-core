@@ -8,6 +8,7 @@ import type { Operation } from './utils/pubsub'
 import style from '../index.css?raw'
 import katex from '../katex.css?raw'
 import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
+import { snapdom } from '@zumer/snapdom'
 
 interface Window {
   m?: MindElixirInstance
@@ -74,7 +75,7 @@ const options: Options = {
       return true
     },
   },
-  scaleSensitivity: 0.05,
+  scaleSensitivity: 0.2,
 }
 
 let mind = new MindElixir(options)
@@ -138,8 +139,15 @@ const download = (type: 'svg' | 'png') => {
     }
   }
 }
+const dl2 = async () => {
+  mind.nodes.style.position = 'static'
+  const result = await snapdom(mind.nodes, { fast: true })
+  mind.nodes.style.position = 'absolute'
 
-window.downloadPng = download('png')
+  await result.download({ format: 'jpg', filename: 'my-capture' })
+}
+
+window.downloadPng = dl2
 window.downloadSvg = download('svg')
 window.m = mind
 // window.m2 = mind2

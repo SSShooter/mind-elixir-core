@@ -187,7 +187,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
     const from = mind.currentNode as Topic
     const tips = createTips(lang.clickTips)
     mind.container.appendChild(tips)
-    mind.map.addEventListener(
+    mind.container.addEventListener(
       'click',
       e => {
         e.preventDefault()
