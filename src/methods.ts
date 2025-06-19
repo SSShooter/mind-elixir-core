@@ -95,9 +95,9 @@ const methods = {
       this.draggable && this.disposable.push(nodeDraggable(this))
       this.allowUndo && this.disposable.push(operationHistory(this))
     }
-    this.toCenter()
     this.layout()
     this.linkDiv()
+    this.toCenter()
   },
   destroy(this: Partial<MindElixirInstance>) {
     this.disposable!.forEach(fn => fn())

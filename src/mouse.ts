@@ -182,22 +182,22 @@ export default function (mind: MindElixirInstance) {
     }
   }
 
-  const { map, container } = mind
+  const { container } = mind
   const off = on([
-    { dom: map, evt: 'click', func: handleClick },
-    { dom: map, evt: 'dblclick', func: handleDblClick },
-    { dom: map, evt: 'mousedown', func: handlePointerDown },
+    { dom: container, evt: 'click', func: handleClick },
+    { dom: container, evt: 'dblclick', func: handleDblClick },
+    { dom: container, evt: 'mousedown', func: handlePointerDown },
     // to handle mouse move outside of map, add event listener to document
     { dom: document, evt: 'mousemove', func: handlePointerMove },
     { dom: document, evt: 'mouseup', func: handlePointerUp },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     // support touch events
-    { dom: map, evt: 'touchstart', func: handlePointerDown },
+    { dom: container, evt: 'touchstart', func: handlePointerDown },
     { dom: document, evt: 'touchmove', func: handlePointerMove },
     { dom: document, evt: 'touchend', func: handlePointerUp },
-    { dom: map, evt: 'touchend', func: handleTouchDblClick },
+    { dom: container, evt: 'touchend', func: handleTouchDblClick },
     // support wheel event
-    { dom: map, evt: 'wheel', func: handleWheel },
+    { dom: container, evt: 'wheel', func: handleWheel },
   ])
   return off
 }

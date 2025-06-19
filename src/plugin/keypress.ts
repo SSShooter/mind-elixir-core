@@ -181,10 +181,9 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     Backspace: handleRemove,
     ...options,
   }
-  mind.map.onkeydown = e => {
+  mind.container.onkeydown = e => {
     e.preventDefault()
     if (!mind.editable) return
-    // console.log(e, e.target)
     if (e.target !== e.currentTarget) {
       // input
       return

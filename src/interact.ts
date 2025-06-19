@@ -115,8 +115,9 @@ export const disableEdit = function (this: MindElixirInstance) {
  */
 export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
   const rect = this.container.getBoundingClientRect()
-  const centerX = rect.width / 2 - 10000
-  const centerY = rect.height / 2 - 10000
+  console.log(rect.width, rect.height)
+  const centerX = rect.width / 2
+  const centerY = rect.height / 2
 
   const oldScale = this.scaleVal
   const oldTransform = this.map.style.transform
@@ -148,20 +149,13 @@ export const scaleFit = function (this: MindElixirInstance) {
  * Move the map by `dx` and `dy`.
  */
 export const move = function (this: MindElixirInstance, dx: number, dy: number) {
-  const { map, scaleVal, container, bus } = this
+  const { map, scaleVal, bus } = this
   const transform = map.style.transform
-  const { x, y } = getTranslate(transform)
-  const newTranslateX = x + dx
-  const newTranslateY = y + dy
-  const overflow = (1 - scaleVal) * 10000
-  const min = 0 - overflow
-  const maxX = -20000 + container.offsetWidth + overflow
-  const maxY = -20000 + container.offsetHeight + overflow
+  let { x, y } = getTranslate(transform)
+  x += dx
+  y += dy
 
-  const tx = Math.min(min, Math.max(maxX, newTranslateX))
-  const ty = Math.min(min, Math.max(maxY, newTranslateY))
-
-  map.style.transform = `translate(${tx}px, ${ty}px) scale(${scaleVal})`
+  map.style.transform = `translate(${x}px, ${y}px) scale(${scaleVal})`
   bus.fire('move', { dx, dy })
 }
 
@@ -173,10 +167,8 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number) 
  * @memberof MapInteraction
  */
 export const toCenter = function (this: MindElixirInstance) {
-  const containerRect = this.container.getBoundingClientRect()
-  const centerX = containerRect.width / 2 - 10000
-  const centerY = containerRect.height / 2 - 10000
-  this.map.style.transform = `translate(${centerX}px, ${centerY}px) scale(${this.scaleVal})`
+  const { map } = this
+  map.style.transform = `translate(${0}px, ${0}px) scale(${this.scaleVal})`
 }
 
 /**
