@@ -39,7 +39,7 @@ const canMove = function (el: Element, dragged: Topic[]) {
 const createGhost = function (mei: MindElixirInstance) {
   const ghost = document.createElement('div')
   ghost.className = 'mind-elixir-ghost'
-  mei.map.appendChild(ghost)
+  mei.container.appendChild(ghost)
   return ghost
 }
 

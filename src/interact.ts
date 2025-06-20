@@ -115,19 +115,25 @@ export const disableEdit = function (this: MindElixirInstance) {
  */
 export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
   const rect = this.container.getBoundingClientRect()
-  const { dx, dy } = getCenterD(this) // 中心偏移
-  // cursor dx dy
-  const xc = dx + offset.x - rect.left - rect.width / 2 // 将鼠标坐标系转到偏移坐标系
-  const yc = dy + offset.y - rect.top - rect.height / 2
-  const oldScale = this.scaleVal
+  // refer to /refs/scale-calc.excalidraw for the process
+  // remove coordinate system influence and calculate quantities directly
+  // cursor xy
+  const xc = offset.x ? offset.x - rect.left - rect.width / 2 : 0
+  const yc = offset.y ? offset.y - rect.top - rect.height / 2 : 0
+
+  const { dx, dy } = getCenterDefault(this)
   const oldTransform = this.map.style.transform
+  const { x: xCurrent, y: yCurrent } = getTranslate(oldTransform) // current offset
+  // before xy
+  const xb = xCurrent - dx
+  const yb = yCurrent - dy
 
-  const { x: xb, y: yb } = getTranslate(oldTransform) // 当前偏移
-
-  const xa = (xc - xb) * (1 - scaleVal / oldScale)
-  const ya = (yc - yb) * (1 - scaleVal / oldScale)
+  const oldScale = this.scaleVal
+  // Note: cursor needs to be reversed, probably because transform itself is reversed
+  const xres = (-xc + xb) * (1 - scaleVal / oldScale)
+  const yres = (-yc + yb) * (1 - scaleVal / oldScale)
   console.log(xc, yc, xb, yb)
-  this.map.style.transform = `translate(${dx + xa}px, ${dy + ya}px) scale(${scaleVal})`
+  this.map.style.transform = `translate(${xCurrent - xres}px, ${yCurrent - yres}px) scale(${scaleVal})`
   this.scaleVal = scaleVal
   this.bus.fire('scale', scaleVal)
 }
@@ -158,8 +164,11 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number) 
   bus.fire('move', { dx, dy })
 }
 
-const getCenterD = (mei: MindElixirInstance) => {
-  const { container, map } = mei
+/**
+ * 获取默认居中的偏移
+ */
+const getCenterDefault = (mei: MindElixirInstance) => {
+  const { container, map, nodes } = mei
 
   const root = map.querySelector('me-root') as HTMLElement
   const pT = root.offsetTop
@@ -171,9 +180,11 @@ const getCenterD = (mei: MindElixirInstance) => {
   if (mei.alignment === 'root') {
     dx = container.offsetWidth / 2 - pL - pW / 2
     dy = container.offsetHeight / 2 - pT - pH / 2
+    map.style.transformOrigin = `${pL + pW / 2}px 50%`
   } else {
-    dx = container.offsetWidth / 2 - pL
-    dy = container.offsetHeight / 2 - pT
+    dx = (container.offsetWidth - nodes.offsetWidth) / 2
+    dy = (container.offsetHeight - nodes.offsetHeight) / 2
+    map.style.transformOrigin = `50% 50%`
   }
   return { dx, dy }
 }
@@ -187,7 +198,7 @@ const getCenterD = (mei: MindElixirInstance) => {
  */
 export const toCenter = function (this: MindElixirInstance) {
   const { map } = this
-  const { dx, dy } = getCenterD(this)
+  const { dx, dy } = getCenterDefault(this)
   map.style.transform = `translate(${dx}px, ${dy}px) scale(${this.scaleVal})`
 }
 

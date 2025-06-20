@@ -25,8 +25,6 @@ const E = MindElixir.E
 const options: Options = {
   el: '#map',
   newTopicName: '子节点',
-  direction: MindElixir.SIDE,
-  // direction: MindElixir.RIGHT,
   locale: 'en',
   // mouseSelectionButton: 2,
   draggable: true,
@@ -76,6 +74,7 @@ const options: Options = {
     },
   },
   scaleSensitivity: 0.2,
+  // alignment: 'nodes',
 }
 
 let mind = new MindElixir(options)
@@ -86,8 +85,9 @@ mind.init(example)
 const m2 = new MindElixir({
   el: '#map2',
   selectionContainer: 'body', // use body to make selection usable when transform is not 0
-  direction: MindElixir.SIDE,
+  direction: MindElixir.RIGHT,
   theme: MindElixir.DARK_THEME,
+  alignment: 'nodes',
 })
 m2.init(data)
 
@@ -140,10 +140,7 @@ const download = (type: 'svg' | 'png') => {
   }
 }
 const dl2 = async () => {
-  mind.nodes.style.position = 'static'
   const result = await snapdom(mind.nodes, { fast: true })
-  mind.nodes.style.position = 'absolute'
-
   await result.download({ format: 'jpg', filename: 'my-capture' })
 }
 
