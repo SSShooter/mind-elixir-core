@@ -91,7 +91,8 @@ export default function (mind: MindElixirInstance) {
       previousTouchX = e.touches[0]?.clientX || 0
       previousTouchY = e.touches[0]?.clientY || 0
     }
-    if ((e.target as HTMLElement).contentEditable === 'inherit') {
+    console.log(e.target)
+    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only') {
       dragMoveHelper.mousedown = true
       mind.map.style.transition = 'none'
     }
@@ -99,7 +100,7 @@ export default function (mind: MindElixirInstance) {
 
   const handlePointerMove = (e: MouseEvent | TouchEvent) => {
     // click trigger mousemove in windows chrome
-    if ((e.target as HTMLElement).contentEditable === 'inherit') {
+    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only') {
       // drag and move the map
       if (e instanceof MouseEvent) {
         dragMoveHelper.onMove(e)
