@@ -87,7 +87,7 @@ const m2 = new MindElixir({
   selectionContainer: 'body', // use body to make selection usable when transform is not 0
   direction: MindElixir.RIGHT,
   theme: MindElixir.DARK_THEME,
-  alignment: 'nodes',
+  // alignment: 'nodes',
 })
 m2.init(data)
 

@@ -229,7 +229,7 @@ export const renderSSRHTML = function (layoutResult: SSRLayoutResult, options: {
   const leftPartHtml = `<me-main class="${DirectionClass.LHS}">${leftWrappers}</me-main>`
   const rightPartHtml = `<me-main class="${DirectionClass.RHS}">${rightWrappers}</me-main>`
 
-  return nodesWrapper(`<div class="main-node-container ${className}">${leftPartHtml}${rootHtml}${rightPartHtml}</div>`)
+  return nodesWrapper(`<div class="${className}">${leftPartHtml}${rootHtml}${rightPartHtml}</div>`)
 }
 
 /**

@@ -99,7 +99,6 @@ function MindElixir(
   this.el.appendChild(this.container)
 
   this.nodes = $d.createElement('me-nodes')
-  this.nodes.className = 'main-node-container'
 
   this.lines = createLinkSvg('lines') // main link container
   this.summarySvg = createLinkSvg('summary') // summary container
