@@ -1,6 +1,6 @@
 import SelectionArea from '@viselect/vanilla'
 import type { MindElixirInstance, Topic } from '..'
-import { Trigger } from '@viselect/vanilla/dist/src/utils/matchesTrigger'
+import type { Trigger } from '@viselect/vanilla/dist/src/utils/matchesTrigger'
 
 // TODO: boundaries move missing
 export default function (mei: MindElixirInstance) {
@@ -34,7 +34,7 @@ export default function (mei: MindElixirInstance) {
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false
-      if (!mei.map.contains(target)) {
+      if (mei.container.querySelector('.context-menu')?.contains(target)) {
         // prevent context menu click clear selection
         return false
       }
