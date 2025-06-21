@@ -262,6 +262,7 @@ export const cancelFocus = function (this: MindElixirInstance) {
 export const initLeft = function (this: MindElixirInstance) {
   this.direction = 0
   this.refresh()
+  this.toCenter()
 }
 /**
  * @function
@@ -273,6 +274,7 @@ export const initLeft = function (this: MindElixirInstance) {
 export const initRight = function (this: MindElixirInstance) {
   this.direction = 1
   this.refresh()
+  this.toCenter()
 }
 /**
  * @function
@@ -284,6 +286,7 @@ export const initRight = function (this: MindElixirInstance) {
 export const initSide = function (this: MindElixirInstance) {
   this.direction = 2
   this.refresh()
+  this.toCenter()
 }
 
 /**
