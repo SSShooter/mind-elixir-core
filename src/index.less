@@ -25,6 +25,7 @@
   width: 100%;
   overflow: hidden; // prevent browser scroll container while dragging
   font-size: 15px;
+  outline: none; // prevent browser default focus outline
   * {
     box-sizing: border-box; // must have, to make getComputedStyle work right
   }
@@ -63,6 +64,7 @@
     }
     me-root {
       position: relative;
+      margin: 45px 0;
       me-tpc {
         display: block;
         font-size: 25px;
