@@ -138,6 +138,7 @@ export interface Options {
   selectionContainer?: string | HTMLElement
   alignment?: Alignment
   scaleSensitivity?: number
+  selectionDisabled?: boolean
 }
 
 export type Uid = string
