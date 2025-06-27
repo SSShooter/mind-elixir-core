@@ -35,7 +35,7 @@ export type Theme = {
    * Color palette for main branches
    */
   palette: string[]
-  cssVar: Partial<{
+  cssVar: {
     '--gap': string
     '--main-color': string
     '--main-bgcolor': string
@@ -51,7 +51,7 @@ export type Theme = {
     '--panel-color': string
     '--panel-bgcolor': string
     '--panel-border-color': string
-  }>
+  }
 }
 
 export type Alignment = 'root' | 'nodes'
