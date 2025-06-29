@@ -37,6 +37,35 @@ export interface Arrow {
    * whether the arrow is bidirectional
    */
   bidirectional?: boolean
+  /**
+   * style properties for the arrow
+   */
+  style?: {
+    /**
+     * stroke color of the arrow
+     */
+    stroke?: string
+    /**
+     * stroke width of the arrow
+     */
+    strokeWidth?: string | number
+    /**
+     * stroke dash array for dashed lines
+     */
+    strokeDasharray?: string
+    /**
+     * stroke line cap style
+     */
+    strokeLinecap?: 'butt' | 'round' | 'square'
+    /**
+     * opacity of the arrow
+     */
+    opacity?: string | number
+    /**
+     * color of the arrow label
+     */
+    labelColor?: string
+  }
 }
 export type DivData = {
   cx: number // center x
@@ -48,6 +77,14 @@ export type DivData = {
 }
 export type ArrowOptions = {
   bidirectional?: boolean
+  style?: {
+    stroke?: string
+    strokeWidth?: string | number
+    strokeDasharray?: string
+    strokeLinecap?: 'butt' | 'round' | 'square'
+    opacity?: string | number
+    labelColor?: string
+  }
 }
 
 /**
@@ -100,10 +137,29 @@ function updateArrowPath(
   // Update main path
   arrow.line.setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
 
+  // Apply styles to the main line if they exist
+  if (linkItem.style) {
+    const style = linkItem.style
+    if (style.stroke) arrow.line.setAttribute('stroke', style.stroke)
+    if (style.strokeWidth) arrow.line.setAttribute('stroke-width', String(style.strokeWidth))
+    if (style.strokeDasharray) arrow.line.setAttribute('stroke-dasharray', style.strokeDasharray)
+    if (style.strokeLinecap) arrow.line.setAttribute('stroke-linecap', style.strokeLinecap)
+    if (style.opacity !== undefined) arrow.line.setAttribute('opacity', String(style.opacity))
+  }
+
   // Update arrow head
   const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
   if (arrowPoint) {
     arrow.arrow1.setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+
+    // Apply styles to arrow head
+    if (linkItem.style) {
+      const style = linkItem.style
+      if (style.stroke) arrow.arrow1.setAttribute('stroke', style.stroke)
+      if (style.strokeWidth) arrow.arrow1.setAttribute('stroke-width', String(style.strokeWidth))
+      if (style.strokeLinecap) arrow.arrow1.setAttribute('stroke-linecap', style.strokeLinecap)
+      if (style.opacity !== undefined) arrow.arrow1.setAttribute('opacity', String(style.opacity))
+    }
   }
 
   // Update start arrow if bidirectional
@@ -111,12 +167,26 @@ function updateArrowPath(
     const arrowPointStart = getArrowPoints(p2x, p2y, p1x, p1y)
     if (arrowPointStart) {
       arrow.arrow2.setAttribute('d', `M ${arrowPointStart.x1} ${arrowPointStart.y1} L ${p1x} ${p1y} L ${arrowPointStart.x2} ${arrowPointStart.y2}`)
+
+      // Apply styles to start arrow head
+      if (linkItem.style) {
+        const style = linkItem.style
+        if (style.stroke) arrow.arrow2.setAttribute('stroke', style.stroke)
+        if (style.strokeWidth) arrow.arrow2.setAttribute('stroke-width', String(style.strokeWidth))
+        if (style.strokeLinecap) arrow.arrow2.setAttribute('stroke-linecap', style.strokeLinecap)
+        if (style.opacity !== undefined) arrow.arrow2.setAttribute('opacity', String(style.opacity))
+      }
     }
   }
 
-  // Update label position
+  // Update label position and color
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
   updateArrowLabel(arrow.label, halfx, halfy)
+
+  // Apply label color if specified
+  if (linkItem.style?.labelColor) {
+    arrow.label.setAttribute('fill', linkItem.style.labelColor)
+  }
 
   // Update highlight layer
   updateArrowHighlight(arrow)
@@ -215,11 +285,12 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
     if (!arrowF) return
     fromArrow = `M ${arrowF.x1} ${arrowF.y1} L ${p1x} ${p1y} L ${arrowF.x2} ${arrowF.y2}`
   }
-  const newSvgGroup = createSvgGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow)
+  const newSvgGroup = createSvgGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow, obj.style)
 
   // Use extracted common function to calculate midpoint
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
-  const label = createText(obj.label, halfx, halfy, mei.theme.cssVar['--color'])
+  const labelColor = obj.style?.labelColor || mei.theme.cssVar['--color']
+  const label = createText(obj.label, halfx, halfy, labelColor)
   newSvgGroup.appendChild(label)
   newSvgGroup.label = label
 

@@ -1,17 +1,9 @@
 import type { MindElixirData } from '../index'
+import MindElixir from '../index'
 
 const mindElixirStruct: MindElixirData = {
   direction: 1,
-  theme: {
-    name: 'Dark',
-    palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
-    cssVar: {
-      '--main-color': '#ffffff',
-      '--main-bgcolor': '#4c4f69',
-      '--color': '#cccccc',
-      '--bgcolor': '#252526',
-    },
-  },
+  theme: MindElixir.DARK_THEME,
   nodeData: {
     id: 'me-root',
     topic: 'HTML structure',

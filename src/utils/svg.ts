@@ -35,7 +35,19 @@ export const createLine = function () {
   return line
 }
 
-export const createSvgGroup = function (d: string, arrowd1: string, arrowd2: string): CustomSvg {
+export const createSvgGroup = function (
+  d: string,
+  arrowd1: string,
+  arrowd2: string,
+  style?: {
+    stroke?: string
+    strokeWidth?: string | number
+    strokeDasharray?: string
+    strokeLinecap?: 'butt' | 'round' | 'square'
+    opacity?: string | number
+    labelColor?: string
+  }
+): CustomSvg {
   const g = $d.createElementNS(svgNS, 'g') as CustomSvg
   const svgs = [
     {
@@ -54,17 +66,25 @@ export const createSvgGroup = function (d: string, arrowd1: string, arrowd2: str
   svgs.forEach((item, i) => {
     const d = item.d
     const path = $d.createElementNS(svgNS, 'path')
-    const attrs = {
+    const attrs: { [key: string]: string } = {
       d,
-      stroke: 'rgb(235, 95, 82)',
+      stroke: style?.stroke || 'rgb(235, 95, 82)',
       fill: 'none',
-      'stroke-linecap': 'cap',
-      'stroke-width': '2',
+      'stroke-linecap': style?.strokeLinecap || 'cap',
+      'stroke-width': String(style?.strokeWidth || '2'),
     }
+
+    if (style?.opacity !== undefined) {
+      attrs['opacity'] = String(style.opacity)
+    }
+
     setAttributes(path, attrs)
+
     if (i === 0) {
-      path.setAttribute('stroke-dasharray', '8,2')
+      // Apply stroke-dasharray to the main line
+      path.setAttribute('stroke-dasharray', style?.strokeDasharray || '8,2')
     }
+
     const hotzone = $d.createElementNS(svgNS, 'path')
     const hotzoneAttrs = {
       d,
