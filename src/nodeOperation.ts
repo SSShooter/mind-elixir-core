@@ -60,7 +60,7 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   if (!nodeObj.parent) {
     this.addChild()
     return
-  } else if (!nodeObj.parent?.parent && nodeObj.parent?.children?.length === 1) {
+  } else if (!nodeObj.parent?.parent && nodeObj.parent?.children?.length === 1 && this.direction === 2) {
     // add at least one node to another side
     this.addChild(this.findEle(nodeObj.parent!.id), node)
     return
