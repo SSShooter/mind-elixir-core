@@ -1,9 +1,10 @@
 import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
-import { findEle } from './utils/dom'
 import { createSvgGroup, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
+
+const highlightColor = '#4dc4ff'
 
 export interface Arrow {
   id: string
@@ -248,7 +249,7 @@ const createText = function (string: string, x: number, y: number, color?: strin
     'text-anchor': 'middle',
     x: x + '',
     y: y + '',
-    fill: color || '#666',
+    fill: color || 'rgb(235, 95, 82)',
   })
   text.dataset.type = 'custom-link'
   text.innerHTML = string
@@ -289,7 +290,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
 
   // Use extracted common function to calculate midpoint
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
-  const labelColor = obj.style?.labelColor || mei.theme.cssVar['--color']
+  const labelColor = obj.style?.labelColor
   const label = createText(obj.label, halfx, halfy, labelColor)
   newSvgGroup.appendChild(label)
   newSvgGroup.label = label
@@ -455,7 +456,6 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   nodes.appendChild(P2)
   nodes.appendChild(P3)
 
-  const highlightColor = '#4dc4ff'
   addArrowHighlight(currentArrow, highlightColor)
 
   // init points
