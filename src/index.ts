@@ -128,7 +128,7 @@ MindElixir.prototype = methods
 
 Object.defineProperty(MindElixir.prototype, 'currentNode', {
   get() {
-    return this.currentNodes.at(-1)
+    return this.currentNodes[this.currentNodes.length - 1]
   },
   enumerable: true,
 })
