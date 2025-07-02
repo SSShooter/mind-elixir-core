@@ -66,8 +66,6 @@ Features:
   - [Data Export And Import](#data-export-and-import)
   - [Operation Guards](#operation-guards)
 - [Export as a Image](#export-as-a-image)
-  - [Solution 1](#solution-1)
-  - [Solution 2](#solution-2)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
 - [Ecosystem](#ecosystem)
@@ -278,26 +276,6 @@ let mind = new MindElixir({
 ```
 
 ## Export as a Image
-
-### Solution 1
-
-```typescript
-const mind = {
-  /** mind elixir instance */
-}
-const downloadPng = async () => {
-  const blob = await mind.exportPng() // Get a Blob!
-  if (!blob) return
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'filename.png'
-  a.click()
-  URL.revokeObjectURL(url)
-}
-```
-
-### Solution 2
 
 Install `@ssshooter/modern-screenshot`, then:
 
