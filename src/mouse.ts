@@ -114,15 +114,10 @@ export default function (mind: MindElixirInstance) {
         const movementX = currentTouchX - previousTouchX
         const movementY = currentTouchY - previousTouchY
 
-        const simulatedMouseEvent = {
-          clientX: currentTouchX,
-          clientY: currentTouchY,
+        dragMoveHelper.onMove({
           movementX: movementX,
           movementY: movementY,
-          target: e.target,
-        } as MouseEvent
-
-        dragMoveHelper.onMove(simulatedMouseEvent)
+        })
         dragMoveHelper.x = currentTouchX
         dragMoveHelper.y = currentTouchY
 

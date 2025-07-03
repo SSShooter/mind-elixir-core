@@ -6,7 +6,7 @@ export function createDragMoveHelper(mei: MindElixirInstance) {
     y: 0,
     moved: false, // diffrentiate click and move
     mousedown: false,
-    onMove(e: MouseEvent) {
+    onMove(e: { movementX: number; movementY: number }) {
       if (this.mousedown) {
         this.moved = true
         const deltaX = e.movementX
