@@ -140,7 +140,7 @@ const download = (type: 'svg' | 'png') => {
   }
 }
 const dl2 = async () => {
-  const result = await snapdom(mind.nodes, { fast: true })
+  const result = await snapdom(mind.nodes)
   await result.download({ format: 'jpg', filename: 'my-capture' })
 }
 
