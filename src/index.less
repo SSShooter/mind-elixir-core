@@ -26,8 +26,16 @@
   }
   .lhs {
     direction: rtl;
+    me-epd {
+      left: -10px;
+    }
     me-tpc {
       direction: ltr;
+    }
+  }
+  .rhs {
+    me-epd {
+      right: -10px;
     }
   }
   background-color: var(--bgcolor);
@@ -132,6 +140,8 @@
     }
     me-epd {
       position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
       height: 18px;
       width: 18px;
       opacity: 0.8;
