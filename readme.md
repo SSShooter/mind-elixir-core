@@ -79,7 +79,7 @@ Features:
 
 ## Try now
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5.jpg)
 
 https://mind-elixir.com/
 
