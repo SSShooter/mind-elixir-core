@@ -28,6 +28,7 @@ export const THEME: Theme = {
     '--panel-color': '#444446',
     '--panel-bgcolor': '#ffffff',
     '--panel-border-color': '#eaeaea',
+    '--map-padding': '50px 80px',
   },
 }
 
@@ -54,5 +55,6 @@ export const DARK_THEME: Theme = {
     '--panel-color': '#ffffff',
     '--panel-bgcolor': '#2d3748',
     '--panel-border-color': '#696969',
+    '--map-padding': '50px 80px',
   },
 }

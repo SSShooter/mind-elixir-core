@@ -54,6 +54,7 @@ export type Theme = {
     '--panel-color': string
     '--panel-bgcolor': string
     '--panel-border-color': string
+    '--map-padding': string
   }
 }
 
