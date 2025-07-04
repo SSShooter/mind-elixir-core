@@ -3,41 +3,53 @@ import { on } from '.'
 const create = function (dom: HTMLElement) {
   return {
     dom,
-    moved: false, // diffrentiate click and move
-    mousedown: false,
-    handleMouseMove(e: MouseEvent) {
-      if (this.mousedown) {
+    moved: false, // differentiate click and move
+    pointerdown: false,
+    lastX: 0,
+    lastY: 0,
+    handlePointerMove(e: PointerEvent) {
+      if (this.pointerdown) {
         this.moved = true
-        this.cb && this.cb(e.movementX, e.movementY)
+        // Calculate delta manually since pointer events don't have movementX/Y
+        const deltaX = e.clientX - this.lastX
+        const deltaY = e.clientY - this.lastY
+        this.lastX = e.clientX
+        this.lastY = e.clientY
+        this.cb && this.cb(deltaX, deltaY)
       }
     },
-    handleMouseDown(e: MouseEvent) {
-      // e.stopPropagation()
+    handlePointerDown(e: PointerEvent) {
       if (e.button !== 0) return
-      this.mousedown = true
+      this.pointerdown = true
+      this.lastX = e.clientX
+      this.lastY = e.clientY
+      // Set pointer capture for better tracking
+      this.dom.setPointerCapture(e.pointerId)
     },
-    handleClear(e: MouseEvent) {
-      // e.stopPropagation()
-      // this.clear()
-      this.mousedown = false
+    handleClear(e: PointerEvent) {
+      this.pointerdown = false
+      // Release pointer capture
+      if (e.pointerId !== undefined) {
+        this.dom.releasePointerCapture(e.pointerId)
+      }
     },
     cb: null as ((deltaX: number, deltaY: number) => void) | null,
     init(map: HTMLElement, cb: (deltaX: number, deltaY: number) => void) {
       this.cb = cb
       this.handleClear = this.handleClear.bind(this)
-      this.handleMouseMove = this.handleMouseMove.bind(this)
-      this.handleMouseDown = this.handleMouseDown.bind(this)
+      this.handlePointerMove = this.handlePointerMove.bind(this)
+      this.handlePointerDown = this.handlePointerDown.bind(this)
       this.destroy = on([
-        { dom: map, evt: 'mousemove', func: this.handleMouseMove },
-        { dom: map, evt: 'mouseleave', func: this.handleClear },
-        { dom: map, evt: 'mouseup', func: this.handleClear },
-        { dom: this.dom, evt: 'mousedown', func: this.handleMouseDown },
+        { dom: map, evt: 'pointermove', func: this.handlePointerMove },
+        { dom: map, evt: 'pointerleave', func: this.handleClear },
+        { dom: map, evt: 'pointerup', func: this.handleClear },
+        { dom: this.dom, evt: 'pointerdown', func: this.handlePointerDown },
       ])
     },
     destroy: null as (() => void) | null,
     clear() {
       this.moved = false
-      this.mousedown = false
+      this.pointerdown = false
     },
   }
 }
