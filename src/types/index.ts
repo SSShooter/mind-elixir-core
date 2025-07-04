@@ -36,7 +36,10 @@ export type Theme = {
    */
   palette: string[]
   cssVar: {
-    '--gap': string
+    '--node-gap-x': string
+    '--node-gap-y': string
+    '--main-gap-x': string
+    '--main-gap-y': string
     '--main-color': string
     '--main-bgcolor': string
     '--color': string

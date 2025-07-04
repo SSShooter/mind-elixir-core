@@ -424,7 +424,10 @@ const aboutMindElixir: MindElixirData = {
     name: 'Latte',
     palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],
     cssVar: {
-      '--gap': '30px',
+      '--node-gap-x': '30px',
+      '--node-gap-y': '10px',
+      '--main-gap-x': '32px',
+      '--main-gap-y': '12px',
       '--root-radius': '30px',
       '--main-radius': '20px',
       '--root-color': '#ffffff',

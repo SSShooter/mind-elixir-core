@@ -50,7 +50,7 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
 }
 
 export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
-  const GAP = parseInt(this.container.style.getPropertyValue('--gap')) // cache?
+  const GAP = parseInt(this.container.style.getPropertyValue('--node-gap-x')) // cache?
   // const GAP = 30
   let y1 = 0
   let end = 0

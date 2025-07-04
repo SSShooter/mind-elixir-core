@@ -14,8 +14,5 @@ export const changeTheme = function (this: MindElixirInstance, theme: Theme, sho
     const key = keys[i] as keyof typeof cssVar
     this.container.style.setProperty(key, cssVar[key] as string)
   }
-  if (!theme.cssVar['--gap']) {
-    this.container.style.setProperty('--gap', '30px')
-  }
   shouldRefresh && this.refresh()
 }
