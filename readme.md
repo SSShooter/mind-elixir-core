@@ -38,6 +38,7 @@ Features:
 
 - Fluent UX
 - Well designed
+- Mobile friendly
 - Lightweight
 - High performance
 - Framework agnostic
@@ -124,8 +125,6 @@ import MindElixir from 'mind-elixir'
   }
 </style>
 ```
-
-**Breaking Change** since 1.0.0, `data` should be passed to `init()`, not `options`.
 
 ```javascript
 import MindElixir from 'mind-elixir'
