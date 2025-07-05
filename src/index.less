@@ -24,18 +24,32 @@
     text-decoration: none;
     margin-left: 0.3em;
   }
+  me-main > me-wrapper > me-parent > me-epd {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  me-epd {
+    top: 100%;
+    transform: translateY(-50%);
+  }
   .lhs {
     direction: rtl;
-    me-epd {
+    & > me-wrapper > me-parent > me-epd {
       left: -10px;
+    }
+    me-epd {
+      left: 5px;
     }
     me-tpc {
       direction: ltr;
     }
   }
   .rhs {
-    me-epd {
+    & > me-wrapper > me-parent > me-epd {
       right: -10px;
+    }
+    me-epd {
+      right: 5px;
     }
   }
   background-color: var(--bgcolor);
@@ -140,8 +154,6 @@
     }
     me-epd {
       position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
       height: 18px;
       width: 18px;
       opacity: 0.8;
@@ -156,8 +168,15 @@
         background-image: url('./icons/minus-circle.svg') !important;
         transition: opacity 0.3s;
         opacity: 0;
-        &:hover {
-          opacity: 0.8;
+        @media (hover: hover) {
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+        @media (hover: none) {
+          & {
+            opacity: 0.8;
+          }
         }
       }
     }
