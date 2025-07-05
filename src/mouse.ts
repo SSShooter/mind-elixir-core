@@ -61,6 +61,7 @@ export default function (mind: MindElixirInstance) {
 
   let lastTap = 0
   const handleTouchDblClick = (e: PointerEvent) => {
+    if (e.pointerType === 'mouse') return
     const currentTime = new Date().getTime()
     const tapLength = currentTime - lastTap
     console.log('tapLength', tapLength)
