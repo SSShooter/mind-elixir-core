@@ -184,6 +184,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
   mind.container.onkeydown = e => {
     e.preventDefault()
     if (!mind.editable) return
+    // TODO
     if (e.target !== e.currentTarget) {
       // input
       return
