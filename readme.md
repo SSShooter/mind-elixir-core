@@ -240,8 +240,9 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:target1,to:target2}
 })
 
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
+
+mind.bus.addListener('selectNodes', nodes => {
+  console.log(nodes)
 })
 
 mind.bus.addListener('expandNode', node => {
@@ -413,6 +414,7 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 - Remove `getDataMd()`
 - MindElixir.dragMoveHelper -> instance.dragMoveHelper
 - Remove `unselectNode()`
+- Remove `selectNode` event, use `selectNodes` event instead
 - Remove `removeNode()`
 - `node.style.fontSize`: use string instead of number which means you should add `px` to the end
 - Use `instance.findEl` instead of `MindElixir.E` to get a node element

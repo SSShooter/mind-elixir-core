@@ -62,6 +62,7 @@ console.log('test E function', E('bd4313fbac40284b'))
 mind.bus.addListener('operation', operation => {
   console.log(operation)
 })
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
+
+mind.bus.addListener('selectNodes', nodes => {
+  console.log(nodes)
 })

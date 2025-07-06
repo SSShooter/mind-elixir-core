@@ -225,8 +225,9 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:alvo1,to:alvo2}
 })
 
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
+
+mind.bus.addListener('selectNodes', nodes => {
+  console.log(nodes)
 })
 
 mind.bus.addListener('expandNode', node => {

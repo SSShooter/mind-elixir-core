@@ -71,7 +71,6 @@ export type OperationType = Operation['name']
 
 export type EventMap = {
   operation: (info: Operation) => void
-  selectNode: (nodeObj: NodeObj, e?: MouseEvent) => void
   selectNewNode: (nodeObj: NodeObj) => void
   selectNodes: (nodeObj: NodeObj[]) => void
   unselectNodes: (nodeObj: NodeObj[]) => void

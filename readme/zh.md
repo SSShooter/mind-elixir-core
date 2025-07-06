@@ -225,8 +225,9 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:目标1,to:目标2}
 })
 
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
+
+mind.bus.addListener('selectNodes', nodes => {
+  console.log(nodes)
 })
 
 mind.bus.addListener('expandNode', node => {
