@@ -105,13 +105,20 @@ npm i mind-elixir -S
 ```
 
 ```javascript
-import MindElixir from 'mind-elixir'
+import MindElixir from 'mind-elixir';
+import "mind-elixir/style";
 ```
 
 #### Script tag
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
+```
+
+And in your CSS file:
+
+```css
+@import "https://cdn.jsdelivr.net/npm/mind-elixir/dist/style.css";
 ```
 
 ### Init
@@ -128,6 +135,7 @@ import MindElixir from 'mind-elixir'
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import "mind-elixir/style";
 import example from 'mind-elixir/dist/example1'
 
 let options = {
@@ -406,3 +414,5 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 - `node.style.fontSize`: use string instead of number which means you should add `px` to the end
 - Use `instance.findEl` instead of `MindElixir.E` to get a node element
 - CSS file is separated from JS file, you need to import it manually
+  - If using a bundler with CSS support: `import "mind-elixir/style";`
+  - If using a CDN you can add to your CSS file: `@import "https://cdn.jsdelivr.net/npm/mind-elixir@^5.0.0/dist/style.css";`
