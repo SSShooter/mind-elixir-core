@@ -330,6 +330,7 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
 }
 
 export const createArrowFrom = function (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) {
+  hideLinkController(this)
   const arrowObj = { ...arrow, id: generateUUID() }
   drawArrow(this, this.findEle(arrowObj.from), this.findEle(arrowObj.to), arrowObj)
 
