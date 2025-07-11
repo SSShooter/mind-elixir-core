@@ -182,13 +182,9 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     ...options,
   }
   mind.container.onkeydown = e => {
+    // it will prevent all input in children node, so we have to stop propagation in input element
     e.preventDefault()
     if (!mind.editable) return
-    // TODO
-    if (e.target !== e.currentTarget) {
-      // input
-      return
-    }
     const keyHandler = key2func[e.key]
     keyHandler && keyHandler(e)
   }
