@@ -8,7 +8,7 @@ import { layoutChildren } from './layout'
 const $d = document
 export const findEle = function (this: MindElixirInstance, id: string, el?: HTMLElement) {
   const scope = this?.el ? this.el : el ? el : document
-  const ele = scope.querySelector<Topic>(`[data-nodeid=me${id}]`)
+  const ele = scope.querySelector<Topic>(`[data-nodeid="me${id}"]`)
   if (!ele) throw new Error(`FindEle: Node ${id} not found, maybe it's collapsed.`)
   return ele
 }
