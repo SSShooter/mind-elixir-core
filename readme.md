@@ -66,6 +66,11 @@ Mind elixir is a open source JavaScript mind map core. You can use it with any f
 <details>
 <summary>Table of Contents</summary>
 
+- [Features](#features)
+  - [🎨 **User Experience**](#-user-experience)
+  - [⚡ **Performance \& Architecture**](#-performance--architecture)
+  - [🛠️ **Core Features**](#️-core-features)
+  - [📤 **Export \& Customization**](#-export--customization)
 - [Try now](#try-now)
   - [Playground](#playground)
 - [Documentation](#documentation)
@@ -394,6 +399,8 @@ pnpm install -g @microsoft/api-extractor
 pnpm doc
 pnpm doc:md
 ```
+
+Use [DeepWiki](https://deepwiki.com/SSShooter/mind-elixir-core) to learn more about Mind Elixir
 
 ## Thanks
 
