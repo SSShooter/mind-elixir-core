@@ -376,6 +376,7 @@ export const refresh = function (this: MindElixirInstance, data?: MindElixirData
     this.nodeData = data.nodeData
     this.arrows = data.arrows || []
     this.summaries = data.summaries || []
+    data.theme && this.changeTheme(data.theme)
   }
   fillParent(this.nodeData)
   // create dom element for every node
