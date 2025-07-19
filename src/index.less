@@ -67,23 +67,9 @@
       width: max-content;
       padding: var(--map-padding);
     }
-    me-root {
-      position: relative;
-      margin: 45px 0;
-      me-tpc {
-        display: block;
-        font-size: 25px;
-        color: var(--root-color);
-        padding: 10px 30px;
-        border-radius: var(--root-radius);
-        border: var(--root-border-color) 2px solid;
-        white-space: pre-wrap;
-        background-color: var(--root-bgcolor);
-      }
-    }
   }
   me-main {
-    // main node
+    // primary node / main node
     & > me-wrapper {
       position: relative; // make subline svg's offsetParent be the main node
       margin: var(--main-gap-y) var(--main-gap-x);
@@ -111,6 +97,18 @@
     display: inline-block;
     vertical-align: middle;
   }
+  me-root {
+    position: relative;
+    margin: 45px 0;
+    me-tpc {
+      font-size: 25px;
+      color: var(--root-color);
+      padding: 10px 30px;
+      border-radius: var(--root-radius);
+      border: var(--root-border-color) 2px solid;
+      background-color: var(--root-bgcolor);
+    }
+  }
   me-parent {
     position: relative; // for locating expand button
     cursor: pointer;
@@ -118,12 +116,8 @@
     margin-top: var(--node-gap-y);
     me-tpc {
       position: relative;
-      display: block;
       border-radius: 3px;
       color: var(--color);
-      pointer-events: all;
-      max-width: 35em;
-      white-space: pre-wrap;
       padding: var(--topic-padding);
 
       // drag preview
@@ -243,6 +237,10 @@
   }
 
   me-tpc {
+    display: block;
+    max-width: 35em;
+    white-space: pre-wrap;
+    pointer-events: all;
     & > * {
       // tags,icons,images should not response to click event
       pointer-events: none;
