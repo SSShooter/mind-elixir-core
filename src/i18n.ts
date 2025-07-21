@@ -8,6 +8,7 @@ type LangPack = {
   moveUp: string
   moveDown: string
   link: string
+  linkBidirectional: string
   clickTips: string
   summary: string
 }
@@ -26,6 +27,7 @@ const cn = {
   moveUp: '上移',
   moveDown: '下移',
   link: '连接',
+  linkBidirectional: '双向连接',
   clickTips: '请点击目标节点',
   summary: '摘要',
 }
@@ -42,6 +44,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: '上移',
     moveDown: '下移',
     link: '連接',
+    linkBidirectional: '雙向連接',
     clickTips: '請點擊目標節點',
     summary: '摘要',
   },
@@ -55,6 +58,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: 'Move up',
     moveDown: 'Move down',
     link: 'Link',
+    linkBidirectional: 'Bidirectional Link',
     clickTips: 'Please click the target node',
     summary: 'Summary',
   },
@@ -68,6 +72,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: 'Поднять выше',
     moveDown: 'Опустить ниже',
     link: 'Ссылка',
+    linkBidirectional: 'Двунаправленная ссылка',
     clickTips: 'Пожалуйста, нажмите на целевой узел',
     summary: 'Описание',
   },
@@ -81,6 +86,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: '上へ移動',
     moveDown: '下へ移動',
     link: 'コネクト',
+    linkBidirectional: '双方向リンク',
     clickTips: 'ターゲットノードをクリックしてください',
     summary: '概要',
   },
@@ -94,6 +100,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: 'Mover para cima',
     moveDown: 'Mover para baixo',
     link: 'Link',
+    linkBidirectional: 'Link bidirecional',
     clickTips: 'Favor clicar no item alvo',
     summary: 'Resumo',
   },
@@ -107,6 +114,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: 'Sposta su',
     moveDown: 'Sposta giù',
     link: 'Collega',
+    linkBidirectional: 'Collegamento bidirezionale',
     clickTips: 'Si prega di fare clic sul nodo di destinazione',
     summary: 'Unisci nodi',
   },
@@ -120,6 +128,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: 'Mover hacia arriba',
     moveDown: 'Mover hacia abajo',
     link: 'Enlace',
+    linkBidirectional: 'Enlace bidireccional',
     clickTips: 'Por favor haga clic en el nodo de destino',
     summary: 'Resumen',
   },
@@ -133,6 +142,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: 'Monter',
     moveDown: 'Descendre',
     link: 'Lier',
+    linkBidirectional: 'Lien bidirectionnel',
     clickTips: 'Cliquer sur le noeud cible',
     summary: 'Annoter',
   },
@@ -146,6 +156,7 @@ const i18n: Record<Locale, LangPack> = {
     moveUp: '위로 이동',
     moveDown: '아래로 이동',
     link: '연결',
+    linkBidirectional: '양방향 연결',
     clickTips: '대상 노드를 클릭하십시오',
     summary: '요약',
   },

@@ -46,7 +46,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
   const up = createLi('cm-up', lang.moveUp, 'PgUp')
   const down = createLi('cm-down', lang.moveDown, 'Pgdn')
   const link = createLi('cm-link', lang.link, '')
-  const linkBidirectional = createLi('cm-link-bidirectional', 'Bidirectional Link', '')
+  const linkBidirectional = createLi('cm-link-bidirectional', lang.linkBidirectional, '')
   const summary = createLi('cm-summary', lang.summary, '')
 
   const menuUl = document.createElement('ul')
