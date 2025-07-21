@@ -18,6 +18,9 @@
   <a href="https://bundlephobia.com/result?p=mind-elixir">
     <img src="https://badgen.net/bundlephobia/dependency-count/mind-elixir" alt="dependency-count">
   </a>
+  <a href="https://dependents.info/SSShooter/mind-elixir-core">
+    <img src="https://dependents.info/SSShooter/mind-elixir-core/badge" alt="dependents count badge" />
+  </a>
   <a href="https://packagephobia.com/result?p=mind-elixir">
     <img src="https://packagephobia.com/badge?p=mind-elixir" alt="package size">
   </a>
@@ -66,6 +69,7 @@ Mind elixir is a open source JavaScript mind map core. You can use it with any f
 <details>
 <summary>Table of Contents</summary>
 
+- [Used by](#used-by)
 - [Try now](#try-now)
   - [Playground](#playground)
 - [Documentation](#documentation)
@@ -88,6 +92,12 @@ Mind elixir is a open source JavaScript mind map core. You can use it with any f
 - [v5 Breaking Changes](#v5-breaking-changes)
 
 </details>
+
+## Used by
+
+<a href="https://dependents.info/SSShooter/mind-elixir-core">
+  <img src="https://dependents.info/SSShooter/mind-elixir-core/image" alt="network dependents image" />
+</a>
 
 ## Try now
 
