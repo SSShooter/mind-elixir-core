@@ -159,7 +159,7 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'click', func: handleClick },
     { dom: container, evt: 'dblclick', func: handleDblClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
-    { dom: container, evt: 'wheel', func: handleWheel },
+    { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
   ])
   return off
 }

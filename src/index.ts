@@ -38,6 +38,7 @@ function MindElixir(
     theme,
     alignment,
     scaleSensitivity,
+    handleWheel,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -55,25 +56,26 @@ function MindElixir(
   this.disposable = []
   this.before = before || {}
   this.locale = locale || 'en'
-  this.contextMenu = contextMenu === undefined ? true : contextMenu
-  this.toolBar = toolBar === undefined ? true : toolBar
-  this.keypress = keypress === undefined ? true : keypress
-  this.mouseSelectionButton = mouseSelectionButton || 0
-  // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
-  this.direction = typeof direction === 'number' ? direction : 1
-  this.draggable = draggable === undefined ? true : draggable
   this.newTopicName = newTopicName || 'new node'
-  this.editable = editable === undefined ? true : editable
-  this.allowUndo = allowUndo === undefined ? false : allowUndo
-  this.scaleSensitivity = typeof scaleSensitivity === 'number' ? scaleSensitivity : 0.2
+  this.contextMenu = contextMenu ?? true
+  this.toolBar = toolBar ?? true
+  this.keypress = keypress ?? true
+  this.mouseSelectionButton = mouseSelectionButton ?? 0
+  this.direction = direction ?? 1
+  this.draggable = draggable ?? true
+  this.editable = editable ?? true
+  this.allowUndo = allowUndo ?? false
+  this.scaleSensitivity = scaleSensitivity ?? 0.2
+  this.generateMainBranch = generateMainBranch || main
+  this.generateSubBranch = generateSubBranch || sub
+  this.overflowHidden = overflowHidden ?? false
+  this.alignment = alignment ?? 'root'
+  this.handleWheel = handleWheel ?? true
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNodes = [] // selected <tpc/> elements
   this.currentArrow = null // the selected link svg element
   this.scaleVal = 1
   this.tempDirection = null
-  this.generateMainBranch = generateMainBranch || main
-  this.generateSubBranch = generateSubBranch || sub
-  this.overflowHidden = overflowHidden || false
 
   this.dragMoveHelper = createDragMoveHelper(this)
   this.bus = createBus()
@@ -113,7 +115,6 @@ function MindElixir(
   this.linkController.appendChild(this.line1)
   this.linkController.appendChild(this.line2)
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
-  this.alignment = alignment ?? 'root'
 
   this.map.appendChild(this.nodes)
 

@@ -144,6 +144,7 @@ export interface Options {
   selectionContainer?: string | HTMLElement
   alignment?: Alignment
   scaleSensitivity?: number
+  handleWheel?: true | ((e: WheelEvent) => void)
 }
 
 export type Uid = string
