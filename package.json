@@ -43,7 +43,8 @@
     },
     "./readme.md": "./readme.md",
     "./package.json": "./package.json",
-    "./style": "./dist/style.css"
+    "./style": "./dist/style.css",
+    "./style.css": "./dist/style.css"
   },
   "typesVersions": {
     "*": {
