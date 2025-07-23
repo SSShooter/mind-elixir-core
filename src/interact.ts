@@ -2,7 +2,7 @@ import type { Locale } from './i18n'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
-import { fillParent, getTranslate } from './utils/index'
+import { fillParent, getTranslate, setExpand } from './utils/index'
 
 function collectData(instance: MindElixirInstance) {
   return {
@@ -344,21 +344,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
 
 export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
   const node = el.nodeObj
-  const setExpand = (node: NodeObj, isExpand: boolean) => {
-    node.expanded = isExpand
-    if (node.children) {
-      node.children.forEach(child => {
-        setExpand(child, isExpand)
-      })
-    }
-  }
-  if (typeof isExpand === 'boolean') {
-    setExpand(node, isExpand)
-  } else if (node.expanded !== false) {
-    setExpand(node, false)
-  } else {
-    setExpand(node, true)
-  }
+  setExpand(node, isExpand ?? !node.expanded)
   this.refresh()
 }
 

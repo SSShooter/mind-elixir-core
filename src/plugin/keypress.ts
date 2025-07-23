@@ -1,6 +1,7 @@
 import type { Topic } from '../types/dom'
 import type { KeypressOptions, MindElixirInstance } from '../types/index'
 import { DirectionClass } from '../types/index'
+import { setExpand } from '../utils'
 
 const selectRootLeft = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
@@ -85,6 +86,34 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     else if (mind.currentSummary) mind.removeSummary(mind.currentSummary.summaryObj.id)
     else if (mind.currentNodes) {
       mind.removeNodes(mind.currentNodes)
+    }
+  }
+
+  // Track key sequence for Ctrl+K+Ctrl+0
+  let ctrlKPressed = false
+  let ctrlKTimeout: number | null = null
+  const handleControlKPlusX = (e: KeyboardEvent) => {
+    const nodeData = mind.nodeData
+    if (e.key === '0') {
+      // Ctrl+K+Ctrl+0: Collapse all nodes
+      for (const node of nodeData.children!) {
+        setExpand(node, false)
+      }
+    }
+    if (e.key === '=') {
+      // Ctrl+K+Ctrl+1: Expand all nodes
+      for (const node of nodeData.children!) {
+        setExpand(node, true)
+      }
+    }
+    mind.refresh()
+    mind.toCenter()
+
+    ctrlKPressed = false
+    if (ctrlKTimeout) {
+      clearTimeout(ctrlKTimeout)
+      ctrlKTimeout = null
+      mind.container.removeEventListener('keydown', handleControlKPlusX)
     }
   }
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
@@ -174,7 +203,27 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     },
     '0': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        mind.scale(1)
+        if (ctrlKPressed) {
+          return
+        } else {
+          // Regular Ctrl+0: Reset zoom
+          mind.scale(1)
+        }
+      }
+    },
+    k: (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey) {
+        ctrlKPressed = true
+        // Reset the flag after 2 seconds if no follow-up key is pressed
+        if (ctrlKTimeout) {
+          clearTimeout(ctrlKTimeout)
+          mind.container.removeEventListener('keydown', handleControlKPlusX)
+        }
+        ctrlKTimeout = window.setTimeout(() => {
+          ctrlKPressed = false
+          ctrlKTimeout = null
+        }, 2000)
+        mind.container.addEventListener('keydown', handleControlKPlusX)
       }
     },
     Delete: handleRemove,

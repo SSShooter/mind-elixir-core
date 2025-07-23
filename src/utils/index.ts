@@ -33,6 +33,16 @@ export const fillParent = (data: NodeObj, parent?: NodeObj) => {
   }
 }
 
+export const setExpand = (node: NodeObj, isExpand: boolean) => {
+  // TODO: add level
+  node.expanded = isExpand
+  if (node.children) {
+    node.children.forEach(child => {
+      setExpand(child, isExpand)
+    })
+  }
+}
+
 export function refreshIds(data: NodeObj) {
   data.id = generateUUID()
   if (data.children) {
