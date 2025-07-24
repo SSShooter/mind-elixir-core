@@ -144,6 +144,8 @@ export interface Options {
   selectionContainer?: string | HTMLElement
   alignment?: Alignment
   scaleSensitivity?: number
+  scaleMin?: number
+  scaleMax?: number
   handleWheel?: true | ((e: WheelEvent) => void)
 }
 

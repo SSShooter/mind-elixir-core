@@ -114,6 +114,7 @@ export const disableEdit = function (this: MindElixirInstance) {
  * @param {number}
  */
 export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
+  if (scaleVal < this.scaleMin || scaleVal > this.scaleMax) return
   const rect = this.container.getBoundingClientRect()
   // refer to /refs/scale-calc.excalidraw for the process
   // remove coordinate system influence and calculate quantities directly
@@ -132,7 +133,7 @@ export const scale = function (this: MindElixirInstance, scaleVal: number, offse
   // Note: cursor needs to be reversed, probably because transform itself is reversed
   const xres = (-xc + xb) * (1 - scaleVal / oldScale)
   const yres = (-yc + yb) * (1 - scaleVal / oldScale)
-  console.log(xc, yc, xb, yb)
+
   this.map.style.transform = `translate(${xCurrent - xres}px, ${yCurrent - yres}px) scale(${scaleVal})`
   this.scaleVal = scaleVal
   this.bus.fire('scale', scaleVal)

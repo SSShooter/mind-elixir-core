@@ -50,11 +50,9 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
     mind.toCenter()
   }
   zo.onclick = () => {
-    if (mind.scaleVal < 0.6) return
     mind.scale(mind.scaleVal - mind.scaleSensitivity)
   }
   zi.onclick = () => {
-    if (mind.scaleVal > 1.6) return
     mind.scale(mind.scaleVal + mind.scaleSensitivity)
   }
   return toolBarRBContainer

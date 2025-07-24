@@ -73,7 +73,7 @@ const options: Options = {
       return true
     },
   },
-  scaleSensitivity: 0.2,
+  // scaleMin:0.1
   // alignment: 'nodes',
 }
 

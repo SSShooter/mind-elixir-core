@@ -38,6 +38,8 @@ function MindElixir(
     theme,
     alignment,
     scaleSensitivity,
+    scaleMax,
+    scaleMin,
     handleWheel,
   }: Options
 ): void {
@@ -65,7 +67,9 @@ function MindElixir(
   this.draggable = draggable ?? true
   this.editable = editable ?? true
   this.allowUndo = allowUndo ?? false
-  this.scaleSensitivity = scaleSensitivity ?? 0.2
+  this.scaleSensitivity = scaleSensitivity ?? 0.1
+  this.scaleMax = scaleMax ?? 1.4
+  this.scaleMin = scaleMin ?? 0.2
   this.generateMainBranch = generateMainBranch || main
   this.generateSubBranch = generateSubBranch || sub
   this.overflowHidden = overflowHidden ?? false
