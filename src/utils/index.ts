@@ -33,13 +33,19 @@ export const fillParent = (data: NodeObj, parent?: NodeObj) => {
   }
 }
 
-export const setExpand = (node: NodeObj, isExpand: boolean) => {
-  // TODO: add level
+export const setExpand = (node: NodeObj, isExpand: boolean, level?: number) => {
   node.expanded = isExpand
   if (node.children) {
-    node.children.forEach(child => {
-      setExpand(child, isExpand)
-    })
+    if (level === undefined || level > 0) {
+      const nextLevel = level !== undefined ? level - 1 : undefined
+      node.children.forEach(child => {
+        setExpand(child, isExpand, nextLevel)
+      })
+    } else {
+      node.children.forEach(child => {
+        setExpand(child, false)
+      })
+    }
   }
 }
 

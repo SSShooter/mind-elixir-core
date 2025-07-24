@@ -106,6 +106,11 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
         setExpand(node, true)
       }
     }
+    if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+      for (const node of nodeData.children!) {
+        setExpand(node, true, Number(e.key) - 1)
+      }
+    }
     mind.refresh()
     mind.toCenter()
 
