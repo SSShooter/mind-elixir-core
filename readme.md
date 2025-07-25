@@ -63,6 +63,8 @@ Mind elixir is a open source JavaScript mind map core. You can use it with any f
 - **Easy styling** - Customize mindmap with CSS variables
 - **Theme support** - Built-in themes and custom styling
 
+[v5 Breaking Changes](https://github.com/SSShooter/mind-elixir-core/wiki/Breaking-Change#500)
+
 <details>
 <summary>Table of Contents</summary>
 
@@ -86,11 +88,11 @@ Mind elixir is a open source JavaScript mind map core. You can use it with any f
 - [Export as a Image](#export-as-a-image)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
+- [Who's using](#whos-using)
 - [Ecosystem](#ecosystem)
 - [Development](#development)
 - [Thanks](#thanks)
 - [Contributors](#contributors)
-- [v5 Breaking Changes](#v5-breaking-changes)
 
 </details>
 
@@ -121,8 +123,8 @@ npm i mind-elixir -S
 ```
 
 ```javascript
-import MindElixir from 'mind-elixir';
-import "mind-elixir/style.css";
+import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 ```
 
 #### Script tag
@@ -134,7 +136,7 @@ import "mind-elixir/style.css";
 And in your CSS file:
 
 ```css
-@import "https://cdn.jsdelivr.net/npm/mind-elixir/dist/style.css";
+@import 'https://cdn.jsdelivr.net/npm/mind-elixir/dist/style.css';
 ```
 
 ### Init
@@ -151,7 +153,7 @@ And in your CSS file:
 
 ```javascript
 import MindElixir from 'mind-elixir'
-import "mind-elixir/style.css";
+import 'mind-elixir/style.css'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
@@ -244,7 +246,6 @@ mind.bus.addListener('operation', operation => {
   // name: moveNode
   // obj: {from:target1,to:target2}
 })
-
 
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
@@ -345,25 +346,11 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 
 ## Shortcuts
 
-| Shortcut           | Function                         |
-| ------------------ | -------------------------------- |
-| Enter              | Insert Sibling Node              |
-| Tab                | Insert Child Node                |
-| F1                 | Center the Map                   |
-| F2                 | Begin Editing the Current Node   |
-| ↑                  | Select the Previous Sibling Node |
-| ↓                  | Select the Next Sibling Node     |
-| ← / →              | Select Parent or First Child     |
-| PageUp / Alt + ↑   | Move Up Node                     |
-| PageDown / Alt + ↓ | Move Down Node                   |
-| Ctrl + ↑           | Change Layout Pattern to Side    |
-| Ctrl + ←           | Change Layout Pattern to Left    |
-| Ctrl + →           | Change Layout Pattern to Right   |
-| Ctrl + C           | Copy the Current Node            |
-| Ctrl + V           | Paste the Copied Node            |
-| Ctrl + "+"         | Zoom In Mind Map                 |
-| Ctrl + "-"         | Zoom Out Mind Map                |
-| Ctrl + 0           | Reset Zoom Level                 |
+See [Shortcuts Guide](https://docs.mind-elixir.com/docs/guides/shortcuts) for detailed information.
+
+## Who's using
+
+- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
 
 ## Ecosystem
 
@@ -413,18 +400,3 @@ Thanks for your contributions to Mind Elixir! Your support and dedication make t
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core" />
 </a>
-
-## v5 Breaking Changes
-
-- Move scroll-based movement to transition-based movement
-- `Summary.text` -> `Summary.label`
-- Remove `getDataMd()`
-- MindElixir.dragMoveHelper -> instance.dragMoveHelper
-- Remove `unselectNode()`
-- Remove `selectNode` event, use `selectNodes` event instead
-- Remove `removeNode()`
-- `node.style.fontSize`: use string instead of number which means you should add `px` to the end
-- Use `instance.findEl` instead of `MindElixir.E` to get a node element
-- CSS file is separated from JS file, you need to import it manually
-  - If using a bundler with CSS support: `import "mind-elixir/style.css";`
-  - If using a CDN you can add to your CSS file: `@import "https://cdn.jsdelivr.net/npm/mind-elixir@^5.0.0/dist/style.css";`
