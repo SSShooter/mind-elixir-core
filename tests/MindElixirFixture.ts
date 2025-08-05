@@ -49,12 +49,12 @@ export class MindElixirFixture {
     return data
   }
   async dblclick(topic: string) {
-    await this.page.getByText(topic).dblclick({
+    await this.page.getByText(topic, { exact: true }).dblclick({
       force: true,
     })
   }
   async click(topic: string) {
-    await this.page.getByText(topic).click({
+    await this.page.getByText(topic, { exact: true }).click({
       force: true,
     })
   }

@@ -237,10 +237,6 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to:
     this.expandNode(to, true)
     to = this.findEle(toObj.id) as Topic
   }
-  // if (!checkMoveValid(obj, toObj)) {
-  //   console.warn('Invalid move')
-  //   return
-  // }
   console.time('moveNodeIn')
   for (const f of from) {
     const obj = f.nodeObj
@@ -277,7 +273,9 @@ const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindE
     const toWrp = to.parentElement.parentNode
     toWrp.insertAdjacentElement(typeMap[type], fromWrp)
   }
-  // remove expander and empty wrapper
+  // When nodes are moved away, the original parent node may become childless
+  // In this case, we need to clean up the related DOM structure:
+  // remove expander buttons and empty wrapper containers
   for (const item of c) {
     if (item.childElementCount === 0 && item.tagName !== 'ME-MAIN') {
       item.previousSibling.children[1]!.remove()

@@ -113,6 +113,7 @@ export default function (mind: MindElixirInstance) {
       mind.moveNodeIn(dragged, meet)
     }
     mind.dragged = null
+    ghost.innerHTML = ''
   }
   const handleDragOver = (e: DragEvent) => {
     e.preventDefault()
