@@ -18,6 +18,7 @@
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "nyc": "nyc report --reporter=html",
     "doc": "api-extractor run --local --verbose",
     "doc:md": "api-documenter markdown --input-folder ./api --output-folder ./md",
     "beta": "npm run build && npm publish --tag beta"
@@ -92,8 +93,10 @@
     "husky": "^8.0.3",
     "less": "^4.2.0",
     "lint-staged": "^13.3.0",
+    "nyc": "^17.1.0",
     "prettier": "2.8.4",
     "typescript": "^5.4.5",
-    "vite": "^4.5.3"
+    "vite": "^4.5.3",
+    "vite-plugin-istanbul": "^7.1.0"
   }
 }

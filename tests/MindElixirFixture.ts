@@ -16,7 +16,7 @@ export class MindElixirFixture {
   }
 
   async goto() {
-    await this.page.goto('http://localhost:23333/test.html')
+    await this.page.goto('http://localhost:23334/test.html')
   }
   async init(data: MindElixirData, el = '#map') {
     // evaluate return Serializable value

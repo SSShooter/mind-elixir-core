@@ -1,11 +1,21 @@
 // vite.config.js
 import { defineConfig } from 'vite'
+import istanbul from 'vite-plugin-istanbul';
+
 export default defineConfig({
   server: {
     host: true,
     port: 23333,
     strictPort: true,
   },
+  plugins: [
+    istanbul({
+      include: 'src/*',
+      exclude: ['node_modules', 'test/'],
+      extension: ['.js', '.ts', '.vue'],
+      requireEnv: true,
+    }),
+  ],
   // build: {
   //   cssCodeSplit: false,
   //   lib: {
