@@ -70,6 +70,32 @@ export class MindElixirFixture {
     await this.page.waitForTimeout(100) // throttle
     await this.page.mouse.move(box.x + box.width / 2, box.y + y)
   }
+  async dragSelect(topic1: string, topic2: string) {
+    // Get the bounding boxes for both topics
+    const element1 = this.page.getByText(topic1, { exact: true })
+    const element2 = this.page.getByText(topic2, { exact: true })
+
+    const box1 = await element1.boundingBox()
+    const box2 = await element2.boundingBox()
+
+    if (!box1 || !box2) {
+      throw new Error(`Could not find bounding box for topics: ${topic1}, ${topic2}`)
+    }
+
+    // Calculate the selection area coordinates
+    // Find the minimum and maximum x, y coordinates
+    const minX = Math.min(box1.x, box2.x) - 10
+    const minY = Math.min(box1.y, box2.y) - 10
+    const maxX = Math.max(box1.x + box1.width, box2.x + box2.width) + 10
+    const maxY = Math.max(box1.y + box1.height, box2.y + box2.height) + 10
+
+    // Perform the drag selection
+    await this.page.mouse.move(minX, minY)
+    await this.page.mouse.down()
+    await this.page.waitForTimeout(100) // throttle
+    await this.page.mouse.move(maxX, maxY)
+    await this.page.mouse.up()
+  }
   async toHaveScreenshot(locator?: Locator) {
     await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot({
       maxDiffPixelRatio: 0.02,
