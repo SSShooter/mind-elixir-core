@@ -18,6 +18,8 @@
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "test:clean": "rimraf .nyc_output coverage",
+    "test:coverage": "pnpm test:clean && pnpm test && pnpm nyc && npx http-server ./coverage",
     "nyc": "nyc report --reporter=html",
     "doc": "api-extractor run --local --verbose",
     "doc:md": "api-documenter markdown --input-folder ./api --output-folder ./md",
@@ -95,6 +97,7 @@
     "lint-staged": "^13.3.0",
     "nyc": "^17.1.0",
     "prettier": "2.8.4",
+    "rimraf": "^6.0.1",
     "typescript": "^5.4.5",
     "vite": "^4.5.3",
     "vite-plugin-istanbul": "^7.1.0"
