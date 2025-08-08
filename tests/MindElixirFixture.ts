@@ -26,6 +26,9 @@ export class MindElixirFixture {
         const options: Options = {
           el,
           direction: MindElixir.SIDE,
+          allowUndo: true, // Enable undo/redo functionality for tests
+          keypress: true, // Enable keyboard shortcuts
+          editable: true, // Enable editing
         }
         const mind = new MindElixir(options)
         mind.init(JSON.parse(JSON.stringify(data)))
@@ -57,6 +60,9 @@ export class MindElixirFixture {
     await this.page.getByText(topic, { exact: true }).click({
       force: true,
     })
+  }
+  getByText(topic: string) {
+    return this.page.getByText(topic, { exact: true })
   }
   async dragOver(topic: string, type: 'before' | 'after' | 'in') {
     await this.page.getByText(topic).hover({ force: true })

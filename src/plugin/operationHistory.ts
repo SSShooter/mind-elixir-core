@@ -84,13 +84,14 @@ export default function (mei: MindElixirInstance) {
     // console.log('operation', operation.obj.id, history)
   }
   const handleKeyDown = function (e: KeyboardEvent) {
+    // console.log(`mei.map.addEventListener('keydown', handleKeyDown)`, e.key, history.length, currentIndex)
     if ((e.metaKey || e.ctrlKey) && ((e.shiftKey && e.key === 'Z') || e.key === 'y')) mei.redo()
     else if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
   }
   mei.bus.addListener('operation', handleOperation)
-  mei.map.addEventListener('keydown', handleKeyDown)
+  mei.container.addEventListener('keydown', handleKeyDown)
   return () => {
     mei.bus.removeListener('operation', handleOperation)
-    mei.map.removeEventListener('keydown', handleKeyDown)
+    mei.container.removeEventListener('keydown', handleKeyDown)
   }
 }

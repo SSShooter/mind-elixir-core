@@ -58,7 +58,7 @@ function MindElixir(
   this.disposable = []
   this.before = before || {}
   this.locale = locale || 'en'
-  this.newTopicName = newTopicName || 'new node'
+  this.newTopicName = newTopicName || 'New Node'
   this.contextMenu = contextMenu ?? true
   this.toolBar = toolBar ?? true
   this.keypress = keypress ?? true
@@ -66,7 +66,7 @@ function MindElixir(
   this.direction = direction ?? 1
   this.draggable = draggable ?? true
   this.editable = editable ?? true
-  this.allowUndo = allowUndo ?? false
+  this.allowUndo = allowUndo ?? true
   this.scaleSensitivity = scaleSensitivity ?? 0.1
   this.scaleMax = scaleMax ?? 1.4
   this.scaleMin = scaleMin ?? 0.2

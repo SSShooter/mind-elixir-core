@@ -1,6 +1,6 @@
 // vite.config.js
 import { defineConfig } from 'vite'
-import istanbul from 'vite-plugin-istanbul';
+import istanbul from 'vite-plugin-istanbul'
 
 export default defineConfig({
   server: {
@@ -11,8 +11,8 @@ export default defineConfig({
   plugins: [
     istanbul({
       include: 'src/*',
-      exclude: ['node_modules', 'test/'],
-      extension: ['.js', '.ts', '.vue'],
+      exclude: ['node_modules', 'test/', 'src/plugin/exportImage.ts'],
+      extension: ['.ts'],
       requireEnv: true,
     }),
   ],
