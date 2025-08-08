@@ -84,13 +84,13 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   if (!node) {
     this.editTopic(top.firstChild)
   }
-  this.selectNode(top.firstChild, true)
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
     type,
     obj: newNodeObj,
   })
+  this.selectNode(top.firstChild, true)
 }
 
 export const insertParent = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
@@ -134,6 +134,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   const res = addChildFunc(this, nodeEle, node)
   if (!res) return
   const { newTop, newNodeObj } = res
+  // 添加节点关注添加节点前选择的节点，所以先触发事件再选择节点
   this.bus.fire('operation', {
     name: 'addChild',
     obj: newNodeObj,
@@ -223,6 +224,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   const last = tpcs[tpcs.length - 1]
   this.selectNode(this.findEle(last.nodeObj.parent!.id))
   this.linkDiv()
+  // 删除关注的是删除后选择的节点，所以先选择节点再触发 removeNodes 事件可以在事件中通过 currentNodes 获取之后选择的节点
   this.bus.fire('operation', {
     name: 'removeNodes',
     objs: tpcs.map(tpc => tpc.nodeObj),

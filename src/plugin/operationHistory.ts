@@ -1,14 +1,15 @@
-import type { MindElixirData, NodeObj } from '../index'
+import type { MindElixirData, NodeObj, OperationType } from '../index'
 import { type MindElixirInstance } from '../index'
-import { findEle } from '../utils/dom'
 import type { Operation } from '../utils/pubsub'
 
 type History = {
   prev: MindElixirData
   next: MindElixirData
-  currentObject:
+  currentSelected: string[]
+  operation: OperationType
+  currentTarget:
     | {
-        type: 'node' | 'summary' | 'arrow'
+        type: 'summary' | 'arrow'
         value: string
       }
     | {
@@ -17,7 +18,7 @@ type History = {
       }
 }
 
-const calcCurentObject = function (operation: Operation): History['currentObject'] {
+const calcCurentObject = function (operation: Operation): History['currentTarget'] {
   if (['createSummary', 'removeSummary', 'finishEditSummary'].includes(operation.name)) {
     return {
       type: 'summary',
@@ -35,8 +36,8 @@ const calcCurentObject = function (operation: Operation): History['currentObject
     }
   } else {
     return {
-      type: 'node',
-      value: (operation as any).obj.id,
+      type: 'nodes',
+      value: [(operation as any).obj.id],
     }
   }
 }
@@ -45,20 +46,27 @@ export default function (mei: MindElixirInstance) {
   let history = [] as History[]
   let currentIndex = -1
   let current = mei.getData()
+  let currentSelectedNodes: NodeObj[] = []
   mei.undo = function () {
+    // 操作是删除时，undo 恢复内容，应选中操作的目标
+    // 操作是新增时，undo 删除内容，应选中当前选中节点
     if (currentIndex > -1) {
       const h = history[currentIndex]
       current = h.prev
       mei.refresh(h.prev)
       try {
-        if (h.currentObject.type === 'node') mei.selectNode(this.findEle(h.currentObject.value))
-        else if (h.currentObject.type === 'nodes') mei.selectNodes(h.currentObject.value.map(id => this.findEle(id)))
+        if (h.currentTarget.type === 'nodes') {
+          if (h.operation === 'removeNodes') {
+            mei.selectNodes(h.currentTarget.value.map(id => this.findEle(id)))
+          } else {
+            mei.selectNodes(h.currentSelected.map(id => this.findEle(id)))
+          }
+        }
       } catch (e) {
         // undo add node cause node not found
       } finally {
         currentIndex--
       }
-      // console.log('current', current)
     }
   }
   mei.redo = function () {
@@ -67,10 +75,16 @@ export default function (mei: MindElixirInstance) {
       const h = history[currentIndex]
       current = h.next
       mei.refresh(h.next)
-      if (h.currentObject.type === 'node') mei.selectNode(this.findEle(h.currentObject.value))
-      else if (h.currentObject.type === 'nodes') {
-        mei.unselectNodes(this.currentNodes)
-        mei.selectNodes(h.currentObject.value.map(id => this.findEle(id)))
+      try {
+        if (h.currentTarget.type === 'nodes') {
+          if (h.operation === 'removeNodes') {
+            mei.selectNodes(h.currentSelected.map(id => this.findEle(id)))
+          } else {
+            mei.selectNodes(h.currentTarget.value.map(id => this.findEle(id)))
+          }
+        }
+      } catch (e) {
+        // redo delete node cause node not found
       }
     }
   }
@@ -78,20 +92,33 @@ export default function (mei: MindElixirInstance) {
     if (operation.name === 'beginEdit') return
     history = history.slice(0, currentIndex + 1)
     const next = mei.getData()
-    history.push({ prev: current, currentObject: calcCurentObject(operation), next })
+    const item = {
+      prev: current,
+      operation: operation.name,
+      currentSelected: currentSelectedNodes.map(n => n.id),
+      currentTarget: calcCurentObject(operation),
+      next,
+    }
+    history.push(item)
     current = next
     currentIndex = history.length - 1
-    // console.log('operation', operation.obj.id, history)
+    console.log('operation', item.currentSelected, item.currentTarget.value)
   }
   const handleKeyDown = function (e: KeyboardEvent) {
     // console.log(`mei.map.addEventListener('keydown', handleKeyDown)`, e.key, history.length, currentIndex)
     if ((e.metaKey || e.ctrlKey) && ((e.shiftKey && e.key === 'Z') || e.key === 'y')) mei.redo()
     else if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
   }
+  const handleSelectNodes = function (nodes: NodeObj[]) {
+    console.log('selectNodes', nodes)
+    currentSelectedNodes = mei.currentNodes.map(n => n.nodeObj)
+  }
   mei.bus.addListener('operation', handleOperation)
+  mei.bus.addListener('selectNodes', handleSelectNodes)
   mei.container.addEventListener('keydown', handleKeyDown)
   return () => {
     mei.bus.removeListener('operation', handleOperation)
+    mei.bus.removeListener('selectNodes', handleSelectNodes)
     mei.container.removeEventListener('keydown', handleKeyDown)
   }
 }

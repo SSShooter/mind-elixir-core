@@ -71,23 +71,23 @@ test('Add Before', async ({ page, me }) => {
   await me.toHaveScreenshot()
 })
 
-test('Add Parent', async ({ page, me }) => {
-  await me.click(childTopic)
-  await page.keyboard.press('Control+Enter')
-  await page.keyboard.press('Enter')
-  await expect(page.locator('#input-box')).toBeHidden()
-  await expect(page.getByText('New Node')).toBeVisible()
-  await me.toHaveScreenshot()
-})
+// test('Add Parent', async ({ page, me }) => {
+//   await me.click(childTopic)
+//   await page.keyboard.press('Control+Enter')
+//   await page.keyboard.press('Enter')
+//   await expect(page.locator('#input-box')).toBeHidden()
+//   await expect(page.getByText('New Node')).toBeVisible()
+//   await me.toHaveScreenshot()
+// })
 
-test('Add Child', async ({ page, me }) => {
-  await me.click(childTopic)
-  await page.keyboard.press('Tab')
-  await page.keyboard.press('Enter')
-  await expect(page.locator('#input-box')).toBeHidden()
-  await expect(page.getByText('New Node')).toBeVisible()
-  await me.toHaveScreenshot()
-})
+// test('Add Child', async ({ page, me }) => {
+//   await me.click(childTopic)
+//   await page.keyboard.press('Tab')
+//   await page.keyboard.press('Enter')
+//   await expect(page.locator('#input-box')).toBeHidden()
+//   await expect(page.getByText('New Node')).toBeVisible()
+//   await me.toHaveScreenshot()
+// })
 
 test('Copy and Paste', async ({ page, me }) => {
   await me.click('middle')

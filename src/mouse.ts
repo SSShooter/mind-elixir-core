@@ -73,7 +73,6 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerDown = (e: PointerEvent) => {
-    console.log('handlePointerDown', e)
     dragMoveHelper.moved = false
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     if (e.button !== mouseMoveButton && e.pointerType === 'mouse') return

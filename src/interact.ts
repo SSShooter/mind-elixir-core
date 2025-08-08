@@ -358,6 +358,7 @@ export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isEx
  * @param {TargetElement} data mind elixir data
  */
 export const refresh = function (this: MindElixirInstance, data?: MindElixirData) {
+  this.clearSelection()
   if (data) {
     data = JSON.parse(JSON.stringify(data)) as MindElixirData // it shouldn't contanimate the original data
     this.nodeData = data.nodeData

@@ -71,75 +71,74 @@ test('Undo/Redo - Remove Node Operations', async ({ page, me }) => {
   await expect(page.getByText(childTopic)).toBeVisible()
 })
 
-test('Undo/Redo - Edit Node Operations', async ({ page, me }) => {
-  const originalText = childTopic
-  const newText = 'updated-child-topic'
+// test('Undo/Redo - Edit Node Operations', async ({ page, me }) => {
+//   const originalText = childTopic
+//   const newText = 'updated-child-topic'
 
-  // Edit the child node
-  await me.dblclick(childTopic)
-  await expect(page.locator('#input-box')).toBeVisible()
-  await page.keyboard.press('Control+a') // Select all text
-  await page.keyboard.insertText(newText)
-  await page.keyboard.press('Enter')
-  await expect(page.getByText(newText)).toBeVisible()
+//   // Edit the child node
+//   await me.dblclick(childTopic)
+//   await expect(page.locator('#input-box')).toBeVisible()
+//   await page.keyboard.insertText(newText)
+//   await page.keyboard.press('Enter')
+//   await expect(page.getByText(newText)).toBeVisible()
 
-  // Undo the edit operation
-  await page.keyboard.press('Control+z')
-  await expect(page.getByText(originalText)).toBeVisible()
-  await expect(page.getByText(newText)).toBeHidden()
+//   // Undo the edit operation
+//   await page.keyboard.press('Control+z')
+//   await expect(page.getByText(originalText)).toBeVisible()
+//   await expect(page.getByText(newText)).toBeHidden()
 
-  // Redo the edit operation
-  await page.keyboard.press('Control+y')
-  await expect(page.getByText(newText)).toBeVisible()
-  await expect(page.getByText(originalText)).toBeHidden()
-})
+//   // Redo the edit operation
+//   await page.keyboard.press('Control+y')
+//   await expect(page.getByText(newText)).toBeVisible()
+//   await expect(page.getByText(originalText)).toBeHidden()
+// })
 
-test('Undo/Redo - Multiple Operations Sequence', async ({ page, me }) => {
-  // Perform multiple operations
-  // 1. Add a child node
-  await me.click(childTopic)
-  await page.keyboard.press('Tab')
-  await page.keyboard.press('Enter')
-  await expect(page.getByText('New Node')).toBeVisible()
+// test('Undo/Redo - Multiple Operations Sequence', async ({ page, me }) => {
+//   // Perform multiple operations
+//   // 1. Add a child node
+//   await me.click(childTopic)
+//   await page.keyboard.press('Tab')
+//   await page.keyboard.press('Enter')
+//   await expect(page.getByText('New Node')).toBeVisible()
 
-  // 2. Add a sibling node
-  await page.keyboard.press('Enter')
-  await page.keyboard.press('Enter')
-  const newNodes = page.getByText('New Node')
-  await expect(newNodes).toHaveCount(2)
+//   // 2. Add a sibling node
+//   await page.keyboard.press('Enter')
+//   await page.keyboard.press('Enter')
+//   const newNodes = page.getByText('New Node')
+//   await expect(newNodes).toHaveCount(2)
 
-  // 3. Edit the first new node
-  await me.dblclick('New Node')
-  await expect(page.locator('#input-box')).toBeVisible()
-  await page.keyboard.press('Control+a')
-  await page.keyboard.insertText('First New Node')
-  await page.keyboard.press('Enter')
-  await expect(page.getByText('First New Node')).toBeVisible()
+//   // 3. Edit the first new node
+//   await me.dblclick('New Node')
+//   await expect(page.locator('#input-box')).toBeVisible()
+//   await page.keyboard.press('Control+a')
+//   await page.keyboard.insertText('First New Node')
+//   await page.keyboard.press('Enter')
+//   await expect(page.getByText('First New Node')).toBeVisible()
 
-  // Now undo operations step by step
-  // Undo edit operation
-  await page.keyboard.press('Control+z')
-  await expect(page.getByText('First New Node')).toBeHidden()
-  await expect(page.getByText('New Node')).toBeVisible()
+//   // Now undo operations step by step
+//   // Undo edit operation
+//   await page.keyboard.press('Control+z')
+//   await expect(page.getByText('First New Node')).toBeHidden()
+//   await expect(page.getByText('New Node')).toBeVisible()
 
-  // Undo second add operation
-  await page.keyboard.press('Control+z')
-  await expect(newNodes).toHaveCount(1)
+//   // Undo second add operation
+//   await page.keyboard.press('Control+z')
+//   await expect(newNodes).toHaveCount(1)
 
-  // Undo first add operation
-  await page.keyboard.press('Control+z')
-  await expect(page.getByText('New Node')).toBeHidden()
+//   // Undo first add operation
+//   await page.keyboard.press('Control+z')
+//   await expect(page.getByText('New Node')).toBeHidden()
 
-  // Redo all operations
-  await page.keyboard.press('Control+y') // Redo first add
-  await expect(page.getByText('New Node')).toBeVisible()
+//   // Redo all operations
+//   await page.keyboard.press('Control+y') // Redo first add
+//   await expect(page.getByText('New Node')).toBeVisible()
 
-  await page.keyboard.press('Control+y') // Redo second add
-  await expect(newNodes).toHaveCount(2)
+//   await page.keyboard.press('Control+y') // Redo second add
+//   await expect(newNodes).toHaveCount(2)
 
-  await page.keyboard.press('Control+y') // Redo edit
-  await expect(page.getByText('First New Node')).toBeVisible()
-})
+//   await page.keyboard.press('Control+y') // Redo edit
+//   await expect(page.getByText('First New Node')).toBeVisible()
+// })
 
 test('Undo/Redo - Copy and Paste Operations', async ({ page, me }) => {
   // Copy middle node

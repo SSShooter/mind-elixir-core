@@ -47,7 +47,7 @@ export default function (mei: MindElixirInstance) {
         // trigger `move` event here
         mei.clearSelection()
       }
-      console.log('beforestart')
+      // console.log('beforestart')
       const selectionAreaElement = selection.getSelectionArea()
       selectionAreaElement.style.background = '#4f90f22d'
       selectionAreaElement.style.border = '1px solid #4f90f2'
@@ -65,8 +65,8 @@ export default function (mei: MindElixirInstance) {
         },
       }) => {
         if (added.length > 0 || removed.length > 0) {
-          console.log('added ', added)
-          console.log('removed ', removed)
+          // console.log('added ', added)
+          // console.log('removed ', removed)
         }
         if (added.length > 0) {
           for (const el of added) {
