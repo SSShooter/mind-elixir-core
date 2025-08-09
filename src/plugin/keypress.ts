@@ -121,10 +121,9 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
   }
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
     Enter: e => {
-      // enter
       if (e.shiftKey) {
         mind.insertSibling('before')
-      } else if (e.ctrlKey) {
+      } else if (e.ctrlKey || e.metaKey) {
         mind.insertParent()
       } else {
         mind.insertSibling('after')
