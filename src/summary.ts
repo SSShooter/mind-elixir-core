@@ -1,7 +1,7 @@
 import type { MindElixirInstance, Topic } from '.'
 import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
-import { editSvgText, svgNS } from './utils/svg'
+import { createSvgText, editSvgText, svgNS } from './utils/svg'
 
 /**
  * @public
@@ -98,18 +98,6 @@ const createPath = function (d: string, color?: string) {
   return path
 }
 
-const createText = function (string: string, x: number, y: number, anchor: 'start' | 'end', color?: string) {
-  const text = document.createElementNS(svgNS, 'text')
-  setAttributes(text, {
-    'text-anchor': anchor,
-    x: x + '',
-    y: y + '',
-    fill: color || '#666',
-  })
-  text.innerHTML = string
-  return text
-}
-
 const getWrapper = (tpc: Topic) => tpc.parentElement.parentElement
 
 const getDirection = function (mei: MindElixirInstance, { parent, start }: Summary) {
@@ -157,10 +145,10 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const color = theme.cssVar['--color']
   if (side === DirectionClass.LHS) {
     path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
-    text = createText(summaryText, left - 20, md + 6, 'end', color)
+    text = createSvgText(summaryText, left - 20, md + 6, { anchor: 'end', color })
   } else {
     path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, color)
-    text = createText(summaryText, right + 20, md + 6, 'start', color)
+    text = createSvgText(summaryText, right + 20, md + 6, { anchor: 'start', color })
   }
   const group = creatGroup('s-' + id)
   group.appendChild(path)

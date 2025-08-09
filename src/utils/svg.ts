@@ -8,6 +8,34 @@ import { selectText } from './dom'
 const $d = document
 export const svgNS = 'http://www.w3.org/2000/svg'
 
+export interface SvgTextOptions {
+  anchor?: 'start' | 'middle' | 'end'
+  color?: string
+  dataType?: string
+}
+
+/**
+ * Create an SVG text element with common attributes
+ */
+export const createSvgText = function (text: string, x: number, y: number, options: SvgTextOptions = {}): SVGTextElement {
+  const { anchor = 'middle', color, dataType } = options
+
+  const textElement = document.createElementNS(svgNS, 'text')
+  setAttributes(textElement, {
+    'text-anchor': anchor,
+    x: x + '',
+    y: y + '',
+    fill: color || (anchor === 'middle' ? 'rgb(235, 95, 82)' : '#666'),
+  })
+
+  if (dataType) {
+    textElement.dataset.type = dataType
+  }
+
+  textElement.innerHTML = text
+  return textElement
+}
+
 export const createPath = function (d: string, color: string, width: string) {
   const path = $d.createElementNS(svgNS, 'path')
   setAttributes(path, {

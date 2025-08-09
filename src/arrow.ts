@@ -1,6 +1,6 @@
 import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
-import { createSvgGroup, editSvgText, svgNS } from './utils/svg'
+import { createSvgGroup, createSvgText, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
 
@@ -243,19 +243,6 @@ function calcP(data: DivData) {
   }
 }
 
-const createText = function (string: string, x: number, y: number, color?: string) {
-  const text = document.createElementNS(svgNS, 'text')
-  setAttributes(text, {
-    'text-anchor': 'middle',
-    x: x + '',
-    y: y + '',
-    fill: color || 'rgb(235, 95, 82)',
-  })
-  text.dataset.type = 'custom-link'
-  text.innerHTML = string
-  return text
-}
-
 /**
  * FYI
  * p1: start point
@@ -291,7 +278,11 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   // Use extracted common function to calculate midpoint
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
   const labelColor = obj.style?.labelColor
-  const label = createText(obj.label, halfx, halfy, labelColor)
+  const label = createSvgText(obj.label, halfx, halfy, {
+    anchor: 'middle',
+    color: labelColor,
+    dataType: 'custom-link',
+  })
   newSvgGroup.appendChild(label)
   newSvgGroup.label = label
 
