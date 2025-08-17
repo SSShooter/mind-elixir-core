@@ -29,7 +29,7 @@ export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElemen
     const containerCenterY = containerRect.top + containerRect.height / 2
     const offsetX = elCenterX - containerCenterX
     const offsetY = elCenterY - containerCenterY
-    this.move(-offsetX, -offsetY)
+    this.move(-offsetX, -offsetY, true)
   }
 }
 
@@ -154,14 +154,21 @@ export const scaleFit = function (this: MindElixirInstance) {
 /**
  * Move the map by `dx` and `dy`.
  */
-export const move = function (this: MindElixirInstance, dx: number, dy: number) {
+export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false) {
   const { map, scaleVal, bus } = this
   const transform = map.style.transform
   let { x, y } = getTranslate(transform)
   x += dx
   y += dy
 
+  if (smooth) {
+    map.style.transition = 'transform 0.3s'
+    setTimeout(() => {
+      map.style.transition = 'none'
+    }, 300)
+  }
   map.style.transform = `translate(${x}px, ${y}px) scale(${scaleVal})`
+
   bus.fire('move', { dx, dy })
 }
 
@@ -310,6 +317,14 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   } else {
     node.expanded = true
   }
+
+  // Calculate position before expansion
+  const expanderRect = el.getBoundingClientRect()
+  const beforePosition = {
+    x: expanderRect.left,
+    y: expanderRect.top,
+  }
+
   const parent = el.parentNode
   const expander = parent.children[1]!
   expander.expanded = node.expanded
@@ -331,22 +346,40 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
 
   this.linkDiv(el.closest('me-main > me-wrapper') as Wrapper)
 
-  // scroll into view if the node is out of view
-  const elRect = el.getBoundingClientRect()
-  const containerRect = this.container.getBoundingClientRect()
-  const isOutOfView =
-    elRect.bottom > containerRect.bottom || elRect.top < containerRect.top || elRect.right > containerRect.right || elRect.left < containerRect.left
-  if (isOutOfView) {
-    this.scrollIntoView(el)
+  // Calculate position after expansion and compensate for drift
+  const afterRect = el.getBoundingClientRect()
+  const afterPosition = {
+    x: afterRect.left,
+    y: afterRect.top,
   }
+
+  // Calculate the drift and move to compensate
+  const driftX = beforePosition.x - afterPosition.x
+  const driftY = beforePosition.y - afterPosition.y
+
+  this.move(driftX, driftY)
 
   this.bus.fire('expandNode', node)
 }
 
 export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
   const node = el.nodeObj
+  const beforeRect = el.getBoundingClientRect()
+  const beforePosition = {
+    x: beforeRect.left,
+    y: beforeRect.top,
+  }
   setExpand(node, isExpand ?? !node.expanded)
   this.refresh()
+  const afterRect = this.findEle(node.id).getBoundingClientRect()
+  const afterPosition = {
+    x: afterRect.left,
+    y: afterRect.top,
+  }
+  const driftX = beforePosition.x - afterPosition.x
+  const driftY = beforePosition.y - afterPosition.y
+
+  this.move(driftX, driftY)
 }
 
 /**

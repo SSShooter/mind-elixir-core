@@ -85,7 +85,6 @@ export default function (mind: MindElixirInstance) {
     if (target.className === 'circle') return
     if (target.contentEditable !== 'plaintext-only') {
       dragMoveHelper.mousedown = true
-      mind.map.style.transition = 'none'
       // Capture pointer to ensure we receive all pointer events even if pointer moves outside the element
       target.setPointerCapture(e.pointerId)
     }
@@ -143,9 +142,7 @@ export default function (mind: MindElixirInstance) {
     } else if (e.shiftKey) {
       mind.move(-e.deltaY, 0)
     } else {
-      mind.map.style.transition = 'none'
       mind.move(-e.deltaX, -e.deltaY)
-      mind.map.style.transition = 'transform 0.3s'
     }
   }
 

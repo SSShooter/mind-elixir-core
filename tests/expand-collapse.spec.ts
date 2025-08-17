@@ -109,8 +109,10 @@ test('Expand all children recursively', async ({ page, me }) => {
   await expect(page.getByText('Child 2', { exact: true })).not.toBeVisible()
   await expect(page.getByText('Grandchild 1', { exact: true })).not.toBeVisible()
   
-  // Double-click expand button for recursive expansion
-  await branch1Button.dblclick()
+  // Ctrl click for recursive expansion
+  await page.keyboard.down("Control");
+  await branch1Button.click()
+  await page.keyboard.up("Control");
   
   // Verify all levels of child nodes are visible
   await expect(page.getByText('Child 1', { exact: true })).toBeVisible()

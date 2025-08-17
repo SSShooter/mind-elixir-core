@@ -14,7 +14,6 @@ export function createDragMoveHelper(mei: MindElixirInstance) {
     },
     clear() {
       this.mousedown = false
-      mei.map.style.transition = 'transform 0.3s'
     },
   }
 }
