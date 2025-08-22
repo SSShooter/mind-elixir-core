@@ -160,7 +160,6 @@ let options = {
   el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
   draggable: true, // default true
-  contextMenu: true, // default true
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
@@ -168,7 +167,7 @@ let options = {
   overflowHidden: false, // default false
   mainLinkStyle: 2, // [1,2] default 1
   mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
-  contextMenuOption: {
+  contextMenu: {
     focus: true,
     link: true,
     extend: [
@@ -179,7 +178,7 @@ let options = {
         },
       },
     ],
-  },
+  }, // default true
   before: {
     insertSibling(type, obj) {
       return true
