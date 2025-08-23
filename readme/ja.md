@@ -240,7 +240,6 @@ mind.bus.addListener('expandNode', node => {
 // データのエクスポート
 const data = mind.getData() // JavaScriptオブジェクト、src/example.jsを参照
 mind.getDataString() // オブジェクトを文字列化
-mind.getDataMd() // Markdown
 
 // データのインポート
 // 初期化

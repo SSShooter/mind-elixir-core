@@ -241,7 +241,6 @@ mind.bus.addListener('expandNode', node => {
 // 数据导出
 const data = mind.getData() // JavaScript 对象，见 src/example.js
 mind.getDataString() // 字符串化对象
-mind.getDataMd() // Markdown
 
 // 数据导入
 // 初始化

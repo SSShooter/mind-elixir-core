@@ -241,7 +241,6 @@ mind.bus.addListener('expandNode', node => {
 // exportação de dados
 const data = mind.getData() // objeto javascript, veja src/example.js
 mind.getDataString() // objeto em string
-mind.getDataMd() // markdown
 
 // importação de dados
 // inicialização
