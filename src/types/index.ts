@@ -155,6 +155,17 @@ export type Left = 0
 export type Right = 1
 
 /**
+ * Tag object for node tags with optional styling
+ *
+ * @public
+ */
+export interface TagObj {
+  text: string
+  style?: Partial<CSSStyleDeclaration> | Record<string, string>
+  className?: string
+}
+
+/**
  * MindElixir node object
  *
  * @public
@@ -173,7 +184,7 @@ export interface NodeObj {
     textDecoration: string
   }>
   children?: NodeObj[]
-  tags?: string[]
+  tags?: (string | TagObj)[]
   icons?: string[]
   hyperLink?: string
   expanded?: boolean

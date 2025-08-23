@@ -79,7 +79,25 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   if (nodeObj.tags && nodeObj.tags.length) {
     const tagsEl = $d.createElement('div')
     tagsEl.className = 'tags'
-    tagsEl.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
+
+    nodeObj.tags.forEach(tag => {
+      const span = $d.createElement('span')
+
+      if (typeof tag === 'string') {
+        span.textContent = tag
+      } else {
+        span.textContent = tag.text
+        if (tag.className) {
+          span.className = tag.className
+        }
+        if (tag.style) {
+          Object.assign(span.style, tag.style)
+        }
+      }
+
+      tagsEl.appendChild(span)
+    })
+
     tpc.appendChild(tagsEl)
     tpc.tags = tagsEl
   } else if (tpc.tags) {
