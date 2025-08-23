@@ -11,7 +11,7 @@ export const layout = function (this: MindElixirInstance) {
   this.nodes.innerHTML = ''
 
   const tpc = this.createTopic(this.nodeData)
-  shapeTpc(tpc, this.nodeData) // shape root tpc
+  shapeTpc.call(this, tpc, this.nodeData) // shape root tpc
   tpc.draggable = false
   const root = $d.createElement('me-root')
   root.appendChild(tpc)

@@ -69,7 +69,8 @@ export interface KeypressOptions {
  *
  * @public
  */
-export interface MindElixirInstance extends Required<Options>, MindElixirMethods {
+export interface MindElixirInstance extends Omit<Required<Options>, 'markdown'>, MindElixirMethods {
+  markdown?: (markdown: string) => string // Keep markdown as optional
   dragged: Topic[] | null // currently dragged nodes
   el: HTMLElement
   disposable: Array<() => void>
@@ -147,6 +148,12 @@ export interface Options {
   scaleMin?: number
   scaleMax?: number
   handleWheel?: true | ((e: WheelEvent) => void)
+  /**
+   * Custom markdown parser function that takes markdown string and returns HTML string
+   * If not provided, markdown will be disabled
+   * @default undefined
+   */
+  markdown?: (markdown: string) => string
 }
 
 export type Uid = string

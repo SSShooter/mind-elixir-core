@@ -3,12 +3,14 @@ import MindElixir from './index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
-import type { Options, MindElixirData, MindElixirInstance } from './types/index'
+import markdownExample from './exampleData/markdown'
+import type { Options, MindElixirInstance, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import style from '../index.css?raw'
 import katex from '../katex.css?raw'
 import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
 import { snapdom } from '@zumer/snapdom'
+import { marked } from 'marked'
 
 interface Window {
   m?: MindElixirInstance
@@ -17,6 +19,8 @@ interface Window {
   downloadPng: ReturnType<typeof download>
   downloadSvg: ReturnType<typeof download>
   destroy: () => void
+  testMarkdown: () => void
+  addMarkdownNode: () => void
 }
 
 declare let window: Window
@@ -29,6 +33,34 @@ const options: Options = {
   // mouseSelectionButton: 2,
   draggable: true,
   editable: true,
+  // Custom markdown parser (user must provide their own implementation)
+  // markdown: (text: string) => {
+  //   console.log('md process', text)
+  //   // Simple custom markdown implementation
+  //   // Process in correct order: bold first, then italic to avoid conflicts
+  //   return text
+  //     .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>') // Bold + Italic
+  //     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
+  //     .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
+  //     .replace(/`(.*?)`/g, '<code>$1</code>') // Inline code
+  //     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>') // Links
+  // },
+  markdown: (text: string) => {
+    // Configure marked renderer to add target="_blank" to links
+    const renderer = {
+      link(token: any) {
+        const href = token.href || ''
+        const title = token.title ? ` title="${token.title}"` : ''
+        const text = token.text || ''
+        return `<a href="${href}"${title} target="_blank">${text}</a>`
+      },
+    }
+
+    marked.use({ renderer })
+    const html = marked(text) as string
+    return html
+  },
+  // To disable markdown, simply omit the markdown option or set it to undefined
   // if you set contextMenu to false, you should handle contextmenu event by yourself, e.g. preventDefault
   contextMenu: {
     focus: true,
@@ -80,7 +112,8 @@ const options: Options = {
 let mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
-mind.init(example)
+// mind.init(example)
+mind.init(markdownExample)
 
 const m2 = new MindElixir({
   el: '#map2',
