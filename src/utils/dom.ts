@@ -34,7 +34,8 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
     const img = nodeObj.image
     if (img.url && img.width && img.height) {
       const imgEl = $d.createElement('img')
-      imgEl.src = img.url
+      // Use imageProxy function if provided, otherwise use original URL
+      imgEl.src = this.imageProxy ? this.imageProxy(img.url) : img.url
       imgEl.style.width = img.width + 'px'
       imgEl.style.height = img.height + 'px'
       if (img.fit) imgEl.style.objectFit = img.fit

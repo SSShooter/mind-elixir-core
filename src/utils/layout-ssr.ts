@@ -157,7 +157,10 @@ export const layoutSSR = function (nodeData: NodeObj, options: SSRLayoutOptions 
  * @param options - Additional rendering options
  * @returns HTML string for server-side rendering
  */
-export const renderSSRHTML = function (layoutResult: SSRLayoutResult, options: { className?: string } = {}): string {
+export const renderSSRHTML = function (
+  layoutResult: SSRLayoutResult,
+  options: { className?: string; imageProxy?: (url: string) => string } = {}
+): string {
   const { className = '' } = options
 
   const renderNode = (node: SSRLayoutNode, isRoot = false): string => {
@@ -227,7 +230,9 @@ export const renderSSRHTML = function (layoutResult: SSRLayoutResult, options: {
       // Add image if present
       if (node.image) {
         const { url, width, height, fit = 'cover' } = node.image
-        topicContent += `<img src="${escapeHtml(url)}" width="${width}" height="${height}" style="object-fit: ${fit}" alt="" />`
+        // Use imageProxy function if provided, otherwise use original URL
+        const processedUrl = options.imageProxy ? options.imageProxy(url) : url
+        topicContent += `<img src="${escapeHtml(processedUrl)}" width="${width}" height="${height}" style="object-fit: ${fit}" alt="" />`
       }
     }
 
