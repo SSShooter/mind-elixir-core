@@ -544,6 +544,7 @@ const aboutMindElixir: MindElixirData = {
       '--color': '#777777',
       '--bgcolor': '#f6f6f6',
       '--selected': '#4dc4ff',
+      '--accent-color': '#e64553',
       '--panel-color': '#444446',
       '--panel-bgcolor': '#ffffff',
       '--panel-border-color': '#eaeaea',

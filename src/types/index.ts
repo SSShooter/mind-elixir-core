@@ -45,6 +45,7 @@ export type Theme = {
     '--color': string
     '--bgcolor': string
     '--selected': string
+    '--accent-color': string
     '--root-color': string
     '--root-bgcolor': string
     '--root-border-color': string
