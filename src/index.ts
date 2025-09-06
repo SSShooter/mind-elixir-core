@@ -41,6 +41,8 @@ function MindElixir(
     scaleMax,
     scaleMin,
     handleWheel,
+    markdown,
+    imageProxy,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -75,6 +77,8 @@ function MindElixir(
   this.overflowHidden = overflowHidden ?? false
   this.alignment = alignment ?? 'root'
   this.handleWheel = handleWheel ?? true
+  this.markdown = markdown || undefined // Custom markdown parser function
+  this.imageProxy = imageProxy || undefined // Image proxy function
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNodes = [] // selected <tpc/> elements
   this.currentArrow = null // the selected link svg element

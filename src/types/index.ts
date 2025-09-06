@@ -69,7 +69,9 @@ export interface KeypressOptions {
  *
  * @public
  */
-export interface MindElixirInstance extends Required<Options>, MindElixirMethods {
+export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' | 'imageProxy'>, MindElixirMethods {
+  markdown?: (markdown: string) => string // Keep markdown as optional
+  imageProxy?: (url: string) => string // Keep imageProxy as optional
   dragged: Topic[] | null // currently dragged nodes
   el: HTMLElement
   disposable: Array<() => void>
@@ -147,12 +149,35 @@ export interface Options {
   scaleMin?: number
   scaleMax?: number
   handleWheel?: true | ((e: WheelEvent) => void)
+  /**
+   * Custom markdown parser function that takes markdown string and returns HTML string
+   * If not provided, markdown will be disabled
+   * @default undefined
+   */
+  markdown?: (markdown: string) => string
+  /**
+   * Image proxy function to handle image URLs, mainly used to solve CORS issues
+   * If provided, all image URLs will be processed through this function before setting to img src
+   * @default undefined
+   */
+  imageProxy?: (url: string) => string
 }
 
 export type Uid = string
 
 export type Left = 0
 export type Right = 1
+
+/**
+ * Tag object for node tags with optional styling
+ *
+ * @public
+ */
+export interface TagObj {
+  text: string
+  style?: Partial<CSSStyleDeclaration> | Record<string, string>
+  className?: string
+}
 
 /**
  * MindElixir node object
@@ -173,7 +198,7 @@ export interface NodeObj {
     textDecoration: string
   }>
   children?: NodeObj[]
-  tags?: string[]
+  tags?: (string | TagObj)[]
   icons?: string[]
   hyperLink?: string
   expanded?: boolean

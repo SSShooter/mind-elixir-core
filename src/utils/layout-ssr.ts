@@ -1,5 +1,5 @@
 import { LEFT, RIGHT, SIDE } from '../const'
-import { DirectionClass, type NodeObj } from '../types/index'
+import { DirectionClass, type NodeObj, type TagObj } from '../types/index'
 
 /**
  * Server-side compatible layout data structure
@@ -15,7 +15,7 @@ export interface SSRLayoutNode {
     fontWeight?: string
   }
   children?: SSRLayoutNode[]
-  tags?: string[]
+  tags?: (string | TagObj)[]
   icons?: string[]
   hyperLink?: string
   expanded?: boolean
@@ -157,7 +157,10 @@ export const layoutSSR = function (nodeData: NodeObj, options: SSRLayoutOptions 
  * @param options - Additional rendering options
  * @returns HTML string for server-side rendering
  */
-export const renderSSRHTML = function (layoutResult: SSRLayoutResult, options: { className?: string } = {}): string {
+export const renderSSRHTML = function (
+  layoutResult: SSRLayoutResult,
+  options: { className?: string; imageProxy?: (url: string) => string } = {}
+): string {
   const { className = '' } = options
 
   const renderNode = (node: SSRLayoutNode, isRoot = false): string => {
@@ -184,7 +187,37 @@ export const renderSSRHTML = function (layoutResult: SSRLayoutResult, options: {
 
       // Add tags if present
       if (node.tags && node.tags.length > 0) {
-        const tagsHtml = node.tags.map(tag => `<span class="me-tag">${escapeHtml(tag)}</span>`).join('')
+        const tagsHtml = node.tags
+          .map(tag => {
+            if (typeof tag === 'string') {
+              // Compatible with legacy string configuration
+              return `<span class="me-tag">${escapeHtml(tag)}</span>`
+            } else {
+              // Support object configuration
+              let classAttr = 'me-tag'
+              if (tag.className) {
+                classAttr += ` ${tag.className}`
+              }
+
+              let styleAttr = ''
+              if (tag.style) {
+                const styles = Object.entries(tag.style)
+                  .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+                  .map(([key, value]) => {
+                    // Convert camelCase to CSS property name
+                    const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
+                    return `${cssKey}: ${value}`
+                  })
+
+                if (styles.length > 0) {
+                  styleAttr = ` style="${styles.join('; ')}"`
+                }
+              }
+
+              return `<span class="${classAttr}"${styleAttr}>${escapeHtml(tag.text)}</span>`
+            }
+          })
+          .join('')
         topicContent += tagsHtml
       }
 
@@ -197,7 +230,9 @@ export const renderSSRHTML = function (layoutResult: SSRLayoutResult, options: {
       // Add image if present
       if (node.image) {
         const { url, width, height, fit = 'cover' } = node.image
-        topicContent += `<img src="${escapeHtml(url)}" width="${width}" height="${height}" style="object-fit: ${fit}" alt="" />`
+        // Use imageProxy function if provided, otherwise use original URL
+        const processedUrl = options.imageProxy ? options.imageProxy(url) : url
+        topicContent += `<img src="${escapeHtml(processedUrl)}" width="${width}" height="${height}" style="object-fit: ${fit}" alt="" />`
       }
     }
 

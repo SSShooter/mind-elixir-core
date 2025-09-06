@@ -3,6 +3,7 @@ import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
 import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
 import { layoutChildren } from './layout'
+import { renderMarkdown, hasMarkdownSyntax } from './markdown'
 
 // DOM manipulation
 const $d = document
@@ -13,7 +14,7 @@ export const findEle = function (this: MindElixirInstance, id: string, el?: HTML
   return ele
 }
 
-export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
+export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = ''
 
   if (nodeObj.style) {
@@ -33,7 +34,8 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     const img = nodeObj.image
     if (img.url && img.width && img.height) {
       const imgEl = $d.createElement('img')
-      imgEl.src = img.url
+      // Use imageProxy function if provided, otherwise use original URL
+      imgEl.src = this.imageProxy ? this.imageProxy(img.url) : img.url
       imgEl.style.width = img.width + 'px'
       imgEl.style.height = img.height + 'px'
       if (img.fit) imgEl.style.objectFit = img.fit
@@ -49,7 +51,14 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   {
     const textEl = $d.createElement('span')
     textEl.className = 'text'
-    textEl.textContent = nodeObj.topic
+
+    // Check if markdown parser is provided and topic contains markdown syntax
+    if (this.markdown && hasMarkdownSyntax(nodeObj.topic)) {
+      textEl.innerHTML = renderMarkdown(nodeObj.topic, this.markdown).trim()
+    } else {
+      textEl.textContent = nodeObj.topic
+    }
+
     tpc.appendChild(textEl)
     tpc.text = textEl
   }
@@ -79,7 +88,25 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   if (nodeObj.tags && nodeObj.tags.length) {
     const tagsEl = $d.createElement('div')
     tagsEl.className = 'tags'
-    tagsEl.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
+
+    nodeObj.tags.forEach(tag => {
+      const span = $d.createElement('span')
+
+      if (typeof tag === 'string') {
+        span.textContent = tag
+      } else {
+        span.textContent = tag.text
+        if (tag.className) {
+          span.className = tag.className
+        }
+        if (tag.style) {
+          Object.assign(span.style, tag.style)
+        }
+      }
+
+      tagsEl.appendChild(span)
+    })
+
     tpc.appendChild(tagsEl)
     tpc.tags = tagsEl
   } else if (tpc.tags) {
@@ -107,7 +134,7 @@ export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeOb
 export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj) {
   const p = $d.createElement('me-parent') as Parent
   const tpc = this.createTopic(nodeObj)
-  shapeTpc(tpc, nodeObj)
+  shapeTpc.call(this, tpc, nodeObj)
   p.appendChild(tpc)
   return { p, tpc }
 }
@@ -140,10 +167,14 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   console.time('editTopic')
   if (!el) return
   const div = $d.createElement('div')
-  const origin = el.text.textContent as string
+  const node = el.nodeObj
+
+  // Get the original content from topic
+  const originalContent = node.topic
+
   el.appendChild(div)
   div.id = 'input-box'
-  div.textContent = origin
+  div.textContent = originalContent
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
   const style = getComputedStyle(el)
@@ -176,20 +207,37 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
       this.container.focus()
     }
   })
+
   div.addEventListener('blur', () => {
     if (!div) return
-    const node = el.nodeObj
-    const topic = div.textContent?.trim() || ''
-    if (topic === '') node.topic = origin
-    else node.topic = topic
+    const inputContent = div.textContent?.trim() || ''
+
+    if (inputContent === '') {
+      node.topic = originalContent
+    } else {
+      // Update topic content
+      node.topic = inputContent
+
+      // Check if markdown parser is provided and content has markdown syntax
+      if (this.markdown && hasMarkdownSyntax(inputContent)) {
+        // Render markdown to HTML for display
+        const renderedHtml = renderMarkdown(inputContent, this.markdown).trim()
+        el.text.innerHTML = renderedHtml
+      } else {
+        // Plain text content
+        el.text.textContent = inputContent
+      }
+    }
+
     div.remove()
-    if (topic === origin) return
-    el.text.textContent = node.topic
+
+    if (inputContent === originalContent) return
+
     this.linkDiv()
     this.bus.fire('operation', {
       name: 'finishEdit',
       obj: node,
-      origin,
+      origin: originalContent,
     })
   })
   console.timeEnd('editTopic')

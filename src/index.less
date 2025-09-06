@@ -249,13 +249,17 @@
     & > iframe {
       pointer-events: auto;
     }
+    & > .text {
+      display: inline-block;
+      // Allow links inside markdown text to be clickable
+      a {
+        pointer-events: auto;
+      }
+    }
     & > img {
       display: block;
       margin-bottom: 8px;
       object-fit: cover;
-    }
-    & > .text {
-      display: inline-block;
     }
   }
   .circle {
