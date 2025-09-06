@@ -190,10 +190,10 @@ export const renderSSRHTML = function (
         const tagsHtml = node.tags
           .map(tag => {
             if (typeof tag === 'string') {
-              // 兼容原来的字符串配置
+              // Compatible with legacy string configuration
               return `<span class="me-tag">${escapeHtml(tag)}</span>`
             } else {
-              // 支持对象配置
+              // Support object configuration
               let classAttr = 'me-tag'
               if (tag.className) {
                 classAttr += ` ${tag.className}`
@@ -204,7 +204,7 @@ export const renderSSRHTML = function (
                 const styles = Object.entries(tag.style)
                   .filter(([_, value]) => value !== undefined && value !== null && value !== '')
                   .map(([key, value]) => {
-                    // 将驼峰命名转换为CSS属性名
+                    // Convert camelCase to CSS property name
                     const cssKey = key.replace(/([A-Z])/g, '-$1').toLowerCase()
                     return `${cssKey}: ${value}`
                   })

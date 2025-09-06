@@ -10,6 +10,7 @@ import style from '../index.css?raw'
 import katex from '../katex.css?raw'
 import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
 import { snapdom } from '@zumer/snapdom'
+import type { Tokens } from 'marked'
 import { marked } from 'marked'
 
 interface Window {
@@ -48,7 +49,7 @@ const options: Options = {
   markdown: (text: string) => {
     // Configure marked renderer to add target="_blank" to links
     const renderer = {
-      link(token: any) {
+      link(token: Tokens.Link) {
         const href = token.href || ''
         const title = token.title ? ` title="${token.title}"` : ''
         const text = token.text || ''
