@@ -135,8 +135,10 @@ function updateArrowPath(
   p4y: number,
   linkItem: Arrow
 ) {
+  const mainPath = `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`
+
   // Update main path
-  arrow.line.setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
+  arrow.line.setAttribute('d', mainPath)
 
   // Apply styles to the main line if they exist
   if (linkItem.style) {
@@ -148,10 +150,22 @@ function updateArrowPath(
     if (style.opacity !== undefined) arrow.line.setAttribute('opacity', String(style.opacity))
   }
 
+  // Update hotzone for main path (find the first hotzone path which corresponds to the main line)
+  const hotzones = arrow.querySelectorAll('path[stroke="transparent"]')
+  if (hotzones.length > 0) {
+    hotzones[0].setAttribute('d', mainPath)
+  }
+
   // Update arrow head
   const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
   if (arrowPoint) {
-    arrow.arrow1.setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
+    const arrowPath1 = `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
+    arrow.arrow1.setAttribute('d', arrowPath1)
+
+    // Update hotzone for arrow1
+    if (hotzones.length > 1) {
+      hotzones[1].setAttribute('d', arrowPath1)
+    }
 
     // Apply styles to arrow head
     if (linkItem.style) {
@@ -167,7 +181,13 @@ function updateArrowPath(
   if (linkItem.bidirectional) {
     const arrowPointStart = getArrowPoints(p2x, p2y, p1x, p1y)
     if (arrowPointStart) {
-      arrow.arrow2.setAttribute('d', `M ${arrowPointStart.x1} ${arrowPointStart.y1} L ${p1x} ${p1y} L ${arrowPointStart.x2} ${arrowPointStart.y2}`)
+      const arrowPath2 = `M ${arrowPointStart.x1} ${arrowPointStart.y1} L ${p1x} ${p1y} L ${arrowPointStart.x2} ${arrowPointStart.y2}`
+      arrow.arrow2.setAttribute('d', arrowPath2)
+
+      // Update hotzone for arrow2
+      if (hotzones.length > 2) {
+        hotzones[2].setAttribute('d', arrowPath2)
+      }
 
       // Apply styles to start arrow head
       if (linkItem.style) {
