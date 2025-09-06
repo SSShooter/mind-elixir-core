@@ -100,6 +100,7 @@
   me-root {
     position: relative;
     margin: 45px 0;
+    z-index: 10;
     me-tpc {
       font-size: 25px;
       color: var(--root-color);
@@ -114,6 +115,7 @@
     cursor: pointer;
     padding: 6px var(--node-gap-x);
     margin-top: var(--node-gap-y);
+    z-index: 10;
     me-tpc {
       position: relative;
       border-radius: 3px;
@@ -213,7 +215,6 @@
   .lines,
   .subLines {
     pointer-events: none;
-    z-index: -1;
   }
 
   .topiclinks,
