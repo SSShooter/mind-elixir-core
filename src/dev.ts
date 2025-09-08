@@ -48,41 +48,35 @@ const options: Options = {
   //     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>') // Links
   // },
   markdown: (text: string) => {
-    // Configure marked renderer to add target="_blank" to links
-    const renderer = {
-      link(token: Tokens.Link) {
-        const href = token.href || ''
-        const title = token.title ? ` title="${token.title}"` : ''
-        const text = token.text || ''
-        return `<a href="${href}"${title} target="_blank">${text}</a>`
-      },
-    }
+    try {
+      // Configure marked renderer to add target="_blank" to links
+      const renderer = {
+        link(token: Tokens.Link) {
+          const href = token.href || ''
+          const title = token.title ? ` title="${token.title}"` : ''
+          const text = token.text || ''
+          return `<a href="${href}"${title} target="_blank">${text}</a>`
+        },
+      }
 
-    marked.use({ renderer })
-    let html = marked(text) as string
+      marked.use({ renderer })
+      let html = marked(text) as string
 
-    // Process KaTeX math expressions
-    // Handle display math ($$...$$)
-    html = html.replace(/\$\$([^$]+)\$\$/g, (match, math) => {
-      try {
+      // Process KaTeX math expressions
+      // Handle display math ($$...$$)
+      html = html.replace(/\$\$([^$]+)\$\$/g, (match, math) => {
         return katex.renderToString(math.trim(), { displayMode: true })
-      } catch (error) {
-        console.warn('KaTeX display math error:', error)
-        return match // Return original if parsing fails
-      }
-    })
+      })
 
-    // Handle inline math ($...$)
-    html = html.replace(/\$([^$]+)\$/g, (match, math) => {
-      try {
+      // Handle inline math ($...$)
+      html = html.replace(/\$([^$]+)\$/g, (match, math) => {
         return katex.renderToString(math.trim(), { displayMode: false })
-      } catch (error) {
-        console.warn('KaTeX inline math error:', error)
-        return match // Return original if parsing fails
-      }
-    })
+      })
 
-    return html
+      return html
+    } catch (error) {
+      return text
+    }
   },
   // To disable markdown, simply omit the markdown option or set it to undefined
   // if you set contextMenu to false, you should handle contextmenu event by yourself, e.g. preventDefault

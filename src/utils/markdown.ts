@@ -6,7 +6,6 @@
  */
 export function renderMarkdown(content: string, parser: (markdown: string) => string): string {
   if (!content) return ''
-  if (!parser) return escapeHtml(content)
 
   // Check if content contains markdown syntax
   if (hasMarkdownSyntax(content)) {
@@ -40,6 +39,8 @@ export function hasMarkdownSyntax(text: string): boolean {
     /^\d+\.\s/, // Ordered lists
     /```[\s\S]*?```/, // Code blocks
     /~~.*?~~/, // Strikethrough
+    /\$\$[\s\S]*?\$\$/, // KaTeX block math
+    /\$[^$\n]*?\$/, // KaTeX inline math
   ]
 
   return markdownPatterns.some(pattern => pattern.test(text))
@@ -54,24 +55,4 @@ function escapeHtml(text: string): string {
   const div = document.createElement('div')
   div.textContent = text
   return div.innerHTML
-}
-
-/**
- * Strip HTML tags from text
- * @param html - HTML string
- * @returns Plain text
- */
-export function stripHtml(html: string): string {
-  const div = document.createElement('div')
-  div.innerHTML = html
-  return div.textContent || div.innerText || ''
-}
-
-/**
- * Check if content is likely HTML
- * @param content - Content to check
- * @returns True if content appears to be HTML
- */
-export function isHtml(content: string): boolean {
-  return /<[^>]+>/.test(content)
 }
