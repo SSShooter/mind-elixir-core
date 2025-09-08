@@ -131,6 +131,62 @@ const markdownExample: MindElixirData = {
         ],
       },
       {
+        topic: 'Mathematical Formulas (KaTeX)',
+        id: 'markdown-katex',
+        direction: 0,
+        expanded: true,
+        children: [
+          {
+            topic: "Einstein's equation: $E = mc^2$",
+            id: 'markdown-katex-einstein',
+          },
+          {
+            topic: 'Quadratic formula: $x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$',
+            id: 'markdown-katex-quadratic',
+          },
+          {
+            topic: 'Integral: $$\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}$$',
+            id: 'markdown-katex-integral',
+          },
+          {
+            topic: 'Matrix: $$\\begin{pmatrix} a & b \\\\ c & d \\end{pmatrix}$$',
+            id: 'markdown-katex-matrix',
+          },
+          {
+            topic: 'Summation: $\\sum_{i=1}^{n} i = \\frac{n(n+1)}{2}$',
+            id: 'markdown-katex-sum',
+          },
+          {
+            topic: 'Limit: $\\lim_{x \\to 0} \\frac{\\sin x}{x} = 1$',
+            id: 'markdown-katex-limit',
+          },
+        ],
+      },
+      {
+        topic: 'Complex Mathematical Examples',
+        id: 'markdown-complex-math',
+        direction: 1,
+        expanded: true,
+        children: [
+          {
+            topic: 'Normal distribution: $$f(x) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}} e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}$$',
+            id: 'markdown-normal-dist',
+          },
+          {
+            topic: 'Fourier transform: $$F(\\omega) = \\int_{-\\infty}^{\\infty} f(t) e^{-i\\omega t} dt$$',
+            id: 'markdown-fourier',
+          },
+          {
+            topic: 'Taylor series: $$f(x) = \\sum_{n=0}^{\\infty} \\frac{f^{(n)}(a)}{n!}(x-a)^n$$',
+            id: 'markdown-taylor',
+          },
+          {
+            topic: 'Schrödinger equation: $$i\\hbar\\frac{\\partial}{\\partial t}\\Psi = \\hat{H}\\Psi$$',
+            id: 'markdown-schrodinger',
+          },
+        ],
+      },
+      {
         topic: 'API Examples',
         id: 'markdown-api',
         direction: 1,

@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
     // "moduleResolution": "nodenext"
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
   },
   "include": ["src"],
   "exclude": ["src/dev.dist.ts"]

@@ -7,7 +7,8 @@ import markdownExample from './exampleData/markdown'
 import type { Options, MindElixirInstance, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import style from '../index.css?raw'
-import katex from '../katex.css?raw'
+import katexStyle from 'katex/dist/katex.min.css?raw'
+import katex from 'katex'
 import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
 import { snapdom } from '@zumer/snapdom'
 import type { Tokens } from 'marked'
@@ -58,7 +59,29 @@ const options: Options = {
     }
 
     marked.use({ renderer })
-    const html = marked(text) as string
+    let html = marked(text) as string
+
+    // Process KaTeX math expressions
+    // Handle display math ($$...$$)
+    html = html.replace(/\$\$([^$]+)\$\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math.trim(), { displayMode: true })
+      } catch (error) {
+        console.warn('KaTeX display math error:', error)
+        return match // Return original if parsing fails
+      }
+    })
+
+    // Handle inline math ($...$)
+    html = html.replace(/\$([^$]+)\$/g, (match, math) => {
+      try {
+        return katex.renderToString(math.trim(), { displayMode: false })
+      } catch (error) {
+        console.warn('KaTeX inline math error:', error)
+        return match // Return original if parsing fails
+      }
+    })
+
     return html
   },
   // To disable markdown, simply omit the markdown option or set it to undefined
@@ -159,8 +182,8 @@ const download = (type: 'svg' | 'png') => {
   return async () => {
     try {
       let blob = null
-      if (type === 'png') blob = await mind.exportPng(false, style + katex)
-      else blob = await mind.exportSvg(false, style + katex)
+      if (type === 'png') blob = await mind.exportPng(false, style + katexStyle)
+      else blob = await mind.exportSvg(false, style + katexStyle)
       if (!blob) return
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')

@@ -93,6 +93,7 @@
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",
+    "katex": "^0.16.22",
     "less": "^4.2.0",
     "lint-staged": "^13.3.0",
     "marked": "^16.2.0",
