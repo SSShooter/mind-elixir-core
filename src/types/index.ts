@@ -162,6 +162,7 @@ export interface Options {
    * @default undefined
    */
   imageProxy?: (url: string) => string
+  selectionDisabled?: boolean
 }
 
 export type Uid = string

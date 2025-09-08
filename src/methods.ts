@@ -86,7 +86,7 @@ const methods = {
     if (import.meta.env.MODE !== 'lite') {
       this.keypress && keypressInit(this, this.keypress)
 
-      if (this.editable) {
+      if (this.editable && !this.selectionDisabled) {
         selection(this)
       }
       if (this.contextMenu) {

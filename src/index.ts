@@ -43,6 +43,7 @@ function MindElixir(
     handleWheel,
     markdown,
     imageProxy,
+    selectionDisabled,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -79,6 +80,7 @@ function MindElixir(
   this.handleWheel = handleWheel ?? true
   this.markdown = markdown || undefined // Custom markdown parser function
   this.imageProxy = imageProxy || undefined // Image proxy function
+  this.selectionDisabled = selectionDisabled ?? false
   // this.parentMap = {} // deal with large amount of nodes
   this.currentNodes = [] // selected <tpc/> elements
   this.currentArrow = null // the selected link svg element
