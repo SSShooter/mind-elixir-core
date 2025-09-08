@@ -1,9 +1,10 @@
 {
-  "name": "mind-elixir",
-  "version": "5.1.1",
+  "name": "brainstorm-mind-elixir",
+  "version": "5.1.2",
   "type": "module",
-  "description": "Mind elixir is a free open source mind map core.",
+  "description": "Fork of Mind elixir with some bespoke features",
   "keywords": [
+    "brainstorm",
     "mind-elixir",
     "mindmap",
     "dom",
@@ -72,10 +73,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ssshooter/mind-elixir-core"
+    "url": "git+https://github.com/ranlekach/mind-elixir-core.git"
   },
-  "homepage": "https://mind-elixir.com/",
-  "author": "ssshooter",
+  "homepage": "https://github.com/ranlekach/mind-elixir-core#readme",
+  "author": "Ran Lekach",
   "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^17.8.1",
