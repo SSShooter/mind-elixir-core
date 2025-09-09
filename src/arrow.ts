@@ -4,7 +4,7 @@ import { createSvgGroup, createSvgText, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
 
-const highlightColor = '#4dc4ff'
+// removed global highlight constant; we'll read highlight/arrow colors from the instance's container
 
 export interface Arrow {
   id: string
@@ -140,7 +140,7 @@ function updateArrowPath(
   // Update main path
   arrow.line.setAttribute('d', mainPath)
 
-  // Apply styles to the main line if they exist
+  // Apply styles to the main line if they exist; otherwise leave defaults from createSvgGroup
   if (linkItem.style) {
     const style = linkItem.style
     if (style.stroke) arrow.line.setAttribute('stroke', style.stroke)
@@ -167,7 +167,7 @@ function updateArrowPath(
       hotzones[1].setAttribute('d', arrowPath1)
     }
 
-    // Apply styles to arrow head
+    // Apply styles to arrow head if provided
     if (linkItem.style) {
       const style = linkItem.style
       if (style.stroke) arrow.arrow1.setAttribute('stroke', style.stroke)
@@ -189,7 +189,7 @@ function updateArrowPath(
         hotzones[2].setAttribute('d', arrowPath2)
       }
 
-      // Apply styles to start arrow head
+      // Apply styles to start arrow head if provided
       if (linkItem.style) {
         const style = linkItem.style
         if (style.stroke) arrow.arrow2.setAttribute('stroke', style.stroke)
@@ -204,9 +204,17 @@ function updateArrowPath(
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
   updateArrowLabel(arrow.label, halfx, halfy)
 
-  // Apply label color if specified
+  // Apply label color: prefer explicit labelColor on arrow style; otherwise fallback to theme variable on instance
   if (linkItem.style?.labelColor) {
     arrow.label.setAttribute('fill', linkItem.style.labelColor)
+  } else if (arrow.ownerDocument && arrow.ownerDocument.defaultView) {
+    try {
+      const rootStyle = getComputedStyle((arrow.ownerDocument.defaultView as Window).document.documentElement)
+      const themeLabel = rootStyle.getPropertyValue('--arrow-label-color')
+      if (themeLabel) arrow.label.setAttribute('fill', themeLabel.trim())
+    } catch (e) {
+      // ignore
+    }
   }
 
   // Update highlight layer
@@ -305,6 +313,25 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   })
   newSvgGroup.appendChild(label)
   newSvgGroup.label = label
+
+  // If no explicit style provided, apply per-instance theme CSS vars from mei.container
+  if (!obj.style || (!obj.style.stroke && !obj.style.labelColor)) {
+    try {
+      const cs = getComputedStyle(mei.container)
+      const arrowColor = cs.getPropertyValue('--arrow-color') || ''
+      const labelColor = cs.getPropertyValue('--arrow-label-color') || ''
+      if (arrowColor) {
+        newSvgGroup.line.setAttribute('stroke', arrowColor.trim())
+        newSvgGroup.arrow1.setAttribute('stroke', arrowColor.trim())
+        if (newSvgGroup.arrow2) newSvgGroup.arrow2.setAttribute('stroke', arrowColor.trim())
+      }
+      if (labelColor) {
+        label.setAttribute('fill', labelColor.trim())
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
 
   newSvgGroup.arrowObj = obj
   newSvgGroup.dataset.linkid = obj.id
@@ -468,7 +495,16 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   nodes.appendChild(P2)
   nodes.appendChild(P3)
 
-  addArrowHighlight(currentArrow, highlightColor)
+  // determine highlight color from instance theme: prefer --selected, then --arrow-color, fallback to blue
+  let hlColor = '#4dc4ff'
+  try {
+    const cs = getComputedStyle(mei.container)
+    hlColor = cs.getPropertyValue('--selected') || cs.getPropertyValue('--arrow-color') || hlColor
+    hlColor = hlColor.trim()
+  } catch (e) {
+    // ignore and use default
+  }
+  addArrowHighlight(currentArrow, hlColor)
 
   // init points
   let { x: p1x, y: p1y } = calcP(fromData)

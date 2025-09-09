@@ -21,11 +21,14 @@ export const createSvgText = function (text: string, x: number, y: number, optio
   const { anchor = 'middle', color, dataType } = options
 
   const textElement = document.createElementNS(svgNS, 'text')
+  // prefer explicitly provided color, otherwise read from root CSS variables if available
+  const defaultLabelColor =
+    color || getComputedStyle(document.documentElement).getPropertyValue('--arrow-label-color') || (anchor === 'middle' ? 'rgb(235, 95, 82)' : '#666')
   setAttributes(textElement, {
     'text-anchor': anchor,
     x: x + '',
     y: y + '',
-    fill: color || (anchor === 'middle' ? 'rgb(235, 95, 82)' : '#666'),
+    fill: defaultLabelColor.trim(),
   })
 
   if (dataType) {
@@ -38,9 +41,10 @@ export const createSvgText = function (text: string, x: number, y: number, optio
 
 export const createPath = function (d: string, color: string, width: string) {
   const path = $d.createElementNS(svgNS, 'path')
+  const defaultStroke = color || getComputedStyle(document.documentElement).getPropertyValue('--arrow-color') || '#666'
   setAttributes(path, {
     d,
-    stroke: color || '#666',
+    stroke: defaultStroke.trim(),
     fill: 'none',
     'stroke-width': width,
   })
@@ -56,7 +60,8 @@ export const createLinkSvg = function (klass: string) {
 
 export const createLine = function () {
   const line = $d.createElementNS(svgNS, 'line')
-  line.setAttribute('stroke', '#4dc4ff')
+  const sel = getComputedStyle(document.documentElement).getPropertyValue('--selected') || '#4dc4ff'
+  line.setAttribute('stroke', sel.trim())
   line.setAttribute('fill', 'none')
   line.setAttribute('stroke-width', '2')
   line.setAttribute('opacity', '0.45')
@@ -94,9 +99,11 @@ export const createSvgGroup = function (
   svgs.forEach((item, i) => {
     const d = item.d
     const path = $d.createElementNS(svgNS, 'path')
+    // fallback to CSS var --arrow-color if no style provided
+    const cssArrow = getComputedStyle(document.documentElement).getPropertyValue('--arrow-color') || 'rgb(235, 95, 82)'
     const attrs: { [key: string]: string } = {
       d,
-      stroke: style?.stroke || 'rgb(235, 95, 82)',
+      stroke: style?.stroke || cssArrow.trim(),
       fill: 'none',
       'stroke-linecap': style?.strokeLinecap || 'cap',
       'stroke-width': String(style?.strokeWidth || '2'),

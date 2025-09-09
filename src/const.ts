@@ -29,6 +29,8 @@ export const THEME: Theme = {
     '--panel-color': '#444446',
     '--panel-bgcolor': '#ffffff',
     '--panel-border-color': '#eaeaea',
+    '--arrow-color': 'rgb(235, 95, 82)',
+    '--arrow-label-color': 'rgb(235, 95, 82)',
     '--map-padding': '50px',
   },
 }
@@ -57,6 +59,8 @@ export const DARK_THEME: Theme = {
     '--panel-color': '#ffffff',
     '--panel-bgcolor': '#2d3748',
     '--panel-border-color': '#696969',
+    '--arrow-color': '#848FA0',
+    '--arrow-label-color': '#848FA0',
     '--map-padding': '50px 80px',
   },
 }
