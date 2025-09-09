@@ -548,6 +548,8 @@ const aboutMindElixir: MindElixirData = {
       '--panel-color': '#444446',
       '--panel-bgcolor': '#ffffff',
       '--panel-border-color': '#eaeaea',
+      '--arrow-color': 'rgb(235, 95, 82)',
+      '--arrow-label-color': 'rgb(235, 95, 82)',
       '--map-padding': '50px 80px',
     },
   },
