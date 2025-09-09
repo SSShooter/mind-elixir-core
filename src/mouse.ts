@@ -37,25 +37,51 @@ export default function (mind: MindElixirInstance) {
     } else if (!mind.editable) {
       return
     }
-    const trySvg = target.parentElement?.parentElement as unknown as SVGElement
-    if (trySvg.getAttribute('class') === 'topiclinks') {
-      mind.selectArrow(target.parentElement as unknown as CustomSvg)
-    } else if (trySvg.getAttribute('class') === 'summary') {
-      mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
+    // Find the closest SVG container using native closest() method
+    const topiclinksContainer = target.closest('.topiclinks')
+    if (topiclinksContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.selectArrow(svgGroup as unknown as CustomSvg)
+        return
+      }
+    }
+
+    const summaryContainer = target.closest('.summary')
+    if (summaryContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.selectSummary(svgGroup as unknown as SummarySvgGroup)
+        return
+      }
     }
   }
 
   const handleDblClick = (e: MouseEvent) => {
     if (!mind.editable) return
     const target = e.target as HTMLElement
+    console.log('handleDblClick', target)
     if (isTopic(target)) {
       mind.beginEdit(target)
     }
-    const trySvg = target.parentElement?.parentElement as unknown as SVGElement
-    if (trySvg.getAttribute('class') === 'topiclinks') {
-      mind.editArrowLabel(target.parentElement as unknown as CustomSvg)
-    } else if (trySvg.getAttribute('class') === 'summary') {
-      mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
+
+    // Find the closest SVG container using native closest() method
+    const topiclinksContainer = target.closest('.topiclinks')
+    if (topiclinksContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.editArrowLabel(svgGroup as unknown as CustomSvg)
+        return
+      }
+    }
+
+    const summaryContainer = target.closest('.summary')
+    if (summaryContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.editSummary(svgGroup as unknown as SummarySvgGroup)
+        return
+      }
     }
   }
 

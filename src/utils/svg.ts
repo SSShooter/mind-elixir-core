@@ -12,28 +12,89 @@ export interface SvgTextOptions {
   anchor?: 'start' | 'middle' | 'end'
   color?: string
   dataType?: string
+  width?: number
+  fontSize?: string
+  fontFamily?: string
 }
 
 /**
- * Create an SVG text element with common attributes
+ * Calculate auto height for text content
  */
-export const createSvgText = function (text: string, x: number, y: number, options: SvgTextOptions = {}): SVGTextElement {
-  const { anchor = 'middle', color, dataType } = options
+const calculateAutoHeight = function (div: HTMLDivElement, width: number): number {
+  // Temporarily add to DOM to measure height
+  div.style.position = 'absolute'
+  div.style.visibility = 'hidden'
+  div.style.width = width - 4 + 'px'
+  div.style.height = 'auto'
+  document.body.appendChild(div)
+  const measuredHeight = div.offsetHeight
+  document.body.removeChild(div)
 
-  const textElement = document.createElementNS(svgNS, 'text')
-  setAttributes(textElement, {
-    'text-anchor': anchor,
-    x: x + '',
-    y: y + '',
-    fill: color || (anchor === 'middle' ? 'rgb(235, 95, 82)' : '#666'),
+  // Reset styles
+  div.style.position = ''
+  div.style.visibility = ''
+  div.style.width = '100%'
+
+  return measuredHeight
+}
+
+/**
+ * Create an SVG foreignObject with HTML div for text with auto-wrapping
+ */
+export const createSvgText = function (text: string, x: number, y: number, options: SvgTextOptions = {}): SVGForeignObjectElement {
+  const { anchor = 'middle', color, dataType, width = 200, fontSize = '14px', fontFamily = 'Arial, sans-serif' } = options
+
+  // Create foreignObject element
+  const foreignObject = document.createElementNS(svgNS, 'foreignObject')
+
+  // Create HTML div inside foreignObject
+  const div = document.createElement('div')
+  div.style.cssText = `
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: ${anchor === 'start' ? 'flex-start' : anchor === 'end' ? 'flex-end' : 'center'};
+    font-size: ${fontSize};
+    font-family: ${fontFamily};
+    color: ${color || (anchor === 'middle' ? 'rgb(235, 95, 82)' : '#666')};
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.2;
+    padding: 2px;
+    box-sizing: border-box;
+  `
+
+  div.innerHTML = text
+
+  // Calculate actual height using auto height
+  const actualHeight = calculateAutoHeight(div, width)
+
+  // Calculate position based on anchor
+  let adjustedX = x
+  if (anchor === 'middle') {
+    adjustedX = x - width / 2
+  } else if (anchor === 'end') {
+    adjustedX = x - width
+  }
+
+  setAttributes(foreignObject, {
+    x: adjustedX + '',
+    y: y - actualHeight / 2 + '', // Center vertically with actual height
+    width: width + '',
+    height: actualHeight + '',
   })
 
   if (dataType) {
-    textElement.dataset.type = dataType
+    foreignObject.dataset.type = dataType
   }
 
-  textElement.innerHTML = text
-  return textElement
+  // Store autoHeight configuration for later use in editing
+  foreignObject.dataset.autoHeight = 'true'
+
+  foreignObject.appendChild(div)
+
+  return foreignObject
 }
 
 export const createPath = function (d: string, color: string, width: string) {
@@ -129,16 +190,21 @@ export const createSvgGroup = function (
   return g
 }
 
-export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextElement, node: Summary | Arrow) {
+export const editSvgText = function (mei: MindElixirInstance, textEl: SVGForeignObjectElement, node: Summary | Arrow) {
   console.time('editSummary')
   if (!textEl) return
+
+  // Get the inner div element from foreignObject
+  const innerDiv = textEl.querySelector('div') as HTMLDivElement
+  const origin = innerDiv.innerHTML
+
   const div = $d.createElement('div')
   mei.nodes.appendChild(div)
-  const origin = textEl.innerHTML
   div.id = 'input-box'
-  div.textContent = origin
+  div.innerHTML = origin // Use innerHTML to preserve formatting
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
+
   const bbox = textEl.getBBox()
   console.log(bbox)
   div.style.cssText = `
@@ -147,7 +213,15 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
     left:${bbox.x}px;
     top:${bbox.y}px;
     padding: 2px 4px;
-    margin: -2px -4px; 
+    margin: -2px -4px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    line-height: 1.2;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   `
   selectText(div)
   mei.scrollIntoView(div)
@@ -165,14 +239,31 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
       mei.container.focus()
     }
   })
+
   div.addEventListener('blur', () => {
     if (!div) return
-    const text = div.textContent?.trim() || ''
+    const text = div.innerHTML?.trim() || ''
     if (text === '') node.label = origin
     else node.label = text
     div.remove()
     if (text === origin) return
-    textEl.innerHTML = node.label
+
+    innerDiv.innerHTML = node.label
+
+    // Calculate new height using the shared function
+    const currentHeight = parseFloat(textEl.getAttribute('height') || '50')
+    const newHeight = innerDiv.clientHeight
+
+    if (newHeight !== currentHeight) {
+      // Update foreignObject height
+      textEl.setAttribute('height', newHeight + '')
+
+      // Recalculate y position to keep centered
+      const currentY = parseFloat(textEl.getAttribute('y') || '0')
+      const centerY = currentY + currentHeight / 2
+      const newY = centerY - newHeight / 2
+      textEl.setAttribute('y', newY + '')
+    }
 
     if ('parent' in node) {
       mei.bus.fire('operation', {

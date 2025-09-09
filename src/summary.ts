@@ -24,7 +24,7 @@ export interface Summary {
 }
 
 export type SummarySvgGroup = SVGGElement & {
-  children: [SVGPathElement, SVGTextElement]
+  children: [SVGPathElement, SVGForeignObjectElement]
   summaryObj: Summary
 }
 
@@ -235,7 +235,7 @@ export const renderSummary = function (this: MindElixirInstance) {
 export const editSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
   console.time('editSummary')
   if (!el) return
-  const textEl = el.childNodes[1] as SVGTextElement
+  const textEl = el.childNodes[1] as SVGForeignObjectElement
   editSvgText(this, textEl, el.summaryObj)
   console.timeEnd('editSummary')
 }

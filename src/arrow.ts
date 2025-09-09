@@ -101,10 +101,12 @@ function calcBezierMidPoint(p1x: number, p1y: number, p2x: number, p2y: number, 
 /**
  * Update arrow label position
  */
-function updateArrowLabel(label: SVGTextElement, x: number, y: number) {
+function updateArrowLabel(label: SVGForeignObjectElement, x: number, y: number) {
+  const width = parseFloat(label.getAttribute('width') || '200')
+  const height = parseFloat(label.getAttribute('height') || '50')
   setAttributes(label, {
-    x: x + '',
-    y: y + '',
+    x: x - width / 2 + '',
+    y: y - height / 2 + '',
   })
 }
 
