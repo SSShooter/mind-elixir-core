@@ -173,7 +173,6 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
     div.remove()
     if (text === origin) return
     textEl.innerHTML = node.label
-    mei.linkDiv()
 
     if ('parent' in node) {
       mei.bus.fire('operation', {
