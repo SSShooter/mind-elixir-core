@@ -8,7 +8,6 @@ import { createLinkSvg, createLine } from './utils/svg'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
 import { sub, main } from './utils/generateBranch'
-// @ts-expect-error json file
 import { version } from '../package.json'
 import { createDragMoveHelper } from './utils/dragMoveHelper'
 import type { Topic } from './docs'

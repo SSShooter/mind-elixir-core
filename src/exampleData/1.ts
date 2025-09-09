@@ -1,7 +1,14 @@
-import type { MindElixirData } from '../index'
+import type { MindElixirData, NodeObj } from '../index'
 import { codeBlock, katexHTML, styledDiv } from './htmlText'
 
-const aboutMindElixir: MindElixirData = {
+type NodeObjWithUseMd = NodeObj & { useMd?: boolean }
+type MindElixirDataWithUseMd = Omit<MindElixirData, 'nodeData'> & {
+  nodeData: NodeObjWithUseMd & {
+    children?: NodeObjWithUseMd[]
+  }
+}
+
+const aboutMindElixir: MindElixirDataWithUseMd = {
   nodeData: {
     id: 'me-root',
     topic: 'Mind Elixir',
@@ -373,18 +380,6 @@ const aboutMindElixir: MindElixirData = {
         },
         children: [
           {
-            topic: 'Katex',
-            id: 'c00a2264f4532611',
-            children: [
-              {
-                topic: '',
-                id: 'c00a2264f4532612',
-                dangerouslySetInnerHTML:
-                  '<div class="math math-display"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.4em;vertical-align:-0.95em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">x</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">]</span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">a</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">b</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">c</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">d</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">]</span></span></span></span></span></span></span></div>',
-              },
-            ],
-          },
-          {
             topic: 'Code Block',
             id: 'c00a2264fdaw32612',
             children: [
@@ -422,6 +417,83 @@ const aboutMindElixir: MindElixirData = {
           // },
         ],
         direction: 1,
+      },
+      {
+        topic: 'KaTeX',
+        id: 'markdown-complex-math',
+        direction: 1,
+        expanded: true,
+        children: [
+          {
+            topic: 'Normal distribution: $$f(x) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}} e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}$$',
+            id: 'markdown-normal-dist',
+            useMd: true,
+          },
+          {
+            topic: 'Fourier transform: $$F(\\omega) = \\int_{-\\infty}^{\\infty} f(t) e^{-i\\omega t} dt$$',
+            id: 'markdown-fourier',
+            useMd: true,
+          },
+          {
+            topic: 'Taylor series: $$f(x) = \\sum_{n=0}^{\\infty} \\frac{f^{(n)}(a)}{n!}(x-a)^n$$',
+            id: 'markdown-taylor',
+            useMd: true,
+          },
+          {
+            topic: 'Schrödinger equation: $$i\\hbar\\frac{\\partial}{\\partial t}\\Psi = \\hat{H}\\Psi$$',
+            id: 'markdown-schrodinger',
+            useMd: true,
+          },
+        ],
+      },
+      {
+        topic: 'Basic Markdown Examples',
+        id: 'markdown-basic-examples',
+        direction: 1,
+        expanded: true,
+        children: [
+          {
+            topic: '# Heading 1',
+            id: 'markdown-headings',
+            useMd: true,
+          },
+          {
+            topic: '**Bold text** and *italic text* and ***bold italic***',
+            id: 'markdown-emphasis',
+            useMd: true,
+          },
+          {
+            topic: '- Unordered list item 1\n- Unordered list item 2\n  - Nested item\n\n1. Ordered list item 1\n2. Ordered list item 2',
+            id: 'markdown-lists',
+            useMd: true,
+          },
+          {
+            topic: '[Link to GitHub](https://github.com) and `inline code`',
+            id: 'markdown-links-code',
+            useMd: true,
+          },
+          {
+            topic: '> This is a blockquote\n> with multiple lines',
+            id: 'markdown-blockquote',
+            useMd: true,
+          },
+          {
+            topic: '```javascript\nconst greeting = "Hello World!";\nconsole.log(greeting);\n```',
+            id: 'markdown-code-block',
+            useMd: true,
+          },
+          {
+            topic:
+              '| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n| Row 1    | Data 1   | Info 1   |\n| Row 2    | Data 2   | Info 2   |',
+            id: 'markdown-table',
+            useMd: true,
+          },
+          {
+            topic: '~~Strikethrough text~~ and ==highlighted text==',
+            id: 'markdown-strikethrough',
+            useMd: true,
+          },
+        ],
       },
       {
         topic: 'Theme System',
@@ -553,4 +625,4 @@ const aboutMindElixir: MindElixirData = {
   },
 }
 
-export default aboutMindElixir
+export default aboutMindElixir as MindElixirData

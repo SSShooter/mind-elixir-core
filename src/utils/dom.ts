@@ -3,7 +3,6 @@ import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
 import type { MindElixirInstance, NodeObj } from '../types/index'
 import { encodeHTML } from '../utils/index'
 import { layoutChildren } from './layout'
-import { renderMarkdown, hasMarkdownSyntax } from './markdown'
 
 // DOM manipulation
 const $d = document
@@ -53,8 +52,8 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
     textEl.className = 'text'
 
     // Check if markdown parser is provided and topic contains markdown syntax
-    if (this.markdown && hasMarkdownSyntax(nodeObj.topic)) {
-      textEl.innerHTML = renderMarkdown(nodeObj.topic, this.markdown).trim()
+    if (this.markdown) {
+      textEl.innerHTML = this.markdown(nodeObj.topic, nodeObj)
     } else {
       textEl.textContent = nodeObj.topic
     }
@@ -218,11 +217,8 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
       // Update topic content
       node.topic = inputContent
 
-      // Check if markdown parser is provided and content has markdown syntax
-      if (this.markdown && hasMarkdownSyntax(inputContent)) {
-        // Render markdown to HTML for display
-        const renderedHtml = renderMarkdown(inputContent, this.markdown).trim()
-        el.text.innerHTML = renderedHtml
+      if (this.markdown) {
+        el.text.innerHTML = this.markdown(node.topic, node)
       } else {
         // Plain text content
         el.text.textContent = inputContent

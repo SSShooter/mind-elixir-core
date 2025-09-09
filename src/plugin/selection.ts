@@ -1,10 +1,10 @@
+import type { Behaviour } from '@viselect/vanilla'
 import SelectionArea from '@viselect/vanilla'
 import type { MindElixirInstance, Topic } from '..'
-import type { Trigger } from '@viselect/vanilla/dist/src/utils/matchesTrigger'
 
 // TODO: boundaries move missing
 export default function (mei: MindElixirInstance) {
-  const triggers: Trigger[] = mei.mouseSelectionButton === 2 ? [2] : [0]
+  const triggers: Behaviour['triggers'] = mei.mouseSelectionButton === 2 ? [2] : [0]
   const selection = new SelectionArea({
     selectables: ['.map-container me-tpc'],
     boundaries: [mei.container],

@@ -3,7 +3,6 @@ import MindElixir from './index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
-import markdownExample from './exampleData/markdown'
 import type { Options, MindElixirInstance, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import style from '../index.css?raw'
@@ -14,6 +13,30 @@ import { snapdom } from '@zumer/snapdom'
 import type { Tokens } from 'marked'
 import { marked } from 'marked'
 
+function hasMarkdownSyntax(text: string): boolean {
+  if (!text) return false
+
+  // Common markdown patterns
+  const markdownPatterns = [
+    /\*\*.*?\*\*/, // Bold
+    /\*.*?\*/, // Italic
+    /__.*?__/, // Bold (underscore)
+    /_.*?_/, // Italic (underscore)
+    /`.*?`/, // Inline code
+    /\[.*?\]\(.*?\)/, // Links
+    /!\[.*?\]\(.*?\)/, // Images
+    /^#{1,6}\s/, // Headers
+    /^>\s/, // Blockquotes
+    /^[*\-+]\s/, // Unordered lists
+    /^\d+\.\s/, // Ordered lists
+    /```[\s\S]*?```/, // Code blocks
+    /~~.*?~~/, // Strikethrough
+    /\$\$[\s\S]*?\$\$/, // KaTeX block math
+    /\$[^$\n]*?\$/, // KaTeX inline math
+  ]
+
+  return markdownPatterns.some(pattern => pattern.test(text))
+}
 interface Window {
   m?: MindElixirInstance
   M: MindElixirCtor
@@ -35,19 +58,10 @@ const options: Options = {
   // mouseSelectionButton: 2,
   draggable: true,
   editable: true,
-  // Custom markdown parser (user must provide their own implementation)
-  // markdown: (text: string) => {
-  //   console.log('md process', text)
-  //   // Simple custom markdown implementation
-  //   // Process in correct order: bold first, then italic to avoid conflicts
-  //   return text
-  //     .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>') // Bold + Italic
-  //     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold
-  //     .replace(/\*(.*?)\*/g, '<em>$1</em>') // Italic
-  //     .replace(/`(.*?)`/g, '<code>$1</code>') // Inline code
-  //     .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>') // Links
-  // },
-  markdown: (text: string) => {
+  markdown: (text: string, obj: NodeObj & { useMd?: boolean }) => {
+    if (!text) return ''
+    if (!hasMarkdownSyntax(text)) return text
+    if (!obj.useMd) return text
     try {
       // Configure marked renderer to add target="_blank" to links
       const renderer = {
@@ -64,16 +78,16 @@ const options: Options = {
 
       // Process KaTeX math expressions
       // Handle display math ($$...$$)
-      html = html.replace(/\$\$([^$]+)\$\$/g, (match, math) => {
+      html = html.replace(/\$\$([^$]+)\$\$/g, (_, math) => {
         return katex.renderToString(math.trim(), { displayMode: true })
       })
 
       // Handle inline math ($...$)
-      html = html.replace(/\$([^$]+)\$/g, (match, math) => {
+      html = html.replace(/\$([^$]+)\$/g, (_, math) => {
         return katex.renderToString(math.trim(), { displayMode: false })
       })
 
-      return html
+      return html.trim()
     } catch (error) {
       return text
     }
@@ -130,8 +144,7 @@ const options: Options = {
 let mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
-// mind.init(example)
-mind.init(markdownExample)
+mind.init(example)
 
 const m2 = new MindElixir({
   el: '#map2',
