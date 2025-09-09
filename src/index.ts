@@ -44,6 +44,7 @@ function MindElixir(
     markdown,
     imageProxy,
     selectionDisabled,
+    dragBoundPadding,
   }: Options
 ): void {
   let ele: HTMLElement | null = null

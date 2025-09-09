@@ -161,14 +161,58 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
   x += dx
   y += dy
 
+  // apply candidate transform first so we can measure visual bounds
   if (smooth) {
     map.style.transition = 'transform 0.3s'
     setTimeout(() => {
       map.style.transition = 'none'
     }, 300)
   }
-  map.style.transform = `translate(${x}px, ${y}px) scale(${scaleVal})`
 
+  // candidate transform
+  const candidateX = x
+  const candidateY = y
+  map.style.transform = `translate(${candidateX}px, ${candidateY}px) scale(${scaleVal})`
+
+  // enforce drag bounds (allow a padding outside the container)
+  try {
+    const padding = (this.dragBoundPadding as number) || 0
+    const containerRect = this.container.getBoundingClientRect()
+    const nodesRect = this.nodes.getBoundingClientRect()
+
+    let adjustX = 0
+    if (nodesRect.left > containerRect.right + padding) {
+      // nodes shifted too far right; move left
+      adjustX = -((nodesRect.left - (containerRect.right + padding)) / scaleVal)
+    } else if (nodesRect.right < containerRect.left - padding) {
+      // nodes shifted too far left; move right
+      adjustX = (containerRect.left - padding - nodesRect.right) / scaleVal
+    }
+
+    let adjustY = 0
+    if (nodesRect.top > containerRect.bottom + padding) {
+      // nodes too far down; move up
+      adjustY = -((nodesRect.top - (containerRect.bottom + padding)) / scaleVal)
+    } else if (nodesRect.bottom < containerRect.top - padding) {
+      // nodes too far up; move down
+      adjustY = (containerRect.top - padding - nodesRect.bottom) / scaleVal
+    }
+
+    if (adjustX !== 0 || adjustY !== 0) {
+      // apply adjustments in pre-scale translate units
+      const finalX = candidateX + adjustX
+      const finalY = candidateY + adjustY
+      map.style.transform = `translate(${finalX}px, ${finalY}px) scale(${scaleVal})`
+      const actualDx = finalX - getTranslate(transform).x
+      const actualDy = finalY - getTranslate(transform).y
+      bus.fire('move', { dx: actualDx, dy: actualDy })
+      return
+    }
+  } catch (e) {
+    // if anything fails, fall back to applying candidate transform
+  }
+
+  // no adjustments needed
   bus.fire('move', { dx, dy })
 }
 

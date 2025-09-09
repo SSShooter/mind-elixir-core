@@ -165,6 +165,8 @@ export interface Options {
    */
   imageProxy?: (url: string) => string
   selectionDisabled?: boolean
+  /** When dragging, allow the map to be moved outside container by at most this padding (px). */
+  dragBoundPadding?: number
 }
 
 export type Uid = string
