@@ -463,7 +463,7 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
             useMd: true,
           },
           {
-            topic: '- Unordered list item 1\n- Unordered list item 2\n  - Nested item\n\n1. Ordered list item 1\n2. Ordered list item 2',
+            topic: '- Unordered list item 1\n- Unordered list item 2',
             id: 'markdown-lists',
             useMd: true,
           },
@@ -486,11 +486,6 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
             topic:
               '| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n| Row 1    | Data 1   | Info 1   |\n| Row 2    | Data 2   | Info 2   |',
             id: 'markdown-table',
-            useMd: true,
-          },
-          {
-            topic: '~~Strikethrough text~~ and ==highlighted text==',
-            id: 'markdown-strikethrough',
             useMd: true,
           },
         ],
