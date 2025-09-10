@@ -5,44 +5,20 @@ import example2 from './exampleData/2'
 import example3 from './exampleData/3'
 import type { Options, MindElixirInstance, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
-import style from '../index.css?raw'
-import katexStyle from 'katex/dist/katex.min.css?raw'
+import 'katex/dist/katex.min.css'
 import katex from 'katex'
 import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
 import { snapdom } from '@zumer/snapdom'
 import type { Tokens } from 'marked'
 import { marked } from 'marked'
+import { md2html } from 'simple-markdown-to-html'
 
-function hasMarkdownSyntax(text: string): boolean {
-  if (!text) return false
-
-  // Common markdown patterns
-  const markdownPatterns = [
-    /\*\*.*?\*\*/, // Bold
-    /\*.*?\*/, // Italic
-    /__.*?__/, // Bold (underscore)
-    /_.*?_/, // Italic (underscore)
-    /`.*?`/, // Inline code
-    /\[.*?\]\(.*?\)/, // Links
-    /!\[.*?\]\(.*?\)/, // Images
-    /^#{1,6}\s/, // Headers
-    /^>\s/, // Blockquotes
-    /^[*\-+]\s/, // Unordered lists
-    /^\d+\.\s/, // Ordered lists
-    /```[\s\S]*?```/, // Code blocks
-    /~~.*?~~/, // Strikethrough
-    /\$\$[\s\S]*?\$\$/, // KaTeX block math
-    /\$[^$\n]*?\$/, // KaTeX inline math
-  ]
-
-  return markdownPatterns.some(pattern => pattern.test(text))
-}
 interface Window {
   m?: MindElixirInstance
   M: MindElixirCtor
   E: typeof MindElixir.E
-  downloadPng: ReturnType<typeof download>
-  downloadSvg: ReturnType<typeof download>
+  downloadPng: () => void
+  downloadSvg: () => void
   destroy: () => void
   testMarkdown: () => void
   addMarkdownNode: () => void
@@ -60,7 +36,6 @@ const options: Options = {
   editable: true,
   markdown: (text: string, obj: NodeObj & { useMd?: boolean }) => {
     if (!text) return ''
-    if (!hasMarkdownSyntax(text)) return text
     if (!obj.useMd) return text
     try {
       // Configure marked renderer to add target="_blank" to links
@@ -73,8 +48,9 @@ const options: Options = {
         },
       }
 
-      marked.use({ renderer })
+      marked.use({ renderer, gfm: true })
       let html = marked(text) as string
+      // let html = md2html(text)
 
       // Process KaTeX math expressions
       // Handle display math ($$...$$)
@@ -87,7 +63,7 @@ const options: Options = {
         return katex.renderToString(math.trim(), { displayMode: false })
       })
 
-      return html.trim()
+      return html.trim().replace(/\n/g, '')
     } catch (error) {
       return text
     }
@@ -185,31 +161,12 @@ mind.bus.addListener('expandNode', node => {
   console.log('expandNode: ', node)
 })
 
-const download = (type: 'svg' | 'png') => {
-  return async () => {
-    try {
-      let blob = null
-      if (type === 'png') blob = await mind.exportPng(false, style + katexStyle)
-      else blob = await mind.exportSvg(false, style + katexStyle)
-      if (!blob) return
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'filename.' + type
-      a.click()
-      URL.revokeObjectURL(url)
-    } catch (e) {
-      console.error(e)
-    }
-  }
-}
 const dl2 = async () => {
   const result = await snapdom(mind.nodes)
   await result.download({ format: 'jpg', filename: 'my-capture' })
 }
 
 window.downloadPng = dl2
-window.downloadSvg = download('svg')
 window.m = mind
 // window.m2 = mind2
 window.M = MindElixir

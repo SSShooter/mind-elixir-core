@@ -100,6 +100,7 @@
     "nyc": "^17.1.0",
     "prettier": "2.8.4",
     "rimraf": "^6.0.1",
+    "simple-markdown-to-html": "^1.0.0",
     "typescript": "^5.4.5",
     "vite": "^4.5.3",
     "vite-plugin-istanbul": "^7.1.0"
