@@ -7,6 +7,21 @@ import { isTopic, on } from './utils'
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
 
+  // Pinch-to-zoom state
+  const pointers = new Map<number, { x: number; y: number }>()
+  let isPinching = false
+  let pinchStartDistance = 0
+  let pinchStartScale = 1
+  let pinchStartCenter = { x: 0, y: 0 }
+  let rafId: number | null = null
+
+  const getDistance = (p1: { x: number; y: number }, p2: { x: number; y: number }) => Math.hypot(p1.x - p2.x, p1.y - p2.y)
+
+  const getCenter = (p1: { x: number; y: number }, p2: { x: number; y: number }) => ({
+    x: (p1.x + p2.x) / 2,
+    y: (p1.y + p2.y) / 2,
+  })
+
   const handleClick = (e: MouseEvent) => {
     console.log('handleClick', e)
     // Only handle primary button clicks
@@ -81,6 +96,21 @@ export default function (mind: MindElixirInstance) {
     dragMoveHelper.x = e.clientX
     dragMoveHelper.y = e.clientY
 
+    // Track pointer for potential pinch gesture
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (pointers.size === 2) {
+      // initialize pinch
+      const pts = Array.from(pointers.values())
+      pinchStartDistance = getDistance(pts[0], pts[1])
+      pinchStartCenter = getCenter(pts[0], pts[1])
+      pinchStartScale = mind.scaleVal
+      isPinching = true
+      // when pinching, disable regular drag move
+      dragMoveHelper.mousedown = false
+      // prevent browser default (page zoom)
+      e.preventDefault()
+    }
+
     const target = e.target as HTMLElement
     if (target.className === 'circle') return
     if (target.contentEditable !== 'plaintext-only') {
@@ -91,7 +121,32 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerMove = (e: PointerEvent) => {
-    // click trigger pointermove in windows chrome
+    // Update stored pointer position if we are tracking this pointer
+    if (pointers.has(e.pointerId)) {
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    }
+
+    // If two pointers are active, handle pinch-to-zoom
+    if (pointers.size === 2) {
+      const pts = Array.from(pointers.values())
+      const curDistance = getDistance(pts[0], pts[1])
+      const curCenter = getCenter(pts[0], pts[1])
+      if (pinchStartDistance > 0) {
+        let newScale = pinchStartScale * (curDistance / pinchStartDistance)
+        // clamp
+        newScale = Math.max(mind.scaleMin, Math.min(mind.scaleMax, newScale))
+
+        // schedule update via rAF for smoothness
+        if (rafId) cancelAnimationFrame(rafId)
+        rafId = requestAnimationFrame(() => {
+          mind.scale(newScale, { x: curCenter.x, y: curCenter.y })
+          rafId = null
+        })
+      }
+      return
+    }
+
+    // Non-pinch: regular drag/move behaviour
     if ((e.target as HTMLElement).contentEditable !== 'plaintext-only') {
       // drag and move the map
       // Calculate movement delta manually since pointer events don't have movementX/Y
@@ -113,6 +168,20 @@ export default function (mind: MindElixirInstance) {
     if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
       target.releasePointerCapture(e.pointerId)
     }
+    // remove from pointer tracking
+    if (pointers.has(e.pointerId)) pointers.delete(e.pointerId)
+
+    // if pinch was active and less than two pointers remain, end pinch
+    if (isPinching && pointers.size < 2) {
+      isPinching = false
+      pinchStartDistance = 0
+      pinchStartScale = mind.scaleVal
+      if (rafId) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      }
+    }
+
     dragMoveHelper.clear()
   }
 
