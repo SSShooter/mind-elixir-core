@@ -55,6 +55,7 @@ export type CustomArrow = SVGPathElement
 export interface CustomSvg extends SVGGElement {
   arrowObj: Arrow
   label: SVGForeignObjectElement
+  labelElement?: HTMLDivElement // Reference to the label div element
   line: SVGPathElement
   arrow1: SVGPathElement
   arrow2: SVGPathElement

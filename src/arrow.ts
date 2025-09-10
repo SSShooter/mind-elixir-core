@@ -1,6 +1,6 @@
 import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
-import { createSvgGroup, createSvgText, editSvgText, svgNS } from './utils/svg'
+import { calculatePrecisePosition, createSvgGroup, createSvgText, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
 
@@ -101,13 +101,11 @@ function calcBezierMidPoint(p1x: number, p1y: number, p2x: number, p2y: number, 
 /**
  * Update arrow label position
  */
-function updateArrowLabel(label: SVGForeignObjectElement, x: number, y: number) {
-  const width = parseFloat(label.getAttribute('width') || '200')
-  const height = parseFloat(label.getAttribute('height') || '50')
-  setAttributes(label, {
-    x: x - width / 2 + '',
-    y: y - height / 2 + '',
-  })
+function updateArrowLabel(labelElement: HTMLDivElement, x: number, y: number) {
+  if (!labelElement) return
+  labelElement.dataset.x = x.toString()
+  labelElement.dataset.y = y.toString()
+  calculatePrecisePosition(labelElement)
 }
 
 /**
@@ -204,7 +202,9 @@ function updateArrowPath(
 
   // Update label position and color
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
-  updateArrowLabel(arrow.label, halfx, halfy)
+  if (arrow.labelElement) {
+    updateArrowLabel(arrow.labelElement, halfx, halfy)
+  }
 
   // Apply label color if specified
   if (linkItem.style?.labelColor) {
@@ -303,13 +303,21 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   // Use extracted common function to calculate midpoint
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
   const labelColor = obj.style?.labelColor
+  const groupId = 'arrow-' + obj.id
+  newSvgGroup.id = groupId
   const label = createSvgText(obj.label, halfx, halfy, {
     anchor: 'middle',
     color: labelColor,
     dataType: 'link-label',
+    svgId: groupId,
   })
-  newSvgGroup.appendChild(label)
-  newSvgGroup.label = label
+  // Add label to the label container instead of SVG group
+  mei.labelContainer.appendChild(label)
+  calculatePrecisePosition(label)
+  // Create a placeholder foreignObject for compatibility
+  const placeholderForeignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject')
+  newSvgGroup.label = placeholderForeignObject as SVGForeignObjectElement
+  newSvgGroup.labelElement = label // Store reference to label element
 
   newSvgGroup.arrowObj = obj
   newSvgGroup.dataset.linkid = obj.id
@@ -549,8 +557,8 @@ export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   hideLinkController(this)
   console.time('editSummary')
   if (!el) return
-  const textEl = el.label
-  editSvgText(this, textEl, el.arrowObj)
+  if (!el.labelElement) return
+  editSvgText(this, el.labelElement, el.arrowObj)
   console.timeEnd('editSummary')
 }
 

@@ -575,18 +575,12 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
   ],
   summaries: [
     {
-      id: 'a5e68e6a2ce1b648',
-      parent: 'bd42e1d0163ebf04',
-      start: 0,
-      end: 1,
-      label: 'summary',
-    },
-    {
       id: 'a5e6978f1bc69f4a',
       parent: 'bd4313fbac40284b',
       start: 3,
       end: 5,
-      label: 'summary',
+      label:
+        'This is a summary section that groups together related nodes to show their logical connection and relationship. You can customize this text to provide more context about the grouped items.',
     },
   ],
   direction: 2,

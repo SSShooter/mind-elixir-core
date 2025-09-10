@@ -67,6 +67,7 @@ const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root:
   mei.nodes.appendChild(rightPart)
 
   mei.nodes.appendChild(mei.lines)
+  mei.nodes.appendChild(mei.labelContainer)
 }
 
 export const layoutChildren = function (mei: MindElixirInstance, data: NodeObj[]) {

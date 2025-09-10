@@ -37,6 +37,28 @@ export default function (mind: MindElixirInstance) {
     } else if (!mind.editable) {
       return
     }
+    // Check if clicked on a label div
+    const labelDiv = target.closest('.svg-label') as HTMLElement
+    if (labelDiv && labelDiv.dataset.svgId) {
+      const svgElement = document.getElementById(labelDiv.dataset.svgId)
+      if (svgElement) {
+        const svgGroup = svgElement.closest('g')
+        if (svgGroup) {
+          // Check if it's an arrow or summary based on parent container
+          const topiclinksContainer = svgGroup.closest('.topiclinks')
+          const summaryContainer = svgGroup.closest('.summary')
+
+          if (topiclinksContainer) {
+            mind.selectArrow(svgGroup as unknown as CustomSvg)
+            return
+          } else if (summaryContainer) {
+            mind.selectSummary(svgGroup as unknown as SummarySvgGroup)
+            return
+          }
+        }
+      }
+    }
+
     // Find the closest SVG container using native closest() method
     const topiclinksContainer = target.closest('.topiclinks')
     if (topiclinksContainer) {
@@ -63,6 +85,28 @@ export default function (mind: MindElixirInstance) {
     console.log('handleDblClick', target)
     if (isTopic(target)) {
       mind.beginEdit(target)
+    }
+
+    // Check if double-clicked on a label div
+    const labelDiv = target.closest('.svg-label') as HTMLElement
+    if (labelDiv && labelDiv.dataset.svgId) {
+      const svgElement = document.getElementById(labelDiv.dataset.svgId)
+      if (svgElement) {
+        const svgGroup = svgElement.closest('g')
+        if (svgGroup) {
+          // Check if it's an arrow or summary based on parent container
+          const topiclinksContainer = svgGroup.closest('.topiclinks')
+          const summaryContainer = svgGroup.closest('.summary')
+
+          if (topiclinksContainer) {
+            mind.editArrowLabel(svgGroup as unknown as CustomSvg)
+            return
+          } else if (summaryContainer) {
+            mind.editSummary(svgGroup as unknown as SummarySvgGroup)
+            return
+          }
+        }
+      }
     }
 
     // Find the closest SVG container using native closest() method

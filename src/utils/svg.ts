@@ -11,90 +11,79 @@ export const svgNS = 'http://www.w3.org/2000/svg'
 export interface SvgTextOptions {
   anchor?: 'start' | 'middle' | 'end'
   color?: string
-  dataType?: string
-  width?: number
-  fontSize?: string
-  fontFamily?: string
+  dataType: string
+  svgId: string // Associated SVG element ID
 }
 
 /**
- * Calculate auto height for text content
+ * Create a div label for SVG elements with positioning
  */
-const calculateAutoHeight = function (div: HTMLDivElement, width: number): number {
-  // Temporarily add to DOM to measure height
-  div.style.position = 'absolute'
-  div.style.visibility = 'hidden'
-  div.style.width = width - 4 + 'px'
-  div.style.height = 'auto'
-  document.body.appendChild(div)
-  const measuredHeight = div.offsetHeight
-  document.body.removeChild(div)
+// Helper function to calculate precise position based on actual DOM dimensions
+export const calculatePrecisePosition = function (element: HTMLElement): void {
+  // Get actual dimensions
+  const actualWidth = element.clientWidth
+  const actualHeight = element.clientHeight
+  const data = element.dataset
+  const x = Number(data.x)
+  const y = Number(data.y)
+  const anchor = data.anchor
 
-  // Reset styles
-  div.style.position = ''
-  div.style.visibility = ''
-  div.style.width = '100%'
-
-  return measuredHeight
-}
-
-/**
- * Create an SVG foreignObject with HTML div for text with auto-wrapping
- */
-export const createSvgText = function (text: string, x: number, y: number, options: SvgTextOptions = {}): SVGForeignObjectElement {
-  const { anchor = 'middle', color, dataType, width = 200, fontSize = '14px', fontFamily = 'Arial, sans-serif' } = options
-
-  // Create foreignObject element
-  const foreignObject = document.createElementNS(svgNS, 'foreignObject')
-
-  // Create HTML div inside foreignObject
-  const div = document.createElement('div')
-  div.style.cssText = `
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: ${anchor === 'start' ? 'flex-start' : anchor === 'end' ? 'flex-end' : 'center'};
-    font-size: ${fontSize};
-    font-family: ${fontFamily};
-    color: ${color || '#666'};
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    line-height: 1.2;
-    padding: 2px;
-    box-sizing: border-box;
-  `
-
-  div.innerHTML = text
-
-  // Calculate actual height using auto height
-  const actualHeight = calculateAutoHeight(div, width)
-
-  // Calculate position based on anchor
+  // Calculate position based on anchor and actual dimensions
   let adjustedX = x
   if (anchor === 'middle') {
-    adjustedX = x - width / 2
+    adjustedX = x - actualWidth / 2
   } else if (anchor === 'end') {
-    adjustedX = x - width
+    adjustedX = x - actualWidth
   }
 
-  setAttributes(foreignObject, {
-    x: adjustedX + '',
-    y: y - actualHeight / 2 + '', // Center vertically with actual height
-    width: width + '',
-    height: actualHeight + '',
-  })
+  // Set final position with actual dimensions
+  element.style.left = `${adjustedX}px`
+  element.style.top = `${y - actualHeight / 2}px`
+  element.style.visibility = 'visible'
+}
 
-  if (dataType) {
-    foreignObject.dataset.type = dataType
+export const createSvgText = function (text: string, x: number, y: number, options: SvgTextOptions): HTMLDivElement {
+  const { anchor = 'middle', color, dataType, svgId } = options
+
+  // Create label div element
+  const labelDiv = document.createElement('div')
+  labelDiv.className = 'svg-label'
+  labelDiv.style.color = color || '#666'
+
+  // Generate unique ID for the label
+  const labelId = 'label-' + svgId
+  labelDiv.id = labelId
+  labelDiv.innerHTML = text
+
+  labelDiv.dataset.type = dataType
+  labelDiv.dataset.svgId = svgId
+  labelDiv.dataset.x = x.toString()
+  labelDiv.dataset.y = y.toString()
+  labelDiv.dataset.anchor = anchor
+  labelDiv.style.left = '0'
+  labelDiv.style.top = '0'
+
+  return labelDiv
+}
+
+/**
+ * Find SVG element by label ID
+ */
+export const findSvgByLabelId = function (labelId: string): SVGElement | null {
+  const labelElement = document.getElementById(labelId) as HTMLElement
+  if (!labelElement || !labelElement.dataset.svgId) {
+    return null
   }
+  const svgElement = document.getElementById(labelElement.dataset.svgId)
+  return svgElement as unknown as SVGElement
+}
 
-  // Store autoHeight configuration for later use in editing
-  foreignObject.dataset.autoHeight = 'true'
-
-  foreignObject.appendChild(div)
-
-  return foreignObject
+/**
+ * Find label element by SVG ID
+ */
+export const findLabelBySvgId = function (svgId: string): HTMLDivElement | null {
+  const labelElement = document.querySelector(`[data-svg-id="${svgId}"]`) as HTMLDivElement
+  return labelElement
 }
 
 export const createPath = function (d: string, color: string, width: string) {
@@ -190,38 +179,26 @@ export const createSvgGroup = function (
   return g
 }
 
-export const editSvgText = function (mei: MindElixirInstance, textEl: SVGForeignObjectElement, node: Summary | Arrow) {
+export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivElement, node: Summary | Arrow) {
   console.time('editSummary')
   if (!textEl) return
 
-  // Get the inner div element from foreignObject
-  const innerDiv = textEl.querySelector('div') as HTMLDivElement
-  const origin = innerDiv.innerHTML
+  // textEl is now a div element directly
+  const origin = textEl.innerHTML
 
-  const div = $d.createElement('div')
+  const div = textEl.cloneNode(true) as HTMLDivElement
   mei.nodes.appendChild(div)
   div.id = 'input-box'
   div.innerHTML = origin // Use innerHTML to preserve formatting
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
 
-  const bbox = textEl.getBBox()
-  console.log(bbox)
   div.style.cssText = `
-    min-width:${Math.max(88, bbox.width)}px;
-    position:absolute;
-    left:${bbox.x}px;
-    top:${bbox.y}px;
-    padding: 2px 4px;
-    margin: -2px -4px;
-    background: white;
+    left:${textEl.style.left};
+    top:${textEl.style.top}; 
+    max-width: 200px;
     border: 1px solid #ccc;
-    border-radius: 2px;
-    font-size: 14px;
-    font-family: Arial, sans-serif;
-    line-height: 1.2;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    border-radius: 2px; 
   `
   selectText(div)
   mei.scrollIntoView(div)
@@ -248,22 +225,9 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGForeign
     div.remove()
     if (text === origin) return
 
-    innerDiv.innerHTML = node.label
-
-    // Calculate new height using the shared function
-    const currentHeight = parseFloat(textEl.getAttribute('height') || '50')
-    const newHeight = innerDiv.clientHeight
-
-    if (newHeight !== currentHeight) {
-      // Update foreignObject height
-      textEl.setAttribute('height', newHeight + '')
-
-      // Recalculate y position to keep centered
-      const currentY = parseFloat(textEl.getAttribute('y') || '0')
-      const centerY = currentY + currentHeight / 2
-      const newY = centerY - newHeight / 2
-      textEl.setAttribute('y', newY + '')
-    }
+    textEl.innerHTML = node.label
+    // Recalculate position with new content while preserving existing color
+    calculatePrecisePosition(textEl)
 
     if ('parent' in node) {
       mei.bus.fire('operation', {

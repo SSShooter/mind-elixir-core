@@ -99,6 +99,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   lines: SVGElement
   summarySvg: SVGElement
   linkController: SVGElement
+  labelContainer: HTMLElement // Container for SVG labels
   P2: HTMLElement
   P3: HTMLElement
   line1: SVGElement
