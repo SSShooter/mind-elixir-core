@@ -136,7 +136,13 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       mind.toCenter()
     },
     F2: () => {
-      mind.beginEdit()
+      if (mind.currentSummary) {
+        mind.editSummary(mind.currentSummary)
+      } else if (mind.currentArrow) {
+        mind.editArrowLabel(mind.currentArrow)
+      } else {
+        mind.beginEdit()
+      }
     },
     ArrowUp: e => {
       if (e.altKey) {

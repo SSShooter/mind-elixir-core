@@ -56,7 +56,7 @@ export const createSvgText = function (text: string, x: number, y: number, optio
     justify-content: ${anchor === 'start' ? 'flex-start' : anchor === 'end' ? 'flex-end' : 'center'};
     font-size: ${fontSize};
     font-family: ${fontFamily};
-    color: ${color || (anchor === 'middle' ? 'rgb(235, 95, 82)' : '#666')};
+    color: ${color || '#666'};
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;

@@ -208,7 +208,10 @@ function updateArrowPath(
 
   // Apply label color if specified
   if (linkItem.style?.labelColor) {
-    arrow.label.setAttribute('fill', linkItem.style.labelColor)
+    const div = arrow.label.querySelector('div') as HTMLDivElement
+    if (div) {
+      div.style.color = linkItem.style.labelColor
+    }
   }
 
   // Update highlight layer
@@ -303,7 +306,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const label = createSvgText(obj.label, halfx, halfy, {
     anchor: 'middle',
     color: labelColor,
-    dataType: 'custom-link',
+    dataType: 'link-label',
   })
   newSvgGroup.appendChild(label)
   newSvgGroup.label = label
