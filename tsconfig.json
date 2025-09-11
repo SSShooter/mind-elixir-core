@@ -2,8 +2,8 @@
   "compilerOptions": {
     "allowJs": false,
     "declaration": true,
+    "rootDir": "src",
     "outDir": "dist/types",
-
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -16,10 +16,10 @@
 
     /* Linting */
     "strict": true,
-    
+
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler"
   },
   "include": ["src"],
   "exclude": ["src/dev.dist.ts"]
