@@ -60,8 +60,6 @@ export const createSvgText = function (text: string, x: number, y: number, optio
   labelDiv.dataset.x = x.toString()
   labelDiv.dataset.y = y.toString()
   labelDiv.dataset.anchor = anchor
-  labelDiv.style.left = '0'
-  labelDiv.style.top = '0'
 
   return labelDiv
 }
@@ -184,12 +182,12 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
   if (!textEl) return
 
   // textEl is now a div element directly
-  const origin = textEl.innerHTML
+  const origin = node.label
 
   const div = textEl.cloneNode(true) as HTMLDivElement
   mei.nodes.appendChild(div)
   div.id = 'input-box'
-  div.innerHTML = origin // Use innerHTML to preserve formatting
+  div.textContent = origin
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
 
@@ -219,13 +217,13 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
 
   div.addEventListener('blur', () => {
     if (!div) return
-    const text = div.innerHTML?.trim() || ''
+    const text = div.textContent?.trim() || ''
     if (text === '') node.label = origin
     else node.label = text
     div.remove()
     if (text === origin) return
 
-    textEl.innerHTML = node.label
+    textEl.textContent = node.label
     // Recalculate position with new content while preserving existing color
     calculatePrecisePosition(textEl)
 

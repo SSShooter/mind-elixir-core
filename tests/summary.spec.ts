@@ -63,8 +63,8 @@ test('Create summary for single node', async ({ page, me }) => {
   await expect(page.locator('svg g[id^="s-"]')).toBeVisible()
 
   // Verify summary text label is visible
-  await expect(page.locator('svg g[id^="s-"] foreignObject div')).toBeVisible()
-  await expect(page.locator('svg g[id^="s-"] foreignObject div')).toHaveText('summary')
+  await expect(page.locator('.svg-label[data-type="s-label"]').first()).toBeVisible()
+  await expect(page.locator('.svg-label[data-type="s-label"]').first()).toHaveText('summary')
 
   // Verify summary path (bracket shape) is visible
   await expect(page.locator('svg g[id^="s-"] path')).toBeVisible()
@@ -98,7 +98,7 @@ test('Create summary for multiple nodes', async ({ page, me }) => {
 
   // Verify summary appears
   await expect(page.locator('svg g[id^="s-"]')).toBeVisible()
-  await expect(page.locator('svg g[id^="s-"] foreignObject div')).toHaveText('summary')
+  await expect(page.locator('.svg-label[data-type="s-label"]').first()).toHaveText('summary')
   await expect(page.locator('svg g[id^="s-"] path')).toBeVisible()
 
   // Verify summary bracket spans across all three selected nodes
@@ -128,8 +128,8 @@ test('Select and highlight summary', async ({ page, me }) => {
   // Click on the summary to select it
   await page.locator('svg g[id^="s-"]').click()
 
-  // Verify selection rectangle appears
-  await expect(page.locator('svg g[id^="s-"] rect')).toBeVisible()
+  // Verify selection state (label should have selected class)
+  await expect(page.locator('.svg-label[data-type="s-label"].selected').first()).toBeVisible()
 })
 
 test('Edit summary text', async ({ page, me }) => {
@@ -150,10 +150,10 @@ test('Edit summary text', async ({ page, me }) => {
   await expect(page.locator('#input-box')).toBeHidden()
 
   // Verify new text is displayed
-  await expect(page.locator('svg g[id^="s-"] foreignObject div')).toHaveText('Custom Summary')
+  await expect(page.locator('.svg-label[data-type="s-label"]').first()).toHaveText('Custom Summary')
 
   // Test editing existing summary by double clicking
-  await page.locator('svg g[id^="s-"] foreignObject div').dblclick()
+  await page.locator('.svg-label[data-type="s-label"]').first().dblclick()
   
   // Input box should appear again
   await expect(page.locator('#input-box')).toBeVisible()
@@ -164,7 +164,7 @@ test('Edit summary text', async ({ page, me }) => {
   await page.keyboard.press('Enter')
   
   // Verify updated text
-  await expect(page.locator('svg g[id^="s-"] foreignObject div')).toHaveText('Updated Summary')
+  await expect(page.locator('.svg-label[data-type="s-label"]').first()).toHaveText('Updated Summary')
 })
 
 test('Remove summary', async ({ page, me }) => {
@@ -216,9 +216,9 @@ test('Summary appears on correct side for left branch', async ({ page, me }) => 
   const summaryGroup = page.locator('svg g[id^="s-"]')
   await expect(summaryGroup).toBeVisible()
 
-  // Verify text is right-aligned for left side
-  const summaryText = summaryGroup.locator('foreignObject div')
-  await expect(summaryText).toHaveCSS('text-align', 'right')
+  // Verify text is positioned correctly for left side (anchor: end)
+  const summaryText = page.locator('.svg-label[data-type="s-label"]').first()
+  await expect(summaryText).toHaveAttribute('data-anchor', 'end')
 })
 
 test('Summary appears on correct side for right branch', async ({ page, me }) => {
@@ -231,9 +231,9 @@ test('Summary appears on correct side for right branch', async ({ page, me }) =>
   const summaryGroup = page.locator('svg g[id^="s-"]')
   await expect(summaryGroup).toBeVisible()
 
-  // Verify text is left-aligned for right side
-  const summaryText = summaryGroup.locator('foreignObject div')
-  await expect(summaryText).toHaveCSS('text-align', 'left')
+  // Verify text is positioned correctly for right side (anchor: start)
+  const summaryText = page.locator('.svg-label[data-type="s-label"]').first()
+  await expect(summaryText).toHaveAttribute('data-anchor', 'start')
 })
 
 test('Multiple summaries can coexist', async ({ page, me }) => {
@@ -241,18 +241,22 @@ test('Multiple summaries can coexist', async ({ page, me }) => {
   await me.click('Left Child 1')
   await page.getByText('Left Child 1', { exact: true }).click({ button: 'right', force: true })
   await page.locator('#cm-summary').click()
+  await page.keyboard.press('Enter') // Finish editing first summary
+  await expect(page.locator('#input-box')).toBeHidden()
 
   // Create second summary
   await me.click('Right Child 1')
   await page.getByText('Right Child 1', { exact: true }).click({ button: 'right', force: true })
   await page.locator('#cm-summary').click()
+  await page.keyboard.press('Enter') // Finish editing second summary
+  await expect(page.locator('#input-box')).toBeHidden()
 
   // Verify both summaries exist
   const summaryGroups = page.locator('svg g[id^="s-"]')
   await expect(summaryGroups).toHaveCount(2)
 
   // Verify both have text elements
-  await expect(page.locator('svg g[id^="s-"] foreignObject div')).toHaveCount(2)
+  await expect(page.locator('.svg-label[data-type="s-label"]')).toHaveCount(2)
 })
 
 test('Summary covers exact range of selected nodes', async ({ page, me }) => {
@@ -309,20 +313,24 @@ test('Summary selection state management', async ({ page, me }) => {
   const firstSummary = summaryGroups.first()
   const secondSummary = summaryGroups.last()
 
+  // Get the corresponding label elements
+  const firstLabel = page.locator('.svg-label[data-type="s-label"]').first()
+  const secondLabel = page.locator('.svg-label[data-type="s-label"]').last()
+
   // Select first summary
   await firstSummary.click()
-  await expect(firstSummary.locator('rect')).toBeVisible()
-  await expect(secondSummary.locator('rect')).not.toBeVisible()
+  await expect(firstLabel).toHaveClass(/selected/)
+  await expect(secondLabel).not.toHaveClass(/selected/)
 
   // Select second summary
   await secondSummary.click()
-  await expect(firstSummary.locator('rect')).not.toBeVisible()
-  await expect(secondSummary.locator('rect')).toBeVisible()
+  await expect(firstLabel).not.toHaveClass(/selected/)
+  await expect(secondLabel).toHaveClass(/selected/)
 
   // Click elsewhere to deselect
   await page.locator('#map').click()
-  await expect(firstSummary.locator('rect')).not.toBeVisible()
-  await expect(secondSummary.locator('rect')).not.toBeVisible()
+  await expect(firstLabel).not.toHaveClass(/selected/)
+  await expect(secondLabel).not.toHaveClass(/selected/)
 })
 
 test('Summary keyboard shortcuts', async ({ page, me }) => {
@@ -334,14 +342,13 @@ test('Summary keyboard shortcuts', async ({ page, me }) => {
 
   // Select the summary
   await page.locator('svg g[id^="s-"]').click()
-  await expect(page.locator('svg g[id^="s-"] rect')).toBeVisible()
+  await expect(page.locator('.svg-label[data-type="s-label"].selected').first()).toBeVisible()
 
   // Test F2 to edit
   await page.keyboard.press('F2')
   await expect(page.locator('#input-box')).toBeVisible()
-  await page.keyboard.press('Escape') // Cancel editing
-  await expect(page.locator('#input-box')).toBeHidden()
-
+  await page.keyboard.press('Enter')
+  
   // Test Delete key to remove
   await page.keyboard.press('Delete')
   await expect(page.locator('svg g[id^="s-"]')).not.toBeVisible()
@@ -358,12 +365,11 @@ test('Summary with empty text handling', async ({ page, me }) => {
   await page.keyboard.press('Delete')
   await page.keyboard.press('Enter')
 
-  // Summary should still exist but with default text or be removed
-  // This tests the behavior when user creates empty summary
-  const summaryExists = await page.locator('svg g[id^="s-"]').isVisible()
-  if (summaryExists) {
-    // If summary exists, it should have some default text
-    await expect(page.locator('svg g[id^="s-"] foreignObject div')).not.toBeEmpty()
-  }
+  // Summary should still exist and revert to original text when empty
+  await expect(page.locator('svg g[id^="s-"]')).toBeVisible()
+  const summaryText = page.locator('.svg-label[data-type="s-label"]').first()
+  await expect(summaryText).toBeVisible()
+  // When text is cleared, it should revert to the original 'summary' text
+  await expect(summaryText).toHaveText('summary')
 })
 

@@ -148,10 +148,10 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const groupId = 's-' + id
   if (side === DirectionClass.LHS) {
     path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
-    text = createSvgText(summaryText, left - 20, md + 6, { anchor: 'end', color, dataType: 'summary', svgId: groupId })
+    text = createSvgText(summaryText, left - 20, md + 6, { anchor: 'end', color, dataType: 's-label', svgId: groupId })
   } else {
     path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, color)
-    text = createSvgText(summaryText, right + 20, md + 6, { anchor: 'start', color, dataType: 'summary', svgId: groupId })
+    text = createSvgText(summaryText, right + 20, md + 6, { anchor: 'start', color, dataType: 's-label', svgId: groupId })
   }
   const group = creatGroup(groupId)
   group.appendChild(path)
@@ -194,7 +194,8 @@ export const removeSummary = function (this: MindElixirInstance, id: string) {
   const index = this.summaries.findIndex(summary => summary.id === id)
   if (index > -1) {
     this.summaries.splice(index, 1)
-    document.querySelector('#s-' + id)?.remove()
+    this.nodes.querySelector('#s-' + id)?.remove()
+    this.nodes.querySelector('#label-s-' + id)?.remove()
   }
   this.bus.fire('operation', {
     name: 'removeSummary',

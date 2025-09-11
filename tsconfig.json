@@ -13,14 +13,12 @@
     /* Bundler mode */
     "isolatedModules": true,
     "emitDeclarationOnly": true,
-    // "noEmit": true,
 
     /* Linting */
     "strict": true,
     
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
-    // "moduleResolution": "nodenext"
     "moduleResolution": "bundler",
   },
   "include": ["src"],
