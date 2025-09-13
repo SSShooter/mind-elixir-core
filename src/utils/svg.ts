@@ -111,7 +111,7 @@ export const createLine = function () {
   return line
 }
 
-export const createSvgGroup = function (
+export const createArrowGroup = function (
   d: string,
   arrowd1: string,
   arrowd2: string,

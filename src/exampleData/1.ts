@@ -581,6 +581,9 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
       end: 5,
       label:
         'This is a summary section that groups together related nodes to show their logical connection and relationship. You can customize this text to provide more context about the grouped items.',
+      style: {
+        labelColor: '#8839ef',
+      },
     },
   ],
   direction: 2,

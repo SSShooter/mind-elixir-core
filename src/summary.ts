@@ -4,6 +4,21 @@ import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { createLabel, editSvgText, svgNS } from './utils/svg'
 import { calculatePrecisePosition } from './utils/svg'
 
+export interface SummaryStyle {
+  /**
+   * stroke color of the summary
+   */
+  stroke?: string
+  /**
+   * color of the summary label
+   */
+  labelColor?: string
+}
+
+export interface SummaryOptions {
+  style?: SummaryStyle
+}
+
 /**
  * @public
  */
@@ -22,6 +37,10 @@ export interface Summary {
    * end index of the summary
    */
   end: number
+  /**
+   * style of the summary
+   */
+  style?: SummaryStyle
 }
 
 export type SummarySvgGroup = SVGGElement & {
@@ -115,7 +134,7 @@ const getDirection = function (mei: MindElixirInstance, { parent, start }: Summa
 }
 
 const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
-  const { id, label: summaryText, parent, start, end } = summary
+  const { id, label: summaryText, parent, start, end, style } = summary
   const { nodes, theme, summarySvg } = mei
   const parentEl = mei.findEle(parent)
   const parentObj = parentEl.nodeObj
@@ -144,14 +163,15 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const top = startTop + 10
   const bottom = endBottom + 10
   const md = (top + bottom) / 2
-  const color = theme.cssVar['--color']
+  const strokeColor = style?.stroke || 'rgb(95, 135, 255)'
+  const labelColor = style?.labelColor || 'rgb(95, 135, 255)'
   const groupId = 's-' + id
   if (side === DirectionClass.LHS) {
-    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
-    text = createLabel(summaryText, left - 20, md, { anchor: 'end', color, dataType: 's-label', svgId: groupId })
+    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
+    text = createLabel(summaryText, left - 20, md, { anchor: 'end', color: labelColor, dataType: 's-label', svgId: groupId })
   } else {
-    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, color)
-    text = createLabel(summaryText, right + 20, md, { anchor: 'start', color, dataType: 's-label', svgId: groupId })
+    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, strokeColor)
+    text = createLabel(summaryText, right + 20, md, { anchor: 'start', color: labelColor, dataType: 's-label', svgId: groupId })
   }
   const group = creatGroup(groupId)
   group.appendChild(path)
@@ -164,11 +184,11 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   return group
 }
 
-export const createSummary = function (this: MindElixirInstance) {
+export const createSummary = function (this: MindElixirInstance, options: SummaryOptions = {}) {
   if (!this.currentNodes) return
   const { currentNodes: nodes, summaries, bus } = this
   const { parent, start, end } = calcRange(nodes)
-  const summary = { id: generateUUID(), parent, start, end, label: 'summary' }
+  const summary = { id: generateUUID(), parent, start, end, label: 'summary', style: options.style }
   const g = drawSummary(this, summary) as SummarySvgGroup
   summaries.push(summary)
   this.editSummary(g)
