@@ -216,24 +216,18 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
 
   div.addEventListener('blur', () => {
     if (!div) return
-    const inputContent = div.textContent?.trim() || ''
-    if (inputContent === '') {
-      node.topic = originalContent
-    } else {
-      // Update topic content
-      node.topic = inputContent
-
-      if (this.markdown) {
-        el.text.innerHTML = this.markdown(node.topic, node)
-      } else {
-        // Plain text content
-        el.text.textContent = inputContent
-      }
-    }
-
     div.remove()
+    const inputContent = div.textContent?.trim() || ''
+    if (inputContent === originalContent || inputContent === '') return
 
-    if (inputContent === originalContent) return
+    // Update topic content
+    node.topic = inputContent
+
+    if (this.markdown) {
+      el.text.innerHTML = this.markdown(node.topic, node)
+    } else {
+      el.text.textContent = inputContent
+    }
 
     this.linkDiv()
     this.bus.fire('operation', {
