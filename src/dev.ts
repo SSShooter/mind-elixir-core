@@ -15,6 +15,7 @@ import { md2html } from 'simple-markdown-to-html'
 
 interface Window {
   m?: MindElixirInstance
+  m2?: MindElixirInstance
   M: MindElixirCtor
   E: typeof MindElixir.E
   downloadPng: () => void
@@ -168,7 +169,7 @@ const dl2 = async () => {
 
 window.downloadPng = dl2
 window.m = mind
-// window.m2 = mind2
+window.m2 = m2
 window.M = MindElixir
 window.E = MindElixir.E
 

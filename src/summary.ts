@@ -160,11 +160,12 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   }
   let path
   let text
-  const top = startTop + 10
-  const bottom = endBottom + 10
+  const offset = !parentObj.parent ? 0 : 10
+  const top = startTop + offset
+  const bottom = endBottom + offset
   const md = (top + bottom) / 2
-  const strokeColor = style?.stroke || 'rgb(95, 135, 255)'
-  const labelColor = style?.labelColor || 'rgb(95, 135, 255)'
+  const strokeColor = style?.stroke || theme.cssVar['--color']
+  const labelColor = style?.labelColor || theme.cssVar['--color']
   const groupId = 's-' + id
   if (side === DirectionClass.LHS) {
     path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
