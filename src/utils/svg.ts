@@ -42,7 +42,7 @@ export const calculatePrecisePosition = function (element: HTMLElement): void {
   element.style.visibility = 'visible'
 }
 
-export const createSvgText = function (text: string, x: number, y: number, options: SvgTextOptions): HTMLDivElement {
+export const createLabel = function (text: string, x: number, y: number, options: SvgTextOptions): HTMLDivElement {
   const { anchor = 'middle', color, dataType, svgId } = options
 
   // Create label div element
@@ -68,11 +68,11 @@ export const createSvgText = function (text: string, x: number, y: number, optio
  * Find SVG element by label ID
  */
 export const findSvgByLabelId = function (labelId: string): SVGElement | null {
-  const labelElement = document.getElementById(labelId) as HTMLElement
-  if (!labelElement || !labelElement.dataset.svgId) {
+  const labelEl = document.getElementById(labelId) as HTMLElement
+  if (!labelEl || !labelEl.dataset.svgId) {
     return null
   }
-  const svgElement = document.getElementById(labelElement.dataset.svgId)
+  const svgElement = document.getElementById(labelEl.dataset.svgId)
   return svgElement as unknown as SVGElement
 }
 
@@ -80,8 +80,8 @@ export const findSvgByLabelId = function (labelId: string): SVGElement | null {
  * Find label element by SVG ID
  */
 export const findLabelBySvgId = function (svgId: string): HTMLDivElement | null {
-  const labelElement = document.querySelector(`[data-svg-id="${svgId}"]`) as HTMLDivElement
-  return labelElement
+  const labelEl = document.querySelector(`[data-svg-id="${svgId}"]`) as HTMLDivElement
+  return labelEl
 }
 
 export const createPath = function (d: string, color: string, width: string) {
@@ -121,7 +121,6 @@ export const createSvgGroup = function (
     strokeDasharray?: string
     strokeLinecap?: 'butt' | 'round' | 'square'
     opacity?: string | number
-    labelColor?: string
   }
 ): CustomSvg {
   const g = $d.createElementNS(svgNS, 'g') as CustomSvg
@@ -144,7 +143,7 @@ export const createSvgGroup = function (
     const path = $d.createElementNS(svgNS, 'path')
     const attrs: { [key: string]: string } = {
       d,
-      stroke: style?.stroke || 'rgb(235, 95, 82)',
+      stroke: style?.stroke || 'rgb(227, 125, 116)',
       fill: 'none',
       'stroke-linecap': style?.strokeLinecap || 'cap',
       'stroke-width': String(style?.strokeWidth || '2'),
