@@ -555,11 +555,9 @@ export function renderArrow(this: MindElixirInstance) {
 
 export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   hideLinkController(this)
-  console.time('editSummary')
   if (!el) return
   if (!el.labelElement) return
   editSvgText(this, el.labelElement, el.arrowObj)
-  console.timeEnd('editSummary')
 }
 
 export function tidyArrow(this: MindElixirInstance) {

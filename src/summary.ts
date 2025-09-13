@@ -229,9 +229,7 @@ export const renderSummary = function (this: MindElixirInstance) {
 }
 
 export const editSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
-  console.time('editSummary')
   if (!el) return
   if (!el.labelElement) return
   editSvgText(this, el.labelElement, el.summaryObj)
-  console.timeEnd('editSummary')
 }

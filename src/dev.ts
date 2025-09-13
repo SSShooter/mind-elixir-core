@@ -49,7 +49,7 @@ const options: Options = {
       }
 
       marked.use({ renderer, gfm: true })
-      let html = marked(text) as string
+      let html = marked.parse(text) as string
       // let html = md2html(text)
 
       // Process KaTeX math expressions

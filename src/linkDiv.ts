@@ -54,6 +54,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     traverseChildren(this, svg, branchColor, el, direction, true)
   }
 
+  this.labelContainer.innerHTML = ''
   this.renderArrow()
   this.renderSummary()
   console.timeEnd('linkDiv')

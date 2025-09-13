@@ -1,0 +1,52 @@
+/* Markdown in Mindmap */
+.map-container h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--selected);
+}
+
+.map-container h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--selected);
+}
+
+.map-container h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--selected);
+}
+
+.map-container h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--selected);
+}
+
+.map-container h5 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--selected);
+}
+
+.map-container h6 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0.1rem 0;
+  color: var(--selected);
+  font-style: italic;
+}
+
+.map-container strong,
+.map-container em {
+  color: var(--selected);
+}
+
+.map-container a {
+  color: var(--selected);
+}
+
+.map-container a:hover {
+  color: var(--selected);
+  text-decoration: underline;
+}

@@ -6,6 +6,7 @@ import { isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
+  let lastTap = 0
 
   const handleClick = (e: MouseEvent) => {
     console.log('handleClick', e)
@@ -129,7 +130,6 @@ export default function (mind: MindElixirInstance) {
     }
   }
 
-  let lastTap = 0
   const handleTouchDblClick = (e: PointerEvent) => {
     if (e.pointerType === 'mouse') return
     const currentTime = new Date().getTime()

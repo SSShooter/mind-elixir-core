@@ -178,7 +178,6 @@ export const createSvgGroup = function (
 }
 
 export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivElement, node: Summary | Arrow) {
-  console.time('editSummary')
   if (!textEl) return
 
   // textEl is now a div element directly
@@ -195,8 +194,6 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
     left:${textEl.style.left};
     top:${textEl.style.top}; 
     max-width: 200px;
-    border: 1px solid #ccc;
-    border-radius: 2px; 
   `
   selectText(div)
   mei.scrollIntoView(div)

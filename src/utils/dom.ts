@@ -1,7 +1,7 @@
 import { LEFT } from '../const'
 import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
 import type { MindElixirInstance, NodeObj } from '../types/index'
-import { encodeHTML } from '../utils/index'
+import { encodeHTML, getOffsetLT } from '../utils/index'
 import { layoutChildren } from './layout'
 
 // DOM manipulation
@@ -171,19 +171,26 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   // Get the original content from topic
   const originalContent = node.topic
 
-  el.appendChild(div)
+  // Use getOffsetLT to calculate el's offset relative to this.nodes
+  const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, el)
+
+  // Insert input box into this.nodes instead of el
+  this.nodes.appendChild(div)
   div.id = 'input-box'
   div.textContent = originalContent
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
   const style = getComputedStyle(el)
-  div.style.cssText = `min-width:${el.offsetWidth - 8}px;
+  div.style.cssText = `
+  left: ${offsetLeft}px;
+  top: ${offsetTop}px;
+  min-width:${el.offsetWidth - 8}px;
   color:${style.color};
   padding:${style.padding};
-  margin:${style.margin};
-  font:${style.font};
+  margin:${style.margin}; 
   background-color:${style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor};
-  border-radius:${style.borderRadius};`
+  border: ${style.border};
+  border-radius:${style.borderRadius}; `
   if (this.direction === LEFT) div.style.right = '0'
 
   selectText(div)
@@ -210,7 +217,6 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   div.addEventListener('blur', () => {
     if (!div) return
     const inputContent = div.textContent?.trim() || ''
-
     if (inputContent === '') {
       node.topic = originalContent
     } else {
