@@ -425,18 +425,8 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
         expanded: true,
         children: [
           {
-            topic: 'Normal distribution: $$f(x) = \\frac{1}{\\sqrt{2\\pi\\sigma^2}} e^{-\\frac{(x-\\mu)^2}{2\\sigma^2}}$$',
-            id: 'markdown-normal-dist',
-            useMd: true,
-          },
-          {
             topic: 'Fourier transform: $$F(\\omega) = \\int_{-\\infty}^{\\infty} f(t) e^{-i\\omega t} dt$$',
             id: 'markdown-fourier',
-            useMd: true,
-          },
-          {
-            topic: 'Taylor series: $$f(x) = \\sum_{n=0}^{\\infty} \\frac{f^{(n)}(a)}{n!}(x-a)^n$$',
-            id: 'markdown-taylor',
             useMd: true,
           },
           {
@@ -470,16 +460,6 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
           {
             topic: '[Link to GitHub](https://github.com) and `inline code`',
             id: 'markdown-links-code',
-            useMd: true,
-          },
-          {
-            topic: '> This is a blockquote\n> with multiple lines',
-            id: 'markdown-blockquote',
-            useMd: true,
-          },
-          {
-            topic: '```javascript\nconst greeting = "Hello World!";\nconsole.log(greeting);\n```',
-            id: 'markdown-code-block',
             useMd: true,
           },
           {
@@ -576,9 +556,9 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
   summaries: [
     {
       id: 'a5e6978f1bc69f4a',
-      parent: 'bd4313fbac40284b',
-      start: 3,
-      end: 5,
+      parent: 'bd1ba66996df4ba4',
+      start: 0,
+      end: 3,
       label:
         'This is a summary section that groups together related nodes to show their logical connection and relationship. You can customize this text to provide more context about the grouped items.',
       style: {

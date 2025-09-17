@@ -186,6 +186,14 @@ export default function (mind: MindElixirInstance) {
     dragMoveHelper.clear()
   }
 
+  // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
+  const handleBlur = () => {
+    // Clear drag state when window loses focus (e.g., alert dialog appears)
+    if (dragMoveHelper.mousedown) {
+      dragMoveHelper.clear()
+    }
+  }
+
   const handleContextMenu = (e: MouseEvent) => {
     console.log('handleContextMenu', e)
     e.preventDefault()
@@ -226,6 +234,7 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'dblclick', func: handleDblClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
+    { dom: container, evt: 'blur', func: handleBlur },
   ])
   return off
 }
