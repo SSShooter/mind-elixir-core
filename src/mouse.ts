@@ -7,6 +7,8 @@ import { isTopic, on } from './utils'
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
   let lastTap = 0
+  // 初始化空格键状态到实例中
+  mind.spacePressed = false
 
   const handleClick = (e: MouseEvent) => {
     console.log('handleClick', e)
@@ -142,18 +144,39 @@ export default function (mind: MindElixirInstance) {
     lastTap = currentTime
   }
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      mind.spacePressed = true
+      mind.container.classList.add('space-pressed')
+      e.preventDefault() // 防止页面滚动
+    }
+  }
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      mind.spacePressed = false
+      mind.container.classList.remove('space-pressed')
+    }
+  }
+
   const handlePointerDown = (e: PointerEvent) => {
     dragMoveHelper.moved = false
+
+    // 支持空格+左键拖拽
+    const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    if (e.button !== mouseMoveButton && e.pointerType === 'mouse') return
+    const isNormalDrag = e.button === mouseMoveButton && e.pointerType === 'mouse'
+
+    if (!isSpaceDrag && !isNormalDrag) return
 
     // Store initial position for movement calculation
     dragMoveHelper.x = e.clientX
     dragMoveHelper.y = e.clientY
 
     const target = e.target as HTMLElement
-    if (target.className === 'circle') return
-    if (target.contentEditable !== 'plaintext-only') {
+
+    // 对于空格拖拽，直接启用；对于普通拖拽，需要检查目标元素
+    if (isSpaceDrag || (target.className !== 'circle' && target.contentEditable !== 'plaintext-only')) {
       dragMoveHelper.mousedown = true
       // Capture pointer to ensure we receive all pointer events even if pointer moves outside the element
       target.setPointerCapture(e.pointerId)
@@ -162,7 +185,7 @@ export default function (mind: MindElixirInstance) {
 
   const handlePointerMove = (e: PointerEvent) => {
     // click trigger pointermove in windows chrome
-    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only') {
+    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only' || (mind.spacePressed && dragMoveHelper.mousedown)) {
       // drag and move the map
       // Calculate movement delta manually since pointer events don't have movementX/Y
       const movementX = e.clientX - dragMoveHelper.x
@@ -176,10 +199,8 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerUp = (e: PointerEvent) => {
-    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    if (e.button !== mouseMoveButton && e.pointerType === 'mouse') return
+    if (!dragMoveHelper.mousedown) return
     const target = e.target as HTMLElement
-    // Release pointer capture
     if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
       target.releasePointerCapture(e.pointerId)
     }
@@ -235,6 +256,8 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
     { dom: container, evt: 'blur', func: handleBlur },
+    { dom: document, evt: 'keydown', func: handleKeyDown },
+    { dom: document, evt: 'keyup', func: handleKeyUp },
   ])
   return off
 }

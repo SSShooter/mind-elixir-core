@@ -20,6 +20,18 @@
     outline: 2px solid var(--selected);
     outline-offset: 1px;
   }
+  &.space-pressed {
+    cursor: grab !important;
+    * {
+      cursor: grab !important;
+    }
+  }
+  &.space-pressed:active {
+    cursor: grabbing !important;
+    * {
+      cursor: grabbing !important;
+    }
+  }
   .hyper-link {
     text-decoration: none;
     margin-left: 0.3em;
