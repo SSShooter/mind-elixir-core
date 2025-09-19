@@ -44,7 +44,7 @@ export interface Summary {
 }
 
 export type SummarySvgGroup = SVGGElement & {
-  children: [SVGPathElement, SVGForeignObjectElement]
+  children: [SVGPathElement]
   summaryObj: Summary
   labelEl?: HTMLDivElement // Reference to the label div element
 }
