@@ -203,7 +203,7 @@ function updateArrowPath(
 
   // Apply label color if specified
   if (linkItem.style?.labelColor) {
-    const div = arrow.label.querySelector('div') as HTMLDivElement
+    const div = arrow.labelEl
     if (div) {
       div.style.color = linkItem.style.labelColor
     }
