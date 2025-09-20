@@ -109,8 +109,7 @@ export default function (mei: MindElixirInstance) {
     if ((e.metaKey || e.ctrlKey) && ((e.shiftKey && e.key === 'Z') || e.key === 'y')) mei.redo()
     else if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
   }
-  const handleSelectNodes = function (nodes: NodeObj[]) {
-    console.log('selectNodes', nodes)
+  const handleSelectNodes = function () {
     currentSelectedNodes = mei.currentNodes.map(n => n.nodeObj)
   }
   mei.bus.addListener('operation', handleOperation)

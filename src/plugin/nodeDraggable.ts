@@ -71,6 +71,12 @@ export default function (mind: MindElixirInstance) {
   const edgeMoveController = new EdgeMoveController(mind)
 
   const handleDragStart = (e: DragEvent) => {
+    // 当按下空格键时，阻止节点拖拽
+    if (mind.spacePressed) {
+      e.preventDefault()
+      return
+    }
+
     mind.selection.cancel()
     const target = e.target as Topic
     if (target?.tagName !== 'ME-TPC') {
@@ -170,5 +176,6 @@ export default function (mind: MindElixirInstance) {
     { dom: mind.map, evt: 'dragend', func: handleDragEnd },
     { dom: mind.map, evt: 'dragover', func: handleDragOver },
   ])
+
   return off
 }

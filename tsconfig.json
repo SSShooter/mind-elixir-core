@@ -2,8 +2,8 @@
   "compilerOptions": {
     "allowJs": false,
     "declaration": true,
+    "rootDir": "src",
     "outDir": "dist/types",
-
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -13,15 +13,13 @@
     /* Bundler mode */
     "isolatedModules": true,
     "emitDeclarationOnly": true,
-    // "noEmit": true,
 
     /* Linting */
     "strict": true,
-    
+
     "noFallthroughCasesInSwitch": true,
     "noErrorTruncation": true,
-    // "moduleResolution": "nodenext"
-    "moduleResolution": "bundler",
+    "moduleResolution": "bundler"
   },
   "include": ["src"],
   "exclude": ["src/dev.dist.ts"]

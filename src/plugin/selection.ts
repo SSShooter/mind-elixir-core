@@ -31,6 +31,7 @@ export default function (mei: MindElixirInstance) {
     },
   })
     .on('beforestart', ({ event }) => {
+      if (mei.spacePressed) return false
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false

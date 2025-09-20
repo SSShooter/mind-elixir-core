@@ -74,6 +74,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   markdown?: (markdown: string, obj: NodeObj) => string // Keep markdown as optional
   imageProxy?: (url: string) => string // Keep imageProxy as optional
   dragged: Topic[] | null // currently dragged nodes
+  spacePressed: boolean // space key pressed state
   el: HTMLElement
   disposable: Array<() => void>
   isFocusMode: boolean
@@ -99,6 +100,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   lines: SVGElement
   summarySvg: SVGElement
   linkController: SVGElement
+  labelContainer: HTMLElement // Container for SVG labels
   P2: HTMLElement
   P3: HTMLElement
   line1: SVGElement

@@ -1,4 +1,5 @@
 import './index.less'
+import './markdown.css'
 import { LEFT, RIGHT, SIDE, DARK_THEME, THEME } from './const'
 import { generateUUID } from './utils/index'
 import initMouseEvent from './mouse'
@@ -118,6 +119,9 @@ function MindElixir(
   this.linkController.appendChild(this.line1)
   this.linkController.appendChild(this.line2)
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
+
+  this.labelContainer = $d.createElement('div') // container for SVG labels
+  this.labelContainer.className = 'label-container'
 
   this.map.appendChild(this.nodes)
 

@@ -6,6 +6,9 @@ import { isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
+  let lastTap = 0
+  // 初始化空格键状态到实例中
+  mind.spacePressed = false
 
   const handleClick = (e: MouseEvent) => {
     console.log('handleClick', e)
@@ -37,29 +40,85 @@ export default function (mind: MindElixirInstance) {
     } else if (!mind.editable) {
       return
     }
-    const trySvg = target.parentElement?.parentElement as unknown as SVGElement
-    if (trySvg.getAttribute('class') === 'topiclinks') {
-      mind.selectArrow(target.parentElement as unknown as CustomSvg)
-    } else if (trySvg.getAttribute('class') === 'summary') {
-      mind.selectSummary(target.parentElement as unknown as SummarySvgGroup)
+    // Check if clicked on a label div
+    if (target.classList.contains('svg-label')) {
+      const id = target.dataset.svgId!
+      const type = target.dataset.type
+      const svgElement = document.getElementById(id)
+      if (svgElement) {
+        if (type === 'arrow') {
+          mind.selectArrow(svgElement as unknown as CustomSvg)
+          return
+        } else if (type === 'summary') {
+          mind.selectSummary(svgElement as unknown as SummarySvgGroup)
+          return
+        }
+      }
+    }
+
+    // Find the closest SVG container using native closest() method
+    const topiclinksContainer = target.closest('.topiclinks')
+    if (topiclinksContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.selectArrow(svgGroup as unknown as CustomSvg)
+        return
+      }
+    }
+
+    const summaryContainer = target.closest('.summary')
+    if (summaryContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.selectSummary(svgGroup as unknown as SummarySvgGroup)
+        return
+      }
     }
   }
 
   const handleDblClick = (e: MouseEvent) => {
     if (!mind.editable) return
     const target = e.target as HTMLElement
+    console.log('handleDblClick', target)
     if (isTopic(target)) {
       mind.beginEdit(target)
     }
-    const trySvg = target.parentElement?.parentElement as unknown as SVGElement
-    if (trySvg.getAttribute('class') === 'topiclinks') {
-      mind.editArrowLabel(target.parentElement as unknown as CustomSvg)
-    } else if (trySvg.getAttribute('class') === 'summary') {
-      mind.editSummary(target.parentElement as unknown as SummarySvgGroup)
+
+    if (target.classList.contains('svg-label')) {
+      const id = target.dataset.svgId!
+      const type = target.dataset.type
+      const svgElement = document.getElementById(id)
+      if (svgElement) {
+        if (type === 'arrow') {
+          mind.editArrowLabel(svgElement as unknown as CustomSvg)
+          return
+        } else if (type === 'summary') {
+          mind.editSummary(svgElement as unknown as SummarySvgGroup)
+          return
+        }
+      }
+    }
+
+    // Find the closest SVG container using native closest() method
+    const topiclinksContainer = target.closest('.topiclinks')
+    if (topiclinksContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.editArrowLabel(svgGroup as unknown as CustomSvg)
+        return
+      }
+    }
+
+    const summaryContainer = target.closest('.summary')
+    if (summaryContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        mind.editSummary(svgGroup as unknown as SummarySvgGroup)
+        return
+      }
     }
   }
 
-  let lastTap = 0
   const handleTouchDblClick = (e: PointerEvent) => {
     if (e.pointerType === 'mouse') return
     const currentTime = new Date().getTime()
@@ -72,18 +131,39 @@ export default function (mind: MindElixirInstance) {
     lastTap = currentTime
   }
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      mind.spacePressed = true
+      mind.container.classList.add('space-pressed')
+      e.preventDefault() // 防止页面滚动
+    }
+  }
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      mind.spacePressed = false
+      mind.container.classList.remove('space-pressed')
+    }
+  }
+
   const handlePointerDown = (e: PointerEvent) => {
     dragMoveHelper.moved = false
+
+    // 支持空格+左键拖拽
+    const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    if (e.button !== mouseMoveButton && e.pointerType === 'mouse') return
+    const isNormalDrag = e.button === mouseMoveButton && e.pointerType === 'mouse'
+
+    if (!isSpaceDrag && !isNormalDrag) return
 
     // Store initial position for movement calculation
     dragMoveHelper.x = e.clientX
     dragMoveHelper.y = e.clientY
 
     const target = e.target as HTMLElement
-    if (target.className === 'circle') return
-    if (target.contentEditable !== 'plaintext-only') {
+
+    // 对于空格拖拽，直接启用；对于普通拖拽，需要检查目标元素
+    if (isSpaceDrag || (target.className !== 'circle' && target.contentEditable !== 'plaintext-only')) {
       dragMoveHelper.mousedown = true
       // Capture pointer to ensure we receive all pointer events even if pointer moves outside the element
       target.setPointerCapture(e.pointerId)
@@ -92,7 +172,7 @@ export default function (mind: MindElixirInstance) {
 
   const handlePointerMove = (e: PointerEvent) => {
     // click trigger pointermove in windows chrome
-    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only') {
+    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only' || (mind.spacePressed && dragMoveHelper.mousedown)) {
       // drag and move the map
       // Calculate movement delta manually since pointer events don't have movementX/Y
       const movementX = e.clientX - dragMoveHelper.x
@@ -106,14 +186,20 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerUp = (e: PointerEvent) => {
-    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    if (e.button !== mouseMoveButton && e.pointerType === 'mouse') return
+    if (!dragMoveHelper.mousedown) return
     const target = e.target as HTMLElement
-    // Release pointer capture
     if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
       target.releasePointerCapture(e.pointerId)
     }
     dragMoveHelper.clear()
+  }
+
+  // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
+  const handleBlur = () => {
+    // Clear drag state when window loses focus (e.g., alert dialog appears)
+    if (dragMoveHelper.mousedown) {
+      dragMoveHelper.clear()
+    }
   }
 
   const handleContextMenu = (e: MouseEvent) => {
@@ -156,6 +242,9 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'dblclick', func: handleDblClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
+    { dom: container, evt: 'blur', func: handleBlur },
+    { dom: document, evt: 'keydown', func: handleKeyDown },
+    { dom: document, evt: 'keyup', func: handleKeyUp },
   ])
   return off
 }

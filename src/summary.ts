@@ -1,7 +1,23 @@
 import type { MindElixirInstance, Topic } from '.'
 import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
-import { createSvgText, editSvgText, svgNS } from './utils/svg'
+import { createLabel, editSvgText, svgNS } from './utils/svg'
+import { calculatePrecisePosition } from './utils/svg'
+
+export interface SummaryStyle {
+  /**
+   * stroke color of the summary
+   */
+  stroke?: string
+  /**
+   * color of the summary label
+   */
+  labelColor?: string
+}
+
+export interface SummaryOptions {
+  style?: SummaryStyle
+}
 
 /**
  * @public
@@ -21,11 +37,16 @@ export interface Summary {
    * end index of the summary
    */
   end: number
+  /**
+   * style of the summary
+   */
+  style?: SummaryStyle
 }
 
 export type SummarySvgGroup = SVGGElement & {
-  children: [SVGPathElement, SVGTextElement]
+  children: [SVGPathElement]
   summaryObj: Summary
+  labelEl?: HTMLDivElement // Reference to the label div element
 }
 
 const calcRange = function (nodes: Topic[]) {
@@ -113,7 +134,7 @@ const getDirection = function (mei: MindElixirInstance, { parent, start }: Summa
 }
 
 const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
-  const { id, label: summaryText, parent, start, end } = summary
+  const { id, label: summaryText, parent, start, end, style } = summary
   const { nodes, theme, summarySvg } = mei
   const parentEl = mei.findEle(parent)
   const parentObj = parentEl.nodeObj
@@ -139,30 +160,36 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   }
   let path
   let text
-  const top = startTop + 10
-  const bottom = endBottom + 10
+  const offset = !parentObj.parent ? 0 : 10
+  const top = startTop + offset
+  const bottom = endBottom + offset
   const md = (top + bottom) / 2
-  const color = theme.cssVar['--color']
+  const strokeColor = style?.stroke || theme.cssVar['--color']
+  const labelColor = style?.labelColor || theme.cssVar['--color']
+  const groupId = 's-' + id
   if (side === DirectionClass.LHS) {
-    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, color)
-    text = createSvgText(summaryText, left - 20, md + 6, { anchor: 'end', color })
+    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
+    text = createLabel(summaryText, left - 20, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
   } else {
-    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, color)
-    text = createSvgText(summaryText, right + 20, md + 6, { anchor: 'start', color })
+    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, strokeColor)
+    text = createLabel(summaryText, right + 20, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
   }
-  const group = creatGroup('s-' + id)
+  const group = creatGroup(groupId)
   group.appendChild(path)
-  group.appendChild(text)
+  // Add label to the label container instead of SVG group
+  mei.labelContainer.appendChild(text)
+  calculatePrecisePosition(text)
   group.summaryObj = summary
+  group.labelEl = text // Store reference to label element
   summarySvg.appendChild(group)
   return group
 }
 
-export const createSummary = function (this: MindElixirInstance) {
+export const createSummary = function (this: MindElixirInstance, options: SummaryOptions = {}) {
   if (!this.currentNodes) return
   const { currentNodes: nodes, summaries, bus } = this
   const { parent, start, end } = calcRange(nodes)
-  const summary = { id: generateUUID(), parent, start, end, label: 'summary' }
+  const summary = { id: generateUUID(), parent, start, end, label: 'summary', style: options.style }
   const g = drawSummary(this, summary) as SummarySvgGroup
   summaries.push(summary)
   this.editSummary(g)
@@ -188,7 +215,8 @@ export const removeSummary = function (this: MindElixirInstance, id: string) {
   const index = this.summaries.findIndex(summary => summary.id === id)
   if (index > -1) {
     this.summaries.splice(index, 1)
-    document.querySelector('#s-' + id)?.remove()
+    this.nodes.querySelector('#s-' + id)?.remove()
+    this.nodes.querySelector('#label-s-' + id)?.remove()
   }
   this.bus.fire('operation', {
     name: 'removeSummary',
@@ -197,26 +225,15 @@ export const removeSummary = function (this: MindElixirInstance, id: string) {
 }
 
 export const selectSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
-  const box = el.children[1].getBBox()
-  const padding = 6
-  const radius = 3
-  const rect = document.createElementNS(svgNS, 'rect')
-  setAttributes(rect, {
-    x: box.x - padding + '',
-    y: box.y - padding + '',
-    width: box.width + padding * 2 + '',
-    height: box.height + padding * 2 + '',
-    rx: radius + '',
-    stroke: this.theme.cssVar['--selected'] || '#4dc4ff',
-    'stroke-width': '2',
-    fill: 'none',
-  })
-  el.appendChild(rect)
+  const label = el.labelEl
+  if (label) {
+    label.classList.add('selected')
+  }
   this.currentSummary = el
 }
 
 export const unselectSummary = function (this: MindElixirInstance) {
-  this.currentSummary?.querySelector('rect')?.remove()
+  this.currentSummary?.labelEl?.classList.remove('selected')
   this.currentSummary = null
 }
 
@@ -233,9 +250,7 @@ export const renderSummary = function (this: MindElixirInstance) {
 }
 
 export const editSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
-  console.time('editSummary')
   if (!el) return
-  const textEl = el.childNodes[1] as SVGTextElement
-  editSvgText(this, textEl, el.summaryObj)
-  console.timeEnd('editSummary')
+  if (!el.labelEl) return
+  editSvgText(this, el.labelEl, el.summaryObj)
 }

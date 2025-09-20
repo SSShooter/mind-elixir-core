@@ -1,10 +1,37 @@
 import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
-import { createSvgGroup, createSvgText, editSvgText, svgNS } from './utils/svg'
+import { calculatePrecisePosition, createArrowGroup, createLabel, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
 
 const highlightColor = '#4dc4ff'
+
+export interface ArrowStyle {
+  /**
+   * stroke color of the arrow
+   */
+  stroke?: string
+  /**
+   * stroke width of the arrow
+   */
+  strokeWidth?: string | number
+  /**
+   * stroke dash array for dashed lines
+   */
+  strokeDasharray?: string
+  /**
+   * stroke line cap style
+   */
+  strokeLinecap?: 'butt' | 'round' | 'square'
+  /**
+   * opacity of the arrow
+   */
+  opacity?: string | number
+  /**
+   * color of the arrow label
+   */
+  labelColor?: string
+}
 
 export interface Arrow {
   id: string
@@ -41,34 +68,9 @@ export interface Arrow {
   /**
    * style properties for the arrow
    */
-  style?: {
-    /**
-     * stroke color of the arrow
-     */
-    stroke?: string
-    /**
-     * stroke width of the arrow
-     */
-    strokeWidth?: string | number
-    /**
-     * stroke dash array for dashed lines
-     */
-    strokeDasharray?: string
-    /**
-     * stroke line cap style
-     */
-    strokeLinecap?: 'butt' | 'round' | 'square'
-    /**
-     * opacity of the arrow
-     */
-    opacity?: string | number
-    /**
-     * color of the arrow label
-     */
-    labelColor?: string
-  }
+  style?: ArrowStyle
 }
-export type DivData = {
+export interface DivData {
   cx: number // center x
   cy: number // center y
   w: number // div width
@@ -76,16 +78,9 @@ export type DivData = {
   ctrlX: number // control point x
   ctrlY: number // control point y
 }
-export type ArrowOptions = {
+export interface ArrowOptions {
   bidirectional?: boolean
-  style?: {
-    stroke?: string
-    strokeWidth?: string | number
-    strokeDasharray?: string
-    strokeLinecap?: 'butt' | 'round' | 'square'
-    opacity?: string | number
-    labelColor?: string
-  }
+  style?: ArrowStyle
 }
 
 /**
@@ -101,11 +96,11 @@ function calcBezierMidPoint(p1x: number, p1y: number, p2x: number, p2y: number, 
 /**
  * Update arrow label position
  */
-function updateArrowLabel(label: SVGTextElement, x: number, y: number) {
-  setAttributes(label, {
-    x: x + '',
-    y: y + '',
-  })
+function updateArrowLabel(labelEl: HTMLDivElement, x: number, y: number) {
+  if (!labelEl) return
+  labelEl.dataset.x = x.toString()
+  labelEl.dataset.y = y.toString()
+  calculatePrecisePosition(labelEl)
 }
 
 /**
@@ -202,11 +197,16 @@ function updateArrowPath(
 
   // Update label position and color
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
-  updateArrowLabel(arrow.label, halfx, halfy)
+  if (arrow.labelEl) {
+    updateArrowLabel(arrow.labelEl, halfx, halfy)
+  }
 
   // Apply label color if specified
   if (linkItem.style?.labelColor) {
-    arrow.label.setAttribute('fill', linkItem.style.labelColor)
+    const div = arrow.labelEl
+    if (div) {
+      div.style.color = linkItem.style.labelColor
+    }
   }
 
   // Update highlight layer
@@ -293,22 +293,25 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
     if (!arrowF) return
     fromArrow = `M ${arrowF.x1} ${arrowF.y1} L ${p1x} ${p1y} L ${arrowF.x2} ${arrowF.y2}`
   }
-  const newSvgGroup = createSvgGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow, obj.style)
+  const newSvgGroup = createArrowGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow, obj.style)
 
   // Use extracted common function to calculate midpoint
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
-  const labelColor = obj.style?.labelColor
-  const label = createSvgText(obj.label, halfx, halfy, {
+  const labelColor = obj.style?.labelColor || 'rgb(235, 95, 82)'
+  const groupId = 'arrow-' + obj.id
+  newSvgGroup.id = groupId
+  const label = createLabel(obj.label, halfx, halfy, {
     anchor: 'middle',
     color: labelColor,
-    dataType: 'custom-link',
+    dataType: 'arrow',
+    svgId: groupId,
   })
-  newSvgGroup.appendChild(label)
-  newSvgGroup.label = label
-
+  newSvgGroup.labelEl = label // Store reference to label element
   newSvgGroup.arrowObj = obj
   newSvgGroup.dataset.linkid = obj.id
+  mei.labelContainer.appendChild(label)
   mei.linkSvgGroup.appendChild(newSvgGroup)
+  calculatePrecisePosition(label)
   if (!isInitPaint) {
     mei.arrows.push(obj)
     mei.currentArrow = newSvgGroup
@@ -542,11 +545,9 @@ export function renderArrow(this: MindElixirInstance) {
 
 export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   hideLinkController(this)
-  console.time('editSummary')
   if (!el) return
-  const textEl = el.label
-  editSvgText(this, textEl, el.arrowObj)
-  console.timeEnd('editSummary')
+  if (!el.labelEl) return
+  editSvgText(this, el.labelEl, el.arrowObj)
 }
 
 export function tidyArrow(this: MindElixirInstance) {

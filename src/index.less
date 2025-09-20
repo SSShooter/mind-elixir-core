@@ -20,6 +20,18 @@
     outline: 2px solid var(--selected);
     outline-offset: 1px;
   }
+  &.space-pressed {
+    cursor: grab !important;
+    * {
+      cursor: grab !important;
+    }
+  }
+  &.space-pressed:active {
+    cursor: grabbing !important;
+    * {
+      cursor: grabbing !important;
+    }
+  }
   .hyper-link {
     text-decoration: none;
     margin-left: 0.3em;
@@ -210,6 +222,9 @@
     pointer-events: stroke;
     z-index: 20;
   }
+  .label-container {
+    z-index: 21;
+  }
 
   .lines,
   .subLines {
@@ -227,6 +242,8 @@
     pointer-events: auto;
     color: var(--color);
     background-color: var(--bgcolor);
+    outline: 1px solid #ccc;
+    border-radius: 2px;
     z-index: 100;
   }
 
@@ -316,5 +333,24 @@
   .selection-area {
     background: #4f90f22d;
     border: 1px solid #4f90f2;
+  }
+
+  .svg-label {
+    position: absolute;
+    left: 0; // keep width
+    top: 0;
+    display: flex;
+    align-items: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.2;
+    padding: 2px;
+    pointer-events: auto;
+    cursor: pointer;
+    z-index: 10;
+    max-width: 200px;
+    border-radius: 3px;
+    padding: var(--topic-padding);
   }
 }

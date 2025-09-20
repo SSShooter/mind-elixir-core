@@ -64,7 +64,6 @@ test('Simple Undo/Redo - Test Ctrl+Shift+Z', async ({ page, me }) => {
   await page.waitForTimeout(500)
 
   const nodeVisible = await page.getByText('New Node').isVisible()
-  console.log('Node visible after Ctrl+Shift+Z:', nodeVisible)
 
   // If that didn't work, try lowercase z
   if (!nodeVisible) {

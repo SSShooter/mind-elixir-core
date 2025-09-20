@@ -11,29 +11,77 @@ export const svgNS = 'http://www.w3.org/2000/svg'
 export interface SvgTextOptions {
   anchor?: 'start' | 'middle' | 'end'
   color?: string
-  dataType?: string
+  dataType: string
+  svgId: string // Associated SVG element ID
 }
 
 /**
- * Create an SVG text element with common attributes
+ * Create a div label for SVG elements with positioning
  */
-export const createSvgText = function (text: string, x: number, y: number, options: SvgTextOptions = {}): SVGTextElement {
-  const { anchor = 'middle', color, dataType } = options
+// Helper function to calculate precise position based on actual DOM dimensions
+export const calculatePrecisePosition = function (element: HTMLElement): void {
+  // Get actual dimensions
+  const actualWidth = element.clientWidth
+  const actualHeight = element.clientHeight
+  const data = element.dataset
+  const x = Number(data.x)
+  const y = Number(data.y)
+  const anchor = data.anchor
 
-  const textElement = document.createElementNS(svgNS, 'text')
-  setAttributes(textElement, {
-    'text-anchor': anchor,
-    x: x + '',
-    y: y + '',
-    fill: color || (anchor === 'middle' ? 'rgb(235, 95, 82)' : '#666'),
-  })
-
-  if (dataType) {
-    textElement.dataset.type = dataType
+  // Calculate position based on anchor and actual dimensions
+  let adjustedX = x
+  if (anchor === 'middle') {
+    adjustedX = x - actualWidth / 2
+  } else if (anchor === 'end') {
+    adjustedX = x - actualWidth
   }
 
-  textElement.innerHTML = text
-  return textElement
+  // Set final position with actual dimensions
+  element.style.left = `${adjustedX}px`
+  element.style.top = `${y - actualHeight / 2}px`
+  element.style.visibility = 'visible'
+}
+
+export const createLabel = function (text: string, x: number, y: number, options: SvgTextOptions): HTMLDivElement {
+  const { anchor = 'middle', color, dataType, svgId } = options
+
+  // Create label div element
+  const labelDiv = document.createElement('div')
+  labelDiv.className = 'svg-label'
+  labelDiv.style.color = color || '#666'
+
+  // Generate unique ID for the label
+  const labelId = 'label-' + svgId
+  labelDiv.id = labelId
+  labelDiv.innerHTML = text
+
+  labelDiv.dataset.type = dataType
+  labelDiv.dataset.svgId = svgId
+  labelDiv.dataset.x = x.toString()
+  labelDiv.dataset.y = y.toString()
+  labelDiv.dataset.anchor = anchor
+
+  return labelDiv
+}
+
+/**
+ * Find SVG element by label ID
+ */
+export const findSvgByLabelId = function (labelId: string): SVGElement | null {
+  const labelEl = document.getElementById(labelId) as HTMLElement
+  if (!labelEl || !labelEl.dataset.svgId) {
+    return null
+  }
+  const svgElement = document.getElementById(labelEl.dataset.svgId)
+  return svgElement as unknown as SVGElement
+}
+
+/**
+ * Find label element by SVG ID
+ */
+export const findLabelBySvgId = function (svgId: string): HTMLDivElement | null {
+  const labelEl = document.querySelector(`[data-svg-id="${svgId}"]`) as HTMLDivElement
+  return labelEl
 }
 
 export const createPath = function (d: string, color: string, width: string) {
@@ -63,7 +111,7 @@ export const createLine = function () {
   return line
 }
 
-export const createSvgGroup = function (
+export const createArrowGroup = function (
   d: string,
   arrowd1: string,
   arrowd2: string,
@@ -73,7 +121,6 @@ export const createSvgGroup = function (
     strokeDasharray?: string
     strokeLinecap?: 'butt' | 'round' | 'square'
     opacity?: string | number
-    labelColor?: string
   }
 ): CustomSvg {
   const g = $d.createElementNS(svgNS, 'g') as CustomSvg
@@ -96,7 +143,7 @@ export const createSvgGroup = function (
     const path = $d.createElementNS(svgNS, 'path')
     const attrs: { [key: string]: string } = {
       d,
-      stroke: style?.stroke || 'rgb(235, 95, 82)',
+      stroke: style?.stroke || 'rgb(227, 125, 116)',
       fill: 'none',
       'stroke-linecap': style?.strokeLinecap || 'cap',
       'stroke-width': String(style?.strokeWidth || '2'),
@@ -129,25 +176,23 @@ export const createSvgGroup = function (
   return g
 }
 
-export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextElement, node: Summary | Arrow) {
-  console.time('editSummary')
+export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivElement, node: Summary | Arrow) {
   if (!textEl) return
-  const div = $d.createElement('div')
+
+  // textEl is now a div element directly
+  const origin = node.label
+
+  const div = textEl.cloneNode(true) as HTMLDivElement
   mei.nodes.appendChild(div)
-  const origin = textEl.innerHTML
   div.id = 'input-box'
   div.textContent = origin
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
-  const bbox = textEl.getBBox()
-  console.log(bbox)
+
   div.style.cssText = `
-    min-width:${Math.max(88, bbox.width)}px;
-    position:absolute;
-    left:${bbox.x}px;
-    top:${bbox.y}px;
-    padding: 2px 4px;
-    margin: -2px -4px; 
+    left:${textEl.style.left};
+    top:${textEl.style.top}; 
+    max-width: 200px;
   `
   selectText(div)
   mei.scrollIntoView(div)
@@ -165,6 +210,7 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
       mei.container.focus()
     }
   })
+
   div.addEventListener('blur', () => {
     if (!div) return
     const text = div.textContent?.trim() || ''
@@ -172,7 +218,10 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: SVGTextEle
     else node.label = text
     div.remove()
     if (text === origin) return
-    textEl.innerHTML = node.label
+
+    textEl.textContent = node.label
+    // Recalculate position with new content while preserving existing color
+    calculatePrecisePosition(textEl)
 
     if ('parent' in node) {
       mei.bus.fire('operation', {
