@@ -41,23 +41,17 @@ export default function (mind: MindElixirInstance) {
       return
     }
     // Check if clicked on a label div
-    const labelDiv = target.closest('.svg-label') as HTMLElement
-    if (labelDiv && labelDiv.dataset.svgId) {
-      const svgElement = document.getElementById(labelDiv.dataset.svgId)
+    if (target.classList.contains('svg-label')) {
+      const id = target.dataset.svgId!
+      const type = target.dataset.type
+      const svgElement = document.getElementById(id)
       if (svgElement) {
-        const svgGroup = svgElement.closest('g')
-        if (svgGroup) {
-          // Check if it's an arrow or summary based on parent container
-          const topiclinksContainer = svgGroup.closest('.topiclinks')
-          const summaryContainer = svgGroup.closest('.summary')
-
-          if (topiclinksContainer) {
-            mind.selectArrow(svgGroup as unknown as CustomSvg)
-            return
-          } else if (summaryContainer) {
-            mind.selectSummary(svgGroup as unknown as SummarySvgGroup)
-            return
-          }
+        if (type === 'arrow') {
+          mind.selectArrow(svgElement as unknown as CustomSvg)
+          return
+        } else if (type === 'summary') {
+          mind.selectSummary(svgElement as unknown as SummarySvgGroup)
+          return
         }
       }
     }
@@ -90,24 +84,17 @@ export default function (mind: MindElixirInstance) {
       mind.beginEdit(target)
     }
 
-    // Check if double-clicked on a label div
-    const labelDiv = target.closest('.svg-label') as HTMLElement
-    if (labelDiv && labelDiv.dataset.svgId) {
-      const svgElement = document.getElementById(labelDiv.dataset.svgId)
+    if (target.classList.contains('svg-label')) {
+      const id = target.dataset.svgId!
+      const type = target.dataset.type
+      const svgElement = document.getElementById(id)
       if (svgElement) {
-        const svgGroup = svgElement.closest('g')
-        if (svgGroup) {
-          // Check if it's an arrow or summary based on parent container
-          const topiclinksContainer = svgGroup.closest('.topiclinks')
-          const summaryContainer = svgGroup.closest('.summary')
-
-          if (topiclinksContainer) {
-            mind.editArrowLabel(svgGroup as unknown as CustomSvg)
-            return
-          } else if (summaryContainer) {
-            mind.editSummary(svgGroup as unknown as SummarySvgGroup)
-            return
-          }
+        if (type === 'arrow') {
+          mind.editArrowLabel(svgElement as unknown as CustomSvg)
+          return
+        } else if (type === 'summary') {
+          mind.editSummary(svgElement as unknown as SummarySvgGroup)
+          return
         }
       }
     }

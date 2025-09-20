@@ -303,7 +303,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const label = createLabel(obj.label, halfx, halfy, {
     anchor: 'middle',
     color: labelColor,
-    dataType: 'link-label',
+    dataType: 'arrow',
     svgId: groupId,
   })
   newSvgGroup.labelEl = label // Store reference to label element

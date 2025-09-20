@@ -169,10 +169,10 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const groupId = 's-' + id
   if (side === DirectionClass.LHS) {
     path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
-    text = createLabel(summaryText, left - 20, md, { anchor: 'end', color: labelColor, dataType: 's-label', svgId: groupId })
+    text = createLabel(summaryText, left - 20, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
   } else {
     path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, strokeColor)
-    text = createLabel(summaryText, right + 20, md, { anchor: 'start', color: labelColor, dataType: 's-label', svgId: groupId })
+    text = createLabel(summaryText, right + 20, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
   }
   const group = creatGroup(groupId)
   group.appendChild(path)

@@ -67,8 +67,8 @@ test('Create arrow between two nodes', async ({ page, me }) => {
   await expect(page.locator('svg g[data-linkid] path').nth(1)).toBeVisible()
 
   // Verify arrow label is visible
-  await expect(page.locator('.svg-label[data-type="link-label"]').first()).toBeVisible()
-  await expect(page.locator('.svg-label[data-type="link-label"]').first()).toHaveText('Custom Link')
+  await expect(page.locator('.svg-label[data-type="arrow"]').first()).toBeVisible()
+  await expect(page.locator('.svg-label[data-type="arrow"]').first()).toHaveText('Custom Link')
 })
 
 test('Create arrow with custom options', async ({ page, me }) => {
@@ -101,7 +101,7 @@ test('Create arrow with custom options', async ({ page, me }) => {
   expect(pathCount).toBeGreaterThan(3) // Should have more than 3 paths for bidirectional
 
   // Verify custom label color
-  const arrowLabel = page.locator('.svg-label[data-type="link-label"]').first()
+  const arrowLabel = page.locator('.svg-label[data-type="arrow"]').first()
   await expect(arrowLabel).toHaveCSS('color', 'rgb(0, 0, 255)')
 })
 
@@ -127,7 +127,7 @@ test('Create arrow from arrow object', async ({ page, me }) => {
   await expect(page.locator('svg g[data-linkid]')).toBeVisible()
 
   // Verify custom label
-  await expect(page.locator('.svg-label[data-type="link-label"]').first()).toHaveText('Test Arrow')
+  await expect(page.locator('.svg-label[data-type="arrow"]').first()).toHaveText('Test Arrow')
 
   // Verify arrow appears with custom properties
   await expect(page.locator('svg g[data-linkid]')).toBeVisible()
@@ -198,9 +198,9 @@ test('Edit arrow label', async ({ page, me }) => {
 
   // First select the arrow by clicking on it with force
   await page.locator('svg g[data-linkid] path').first().click({ force: true })
-  
+
   // Then double click on arrow label to edit
-  await page.locator('.svg-label[data-type="link-label"]').first().dblclick({ force: true })
+  await page.locator('.svg-label[data-type="arrow"]').first().dblclick({ force: true })
 
   // Verify input box appears
   await expect(page.locator('#input-box')).toBeVisible()
@@ -214,7 +214,7 @@ test('Edit arrow label', async ({ page, me }) => {
   await expect(page.locator('#input-box')).toBeHidden()
 
   // Verify new label is displayed
-  await expect(page.locator('.svg-label[data-type="link-label"]').first()).toHaveText('Updated Arrow Label')
+  await expect(page.locator('.svg-label[data-type="arrow"]').first()).toHaveText('Updated Arrow Label')
 })
 
 test('Unselect arrow', async ({ page, me }) => {
@@ -265,7 +265,7 @@ test('Render multiple arrows', async ({ page, me }) => {
   await expect(page.locator('svg g[data-linkid]')).toHaveCount(2)
 
   // Verify both have labels
-  await expect(page.locator('.svg-label[data-type="link-label"]')).toHaveCount(2)
+  await expect(page.locator('.svg-label[data-type="arrow"]')).toHaveCount(2)
 })
 
 test('Arrow positioning and bezier curve', async ({ page, me }) => {
@@ -286,7 +286,7 @@ test('Arrow positioning and bezier curve', async ({ page, me }) => {
   expect(pathData).toContain('C') // Cubic bezier curve
 
   // Verify arrow label is positioned at curve midpoint
-  const arrowLabel = page.locator('.svg-label[data-type="link-label"]').first()
+  const arrowLabel = page.locator('.svg-label[data-type="arrow"]').first()
   await expect(arrowLabel).toBeVisible()
 
   // Label should be positioned (label has data-x and data-y attributes)
@@ -320,7 +320,7 @@ test('Arrow style inheritance and defaults', async ({ page, me }) => {
   expect(fill).toBe('none') // Arrows should not be filled
 
   // Verify default label color
-  const arrowLabel = page.locator('.svg-label[data-type="link-label"]').first()
+  const arrowLabel = page.locator('.svg-label[data-type="arrow"]').first()
   const labelColor = await arrowLabel.evaluate(el => getComputedStyle(el).color)
   expect(labelColor).toBeTruthy()
 })
@@ -468,16 +468,16 @@ test('Arrow label text anchor positioning', async ({ page, me }) => {
   }, instanceHandle)
 
   // Verify arrow label has center text alignment
-  const arrowLabel = page.locator('.svg-label[data-type="link-label"]').first()
+  const arrowLabel = page.locator('.svg-label[data-type="arrow"]').first()
   await expect(arrowLabel).toBeVisible()
-  
+
   // Verify text alignment via CSS (justifyContent might be 'normal' for center alignment)
   const justifyContent = await arrowLabel.evaluate(el => getComputedStyle(el).justifyContent)
   expect(['flex-start', 'center', 'flex-end', 'normal']).toContain(justifyContent)
 
-  // Verify label has link-label data type
+  // Verify label has arrow data type
   const dataType = await arrowLabel.getAttribute('data-type')
-  expect(dataType).toBe('link-label')
+  expect(dataType).toBe('arrow')
 
   // Verify label has middle anchor
   const dataAnchor = await arrowLabel.getAttribute('data-anchor')
@@ -688,7 +688,7 @@ test('Arrow bezier midpoint calculation', async ({ page, me }) => {
   }, instanceHandle)
 
   // Get arrow label position from label element
-  const arrowLabel = page.locator('.svg-label[data-type="link-label"]').first()
+  const arrowLabel = page.locator('.svg-label[data-type="arrow"]').first()
   const labelX = await arrowLabel.getAttribute('data-x')
   const labelY = await arrowLabel.getAttribute('data-y')
 
@@ -737,6 +737,6 @@ test('Arrow style application to all elements', async ({ page, me }) => {
   expect(hasStyles).toBe(true)
 
   // Verify label color
-  const label = page.locator('.svg-label[data-type="link-label"]').first()
+  const label = page.locator('.svg-label[data-type="arrow"]').first()
   await expect(label).toHaveCSS('color', 'rgb(255, 165, 0)')
 })
