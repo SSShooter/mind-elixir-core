@@ -41,6 +41,14 @@ const options: Options = {
     try {
       // Configure marked renderer to add target="_blank" to links
       const renderer = {
+        strong(token: Tokens.Strong) {
+          if (token.raw.startsWith('**')) {
+            return `<strong class="asterisk-emphasis">${token.text}</strong>`
+          } else if (token.raw.startsWith('__')) {
+            return `<strong class="underscore-emphasis">${token.text}</strong>`
+          }
+          return `<strong>${token.text}</strong>`
+        },
         link(token: Tokens.Link) {
           const href = token.href || ''
           const title = token.title ? ` title="${token.title}"` : ''
@@ -121,6 +129,7 @@ const options: Options = {
 let mind = new MindElixir(options)
 
 const data = MindElixir.new('new topic')
+// example.theme = MindElixir.DARK_THEME
 mind.init(example)
 
 const m2 = new MindElixir({

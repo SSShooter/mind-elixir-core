@@ -448,7 +448,7 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
             useMd: true,
           },
           {
-            topic: '**Bold text** and *italic text* and ***bold italic***',
+            topic: '**Bold text** and __Highlight__ and *italic text*',
             id: 'markdown-emphasis',
             useMd: true,
           },

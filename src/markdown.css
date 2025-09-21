@@ -37,9 +37,14 @@
   font-style: italic;
 }
 
-.map-container strong,
+.map-container strong.asterisk-emphasis,
 .map-container em {
   color: var(--selected);
+}
+.map-container strong.underscore-emphasis {
+  background: rgba(255, 235, 59, 0.25); /* 可改颜色/透明度 */
+  padding: 0.05em 0.15em;
+  border-radius: 0.15em;
 }
 
 .map-container a {
