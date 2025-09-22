@@ -11,10 +11,12 @@ import type { createDragMoveHelper } from '../utils/dragMoveHelper'
 import type SelectionArea from '@viselect/vanilla'
 export { type MindElixirMethods } from '../methods'
 
-export enum DirectionClass {
-  LHS = 'lhs',
-  RHS = 'rhs',
-}
+export const DirectionClass = {
+  LHS: 'lhs',
+  RHS: 'rhs',
+} as const
+
+export type DirectionClass = (typeof DirectionClass)[keyof typeof DirectionClass]
 
 type Before = Partial<{
   [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
@@ -91,7 +93,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   waitCopy: Topic[] | null
 
   scaleVal: number
-  tempDirection: number | null
+  tempDirection: 0 | 1 | 2 | null
 
   container: HTMLElement
   map: HTMLElement
@@ -131,7 +133,7 @@ type PathString = string
  */
 export interface Options {
   el: string | HTMLElement
-  direction?: number
+  direction?: 0 | 1 | 2
   locale?: Locale
   draggable?: boolean
   editable?: boolean
@@ -246,6 +248,6 @@ export type MindElixirData = {
   nodeData: NodeObj
   arrows?: Arrow[]
   summaries?: Summary[]
-  direction?: number
+  direction?: 0 | 1 | 2
   theme?: Theme
 }
