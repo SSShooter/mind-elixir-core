@@ -75,6 +75,7 @@ export type EventMap = {
   selectNodes: (nodeObj: NodeObj[]) => void
   unselectNodes: (nodeObj: NodeObj[]) => void
   expandNode: (nodeObj: NodeObj) => void
+  changeDirection: (direction: number) => void
   linkDiv: () => void
   scale: (scale: number) => void
   move: (data: { dx: number; dy: number }) => void

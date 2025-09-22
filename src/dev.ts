@@ -167,8 +167,8 @@ mind.bus.addListener('selectNodes', nodes => {
 mind.bus.addListener('unselectNodes', nodes => {
   console.log('unselectNodes', nodes)
 })
-mind.bus.addListener('expandNode', node => {
-  console.log('expandNode: ', node)
+mind.bus.addListener('changeDirection', direction => {
+  console.log('changeDirection: ', direction)
 })
 
 const dl2 = async () => {
