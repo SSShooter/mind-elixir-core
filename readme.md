@@ -300,8 +300,6 @@ let mind = new MindElixir({
 })
 ```
 
-For detailed markdown configuration examples, see [docs/markdown-configuration.md](docs/markdown-configuration.md).
-
 ### Operation Guards
 
 ```javascript
