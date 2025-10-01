@@ -71,8 +71,8 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: 'pnpm dev --port 23334',
-    url: 'http://127.0.0.1:23334',
+    command: 'pnpm dev --port 23334', 
+    port: 23334,
     reuseExistingServer: true,
     env: {
       VITE_COVERAGE: 'true'
