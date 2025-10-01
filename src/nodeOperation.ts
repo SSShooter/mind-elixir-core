@@ -60,10 +60,14 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   if (!nodeObj.parent) {
     this.addChild()
     return
-  } else if (!nodeObj.parent?.parent && nodeObj.parent?.children?.length === 1 && this.direction === 2) {
-    // add at least one node to another side
-    this.addChild(this.findEle(nodeObj.parent!.id), node)
-    return
+  } else if (!nodeObj.parent?.parent && this.direction === 2) {
+    const l = this.map.querySelector('.lhs')?.childElementCount || 0
+    const r = this.map.querySelector('.rhs')?.childElementCount || 0
+    if (!l || !r) {
+      // add at least one node to another side
+      this.addChild(this.findEle(nodeObj.parent!.id), node)
+      return
+    }
   }
   const newNodeObj = node || this.generateNewObj()
   if (!nodeObj.parent?.parent) {
