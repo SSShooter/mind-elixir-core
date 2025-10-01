@@ -1,14 +1,14 @@
-import type { Behaviour } from '@viselect/vanilla'
-import SelectionArea from '@viselect/vanilla'
 import type { MindElixirInstance, Topic } from '..'
+import type { Behaviour } from '../viselect/src'
+import SelectionArea from '../viselect/src'
 
-// TODO: boundaries move missing
 export default function (mei: MindElixirInstance) {
   const triggers: Behaviour['triggers'] = mei.mouseSelectionButton === 2 ? [2] : [0]
   const selection = new SelectionArea({
     selectables: ['.map-container me-tpc'],
     boundaries: [mei.container],
     container: mei.selectionContainer,
+    mindElixirInstance: mei, // 传递 MindElixir 实例
     features: {
       // deselectOnBlur: true,
       touch: false,
@@ -20,13 +20,7 @@ export default function (mei: MindElixirInstance) {
         // On scrollable areas the number on px per frame is devided by this amount.
         // Default is 10 to provide a enjoyable scroll experience.
         speedDivider: 10,
-        // Browsers handle mouse-wheel events differently, this number will be used as
-        // numerator to calculate the mount of px while scrolling manually: manualScrollSpeed / scrollSpeedDivider.
-        manualSpeed: 750,
-        // This property defines the virtual inset margins from the borders of the container
-        // component that, when crossed by the mouse/touch, trigger the scrolling. Useful for
-        // fullscreen containers.
-        startScrollMargins: { x: 10, y: 10 },
+        startScrollMargins: { x: 50, y: 50 },
       },
     },
   })
