@@ -135,7 +135,6 @@ export default function (mind: MindElixirInstance) {
     if (e.code === 'Space') {
       mind.spacePressed = true
       mind.container.classList.add('space-pressed')
-      e.preventDefault() // 防止页面滚动
     }
   }
 
@@ -243,8 +242,8 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
     { dom: container, evt: 'blur', func: handleBlur },
-    { dom: document, evt: 'keydown', func: handleKeyDown },
-    { dom: document, evt: 'keyup', func: handleKeyUp },
+    { dom: container, evt: 'keydown', func: handleKeyDown },
+    { dom: container, evt: 'keyup', func: handleKeyUp },
   ])
   return off
 }
