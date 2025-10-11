@@ -186,6 +186,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   top: ${offsetTop}px;
   min-width:${el.offsetWidth - 8}px;
   color:${style.color};
+  font-size:${style.fontSize};
   padding:${style.padding};
   margin:${style.margin}; 
   background-color:${style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor};
