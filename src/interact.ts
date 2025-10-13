@@ -205,8 +205,10 @@ const getCenterDefault = (mei: MindElixirInstance) => {
  * @memberof MapInteraction
  */
 export const toCenter = function (this: MindElixirInstance) {
-  const { map } = this
+  const { map, container } = this
   const { dx, dy } = getCenterDefault(this)
+  container.scrollTop = 0
+  container.scrollLeft = 0
   map.style.transform = `translate(${dx}px, ${dy}px) scale(${this.scaleVal})`
 }
 
