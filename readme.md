@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+<a href="https://trendshift.io/repositories/13049" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13049" alt="SSShooter%2Fmind-elixir-core | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
@@ -84,6 +88,7 @@ Mind elixir is a open source JavaScript mind map core. You can use it with any f
   - [Data Structure](#data-structure)
   - [Event Handling](#event-handling)
   - [Data Export And Import](#data-export-and-import)
+  - [Markdown Support](#markdown-support)
   - [Operation Guards](#operation-guards)
 - [Export as a Image](#export-as-a-image)
 - [Theme](#theme)
