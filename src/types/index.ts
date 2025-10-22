@@ -73,7 +73,7 @@ export interface KeypressOptions {
  * @public
  */
 export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' | 'imageProxy'>, MindElixirMethods {
-  markdown?: (markdown: string, obj: NodeObj) => string // Keep markdown as optional
+  markdown?: (markdown: string, obj: NodeObj | Arrow | Summary) => string // Keep markdown as optional
   imageProxy?: (url: string) => string // Keep imageProxy as optional
   dragged: Topic[] | null // currently dragged nodes
   spacePressed: boolean // space key pressed state
@@ -159,7 +159,7 @@ export interface Options {
    * If not provided, markdown will be disabled
    * @default undefined
    */
-  markdown?: (markdown: string, obj: NodeObj) => string
+  markdown?: (markdown: string, obj: NodeObj | Arrow | Summary) => string
   /**
    * Image proxy function to handle image URLs, mainly used to solve CORS issues
    * If provided, all image URLs will be processed through this function before setting to img src

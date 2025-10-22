@@ -219,7 +219,11 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
     div.remove()
     if (text === origin) return
 
-    textEl.textContent = node.label
+    if (mei.markdown) {
+      ;(textEl as HTMLDivElement).innerHTML = mei.markdown(node.label, node as any)
+    } else {
+      textEl.textContent = node.label
+    }
     // Recalculate position with new content while preserving existing color
     calculatePrecisePosition(textEl)
 

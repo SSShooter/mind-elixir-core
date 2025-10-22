@@ -300,7 +300,8 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const labelColor = obj.style?.labelColor || 'rgb(235, 95, 82)'
   const groupId = 'arrow-' + obj.id
   newSvgGroup.id = groupId
-  const label = createLabel(obj.label, halfx, halfy, {
+  const renderedLabel = mei.markdown ? mei.markdown(obj.label, obj) : obj.label
+  const label = createLabel(renderedLabel, halfx, halfy, {
     anchor: 'middle',
     color: labelColor,
     dataType: 'arrow',

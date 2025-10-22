@@ -40,10 +40,10 @@ export default function (mind: MindElixirInstance) {
     } else if (!mind.editable) {
       return
     }
-    // Check if clicked on a label div
-    if (target.classList.contains('svg-label')) {
-      const id = target.dataset.svgId!
-      const type = target.dataset.type
+    const label = target.closest('.svg-label') as HTMLElement
+    if (label) {
+      const id = label.dataset.svgId!
+      const type = label.dataset.type
       const svgElement = document.getElementById(id)
       if (svgElement) {
         if (type === 'arrow') {
@@ -84,9 +84,10 @@ export default function (mind: MindElixirInstance) {
       mind.beginEdit(target)
     }
 
-    if (target.classList.contains('svg-label')) {
-      const id = target.dataset.svgId!
-      const type = target.dataset.type
+    const label = target.closest('.svg-label') as HTMLElement
+    if (label) {
+      const id = label.dataset.svgId!
+      const type = label.dataset.type
       const svgElement = document.getElementById(id)
       if (svgElement) {
         if (type === 'arrow') {

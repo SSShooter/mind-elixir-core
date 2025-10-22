@@ -12,6 +12,8 @@ import { snapdom } from '@zumer/snapdom'
 import type { Tokens } from 'marked'
 import { marked } from 'marked'
 import { md2html } from 'simple-markdown-to-html'
+import type { Arrow } from './arrow'
+import type { Summary } from './summary'
 
 interface Window {
   m?: MindElixirInstance
@@ -35,9 +37,9 @@ const options: Options = {
   // mouseSelectionButton: 2,
   draggable: true,
   editable: true,
-  markdown: (text: string, obj: NodeObj & { useMd?: boolean }) => {
+  markdown: (text: string, obj: (NodeObj & { useMd?: boolean }) | (Arrow & { useMd?: boolean }) | (Summary & { useMd?: boolean })) => {
     if (!text) return ''
-    if (!obj.useMd) return text
+    // if (!obj.useMd) return text
     try {
       // Configure marked renderer to add target="_blank" to links
       const renderer = {
