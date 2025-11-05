@@ -152,7 +152,7 @@ export default function (mind: MindElixirInstance) {
     // 支持空格+左键拖拽
     const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
-    const isNormalDrag = e.button === mouseMoveButton && e.pointerType === 'mouse'
+    const isNormalDrag = (e.button === mouseMoveButton && e.pointerType === 'mouse') || e.pointerType === 'touch'
 
     if (!isSpaceDrag && !isNormalDrag) return
 
