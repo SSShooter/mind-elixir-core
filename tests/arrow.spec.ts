@@ -176,6 +176,9 @@ test('Remove arrow', async ({ page, me }) => {
 
   // Verify arrow exists
   await expect(page.locator('svg g[data-linkid]')).toBeVisible()
+  
+  // Verify arrow label exists
+  await expect(page.locator('.svg-label[data-type="arrow"]')).toHaveCount(1)
 
   // Remove arrow programmatically
   await page.evaluate(async instance => {
@@ -184,6 +187,9 @@ test('Remove arrow', async ({ page, me }) => {
 
   // Verify arrow is removed
   await expect(page.locator('svg g[data-linkid]')).not.toBeVisible()
+  
+  // Verify arrow label is also removed
+  await expect(page.locator('.svg-label[data-type="arrow"]')).toHaveCount(0)
 })
 
 test('Edit arrow label', async ({ page, me }) => {
@@ -668,9 +674,9 @@ test('Arrow creation with invalid nodes', async ({ page, me }) => {
       if (nonExistentNode1 && nonExistentNode2) {
         instance.createArrow(nonExistentNode1, nonExistentNode2)
       }
-    } catch (error) {
+    } catch {
       // Expected to fail gracefully
-      console.log('Arrow creation failed as expected:', error.message)
+      console.log('Arrow creation failed as expected')
     }
   }, instanceHandle)
 

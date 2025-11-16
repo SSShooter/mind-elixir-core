@@ -366,6 +366,8 @@ export const removeArrow = function (this: MindElixirInstance, linkSvg?: CustomS
   hideLinkController(this)
   const id = link.arrowObj!.id
   this.arrows = this.arrows.filter(arrow => arrow.id !== id)
+
+  link.labelEl?.remove()
   link.remove()
   this.bus.fire('operation', {
     name: 'removeArrow',
@@ -533,6 +535,11 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
 
 export function renderArrow(this: MindElixirInstance) {
   this.linkSvgGroup.innerHTML = ''
+
+  // Clear all arrow labels before re-rendering
+  const arrowLabels = this.labelContainer.querySelectorAll('.svg-label[data-type="arrow"]')
+  arrowLabels.forEach(label => label.remove())
+
   for (let i = 0; i < this.arrows.length; i++) {
     const link = this.arrows[i]
     try {
