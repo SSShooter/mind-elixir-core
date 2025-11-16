@@ -16,7 +16,7 @@ type LangPack = {
 /**
  * @public
  */
-export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr' | 'ko'
+export type Locale = 'cn' | 'zh_CN' | 'zh_TW' | 'en' | 'ru' | 'ja' | 'pt' | 'it' | 'es' | 'fr' | 'ko' | 'ro'
 const cn = {
   addChild: '插入子节点',
   addParent: '插入父节点',
@@ -159,6 +159,20 @@ const i18n: Record<Locale, LangPack> = {
     linkBidirectional: '양방향 연결',
     clickTips: '대상 노드를 클릭하십시오',
     summary: '요약',
+  },
+  ro: {
+    addChild: 'Adaugă sub-nod',
+    addParent: 'Adaugă nod părinte',
+    addSibling: 'Adaugă nod la același nivel',
+    removeNode: 'Șterge nodul',
+    focus: 'Focalizare',
+    cancelFocus: 'Anulează focalizarea',
+    moveUp: 'Mută în sus',
+    moveDown: 'Mută în jos',
+    link: 'Creează legătură',
+    linkBidirectional: 'Creează legătură bidirecțională',
+    clickTips: 'Click pe nodul țintă',
+    summary: 'Rezumat',
   },
 }
 
