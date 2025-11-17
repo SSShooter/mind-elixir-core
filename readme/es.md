@@ -138,7 +138,7 @@ let options = {
   toolBar: true, // por defecto true
   nodeMenu: true, // por defecto true
   keypress: true, // por defecto true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] esperando PRs
+  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] esperando PRs
   overflowHidden: false, // por defecto false
   mainLinkStyle: 2, // [1,2] por defecto 1
   mouseSelectionButton: 0, // 0 para botón izquierdo, 2 para botón derecho, por defecto 0

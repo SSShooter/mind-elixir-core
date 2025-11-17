@@ -138,7 +138,7 @@ let options = {
   toolBar: true, // デフォルトはtrue
   nodeMenu: true, // デフォルトはtrue
   keypress: true, // デフォルトはtrue
-  locale: 'ja', // [zh_CN,zh_TW,en,ja,pt,ru] PRs募集中
+  locale: 'ja', // [zh_CN,zh_TW,en,ja,pt,ru,ro] PRs募集中
   overflowHidden: false, // デフォルトはfalse
   mainLinkStyle: 2, // [1,2] デフォルトは1
   mouseSelectionButton: 0, // 0は左クリック、2は右クリック、デフォルトは0
