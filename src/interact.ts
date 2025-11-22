@@ -156,6 +156,10 @@ export const scaleFit = function (this: MindElixirInstance) {
  */
 export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false) {
   const { map, scaleVal, bus } = this
+  if (smooth && map.style.transition === 'transform 0.3s') {
+    // Prevent consecutive smooth moves
+    return
+  }
   const transform = map.style.transform
   let { x, y } = getTranslate(transform)
   x += dx
