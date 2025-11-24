@@ -91,6 +91,19 @@ const options: Options = {
           alert('extend menu')
         },
       },
+      {
+        name: 'Export to SVG',
+        onclick: async () => {
+          const svgContent = await mind.exportSvg().text()
+          const element = document.createElement('a')
+          element.setAttribute('href', `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgContent)}`)
+          element.setAttribute('download', 'mindmap-export.svg')
+          element.style.display = 'none'
+          document.body.appendChild(element)
+          element.click()
+          document.body.removeChild(element)
+        },
+      },
     ],
   },
   toolBar: true,
