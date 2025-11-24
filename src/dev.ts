@@ -94,14 +94,26 @@ const options: Options = {
       {
         name: 'Export to SVG',
         onclick: async () => {
-          const svgContent = await mind.exportSvg().text()
           const element = document.createElement('a')
-          element.setAttribute('href', `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svgContent)}`)
-          element.setAttribute('download', 'mindmap-export.svg')
           element.style.display = 'none'
-          document.body.appendChild(element)
-          element.click()
-          document.body.removeChild(element)
+          let objectUrl = ''
+
+          try {
+            const svgContent = await mind.exportSvg().text()
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' })
+            objectUrl = URL.createObjectURL(blob)
+            element.setAttribute('href', objectUrl)
+            element.setAttribute('download', 'mindmap-export.svg')
+            document.body.appendChild(element)
+            element.click()
+          } finally {
+            if (objectUrl) {
+              URL.revokeObjectURL(objectUrl)
+            }
+            if (element.parentElement) {
+              document.body.removeChild(element)
+            }
+          }
         },
       },
     ],
