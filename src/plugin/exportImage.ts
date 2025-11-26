@@ -235,6 +235,11 @@ function blobToUrl(blob: Blob): Promise<string> {
   })
 }
 
+/**
+ * @deprecated This method is deprecated and will be removed in a future version.
+ * Use modern-screenshot library instead with domToSvg(mind.nodes, options).
+ * See: https://github.com/SSShooter/mind-elixir-core#export-as-a-image
+ */
 export const exportSvg = function (this: MindElixirInstance, noForeignObject = false, injectCss?: string) {
   const svgEl = generateSvg(this, noForeignObject)
   const svgString = generateSvgStr(svgEl, injectCss)
@@ -242,6 +247,11 @@ export const exportSvg = function (this: MindElixirInstance, noForeignObject = f
   return blob
 }
 
+/**
+ * @deprecated This method is deprecated and will be removed in a future version.
+ * Use modern-screenshot library instead with domToPng(mind.nodes, options).
+ * See: https://github.com/SSShooter/mind-elixir-core#export-as-a-image
+ */
 export const exportPng = async function (this: MindElixirInstance, noForeignObject = false, injectCss?: string): Promise<Blob | null> {
   const blob = this.exportSvg(noForeignObject, injectCss)
   // use base64 to bypass canvas taint
