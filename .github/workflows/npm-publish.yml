@@ -20,14 +20,14 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
       - run: pnpm i
       - run: npm run build
-      - run: npm publish
+      - run: NODE_AUTH_TOKEN="" npm publish
 
       - name: Checkout docs repository
         uses: actions/checkout@v3
