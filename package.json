@@ -70,10 +70,7 @@
     "package.json",
     "dist"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ssshooter/mind-elixir-core"
-  },
+  "repository": "github:SSShooter/mind-elixir-core",
   "homepage": "https://mind-elixir.com/",
   "author": "ssshooter",
   "license": "MIT",
