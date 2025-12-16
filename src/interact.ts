@@ -49,7 +49,8 @@ export const selectNodes = function (this: MindElixirInstance, tpc: Topic[]): vo
 }
 
 export const unselectNodes = function (this: MindElixirInstance, tpc: Topic[]) {
-  this.selection.deselect(tpc)
+  // no selection if editable === false
+  this.selection?.deselect(tpc)
 }
 
 export const clearSelection = function (this: MindElixirInstance) {
