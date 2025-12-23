@@ -148,7 +148,8 @@ export const scaleFit = function (this: MindElixirInstance) {
   const widthPercent = this.nodes.offsetWidth / this.container.offsetWidth
   const scale = 1 / Math.max(1, Math.max(heightPercent, widthPercent))
   this.scaleVal = scale
-  this.map.style.transform = 'scale(' + scale + ')'
+  const { dx, dy } = getCenterDefault(this)
+  this.map.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${scale})`
   this.bus.fire('scale', scale)
 }
 
