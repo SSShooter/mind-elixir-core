@@ -191,3 +191,9 @@ export const on = function (
     }
   }
 }
+
+export const getDistance = (p1: { x: number; y: number }, p2: { x: number; y: number }) => {
+  const dx = p1.x - p2.x
+  const dy = p1.y - p2.y
+  return Math.sqrt(dx * dx + dy * dy)
+}

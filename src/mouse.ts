@@ -2,13 +2,16 @@ import { handleZoom } from './plugin/keypress'
 import type { SummarySvgGroup } from './summary'
 import type { Expander, CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
-import { isTopic, on } from './utils'
+import { getDistance, isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
   let lastTap = 0
   // 初始化空格键状态到实例中
   mind.spacePressed = false
+
+  let lastDistance: number | null = null
+  const activePointers = new Map<number, { x: number; y: number }>()
 
   const handleClick = (e: MouseEvent) => {
     console.log('handleClick', e)
@@ -122,6 +125,7 @@ export default function (mind: MindElixirInstance) {
 
   const handleTouchDblClick = (e: PointerEvent) => {
     if (e.pointerType === 'mouse') return
+    if (activePointers.size > 1) return
     const currentTime = new Date().getTime()
     const tapLength = currentTime - lastTap
     console.log('tapLength', tapLength)
@@ -147,9 +151,20 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerDown = (e: PointerEvent) => {
+    if (e.pointerType === 'touch') {
+      // Record current touch point
+      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      // Only intercept the original logic when there are 2+ fingers
+      if (activePointers.size === 2) {
+        // Initialize distance when the second finger touches down
+        const [p1, p2] = Array.from(activePointers.values())
+        lastDistance = getDistance(p1, p2)
+      }
+    }
+
     dragMoveHelper.moved = false
 
-    // 支持空格+左键拖拽
+    // support space + left mouse button drag
     const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
     const isNormalDrag = (e.button === mouseMoveButton && e.pointerType === 'mouse') || e.pointerType === 'touch'
@@ -162,8 +177,7 @@ export default function (mind: MindElixirInstance) {
 
     const target = e.target as HTMLElement
 
-    // 对于空格拖拽，直接启用；对于普通拖拽，需要检查目标元素
-    if (isSpaceDrag || (target.className !== 'circle' && target.contentEditable !== 'plaintext-only')) {
+    if (target.className !== 'circle' && target.contentEditable !== 'plaintext-only') {
       dragMoveHelper.mousedown = true
       // Capture pointer to ensure we receive all pointer events even if pointer moves outside the element
       target.setPointerCapture(e.pointerId)
@@ -171,6 +185,41 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerMove = (e: PointerEvent) => {
+    if (e.pointerType === 'touch' && activePointers.has(e.pointerId)) {
+      // Update current touch point position
+      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      // Only handle pinch zoom when there are 2+ fingers
+      if (activePointers.size >= 2) {
+        const [p1, p2] = Array.from(activePointers.values())
+        const newDistance = getDistance(p1, p2)
+
+        if (lastDistance == null) {
+          lastDistance = newDistance
+        } else {
+          const delta = newDistance - lastDistance
+          const THRESHOLD = 8
+
+          if (Math.abs(delta) > THRESHOLD) {
+            if (delta > 0) {
+              handleZoom(mind, 'in', {
+                x: (p1.x + p2.x) / 2,
+                y: (p1.y + p2.y) / 2,
+              })
+            } else {
+              handleZoom(mind, 'out', {
+                x: (p1.x + p2.x) / 2,
+                y: (p1.y + p2.y) / 2,
+              })
+            }
+
+            lastDistance = newDistance
+          }
+        }
+        return
+      }
+    }
+
     // click trigger pointermove in windows chrome
     if ((e.target as HTMLElement).contentEditable !== 'plaintext-only' || (mind.spacePressed && dragMoveHelper.mousedown)) {
       // drag and move the map
@@ -186,6 +235,14 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerUp = (e: PointerEvent) => {
+    if (e.pointerType === 'touch') {
+      activePointers.delete(e.pointerId)
+      // End this zoom gesture when fewer than 2 fingers remain
+      if (activePointers.size < 2) {
+        lastDistance = null
+      }
+    }
+
     if (!dragMoveHelper.mousedown) return
     const target = e.target as HTMLElement
     if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
@@ -237,7 +294,8 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'pointerdown', func: handlePointerDown },
     { dom: container, evt: 'pointermove', func: handlePointerMove },
     { dom: container, evt: 'pointerup', func: handlePointerUp },
-    { dom: container, evt: 'pointerup', func: handleTouchDblClick },
+    { dom: container, evt: 'pointercancel', func: handlePointerUp },
+    { dom: container, evt: 'pointerdown', func: handleTouchDblClick },
     { dom: container, evt: 'click', func: handleClick },
     { dom: container, evt: 'dblclick', func: handleDblClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
