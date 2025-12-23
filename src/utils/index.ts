@@ -165,7 +165,8 @@ export const unionTopics = (nodes: Topic[]) => {
 }
 
 export const getTranslate = (styleText: string) => {
-  const regex = /translate\(([^,]+),\s*([^)]+)\)/
+  // use translate3d for GPU acceleration
+  const regex = /translate3d\(([^,]+),\s*([^,]+)/
   const match = styleText.match(regex)
   return match ? { x: parseFloat(match[1]), y: parseFloat(match[2]) } : { x: 0, y: 0 }
 }

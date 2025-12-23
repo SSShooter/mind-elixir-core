@@ -135,7 +135,7 @@ export const scale = function (this: MindElixirInstance, scaleVal: number, offse
   const xres = (-xc + xb) * (1 - scaleVal / oldScale)
   const yres = (-yc + yb) * (1 - scaleVal / oldScale)
 
-  this.map.style.transform = `translate(${xCurrent - xres}px, ${yCurrent - yres}px) scale(${scaleVal})`
+  this.map.style.transform = `translate3d(${xCurrent - xres}px, ${yCurrent - yres}px, 0) scale(${scaleVal})`
   this.scaleVal = scaleVal
   this.bus.fire('scale', scaleVal)
 }
@@ -172,7 +172,7 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
       map.style.transition = 'none'
     }, 300)
   }
-  map.style.transform = `translate(${x}px, ${y}px) scale(${scaleVal})`
+  map.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scaleVal})`
 
   bus.fire('move', { dx, dy })
 }
@@ -214,7 +214,7 @@ export const toCenter = function (this: MindElixirInstance) {
   const { dx, dy } = getCenterDefault(this)
   container.scrollTop = 0
   container.scrollLeft = 0
-  map.style.transform = `translate(${dx}px, ${dy}px) scale(${this.scaleVal})`
+  map.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${this.scaleVal})`
 }
 
 /**
