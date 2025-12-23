@@ -148,7 +148,7 @@ export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj)
   const topic = $d.createElement('me-tpc') as Topic
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
-  topic.draggable = this.draggable
+  // topic.draggable = this.draggable
   return topic
 }
 

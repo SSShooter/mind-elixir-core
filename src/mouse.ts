@@ -1,4 +1,5 @@
 import { handleZoom } from './plugin/keypress'
+import { createNodeDragState, handleNodeDragStart, handleNodeDragMove, handleNodeDragEnd, handleNodeDragCancel } from './plugin/nodeDraggable'
 import type { SummarySvgGroup } from './summary'
 import type { Expander, CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
@@ -12,6 +13,17 @@ export default function (mind: MindElixirInstance) {
 
   let lastDistance: number | null = null
   const activePointers = new Map<number, { x: number; y: number }>()
+
+  // Node drag state - only initialize if draggable is enabled
+  const nodeDragState = mind.draggable ? createNodeDragState(mind) : null
+
+  // Long press state for touch devices
+  let longPressTimer: number | null = null
+  let longPressStartPos: { x: number; y: number } | null = null
+  let longPressTarget: HTMLElement | null = null
+  let longPressPointerId: number | null = null
+  const LONG_PRESS_DURATION = 500 // 长按时间阈值（毫秒）
+  const LONG_PRESS_MOVE_THRESHOLD = 10 // 移动阈值（像素）
 
   const handleClick = (e: MouseEvent) => {
     console.log('handleClick', e)
@@ -29,6 +41,12 @@ export default function (mind: MindElixirInstance) {
       dragMoveHelper.clear()
       return
     }
+
+    // Skip click handling if we just finished a node drag
+    if (nodeDragState?.isDragging) {
+      return
+    }
+
     const target = e.target as HTMLElement
     if (target.tagName === 'ME-EPD') {
       if (e.ctrlKey || e.metaKey) {
@@ -159,14 +177,65 @@ export default function (mind: MindElixirInstance) {
         // Initialize distance when the second finger touches down
         const [p1, p2] = Array.from(activePointers.values())
         lastDistance = getDistance(p1, p2)
+        // Cancel long press when second finger touches
+        if (longPressTimer !== null) {
+          clearTimeout(longPressTimer)
+          longPressTimer = null
+          longPressStartPos = null
+          longPressTarget = null
+          longPressPointerId = null
+        }
       }
     }
 
     dragMoveHelper.moved = false
 
-    // support space + left mouse button drag
-    const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
+    const target = e.target as HTMLElement
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
+
+    // Handle node dragging with left button or touch (only for topics)
+    if (nodeDragState && (e.button === 0 || e.pointerType === 'touch')) {
+      // For touch, only start drag with single finger
+      if (e.pointerType === 'touch' && activePointers.size > 1) {
+        // Cancel any ongoing drag if second finger touches
+        if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
+          handleNodeDragCancel(mind, nodeDragState)
+        }
+      } else if (e.pointerType === 'touch' && activePointers.size === 1) {
+        // For touch: start long press timer instead of immediate drag
+        if (isTopic(target) || target.closest('me-tpc')) {
+          longPressStartPos = { x: e.clientX, y: e.clientY }
+          longPressTarget = target
+          longPressPointerId = e.pointerId
+          longPressTimer = window.setTimeout(() => {
+            // Long press triggered, start drag with immediate ghost display
+            if (handleNodeDragStart(mind, nodeDragState, e, true)) {
+              if (longPressTarget) {
+                longPressTarget.setPointerCapture(e.pointerId)
+              }
+              // Get current position from activePointers
+              const currentPos = activePointers.get(e.pointerId)
+              if (currentPos) {
+                // Show ghost at current position immediately
+                nodeDragState.ghost.style.transform = `translate(${currentPos.x + 10}px, ${currentPos.y + 10}px)`
+                nodeDragState.ghost.style.display = 'block'
+              }
+            }
+            longPressTimer = null
+            longPressStartPos = null
+            longPressTarget = null
+            longPressPointerId = null
+          }, LONG_PRESS_DURATION)
+        }
+      } else if (e.pointerType === 'mouse' && handleNodeDragStart(mind, nodeDragState, e, false)) {
+        // For mouse: start drag immediately
+        target.setPointerCapture(e.pointerId)
+        return
+      }
+    }
+
+    // Support space + left mouse button drag
+    const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
     const isNormalDrag = (e.button === mouseMoveButton && e.pointerType === 'mouse') || e.pointerType === 'touch'
 
     if (!isSpaceDrag && !isNormalDrag) return
@@ -174,8 +243,6 @@ export default function (mind: MindElixirInstance) {
     // Store initial position for movement calculation
     dragMoveHelper.x = e.clientX
     dragMoveHelper.y = e.clientY
-
-    const target = e.target as HTMLElement
 
     if (target.className !== 'circle' && target.contentEditable !== 'plaintext-only') {
       dragMoveHelper.mousedown = true
@@ -188,6 +255,22 @@ export default function (mind: MindElixirInstance) {
     if (e.pointerType === 'touch' && activePointers.has(e.pointerId)) {
       // Update current touch point position
       activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+
+      // Check if long press should be cancelled due to movement
+      if (longPressTimer !== null && longPressStartPos !== null && e.pointerId === longPressPointerId) {
+        const dx = e.clientX - longPressStartPos.x
+        const dy = e.clientY - longPressStartPos.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+
+        if (distance > LONG_PRESS_MOVE_THRESHOLD) {
+          // Movement exceeded threshold, cancel long press
+          clearTimeout(longPressTimer)
+          longPressTimer = null
+          longPressStartPos = null
+          longPressTarget = null
+          longPressPointerId = null
+        }
+      }
 
       // Only handle pinch zoom when there are 2+ fingers
       if (activePointers.size >= 2) {
@@ -220,6 +303,15 @@ export default function (mind: MindElixirInstance) {
       }
     }
 
+    // Handle node dragging
+    if (nodeDragState && nodeDragState.pointerId !== null) {
+      handleNodeDragMove(mind, nodeDragState, e)
+      // If dragging started, don't process map movement
+      if (nodeDragState.isDragging) {
+        return
+      }
+    }
+
     // click trigger pointermove in windows chrome
     if ((e.target as HTMLElement).contentEditable !== 'plaintext-only' || (mind.spacePressed && dragMoveHelper.mousedown)) {
       // drag and move the map
@@ -241,6 +333,32 @@ export default function (mind: MindElixirInstance) {
       if (activePointers.size < 2) {
         lastDistance = null
       }
+
+      // Cancel long press timer if still active
+      if (longPressTimer !== null) {
+        clearTimeout(longPressTimer)
+        longPressTimer = null
+        longPressStartPos = null
+        longPressTarget = null
+        longPressPointerId = null
+      }
+    }
+
+    // Handle node drag end
+    if (nodeDragState && nodeDragState.pointerId !== null) {
+      const wasDragging = nodeDragState.isDragging
+      handleNodeDragEnd(mind, nodeDragState, e)
+
+      // Release pointer capture
+      const target = e.target as HTMLElement
+      if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
+        target.releasePointerCapture(e.pointerId)
+      }
+
+      // If we were dragging nodes, don't process map movement end
+      if (wasDragging) {
+        return
+      }
     }
 
     if (!dragMoveHelper.mousedown) return
@@ -253,10 +371,49 @@ export default function (mind: MindElixirInstance) {
 
   // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
   const handleBlur = () => {
+    // Clear long press timer
+    if (longPressTimer !== null) {
+      clearTimeout(longPressTimer)
+      longPressTimer = null
+      longPressStartPos = null
+      longPressTarget = null
+      longPressPointerId = null
+    }
+
     // Clear drag state when window loses focus (e.g., alert dialog appears)
     if (dragMoveHelper.mousedown) {
       dragMoveHelper.clear()
     }
+    // Also cancel any ongoing node drag
+    if (nodeDragState && (nodeDragState.isDragging || nodeDragState.pointerId !== null)) {
+      handleNodeDragCancel(mind, nodeDragState)
+    }
+  }
+
+  const handlePointerCancel = (e: PointerEvent) => {
+    if (e.pointerType === 'touch') {
+      activePointers.delete(e.pointerId)
+      if (activePointers.size < 2) {
+        lastDistance = null
+      }
+
+      // Cancel long press timer
+      if (longPressTimer !== null) {
+        clearTimeout(longPressTimer)
+        longPressTimer = null
+        longPressStartPos = null
+        longPressTarget = null
+        longPressPointerId = null
+      }
+    }
+
+    // Cancel node drag
+    if (nodeDragState && nodeDragState.pointerId === e.pointerId) {
+      handleNodeDragCancel(mind, nodeDragState)
+    }
+
+    // Also handle as pointer up for map movement
+    handlePointerUp(e)
   }
 
   const handleContextMenu = (e: MouseEvent) => {
@@ -294,7 +451,7 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'pointerdown', func: handlePointerDown },
     { dom: container, evt: 'pointermove', func: handlePointerMove },
     { dom: container, evt: 'pointerup', func: handlePointerUp },
-    { dom: container, evt: 'pointercancel', func: handlePointerUp },
+    { dom: container, evt: 'pointercancel', func: handlePointerCancel },
     { dom: container, evt: 'pointerdown', func: handleTouchDblClick },
     { dom: container, evt: 'click', func: handleClick },
     { dom: container, evt: 'dblclick', func: handleDblClick },

@@ -295,8 +295,19 @@
     background: #757575;
     border: 2px solid #ffffff;
     z-index: 50;
-
     cursor: pointer;
+  }
+
+  //  hot zone
+  .circle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background: transparent;
   }
 
   .tags {
@@ -326,10 +337,10 @@
 
   .mind-elixir-ghost {
     position: fixed;
-    top: -100%;
-    left: -100%;
+    top: 0;
+    left: 0;
     box-sizing: content-box;
-    opacity: 0.5;
+    opacity: 0.7;
     background-color: var(--main-bgcolor);
     border: 2px solid var(--main-color);
     color: var(--main-color);
@@ -340,6 +351,10 @@
     text-overflow: ellipsis;
     padding: 8px 16px;
     border-radius: 6px;
+    display: none;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(10px, 10px);
   }
 
   .selection-area {
