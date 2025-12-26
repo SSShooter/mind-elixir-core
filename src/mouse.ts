@@ -8,7 +8,6 @@ import { getDistance, isTopic, on } from './utils'
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
   let lastTap = 0
-  // 初始化空格键状态到实例中
   mind.spacePressed = false
 
   let lastDistance: number | null = null
@@ -25,8 +24,66 @@ export default function (mind: MindElixirInstance) {
   const LONG_PRESS_DURATION = 500 // 长按时间阈值（毫秒）
   const LONG_PRESS_MOVE_THRESHOLD = 10 // 移动阈值（像素）
 
+  // Helper: Clear long press timer and state
+  const clearLongPress = () => {
+    if (longPressTimer !== null) {
+      clearTimeout(longPressTimer)
+      longPressTimer = null
+      longPressStartPos = null
+      longPressTarget = null
+      longPressPointerId = null
+    }
+  }
+
+  // Helper: Release pointer capture if it exists
+  const releasePointerCaptureIfExists = (target: HTMLElement, pointerId: number) => {
+    if (target.hasPointerCapture && target.hasPointerCapture(pointerId)) {
+      target.releasePointerCapture(pointerId)
+    }
+  }
+
+  // Helper: Handle SVG label interactions (click or double-click)
+  const handleSvgLabelInteraction = (target: HTMLElement, isDoubleClick: boolean): boolean => {
+    const label = target.closest('.svg-label') as HTMLElement
+    if (label) {
+      const id = label.dataset.svgId!
+      const type = label.dataset.type
+      const svgElement = document.getElementById(id)
+      if (svgElement) {
+        if (type === 'arrow') {
+          isDoubleClick ? mind.editArrowLabel(svgElement as unknown as CustomSvg) : mind.selectArrow(svgElement as unknown as CustomSvg)
+          return true
+        } else if (type === 'summary') {
+          isDoubleClick ? mind.editSummary(svgElement as unknown as SummarySvgGroup) : mind.selectSummary(svgElement as unknown as SummarySvgGroup)
+          return true
+        }
+      }
+    }
+
+    // Handle topiclinks container
+    const topiclinksContainer = target.closest('.topiclinks')
+    if (topiclinksContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        isDoubleClick ? mind.editArrowLabel(svgGroup as unknown as CustomSvg) : mind.selectArrow(svgGroup as unknown as CustomSvg)
+        return true
+      }
+    }
+
+    // Handle summary container
+    const summaryContainer = target.closest('.summary')
+    if (summaryContainer) {
+      const svgGroup = target.closest('g')
+      if (svgGroup) {
+        isDoubleClick ? mind.editSummary(svgGroup as unknown as SummarySvgGroup) : mind.selectSummary(svgGroup as unknown as SummarySvgGroup)
+        return true
+      }
+    }
+
+    return false
+  }
+
   const handleClick = (e: MouseEvent) => {
-    console.log('handleClick', e)
     // Only handle primary button clicks
     if (e.button !== 0) return
     if (mind.helper1?.moved) {
@@ -61,40 +118,9 @@ export default function (mind: MindElixirInstance) {
     } else if (!mind.editable) {
       return
     }
-    const label = target.closest('.svg-label') as HTMLElement
-    if (label) {
-      const id = label.dataset.svgId!
-      const type = label.dataset.type
-      const svgElement = document.getElementById(id)
-      if (svgElement) {
-        if (type === 'arrow') {
-          mind.selectArrow(svgElement as unknown as CustomSvg)
-          return
-        } else if (type === 'summary') {
-          mind.selectSummary(svgElement as unknown as SummarySvgGroup)
-          return
-        }
-      }
-    }
 
-    // Find the closest SVG container using native closest() method
-    const topiclinksContainer = target.closest('.topiclinks')
-    if (topiclinksContainer) {
-      const svgGroup = target.closest('g')
-      if (svgGroup) {
-        mind.selectArrow(svgGroup as unknown as CustomSvg)
-        return
-      }
-    }
-
-    const summaryContainer = target.closest('.summary')
-    if (summaryContainer) {
-      const svgGroup = target.closest('g')
-      if (svgGroup) {
-        mind.selectSummary(svgGroup as unknown as SummarySvgGroup)
-        return
-      }
-    }
+    // Handle SVG label interactions
+    handleSvgLabelInteraction(target, false)
   }
 
   const handleDblClick = (e: MouseEvent) => {
@@ -105,40 +131,8 @@ export default function (mind: MindElixirInstance) {
       mind.beginEdit(target)
     }
 
-    const label = target.closest('.svg-label') as HTMLElement
-    if (label) {
-      const id = label.dataset.svgId!
-      const type = label.dataset.type
-      const svgElement = document.getElementById(id)
-      if (svgElement) {
-        if (type === 'arrow') {
-          mind.editArrowLabel(svgElement as unknown as CustomSvg)
-          return
-        } else if (type === 'summary') {
-          mind.editSummary(svgElement as unknown as SummarySvgGroup)
-          return
-        }
-      }
-    }
-
-    // Find the closest SVG container using native closest() method
-    const topiclinksContainer = target.closest('.topiclinks')
-    if (topiclinksContainer) {
-      const svgGroup = target.closest('g')
-      if (svgGroup) {
-        mind.editArrowLabel(svgGroup as unknown as CustomSvg)
-        return
-      }
-    }
-
-    const summaryContainer = target.closest('.summary')
-    if (summaryContainer) {
-      const svgGroup = target.closest('g')
-      if (svgGroup) {
-        mind.editSummary(svgGroup as unknown as SummarySvgGroup)
-        return
-      }
-    }
+    // Handle SVG label interactions
+    handleSvgLabelInteraction(target, true)
   }
 
   const handleTouchDblClick = (e: PointerEvent) => {
@@ -146,7 +140,6 @@ export default function (mind: MindElixirInstance) {
     if (activePointers.size > 1) return
     const currentTime = new Date().getTime()
     const tapLength = currentTime - lastTap
-    console.log('tapLength', tapLength)
     if (tapLength < 300 && tapLength > 0) {
       handleDblClick(e)
     }
@@ -178,13 +171,7 @@ export default function (mind: MindElixirInstance) {
         const [p1, p2] = Array.from(activePointers.values())
         lastDistance = getDistance(p1, p2)
         // Cancel long press when second finger touches
-        if (longPressTimer !== null) {
-          clearTimeout(longPressTimer)
-          longPressTimer = null
-          longPressStartPos = null
-          longPressTarget = null
-          longPressPointerId = null
-        }
+        clearLongPress()
       }
     }
 
@@ -264,11 +251,7 @@ export default function (mind: MindElixirInstance) {
 
         if (distance > LONG_PRESS_MOVE_THRESHOLD) {
           // Movement exceeded threshold, cancel long press
-          clearTimeout(longPressTimer)
-          longPressTimer = null
-          longPressStartPos = null
-          longPressTarget = null
-          longPressPointerId = null
+          clearLongPress()
         }
       }
 
@@ -335,13 +318,7 @@ export default function (mind: MindElixirInstance) {
       }
 
       // Cancel long press timer if still active
-      if (longPressTimer !== null) {
-        clearTimeout(longPressTimer)
-        longPressTimer = null
-        longPressStartPos = null
-        longPressTarget = null
-        longPressPointerId = null
-      }
+      clearLongPress()
     }
 
     // Handle node drag end
@@ -350,10 +327,7 @@ export default function (mind: MindElixirInstance) {
       handleNodeDragEnd(mind, nodeDragState, e)
 
       // Release pointer capture
-      const target = e.target as HTMLElement
-      if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
-        target.releasePointerCapture(e.pointerId)
-      }
+      releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
 
       // If we were dragging nodes, don't process map movement end
       if (wasDragging) {
@@ -362,23 +336,14 @@ export default function (mind: MindElixirInstance) {
     }
 
     if (!dragMoveHelper.mousedown) return
-    const target = e.target as HTMLElement
-    if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
-      target.releasePointerCapture(e.pointerId)
-    }
+    releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
     dragMoveHelper.clear()
   }
 
   // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
   const handleBlur = () => {
     // Clear long press timer
-    if (longPressTimer !== null) {
-      clearTimeout(longPressTimer)
-      longPressTimer = null
-      longPressStartPos = null
-      longPressTarget = null
-      longPressPointerId = null
-    }
+    clearLongPress()
 
     // Clear drag state when window loses focus (e.g., alert dialog appears)
     if (dragMoveHelper.mousedown) {
@@ -398,13 +363,7 @@ export default function (mind: MindElixirInstance) {
       }
 
       // Cancel long press timer
-      if (longPressTimer !== null) {
-        clearTimeout(longPressTimer)
-        longPressTimer = null
-        longPressStartPos = null
-        longPressTarget = null
-        longPressPointerId = null
-      }
+      clearLongPress()
     }
 
     // Cancel node drag
