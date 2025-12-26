@@ -145,6 +145,10 @@ export function updateGhostPosition(ghost: HTMLElement, x: number, y: number): v
 export function showDragGhost(mind: MindElixirInstance, state: NodeDragState): void {
   const { dragged } = mind
   if (!dragged) return
+  const activeElement = document.activeElement as HTMLElement
+  if (activeElement && activeElement.isContentEditable) {
+    activeElement.blur() // touch won't blur editable element on mobile
+  }
 
   state.isDragging = true
 
