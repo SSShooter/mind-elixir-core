@@ -252,6 +252,9 @@ export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to:
     addChildDom(this, to, fromTop.parentElement)
   }
   this.linkDiv()
+  // 这部分还是比较混乱，移动等 api 不会清除选择再重新选择，
+  // 在 selectNodes 里 scrollIntoView 也没效果，所以在这里单独 scrollIntoView
+  this.scrollIntoView(from[from.length - 1])
   this.bus.fire('operation', {
     name: 'moveNodeIn',
     objs: from.map(f => f.nodeObj),
@@ -289,6 +292,7 @@ const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindE
     }
   }
   mei.linkDiv()
+  mei.scrollIntoView(from[from.length - 1])
   mei.bus.fire('operation', {
     name: type === 'before' ? 'moveNodeBefore' : 'moveNodeAfter',
     objs: from.map(f => f.nodeObj),
