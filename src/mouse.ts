@@ -1,5 +1,12 @@
 import { handleZoom } from './plugin/keypress'
-import { createNodeDragState, handleNodeDragStart, handleNodeDragMove, handleNodeDragEnd, handleNodeDragCancel } from './plugin/nodeDraggable'
+import {
+  createNodeDragState,
+  handleNodeDragStart,
+  handleNodeDragMove,
+  handleNodeDragEnd,
+  handleNodeDragCancel,
+  updateGhostPosition,
+} from './plugin/nodeDraggable'
 import type { SummarySvgGroup } from './summary'
 import type { Expander, CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
@@ -200,13 +207,7 @@ export default function (mind: MindElixirInstance) {
               if (longPressTarget) {
                 longPressTarget.setPointerCapture(e.pointerId)
               }
-              // Get current position from activePointers
-              const currentPos = activePointers.get(e.pointerId)
-              if (currentPos) {
-                // Show ghost at current position immediately
-                nodeDragState.ghost.style.transform = `translate(${currentPos.x + 10}px, ${currentPos.y + 10}px)`
-                nodeDragState.ghost.style.display = 'block'
-              }
+              updateGhostPosition(nodeDragState.ghost, e.clientX, e.clientY)
             }
             longPressTimer = null
             longPressStartPos = null

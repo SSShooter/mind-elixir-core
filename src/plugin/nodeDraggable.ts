@@ -132,6 +132,14 @@ export function handleNodeDragStart(mind: MindElixirInstance, state: NodeDragSta
 }
 
 /**
+ * Update ghost element position
+ */
+export function updateGhostPosition(ghost: HTMLElement, x: number, y: number): void {
+  ghost.style.transform = `translate(${x + 10}px, ${y + 10}px)`
+  ghost.style.display = 'block'
+}
+
+/**
  * Show ghost element immediately to indicate drag is ready
  */
 export function showDragGhost(mind: MindElixirInstance, state: NodeDragState): void {
@@ -172,8 +180,7 @@ export function handleNodeDragMove(mind: MindElixirInstance, state: NodeDragStat
   if (!state.isDragging) return
 
   // Update ghost position using transform for smooth movement
-  state.ghost.style.transform = `translate(${e.clientX + 10}px, ${e.clientY + 10}px)`
-  state.ghost.style.display = 'block'
+  updateGhostPosition(state.ghost, e.clientX, e.clientY)
 
   // Border detection for auto-scrolling
   const rect = mind.container.getBoundingClientRect()
