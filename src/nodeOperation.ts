@@ -235,53 +235,45 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   })
 }
 
-export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei: MindElixirInstance) => {
   from = unionTopics(from)
-  const toObj = to.nodeObj
-  if (toObj.expanded === false) {
-    // TODO
-    this.expandNode(to, true)
-    to = this.findEle(toObj.id) as Topic
-  }
-  console.time('moveNodeIn')
-  for (const f of from) {
-    const obj = f.nodeObj
-    moveNodeObj('in', obj, toObj)
-    fillParent(this.nodeData) // update parent property
-    const fromTop = f.parentElement
-    addChildDom(this, to, fromTop.parentElement)
-  }
-  this.linkDiv()
-  // 这部分还是比较混乱，移动等 api 不会清除选择再重新选择，
-  // 在 selectNodes 里 scrollIntoView 也没效果，所以在这里单独 scrollIntoView
-  this.scrollIntoView(from[from.length - 1])
-  this.bus.fire('operation', {
-    name: 'moveNodeIn',
-    objs: from.map(f => f.nodeObj),
-    toObj,
-  })
-  console.timeEnd('moveNodeIn')
-}
 
-const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindElixirInstance) => {
-  from = unionTopics(from)
+  let toObj = to.nodeObj
+
+  // Handle 'in' type: expand node if collapsed
+  if (type === 'in' && toObj.expanded === false) {
+    mei.expandNode(to, true) // rerender
+    to = mei.findEle(toObj.id) as Topic
+    toObj = to.nodeObj
+  }
+
   if (type === 'after') {
     from = from.reverse()
   }
-  const toObj = to.nodeObj
+
   const c: Children[] = []
+
   for (const f of from) {
     const obj = f.nodeObj
     moveNodeObj(type, obj, toObj)
     fillParent(mei.nodeData)
-    rmSubline(f)
-    const fromWrp = f.parentElement.parentNode
-    if (!c.includes(fromWrp.parentElement)) {
-      c.push(fromWrp.parentElement)
+
+    if (type === 'in') {
+      // For 'in' type: move as child
+      const fromTop = f.parentElement
+      addChildDom(mei, to, fromTop.parentElement)
+    } else {
+      // For 'before' and 'after' type: move as sibling
+      rmSubline(f)
+      const fromWrp = f.parentElement.parentNode
+      if (!c.includes(fromWrp.parentElement)) {
+        c.push(fromWrp.parentElement)
+      }
+      const toWrp = to.parentElement.parentNode
+      toWrp.insertAdjacentElement(typeMap[type], fromWrp)
     }
-    const toWrp = to.parentElement.parentNode
-    toWrp.insertAdjacentElement(typeMap[type], fromWrp)
   }
+
   // When nodes are moved away, the original parent node may become childless
   // In this case, we need to clean up the related DOM structure:
   // remove expander buttons and empty wrapper containers
@@ -291,13 +283,22 @@ const moveNode = (from: Topic[], type: 'before' | 'after', to: Topic, mei: MindE
       item.remove()
     }
   }
+
   mei.linkDiv()
+  // 这部分还是比较混乱，移动等 api 不会清除选择再重新选择，
+  // 在 selectNodes 里 scrollIntoView 也没效果，所以在这里单独 scrollIntoView
   mei.scrollIntoView(from[from.length - 1])
+
+  const eventName = type === 'before' ? 'moveNodeBefore' : type === 'after' ? 'moveNodeAfter' : 'moveNodeIn'
   mei.bus.fire('operation', {
-    name: type === 'before' ? 'moveNodeBefore' : 'moveNodeAfter',
+    name: eventName,
     objs: from.map(f => f.nodeObj),
     toObj,
   })
+}
+
+export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+  moveNode(from, 'in', to, this)
 }
 
 export const moveNodeBefore = function (this: MindElixirInstance, from: Topic[], to: Topic) {
