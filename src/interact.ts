@@ -20,7 +20,10 @@ export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElemen
   const rect = el.getBoundingClientRect()
   const containerRect = container.getBoundingClientRect()
   const isOutOfView =
-    rect.top > containerRect.bottom || rect.bottom < containerRect.top || rect.left > containerRect.right || rect.right < containerRect.left
+    rect.top > containerRect.bottom - 50 ||
+    rect.bottom < containerRect.top + 50 ||
+    rect.left > containerRect.right - 50 ||
+    rect.right < containerRect.left + 50
   if (isOutOfView) {
     // Calculate the offset between container center and element center
     const elCenterX = rect.left + rect.width / 2
