@@ -20,7 +20,10 @@ export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElemen
   const rect = el.getBoundingClientRect()
   const containerRect = container.getBoundingClientRect()
   const isOutOfView =
-    rect.top > containerRect.bottom || rect.bottom < containerRect.top || rect.left > containerRect.right || rect.right < containerRect.left
+    rect.top > containerRect.bottom - 50 ||
+    rect.bottom < containerRect.top + 50 ||
+    rect.left > containerRect.right - 50 ||
+    rect.right < containerRect.left + 50
   if (isOutOfView) {
     // Calculate the offset between container center and element center
     const elCenterX = rect.left + rect.width / 2
@@ -43,14 +46,14 @@ export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewN
   }
 }
 
-export const selectNodes = function (this: MindElixirInstance, tpc: Topic[]): void {
+export const selectNodes = function (this: MindElixirInstance, tpcs: Topic[]): void {
   // update currentNodes in selection.ts to keep sync with SelectionArea cache
-  this.selection.select(tpc)
+  this.selection.select(tpcs)
 }
 
-export const unselectNodes = function (this: MindElixirInstance, tpc: Topic[]) {
+export const unselectNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   // no selection if editable === false
-  this.selection?.deselect(tpc)
+  this.selection?.deselect(tpcs)
 }
 
 export const clearSelection = function (this: MindElixirInstance) {
