@@ -104,7 +104,7 @@ Mind elixir 是一个开源的 JavaScript 思维导图核心。你可以在任�
 
 ## 立即试用
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5.jpg)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
 
 https://mind-elixir.com/
 

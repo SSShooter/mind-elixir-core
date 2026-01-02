@@ -81,7 +81,7 @@ Caractéristiques :
 
 ## Essayer maintenant
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5.jpg)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
 
 https://mind-elixir.com/
 

@@ -104,7 +104,7 @@ Mind elixir es un núcleo de mapas mentales de JavaScript de código abierto. Pu
 
 ## Prueba ahora
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5.jpg)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
 
 https://mind-elixir.com/
 

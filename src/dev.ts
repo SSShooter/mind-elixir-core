@@ -175,7 +175,7 @@ mind.bus.addListener('changeDirection', direction => {
 
 const dl2 = async () => {
   const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture' })
+  await result.download({ format: 'jpg', filename: 'my-capture.jpg', backgroundColor: mind.theme.cssVar['--bgcolor'] })
 }
 
 window.downloadPng = dl2
