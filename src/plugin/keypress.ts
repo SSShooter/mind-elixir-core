@@ -1,7 +1,10 @@
+import { stringifyData } from '../interact'
 import type { Topic } from '../types/dom'
 import type { KeypressOptions, MindElixirInstance } from '../types/index'
 import { DirectionClass } from '../types/index'
-import { setExpand } from '../utils'
+import { setExpand, unionNodeObjs } from '../utils'
+
+const COPY_MAGIC = 'MIND-ELIXIR-WAIT-COPY'
 
 const selectRootLeft = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
@@ -119,6 +122,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       mind.container.removeEventListener('keydown', handleControlKPlusX)
     }
   }
+
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
     Enter: e => {
       if (e.shiftKey) {
@@ -178,27 +182,6 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     PageDown: () => {
       mind.moveDownNode()
     },
-    c: (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey) {
-        mind.waitCopy = mind.currentNodes
-      }
-    },
-    x: (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey) {
-        mind.waitCopy = mind.currentNodes
-        handleRemove()
-      }
-    },
-    v: (e: KeyboardEvent) => {
-      if (!mind.waitCopy || !mind.currentNode) return
-      if (e.metaKey || e.ctrlKey) {
-        if (mind.waitCopy.length === 1) {
-          mind.copyNode(mind.waitCopy[0], mind.currentNode)
-        } else {
-          mind.copyNodes(mind.waitCopy, mind.currentNode)
-        }
-      }
-    },
     '=': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         handleZoom(mind, 'in')
@@ -240,9 +223,54 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
   }
   mind.container.onkeydown = e => {
     // it will prevent all input in children node, so we have to stop propagation in input element
-    e.preventDefault()
+    const isCopyCutPaste = (e.ctrlKey || e.metaKey) && ['c', 'v', 'x'].includes(e.key)
+    if (!isCopyCutPaste) {
+      e.preventDefault()
+    }
     if (!mind.editable) return
     const keyHandler = key2func[e.key]
     keyHandler && keyHandler(e)
   }
+
+  const handleSetNodesClip = (e: ClipboardEvent) => {
+    if (mind.currentNodes.length === 0) return false
+    if (e.clipboardData) {
+      const nodeObjs = unionNodeObjs(mind.currentNodes.map(node => node.nodeObj))
+      const data = stringifyData({
+        magic: COPY_MAGIC,
+        data: nodeObjs,
+      })
+      e.clipboardData.setData('text/plain', data)
+      e.preventDefault()
+      return true
+    }
+    return false
+  }
+
+  mind.container.addEventListener('copy', handleSetNodesClip)
+  mind.container.addEventListener('cut', (e: ClipboardEvent) => {
+    if (handleSetNodesClip(e)) handleRemove()
+  })
+
+  mind.container.addEventListener('paste', (e: ClipboardEvent) => {
+    const json = e.clipboardData?.getData('text/plain')
+    if (json) {
+      try {
+        const parsed = JSON.parse(json)
+        if (parsed && parsed.magic === COPY_MAGIC && Array.isArray(parsed.data)) {
+          const data = parsed.data
+          if (data.length > 0 && mind.currentNode) {
+            if (data.length === 1) {
+              mind.copyNodeObj(data[0], mind.currentNode)
+            } else {
+              mind.copyNodeObjs(data, mind.currentNode)
+            }
+            e.preventDefault()
+          }
+          return
+        }
+      } catch (error) {
+        // Not a valid JSON from MindElixir, fall through to pasteHandler.
+      }
+  })
 }

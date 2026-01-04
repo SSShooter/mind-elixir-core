@@ -62,6 +62,13 @@ export const clearSelection = function (this: MindElixirInstance) {
   this.unselectArrow()
 }
 
+export const stringifyData = function (data: object) {
+  return JSON.stringify(data, (k, v) => {
+    if (k === 'parent' && typeof v !== 'string') return undefined
+    return v
+  })
+}
+
 /**
  * @function
  * @instance
@@ -72,10 +79,7 @@ export const clearSelection = function (this: MindElixirInstance) {
  */
 export const getDataString = function (this: MindElixirInstance) {
   const data = collectData(this)
-  return JSON.stringify(data, (k, v) => {
-    if (k === 'parent' && typeof v !== 'string') return undefined
-    return v
-  })
+  return stringifyData(data)
 }
 /**
  * @function

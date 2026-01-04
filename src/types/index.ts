@@ -91,7 +91,6 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   currentNodes: Topic[]
   currentSummary: SummarySvgGroup | null
   currentArrow: CustomSvg | null
-  waitCopy: Topic[] | null
 
   scaleVal: number
   tempDirection: 0 | 1 | 2 | null
