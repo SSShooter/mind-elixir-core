@@ -81,7 +81,7 @@ Mind Elixir는 오픈 소스 JavaScript 마인드맵 코어입니다. 원하는 
 
 ## 지금 시작하기
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5.jpg)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
 
 https://mind-elixir.com/
 
