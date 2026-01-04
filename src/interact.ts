@@ -151,7 +151,7 @@ export const scaleFit = function (this: MindElixirInstance) {
   const widthPercent = this.nodes.offsetWidth / this.container.offsetWidth
   const scale = 1 / Math.max(1, Math.max(heightPercent, widthPercent))
   this.scaleVal = scale
-  const { dx, dy } = getCenterDefault(this)
+  const { dx, dy } = getCenterDefault(this, true)
   this.map.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${scale})`
   this.bus.fire('scale', scale)
 }
@@ -184,24 +184,23 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
 /**
  * 获取默认居中的偏移
  */
-const getCenterDefault = (mei: MindElixirInstance) => {
+const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
   const { container, map, nodes } = mei
 
-  const root = map.querySelector('me-root') as HTMLElement
-  const pT = root.offsetTop
-  const pL = root.offsetLeft
-  const pW = root.offsetWidth
-  const pH = root.offsetHeight
-
   let dx, dy
-  if (mei.alignment === 'root') {
-    dx = container.offsetWidth / 2 - pL - pW / 2
-    dy = container.offsetHeight / 2 - pT - pH / 2
-    map.style.transformOrigin = `${pL + pW / 2}px 50%`
-  } else {
+  if (mei.alignment === 'nodes' || forceAlignNodes) {
     dx = (container.offsetWidth - nodes.offsetWidth) / 2
     dy = (container.offsetHeight - nodes.offsetHeight) / 2
     map.style.transformOrigin = `50% 50%`
+  } else {
+    const root = map.querySelector('me-root') as HTMLElement
+    const pT = root.offsetTop
+    const pL = root.offsetLeft
+    const pW = root.offsetWidth
+    const pH = root.offsetHeight
+    dx = container.offsetWidth / 2 - pL - pW / 2
+    dy = container.offsetHeight / 2 - pT - pH / 2
+    map.style.transformOrigin = `${pL + pW / 2}px 50%`
   }
   return { dx, dy }
 }
