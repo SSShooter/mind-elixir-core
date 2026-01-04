@@ -160,13 +160,35 @@ export const scaleFit = function (this: MindElixirInstance) {
  * Move the map by `dx` and `dy`.
  */
 export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false) {
-  const { map, scaleVal, bus } = this
+  const { map, scaleVal, bus, container, nodes } = this
   if (smooth && map.style.transition === 'transform 0.3s') {
     // Prevent consecutive smooth moves
     return
   }
   const transform = map.style.transform
   let { x, y } = getTranslate(transform)
+
+  const cRect = container.getBoundingClientRect()
+  const nRect = nodes.getBoundingClientRect()
+
+  const isXVisible = nRect.left < cRect.right && nRect.right > cRect.left
+  const isYVisible = nRect.top < cRect.bottom && nRect.bottom > cRect.top
+
+  if (isXVisible) {
+    const futureLeft = nRect.left + dx
+    const futureRight = nRect.right + dx
+    if (futureLeft >= cRect.right || futureRight <= cRect.left) {
+      dx = 0
+    }
+  }
+  if (isYVisible) {
+    const futureTop = nRect.top + dy
+    const futureBottom = nRect.bottom + dy
+    if (futureTop >= cRect.bottom || futureBottom <= cRect.top) {
+      dy = 0
+    }
+  }
+
   x += dx
   y += dy
 
