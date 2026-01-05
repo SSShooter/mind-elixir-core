@@ -118,7 +118,7 @@ export const disableEdit = function (this: MindElixirInstance) {
  * @param {number}
  */
 export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
-  if (scaleVal < this.scaleMin || scaleVal > this.scaleMax) return
+  if ((scaleVal < this.scaleMin && scaleVal < this.scaleVal) || (scaleVal > this.scaleMax && scaleVal > this.scaleVal)) return
   const rect = this.container.getBoundingClientRect()
   // refer to /refs/scale-calc.excalidraw for the process
   // remove coordinate system influence and calculate quantities directly
