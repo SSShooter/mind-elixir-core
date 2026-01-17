@@ -321,19 +321,72 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
 }
 
 export const createArrow = function (this: MindElixirInstance, from: Topic, to: Topic, options: ArrowOptions = {}) {
+  // Calculate center positions of both nodes
+  const fromOffset = getOffsetLT(this.nodes, from)
+  const toOffset = getOffsetLT(this.nodes, to)
+
+  const fromCenterX = fromOffset.offsetLeft + from.offsetWidth / 2
+  const fromCenterY = fromOffset.offsetTop + from.offsetHeight / 2
+  const toCenterX = toOffset.offsetLeft + to.offsetWidth / 2
+  const toCenterY = toOffset.offsetTop + to.offsetHeight / 2
+
+  // Calculate the vector between nodes
+  const dx = toCenterX - fromCenterX
+  const dy = toCenterY - fromCenterY
+  const distance = Math.sqrt(dx * dx + dy * dy)
+
+  // Calculate recommended offset based on distance and direction
+  // Use 30% of the distance as base offset, with min 50 and max 200
+  const baseOffset = Math.max(50, Math.min(200, distance * 0.3))
+
+  // Determine the primary direction and calculate deltas accordingly
+  const absDx = Math.abs(dx)
+  const absDy = Math.abs(dy)
+
+  let delta1, delta2
+
+  if (absDx > absDy * 1.5) {
+    // Primarily horizontal arrangement
+    // Calculate offset from the edge of the node, not the center
+    const fromEdgeOffsetX = dx > 0 ? from.offsetWidth / 2 : -from.offsetWidth / 2
+    const toEdgeOffsetX = dx > 0 ? -to.offsetWidth / 2 : to.offsetWidth / 2
+
+    delta1 = { x: fromEdgeOffsetX + (dx > 0 ? baseOffset : -baseOffset), y: 0 }
+    delta2 = { x: toEdgeOffsetX + (dx > 0 ? -baseOffset : baseOffset), y: 0 }
+  } else if (absDy > absDx * 1.5) {
+    // Primarily vertical arrangement
+    // Calculate offset from the edge of the node, not the center
+    const fromEdgeOffsetY = dy > 0 ? from.offsetHeight / 2 : -from.offsetHeight / 2
+    const toEdgeOffsetY = dy > 0 ? -to.offsetHeight / 2 : to.offsetHeight / 2
+
+    delta1 = { x: 0, y: fromEdgeOffsetY + (dy > 0 ? baseOffset : -baseOffset) }
+    delta2 = { x: 0, y: toEdgeOffsetY + (dy > 0 ? -baseOffset : baseOffset) }
+  } else {
+    // Diagonal arrangement
+    // Calculate offset from the edge of the node, not the center
+    const angle = Math.atan2(dy, dx)
+
+    // Calculate which edge point the arrow exits/enters from
+    const fromEdgeOffsetX = (from.offsetWidth / 2) * Math.cos(angle)
+    const fromEdgeOffsetY = (from.offsetHeight / 2) * Math.sin(angle)
+    const toEdgeOffsetX = -(to.offsetWidth / 2) * Math.cos(angle)
+    const toEdgeOffsetY = -(to.offsetHeight / 2) * Math.sin(angle)
+
+    // Add the control point offset from the edge
+    const offsetX = baseOffset * 0.7 * (dx > 0 ? 1 : -1)
+    const offsetY = baseOffset * 0.7 * (dy > 0 ? 1 : -1)
+
+    delta1 = { x: fromEdgeOffsetX + offsetX, y: fromEdgeOffsetY + offsetY }
+    delta2 = { x: toEdgeOffsetX - offsetX, y: toEdgeOffsetY - offsetY }
+  }
+
   const arrowObj = {
     id: generateUUID(),
     label: 'Custom Link',
     from: from.nodeObj.id,
     to: to.nodeObj.id,
-    delta1: {
-      x: from.offsetWidth / 2 + 100,
-      y: 0,
-    },
-    delta2: {
-      x: to.offsetWidth / 2 + 100,
-      y: 0,
-    },
+    delta1,
+    delta2,
     ...options,
   }
   drawArrow(this, from, to, arrowObj)
