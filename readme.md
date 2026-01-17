@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+<a href="https://trendshift.io/repositories/13049" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13049" alt="SSShooter%2Fmind-elixir-core | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
@@ -37,24 +41,46 @@
 
 Mind elixir is a open source JavaScript mind map core. You can use it with any frontend framework you like.
 
-Features:
+## Features
 
-- Lightweight
-- High performance
-- Framework agnostic
-- Pluginable
-- Build-in drag and drop / node edit plugin
-- Export as SVG / PNG / Html
-- Summarize nodes
-- Bulk operations supported
-- Undo / Redo
-- Efficient shortcuts
-- Easily Styling your node with CSS variables
+### 🎨 **User Experience**
+
+- **Fluent UX** - Smooth and intuitive interactions
+- **Well designed** - Clean and modern interface
+- **Mobile friendly** - Touch events for mobile devices
+- **Efficient shortcuts** - Keyboard shortcuts for power users
+
+### ⚡ **Performance & Architecture**
+
+- **Lightweight** - Minimal bundle size
+- **High performance** - Optimized for large mind maps
+- **Framework agnostic** - Works with any frontend framework
+- **Pluginable** - Extensible architecture
+
+### 🛠️ **Core Features**
+
+- **Interactive editing** - Built-in drag and drop / node edit capabilities
+- **Bulk operations** - Multi-node selection and operations
+- **Undo / Redo** - Complete operation history
+- **Node connections & summarization** - Custom node linking and content summarization
+
+### 📤 **Export & Customization**
+
+- **Multiple export formats** - SVG / PNG / HTML export
+- **Easy styling** - Customize mindmap with CSS variables
+- **Theme support** - Built-in themes and custom styling
+
+[v5 Breaking Changes](https://github.com/SSShooter/mind-elixir-core/wiki/Breaking-Change#500)
 
 <details>
 <summary>Table of Contents</summary>
 
 - [Used by](#used-by)
+- [Features](#features)
+  - [🎨 **User Experience**](#-user-experience)
+  - [⚡ **Performance \& Architecture**](#-performance--architecture)
+  - [🛠️ **Core Features**](#️-core-features)
+  - [📤 **Export \& Customization**](#-export--customization)
 - [Try now](#try-now)
   - [Playground](#playground)
 - [Documentation](#documentation)
@@ -66,15 +92,16 @@ Features:
   - [Data Structure](#data-structure)
   - [Event Handling](#event-handling)
   - [Data Export And Import](#data-export-and-import)
+  - [Markdown Support](#markdown-support)
   - [Operation Guards](#operation-guards)
 - [Export as a Image](#export-as-a-image)
-  - [Solution 1](#solution-1)
-  - [Solution 2](#solution-2)
+  - [Deprecated API](#deprecated-api)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
+- [Who's using](#whos-using)
 - [Ecosystem](#ecosystem)
 - [Development](#development)
-- [Thanks](#thanks)
+- [Acknowledgments](#acknowledgments)
 - [Contributors](#contributors)
 
 </details>
@@ -87,16 +114,13 @@ Features:
 
 ## Try now
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
-
-https://mind-elixir.com/
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
 
 ### Playground
 
-- Vanilla JS - https://codepen.io/ssshooter/pen/OJrJowN
-- React - https://codesandbox.io/s/mind-elixir-3-x-react-18-x-vy9fcq
-- Vue3 - https://codesandbox.io/s/mind-elixir-3-x-vue3-lth484
-- Vue2 - https://codesandbox.io/s/mind-elixir-3-x-vue-2-x-5kdfjp
+- Vanilla JS - https://codepen.io/ssshooter/pen/vEOqWjE
+- React - https://codesandbox.io/p/devbox/mind-elixir-3-x-react-18-x-forked-f3mtcd
+- Vue3 - https://codesandbox.io/p/sandbox/mind-elixir-3-x-vue3-lth484
 
 ## Documentation
 
@@ -114,12 +138,19 @@ npm i mind-elixir -S
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 ```
 
 #### Script tag
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
+```
+
+And in your CSS file:
+
+```css
+@import 'https://cdn.jsdelivr.net/npm/mind-elixir/dist/style.css';
 ```
 
 ### Init
@@ -134,25 +165,23 @@ import MindElixir from 'mind-elixir'
 </style>
 ```
 
-**Breaking Change** since 1.0.0, `data` should be passed to `init()`, not `options`.
-
 ```javascript
 import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
   draggable: true, // default true
-  contextMenu: true, // default true
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
+  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] waiting for PRs
   overflowHidden: false, // default false
   mainLinkStyle: 2, // [1,2] default 1
   mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
-  contextMenuOption: {
+  contextMenu: {
     focus: true,
     link: true,
     extend: [
@@ -163,16 +192,14 @@ let options = {
         },
       },
     ],
-  },
+  }, // default true
   before: {
-    insertSibling(el, obj) {
-      return true
-    },
-    async addChild(el, obj) {
-      await sleep()
+    insertSibling(type, obj) {
       return true
     },
   },
+  // Custom markdown parser (optional)
+  // markdown: (text) => customMarkdownParser(text), // provide your own markdown parser function
 }
 
 let mind = new MindElixir(options)
@@ -235,8 +262,8 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:target1,to:target2}
 })
 
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
+mind.bus.addListener('selectNodes', nodes => {
+  console.log(nodes)
 })
 
 mind.bus.addListener('expandNode', node => {
@@ -250,7 +277,6 @@ mind.bus.addListener('expandNode', node => {
 // data export
 const data = mind.getData() // javascript object, see src/example.js
 mind.getDataString() // stringify object
-mind.getDataMd() // markdown
 
 // data import
 // initiate
@@ -260,24 +286,42 @@ mind.init(data)
 mind.refresh(data)
 ```
 
+### Markdown Support
+
+Mind Elixir supports custom markdown parsing:
+
+```javascript
+// Disable markdown (default)
+let mind = new MindElixir({
+  // markdown option omitted - no markdown processing
+})
+
+// Use custom markdown parser
+let mind = new MindElixir({
+  markdown: text => {
+    // Your custom markdown implementation
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`(.*?)`/g, '<code>$1</code>')
+  },
+})
+
+// Use any markdown library (e.g., marked, markdown-it, etc.)
+import { marked } from 'marked'
+let mind = new MindElixir({
+  markdown: text => marked(text),
+})
+```
+
 ### Operation Guards
 
 ```javascript
 let mind = new MindElixir({
   // ...
   before: {
-    insertSibling(el, obj) {
-      console.log(el, obj)
-      if (this.currentNode.nodeObj.parent.root) {
-        return false
-      }
-      return true
-    },
     async addChild(el, obj) {
-      await sleep()
-      if (this.currentNode.nodeObj.parent.root) {
-        return false
-      }
+      await saveDataToDb()
       return true
     },
   },
@@ -286,49 +330,26 @@ let mind = new MindElixir({
 
 ## Export as a Image
 
-### Solution 1
+Install `@zumer/snapdom`, then:
 
 ```typescript
-const mind = {
-  /** mind elixir instance */
-}
-const downloadPng = async () => {
-  const blob = await mind.exportPng() // Get a Blob!
-  if (!blob) return
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'filename.png'
-  a.click()
-  URL.revokeObjectURL(url)
+import { snapdom } from '@zumer/snapdom'
+
+const download = async () => {
+  const result = await snapdom(mind.nodes)
+  await result.download({ format: 'jpg', filename: 'my-capture' })
 }
 ```
 
-### Solution 2
+For other export formats and advanced options, see the [Mind Elixir documentation](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images).
 
-Install `@ssshooter/modern-screenshot`, then:
+### Deprecated API
+
+> ⚠️ **Deprecated**: The `mind.exportSvg()` method is deprecated and will be removed in a future version.
 
 ```typescript
-import { domToPng } from '@ssshooter/modern-screenshot'
-
-const download = async () => {
-  const dataUrl = await domToPng(mind.nodes, {
-    onCloneNode: node => {
-      const n = node as HTMLDivElement
-      n.style.position = ''
-      n.style.top = ''
-      n.style.left = ''
-      n.style.bottom = ''
-      n.style.right = ''
-    },
-    padding: 300,
-    quality: 1,
-  })
-  const link = document.createElement('a')
-  link.download = 'screenshot.png'
-  link.href = dataUrl
-  link.click()
-}
+// DEPRECATED - Do not use in new projects
+const svgData = await mind.exportSvg()
 ```
 
 ## Theme
@@ -372,25 +393,11 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 
 ## Shortcuts
 
-| Shortcut           | Function                         |
-| ------------------ | -------------------------------- |
-| Enter              | Insert Sibling Node              |
-| Tab                | Insert Child Node                |
-| F1                 | Center the Map                   |
-| F2                 | Begin Editing the Current Node   |
-| ↑                  | Select the Previous Sibling Node |
-| ↓                  | Select the Next Sibling Node     |
-| ← / →              | Select Parent or First Child     |
-| PageUp / Alt + ↑   | Move Up Node                     |
-| PageDown / Alt + ↓ | Move Down Node                   |
-| Ctrl + ↑           | Change Layout Pattern to Side    |
-| Ctrl + ←           | Change Layout Pattern to Left    |
-| Ctrl + →           | Change Layout Pattern to Right   |
-| Ctrl + C           | Copy the Current Node            |
-| Ctrl + V           | Paste the Copied Node            |
-| Ctrl + "+"         | Zoom In Mind Map                 |
-| Ctrl + "-"         | Zoom Out Mind Map                |
-| Ctrl + 0           | Reset Zoom Level                 |
+See [Shortcuts Guide](https://docs.mind-elixir.com/docs/guides/shortcuts) for detailed information.
+
+## Who's using
+
+- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
 
 ## Ecosystem
 
@@ -427,7 +434,9 @@ pnpm doc
 pnpm doc:md
 ```
 
-## Thanks
+Use [DeepWiki](https://deepwiki.com/SSShooter/mind-elixir-core) to learn more about Mind Elixir
+
+## Acknowledgments
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)
 
@@ -436,5 +445,5 @@ pnpm doc:md
 Thanks for your contributions to Mind Elixir! Your support and dedication make this project better.
 
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />
+  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core" />
 </a>

@@ -1,14 +1,21 @@
 // vite.config.js
-import { resolve } from 'path'
 import { defineConfig } from 'vite'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
+import istanbul from 'vite-plugin-istanbul'
+
 export default defineConfig({
-  plugins: [cssInjectedByJsPlugin()],
   server: {
     host: true,
     port: 23333,
     strictPort: true,
   },
+  plugins: [
+    istanbul({
+      include: 'src/*',
+      exclude: ['node_modules', 'test/', 'src/plugin/exportImage.ts'],
+      extension: ['.ts'],
+      requireEnv: true,
+    }),
+  ],
   // build: {
   //   cssCodeSplit: false,
   //   lib: {

@@ -1,7 +1,14 @@
-import type { MindElixirData } from '../index'
+import type { MindElixirData, NodeObj } from '../index'
 import { codeBlock, katexHTML, styledDiv } from './htmlText'
 
-const aboutMindElixir: MindElixirData = {
+type NodeObjWithUseMd = NodeObj & { useMd?: boolean }
+type MindElixirDataWithUseMd = Omit<MindElixirData, 'nodeData'> & {
+  nodeData: NodeObjWithUseMd & {
+    children?: NodeObjWithUseMd[]
+  }
+}
+
+const aboutMindElixir: MindElixirDataWithUseMd = {
   nodeData: {
     id: 'me-root',
     topic: 'Mind Elixir',
@@ -44,10 +51,19 @@ const aboutMindElixir: MindElixirData = {
             id: 'c1f06d38a09f23ca',
           },
           {
-            topic: 'Use without JavaScript framework',
+            topic: 'Framework agnostic',
             id: 'c1f06e4cbcf16463',
             expanded: true,
-            children: [],
+            children: [
+              {
+                topic: 'Use without JavaScript framework',
+                id: 'c1f06e4cbcf16464',
+              },
+              {
+                topic: 'Pluginable',
+                id: 'c1f06e4cbcf16465',
+              },
+            ],
           },
           {
             topic: 'Use in your own project',
@@ -64,35 +80,86 @@ const aboutMindElixir: MindElixirData = {
             ],
           },
           {
-            topic: 'Easy to use',
+            topic: 'Key Features',
             id: 'c1f0723c07b408d7',
             expanded: true,
             children: [
               {
-                topic: 'Use it like other mind map application',
+                topic: 'Fluent UX',
                 id: 'c1f09612fd89920d',
+              },
+              {
+                topic: 'Well designed',
+                id: 'c1f09612fd89920e',
+              },
+              {
+                topic: 'Mobile friendly',
+                id: 'c1f09612fd89920f',
+              },
+              {
+                topic: 'Lightweight & High performance',
+                id: 'c1f09612fd899210',
               },
             ],
           },
         ],
       },
       {
-        topic: 'Basics',
+        topic: 'Efficient Shortcuts',
         id: 'bd1b66c4b56754d9',
         direction: 0,
         expanded: true,
         children: [
           {
-            topic: 'tab - Create a child node',
+            topic: 'Tab - Create a child node',
             id: 'bd1b6892bcab126a',
           },
           {
-            topic: 'enter - Create a sibling node',
+            topic: 'Enter - Create a sibling node',
             id: 'bd1b6b632a434b27',
           },
           {
-            topic: 'del - Remove a node',
+            topic: 'F1 - Center the Map',
             id: 'bd1b983085187c0a',
+          },
+          {
+            topic: 'F2 - Begin Editing',
+            id: 'bd1b983085187c0b',
+          },
+          {
+            topic: 'Ctrl + C/V - Copy/Paste',
+            id: 'bd1b983085187c0c',
+          },
+          {
+            topic: 'Ctrl + +/- - Zoom In/Out',
+            id: 'bd1b983085187c0d',
+          },
+        ],
+      },
+      {
+        topic: 'Advanced Features',
+        id: 'bd1b66c4b56754da',
+        direction: 0,
+        expanded: true,
+        children: [
+          {
+            topic: 'Bulk operations supported',
+            id: 'bd1b6892bcab126b',
+            tags: ['New'],
+          },
+          {
+            topic: 'Undo / Redo',
+            id: 'bd1b6b632a434b28',
+            tags: ['New'],
+          },
+          {
+            topic: 'Summarize nodes',
+            id: 'bd1b983085187c0e',
+          },
+          {
+            topic: 'Easily Styling with CSS variables',
+            id: 'bd1b983085187c0f',
+            tags: ['New'],
           },
         ],
       },
@@ -201,7 +268,7 @@ const aboutMindElixir: MindElixirData = {
             topic: 'Font Size',
             id: 'bd1c24420cd2c2f5',
             style: {
-              fontSize: '32',
+              fontSize: '32px',
               color: '#3298db',
             },
           },
@@ -258,41 +325,60 @@ const aboutMindElixir: MindElixirData = {
         ],
       },
       {
-        topic: 'Export data',
+        topic: 'Export & Import',
         id: 'beeb7586973430db',
         direction: 1,
         expanded: true,
         children: [
           {
-            topic: 'JSON',
+            topic: 'Export as SVG',
+            id: 'beeb7a6bec2d68e6',
+          },
+          {
+            topic: 'Export as PNG',
+            id: 'beeb7a6bec2d68e7',
+            tags: ['New'],
+          },
+          {
+            topic: 'Export JSON data',
             id: 'beeb784cc189375f',
           },
           {
-            topic: 'HTML',
+            topic: 'Export as HTML',
             id: 'beeb7a6bec2d68f5',
           },
+        ],
+      },
+      {
+        topic: 'Ecosystem',
+        id: 'beeb7586973430dc',
+        direction: 1,
+        expanded: true,
+        children: [
           {
-            topic: 'SVG',
-            id: 'beeb7a6bec2d68e6',
+            topic: '@mind-elixir/node-menu',
+            id: 'beeb7586973430dd',
+            hyperLink: 'https://github.com/ssshooter/node-menu',
+          },
+          {
+            topic: '@mind-elixir/export-xmind',
+            id: 'beeb7586973430de',
+            hyperLink: 'https://github.com/ssshooter/export-xmind',
+          },
+          {
+            topic: 'mind-elixir-react',
+            id: 'beeb7586973430df',
+            hyperLink: 'https://github.com/ssshooter/mind-elixir-react',
           },
         ],
       },
       {
         topic: 'dangerouslySetInnerHTML',
         id: 'c00a1cf60baa44f0',
+        style: {
+          background: '#f1c40e',
+        },
         children: [
-          {
-            topic: 'Katex',
-            id: 'c00a2264f4532611',
-            children: [
-              {
-                topic: '',
-                id: 'c00a2264f4532612',
-                dangerouslySetInnerHTML:
-                  '<div class="math math-display"><span class="katex-display"><span class="katex"><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.4em;vertical-align:-0.95em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">x</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-3.01em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">y</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">]</span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size3">[</span></span><span class="mord"><span class="mtable"><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">a</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">b</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.45em;"><span style="top:-3.61em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">c</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">d</span></span></span></span><span class="vlist-s">&ZeroWidthSpace;</span></span><span class="vlist-r"><span class="vlist" style="height:0.95em;"><span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size3">]</span></span></span></span></span></span></span></div>',
-              },
-            ],
-          },
           {
             topic: 'Code Block',
             id: 'c00a2264fdaw32612',
@@ -317,47 +403,111 @@ const aboutMindElixir: MindElixirData = {
               },
             ],
           },
-          {
-            topic: 'Video',
-            id: 'c00a2264ffadw19',
-            children: [
-              {
-                topic: '',
-                id: 'c00a2264f453fv14',
-                dangerouslySetInnerHTML:
-                  '<iframe src="//player.bilibili.com/player.html?bvid=BV1aTxMehEjK&poster=1&autoplay=0&danmaku=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>',
-              },
-            ],
-          },
+          // {
+          //   topic: 'Video',
+          //   id: 'c00a2264ffadw19',
+          //   children: [
+          //     {
+          //       topic: '',
+          //       id: 'c00a2264f453fv14',
+          //       dangerouslySetInnerHTML:
+          //         '<iframe src="//player.bilibili.com/player.html?bvid=BV1aTxMehEjK&poster=1&autoplay=0&danmaku=0" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>',
+          //     },
+          //   ],
+          // },
         ],
         direction: 1,
       },
       {
-        topic: 'Caution',
-        id: 'bd42dad21aaf6bae',
-        direction: 0,
-        style: {
-          background: '#f1c40e',
-        },
+        topic: 'KaTeX',
+        id: 'markdown-complex-math',
+        direction: 1,
         expanded: true,
         children: [
           {
-            topic: 'Only save manually',
-            id: 'bd42e1d0163ebf04',
+            topic: 'Fourier transform: $$F(\\omega) = \\int_{-\\infty}^{\\infty} f(t) e^{-i\\omega t} dt$$',
+            id: 'markdown-fourier',
+            useMd: true,
+          },
+          {
+            topic: 'Schrödinger equation: $$i\\hbar\\frac{\\partial}{\\partial t}\\Psi = \\hat{H}\\Psi$$',
+            id: 'markdown-schrodinger',
+            useMd: true,
+          },
+        ],
+      },
+      {
+        topic: 'Basic Markdown Examples',
+        id: 'markdown-basic-examples',
+        direction: 1,
+        expanded: true,
+        children: [
+          {
+            topic: '# Heading 1',
+            id: 'markdown-headings',
+            useMd: true,
+          },
+          {
+            topic: '**Bold text** and __Highlight__ and *italic text*',
+            id: 'markdown-emphasis',
+            useMd: true,
+          },
+          {
+            topic: '- Unordered list item 1\n- Unordered list item 2',
+            id: 'markdown-lists',
+            useMd: true,
+          },
+          {
+            topic: '[Link to GitHub](https://github.com) and `inline code`',
+            id: 'markdown-links-code',
+            useMd: true,
+          },
+          {
+            topic:
+              '| Column 1 | Column 2 | Column 3 |\n|----------|----------|----------|\n| Row 1    | Data 1   | Info 1   |\n| Row 2    | Data 2   | Info 2   |',
+            id: 'markdown-table',
+            useMd: true,
+          },
+        ],
+      },
+      {
+        topic: 'Theme System',
+        id: 'bd42dad21aaf6baf',
+        direction: 1,
+        expanded: true,
+        children: [
+          {
+            topic: 'Built-in Themes',
+            id: 'bd42e1d0163ebf05',
             expanded: true,
             children: [
               {
-                topic: 'Save button in the top-right corner',
-                id: 'bd42e619051878b3',
-                branchColor: 'green',
-                expanded: true,
-                children: [],
+                topic: 'Latte (Light)',
+                id: 'bd42e619051878b4',
+                style: {
+                  background: '#ffffff',
+                  color: '#444446',
+                },
               },
               {
-                topic: 'ctrl + S',
-                id: 'bd42e97d7ac35e99',
+                topic: 'Dark Theme',
+                id: 'bd42e97d7ac35e9a',
+                style: {
+                  background: '#252526',
+                  color: '#ffffff',
+                },
               },
             ],
+          },
+          {
+            topic: 'Custom CSS Variables',
+            id: 'bd42e1d0163ebf06',
+            tags: ['Flexible'],
+          },
+          {
+            topic: 'Color Palette Customization',
+            id: 'bd42e1d0163ebf07',
+            tags: ['10 Colors'],
           },
         ],
       },
@@ -394,38 +544,58 @@ const aboutMindElixir: MindElixirData = {
         y: 28,
       },
       bidirectional: true,
+      style: {
+        stroke: '#8839ef',
+        labelColor: '#8839ef',
+        strokeWidth: '2',
+        strokeDasharray: '2,5',
+        opacity: '1',
+      },
     },
   ],
   summaries: [
     {
-      id: 'a5e68e6a2ce1b648',
-      parent: 'bd42e1d0163ebf04',
-      start: 0,
-      end: 1,
-      text: 'summary',
-    },
-    {
       id: 'a5e6978f1bc69f4a',
-      parent: 'bd4313fbac40284b',
-      start: 3,
-      end: 5,
-      text: 'summary',
+      parent: 'bd1ba66996df4ba4',
+      start: 0,
+      end: 3,
+      label:
+        'This is a summary section that groups together related nodes to show their logical connection and relationship. You can customize this text to provide more context about the grouped items.',
+      style: {
+        labelColor: '#8839ef',
+      },
     },
   ],
   direction: 2,
   theme: {
     name: 'Latte',
+    // Updated color palette with more vibrant colors
     palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],
+    // Enhanced CSS variables for better styling control
     cssVar: {
+      '--node-gap-x': '30px',
+      '--node-gap-y': '10px',
+      '--main-gap-x': '32px',
+      '--main-gap-y': '12px',
+      '--root-radius': '30px',
+      '--main-radius': '20px',
+      '--root-color': '#ffffff',
+      '--root-bgcolor': '#4c4f69',
+      '--root-border-color': 'rgba(0, 0, 0, 0)',
       '--main-color': '#444446',
       '--main-bgcolor': '#ffffff',
+      '--main-bgcolor-transparent': 'rgba(255, 255, 255, 0.8)',
+      '--topic-padding': '3px',
       '--color': '#777777',
       '--bgcolor': '#f6f6f6',
+      '--selected': '#4dc4ff',
+      '--accent-color': '#e64553',
       '--panel-color': '#444446',
       '--panel-bgcolor': '#ffffff',
       '--panel-border-color': '#eaeaea',
+      '--map-padding': '50px 80px',
     },
   },
 }
 
-export default aboutMindElixir
+export default aboutMindElixir as MindElixirData

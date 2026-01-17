@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "4.6.0",
+  "version": "5.5.0",
   "type": "module",
   "description": "Mind elixir is a free open source mind map core.",
   "keywords": [
@@ -18,6 +18,9 @@
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
+    "test:clean": "rimraf .nyc_output coverage",
+    "test:coverage": "pnpm test:clean && pnpm test && pnpm nyc && npx http-server ./coverage",
+    "nyc": "nyc report --reporter=html",
     "doc": "api-extractor run --local --verbose",
     "doc:md": "api-documenter markdown --input-folder ./api --output-folder ./md",
     "beta": "npm run build && npm publish --tag beta"
@@ -36,8 +39,15 @@
       "import": "./dist/example.js",
       "require": "./dist/example.js"
     },
+    "./LayoutSsr": {
+      "types": "./dist/types/utils/LayoutSsr.d.ts",
+      "import": "./dist/LayoutSsr.js",
+      "require": "./dist/LayoutSsr.js"
+    },
     "./readme.md": "./readme.md",
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./style": "./dist/MindElixir.css",
+    "./style.css": "./dist/MindElixir.css"
   },
   "typesVersions": {
     "*": {
@@ -60,33 +70,39 @@
     "package.json",
     "dist"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ssshooter/mind-elixir-core"
-  },
+  "repository": "github:SSShooter/mind-elixir-core",
   "homepage": "https://mind-elixir.com/",
   "author": "ssshooter",
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^17.8.1",
-    "@commitlint/config-conventional": "^17.8.1",
-    "@microsoft/api-documenter": "^7.25.21",
-    "@microsoft/api-extractor": "^7.47.11",
-    "@playwright/test": "^1.44.1",
+    "@commitlint/cli": "^20.0.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.36.0",
+    "@microsoft/api-documenter": "^7.26.34",
+    "@microsoft/api-extractor": "^7.52.13",
+    "@playwright/test": "^1.55.1",
     "@rollup/plugin-strip": "^3.0.4",
-    "@types/node": "^20.14.2",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
-    "@viselect/vanilla": "3.5.1",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^8.10.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.3",
-    "less": "^4.2.0",
-    "lint-staged": "^13.3.0",
-    "prettier": "2.8.4",
-    "typescript": "^5.4.5",
-    "vite": "^4.5.3",
-    "vite-plugin-css-injected-by-js": "^3.5.1"
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
+    "@typescript-eslint/parser": "^8.44.1",
+    "@viselect/vanilla": "3.9.0",
+    "@zumer/snapdom": "^1.9.11",
+    "eslint": "^9.36.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^16.4.0",
+    "husky": "^9.1.7",
+    "katex": "^0.16.22",
+    "less": "^4.4.1",
+    "lint-staged": "^16.2.1",
+    "marked": "^16.3.0",
+    "nyc": "^17.1.0",
+    "prettier": "3.6.2",
+    "rimraf": "^6.0.1",
+    "simple-markdown-to-html": "^1.0.0",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.7",
+    "vite-plugin-istanbul": "^7.2.0"
   }
 }

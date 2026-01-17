@@ -2,8 +2,7 @@ import type { Locale } from './i18n'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
-import { findEle } from './utils/dom'
-import { fillParent } from './utils/index'
+import { fillParent, getTranslate, setExpand } from './utils/index'
 
 function collectData(instance: MindElixirInstance) {
   return {
@@ -15,62 +14,50 @@ function collectData(instance: MindElixirInstance) {
   }
 }
 
-export const selectNode = function (this: MindElixirInstance, targetElement: Topic, isNewNode?: boolean, e?: MouseEvent): void {
-  if (!targetElement) return
-  console.time('selectNode')
-  this.clearSelection()
-  if (typeof targetElement === 'string') {
-    const el = findEle(targetElement)
-    if (!el) return
-    return this.selectNode(el)
+export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElement) {
+  // scrollIntoView needs to be implemented manually because native scrollIntoView behaves incorrectly after transform
+  const container = this.container
+  const rect = el.getBoundingClientRect()
+  const containerRect = container.getBoundingClientRect()
+  const isOutOfView =
+    rect.top > containerRect.bottom - 50 ||
+    rect.bottom < containerRect.top + 50 ||
+    rect.left > containerRect.right - 50 ||
+    rect.right < containerRect.left + 50
+  if (isOutOfView) {
+    // Calculate the offset between container center and element center
+    const elCenterX = rect.left + rect.width / 2
+    const elCenterY = rect.top + rect.height / 2
+    const containerCenterX = containerRect.left + containerRect.width / 2
+    const containerCenterY = containerRect.top + containerRect.height / 2
+    const offsetX = elCenterX - containerCenterX
+    const offsetY = elCenterY - containerCenterY
+    this.move(-offsetX, -offsetY, true)
   }
-  targetElement.className = 'selected'
-  targetElement.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-  this.currentNode = targetElement
+}
+
+export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
+  // selectNode clears all selected nodes by default
+  this.clearSelection()
+  this.scrollIntoView(tpc)
+  this.selection.select(tpc)
   if (isNewNode) {
-    this.bus.fire('selectNewNode', targetElement.nodeObj)
-  } else {
-    // the variable e indicates that the action is triggered by a click
-    this.bus.fire('selectNode', targetElement.nodeObj, e)
+    this.bus.fire('selectNewNode', tpc.nodeObj)
   }
-  console.timeEnd('selectNode')
 }
 
-export const unselectNode = function (this: MindElixirInstance) {
-  if (this.currentNode) {
-    this.currentNode.className = ''
-  }
-  this.currentNode = null
-  this.bus.fire('unselectNode')
+export const selectNodes = function (this: MindElixirInstance, tpcs: Topic[]): void {
+  // update currentNodes in selection.ts to keep sync with SelectionArea cache
+  this.selection.select(tpcs)
 }
 
-export const selectNodes = function (this: MindElixirInstance, tpc: Topic[]): void {
-  console.time('selectNodes')
-  this.clearSelection()
-  for (const el of tpc) {
-    el.className = 'selected'
-  }
-  this.currentNodes = tpc
-  this.bus.fire(
-    'selectNodes',
-    tpc.map(el => el.nodeObj)
-  )
-  console.timeEnd('selectNodes')
-}
-
-export const unselectNodes = function (this: MindElixirInstance) {
-  if (this.currentNodes) {
-    for (const el of this.currentNodes) {
-      el.classList.remove('selected')
-    }
-  }
-  this.currentNodes = null
-  this.bus.fire('unselectNodes')
+export const unselectNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
+  // no selection if editable === false
+  this.selection?.deselect(tpcs)
 }
 
 export const clearSelection = function (this: MindElixirInstance) {
-  this.unselectNode()
-  this.unselectNodes()
+  this.unselectNodes(this.currentNodes)
   this.unselectSummary()
   this.unselectArrow()
 }
@@ -105,33 +92,6 @@ export const getData = function (this: MindElixirInstance) {
 /**
  * @function
  * @instance
- * @name getDataMd
- * @description Get all node data as markdown.
- * @memberof MapInteraction
- * @return {String}
- */
-export const getDataMd = function (this: MindElixirInstance) {
-  const data = collectData(this).nodeData
-  let mdString = '# ' + data.topic + '\n\n'
-  function writeMd(children: NodeObj[], deep: number) {
-    for (let i = 0; i < children.length; i++) {
-      if (deep <= 6) {
-        mdString += ''.padStart(deep, '#') + ' ' + children[i].topic + '\n\n'
-      } else {
-        mdString += ''.padStart(deep - 7, '\t') + '- ' + children[i].topic + '\n'
-      }
-      if (children[i].children) {
-        writeMd(children[i].children || [], deep + 1)
-      }
-    }
-  }
-  writeMd(data.children || [], 2)
-  return mdString
-}
-
-/**
- * @function
- * @instance
  * @name enableEdit
  * @memberof MapInteraction
  */
@@ -157,14 +117,29 @@ export const disableEdit = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  * @param {number}
  */
-export const scale = function (this: MindElixirInstance, scaleVal: number) {
-  // TODO: recalculate the position of the map
-  // plan A: use transform-origin
-  // deprecated, center will be changed even if the scale function is doing well, which is very difficult to solve
-  // plan B: use transform: translate
-  // https://github.com/markmap/markmap/blob/e3071bc34da850ed7283b7d5b1a79b6c9b631a0e/packages/markmap-view/src/view.tsx#L640
+export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
+  if ((scaleVal < this.scaleMin && scaleVal < this.scaleVal) || (scaleVal > this.scaleMax && scaleVal > this.scaleVal)) return
+  const rect = this.container.getBoundingClientRect()
+  // refer to /refs/scale-calc.excalidraw for the process
+  // remove coordinate system influence and calculate quantities directly
+  // cursor xy
+  const xc = offset.x ? offset.x - rect.left - rect.width / 2 : 0
+  const yc = offset.y ? offset.y - rect.top - rect.height / 2 : 0
+
+  const { dx, dy } = getCenterDefault(this)
+  const oldTransform = this.map.style.transform
+  const { x: xCurrent, y: yCurrent } = getTranslate(oldTransform) // current offset
+  // before xy
+  const xb = xCurrent - dx
+  const yb = yCurrent - dy
+
+  const oldScale = this.scaleVal
+  // Note: cursor needs to be reversed, probably because transform itself is reversed
+  const xres = (-xc + xb) * (1 - scaleVal / oldScale)
+  const yres = (-yc + yb) * (1 - scaleVal / oldScale)
+
+  this.map.style.transform = `translate3d(${xCurrent - xres}px, ${yCurrent - yres}px, 0) scale(${scaleVal})`
   this.scaleVal = scaleVal
-  this.map.style.transform = 'scale(' + scaleVal + ')'
   this.bus.fire('scale', scaleVal)
 }
 
@@ -176,8 +151,80 @@ export const scaleFit = function (this: MindElixirInstance) {
   const widthPercent = this.nodes.offsetWidth / this.container.offsetWidth
   const scale = 1 / Math.max(1, Math.max(heightPercent, widthPercent))
   this.scaleVal = scale
-  this.map.style.transform = 'scale(' + scale + ')'
+  const { dx, dy } = getCenterDefault(this, true)
+  this.map.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${scale})`
   this.bus.fire('scale', scale)
+}
+
+/**
+ * Move the map by `dx` and `dy`.
+ */
+export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false) {
+  const { map, scaleVal, bus, container, nodes } = this
+  if (smooth && map.style.transition === 'transform 0.3s') {
+    // Prevent consecutive smooth moves
+    return
+  }
+  const transform = map.style.transform
+  let { x, y } = getTranslate(transform)
+
+  const cRect = container.getBoundingClientRect()
+  const nRect = nodes.getBoundingClientRect()
+
+  const isXVisible = nRect.left < cRect.right && nRect.right > cRect.left
+  const isYVisible = nRect.top < cRect.bottom && nRect.bottom > cRect.top
+
+  if (isXVisible) {
+    const futureLeft = nRect.left + dx
+    const futureRight = nRect.right + dx
+    if (futureLeft >= cRect.right || futureRight <= cRect.left) {
+      dx = 0
+    }
+  }
+  if (isYVisible) {
+    const futureTop = nRect.top + dy
+    const futureBottom = nRect.bottom + dy
+    if (futureTop >= cRect.bottom || futureBottom <= cRect.top) {
+      dy = 0
+    }
+  }
+
+  x += dx
+  y += dy
+
+  if (smooth) {
+    map.style.transition = 'transform 0.3s'
+    setTimeout(() => {
+      map.style.transition = 'none'
+    }, 300)
+  }
+  map.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scaleVal})`
+
+  bus.fire('move', { dx, dy })
+}
+
+/**
+ * 获取默认居中的偏移
+ */
+const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
+  const { container, map, nodes } = mei
+
+  let dx, dy
+  if (mei.alignment === 'nodes' || forceAlignNodes) {
+    dx = (container.offsetWidth - nodes.offsetWidth) / 2
+    dy = (container.offsetHeight - nodes.offsetHeight) / 2
+    map.style.transformOrigin = `50% 50%`
+  } else {
+    const root = map.querySelector('me-root') as HTMLElement
+    const pT = root.offsetTop
+    const pL = root.offsetLeft
+    const pW = root.offsetWidth
+    const pH = root.offsetHeight
+    dx = container.offsetWidth / 2 - pL - pW / 2
+    dy = container.offsetHeight / 2 - pT - pH / 2
+    map.style.transformOrigin = `${pL + pW / 2}px 50%`
+  }
+  return { dx, dy }
 }
 
 /**
@@ -188,7 +235,11 @@ export const scaleFit = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  */
 export const toCenter = function (this: MindElixirInstance) {
-  this.container.scrollTo(10000 - this.container.offsetWidth / 2, 10000 - this.container.offsetHeight / 2)
+  const { map, container } = this
+  const { dx, dy } = getCenterDefault(this)
+  container.scrollTop = 0
+  container.scrollLeft = 0
+  map.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${this.scaleVal})`
 }
 
 /**
@@ -201,6 +252,7 @@ export const toCenter = function (this: MindElixirInstance) {
 export const install = function (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) {
   plugin(this)
 }
+
 /**
  * @function
  * @instance
@@ -211,6 +263,7 @@ export const install = function (this: MindElixirInstance, plugin: (instance: Mi
  */
 export const focusNode = function (this: MindElixirInstance, el: Topic) {
   if (!el.nodeObj.parent) return
+  this.clearSelection()
   if (this.tempDirection === null) {
     this.tempDirection = this.direction
   }
@@ -249,6 +302,8 @@ export const cancelFocus = function (this: MindElixirInstance) {
 export const initLeft = function (this: MindElixirInstance) {
   this.direction = 0
   this.refresh()
+  this.toCenter()
+  this.bus.fire('changeDirection', this.direction)
 }
 /**
  * @function
@@ -260,6 +315,8 @@ export const initLeft = function (this: MindElixirInstance) {
 export const initRight = function (this: MindElixirInstance) {
   this.direction = 1
   this.refresh()
+  this.toCenter()
+  this.bus.fire('changeDirection', this.direction)
 }
 /**
  * @function
@@ -271,6 +328,8 @@ export const initRight = function (this: MindElixirInstance) {
 export const initSide = function (this: MindElixirInstance) {
   this.direction = 2
   this.refresh()
+  this.toCenter()
+  this.bus.fire('changeDirection', this.direction)
 }
 
 /**
@@ -293,6 +352,14 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   } else {
     node.expanded = true
   }
+
+  // Calculate position before expansion
+  const expanderRect = el.getBoundingClientRect()
+  const beforePosition = {
+    x: expanderRect.left,
+    y: expanderRect.top,
+  }
+
   const parent = el.parentNode
   const expander = parent.children[1]!
   expander.expanded = node.expanded
@@ -314,16 +381,40 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
 
   this.linkDiv(el.closest('me-main > me-wrapper') as Wrapper)
 
-  // scroll into view if the node is out of view
-  const elRect = el.getBoundingClientRect()
-  const containerRect = this.container.getBoundingClientRect()
-  const isOutOfView =
-    elRect.bottom > containerRect.bottom || elRect.top < containerRect.top || elRect.right > containerRect.right || elRect.left < containerRect.left
-  if (isOutOfView) {
-    el.scrollIntoView({ block: 'center', inline: 'center' })
+  // Calculate position after expansion and compensate for drift
+  const afterRect = el.getBoundingClientRect()
+  const afterPosition = {
+    x: afterRect.left,
+    y: afterRect.top,
   }
 
+  // Calculate the drift and move to compensate
+  const driftX = beforePosition.x - afterPosition.x
+  const driftY = beforePosition.y - afterPosition.y
+
+  this.move(driftX, driftY)
+
   this.bus.fire('expandNode', node)
+}
+
+export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
+  const node = el.nodeObj
+  const beforeRect = el.getBoundingClientRect()
+  const beforePosition = {
+    x: beforeRect.left,
+    y: beforeRect.top,
+  }
+  setExpand(node, isExpand ?? !node.expanded)
+  this.refresh()
+  const afterRect = this.findEle(node.id).getBoundingClientRect()
+  const afterPosition = {
+    x: afterRect.left,
+    y: afterRect.top,
+  }
+  const driftX = beforePosition.x - afterPosition.x
+  const driftY = beforePosition.y - afterPosition.y
+
+  this.move(driftX, driftY)
 }
 
 /**
@@ -335,11 +426,13 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
  * @param {TargetElement} data mind elixir data
  */
 export const refresh = function (this: MindElixirInstance, data?: MindElixirData) {
+  this.clearSelection()
   if (data) {
     data = JSON.parse(JSON.stringify(data)) as MindElixirData // it shouldn't contanimate the original data
     this.nodeData = data.nodeData
     this.arrows = data.arrows || []
     this.summaries = data.summaries || []
+    data.theme && this.changeTheme(data.theme)
   }
   fillParent(this.nodeData)
   // create dom element for every node

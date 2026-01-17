@@ -33,6 +33,22 @@ export const fillParent = (data: NodeObj, parent?: NodeObj) => {
   }
 }
 
+export const setExpand = (node: NodeObj, isExpand: boolean, level?: number) => {
+  node.expanded = isExpand
+  if (node.children) {
+    if (level === undefined || level > 0) {
+      const nextLevel = level !== undefined ? level - 1 : undefined
+      node.children.forEach(child => {
+        setExpand(child, isExpand, nextLevel)
+      })
+    } else {
+      node.children.forEach(child => {
+        setExpand(child, false)
+      })
+    }
+  }
+}
+
 export function refreshIds(data: NodeObj) {
   data.id = generateUUID()
   if (data.children) {
@@ -53,27 +69,30 @@ export const throttle = <T extends (...args: never[]) => void>(fn: T, wait: numb
 }
 
 export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: number) {
+  // Calculate the direction vector from p3 (control point) to p4 (end point)
+  const deltax = p4x - p3x
   const deltay = p4y - p3y
-  const deltax = p3x - p4x
-  let angle = (Math.atan(Math.abs(deltay) / Math.abs(deltax)) / 3.14) * 180
-  if (deltax < 0 && deltay > 0) {
-    angle = 180 - angle
-  }
-  if (deltax < 0 && deltay < 0) {
-    angle = 180 + angle
-  }
-  if (deltax > 0 && deltay < 0) {
-    angle = 360 - angle
-  }
+
+  // Use atan2 to get the angle directly, which handles all quadrants correctly
+  // atan2(y, x) returns angle in radians from -PI to PI
+  const angleRad = Math.atan2(deltay, deltax)
+
+  // Convert to degrees for easier understanding (optional, could work directly with radians)
+  const angleDeg = (angleRad * 180) / Math.PI
+
   const arrowLength = 12
   const arrowAngle = 30
-  const a1 = angle + arrowAngle
-  const a2 = angle - arrowAngle
+
+  // Calculate the two arrow head points
+  // Subtract arrowAngle to get the two wing angles
+  const a1Rad = ((angleDeg + 180 - arrowAngle) * Math.PI) / 180
+  const a2Rad = ((angleDeg + 180 + arrowAngle) * Math.PI) / 180
+
   return {
-    x1: p4x + Math.cos((Math.PI * a1) / 180) * arrowLength,
-    y1: p4y - Math.sin((Math.PI * a1) / 180) * arrowLength,
-    x2: p4x + Math.cos((Math.PI * a2) / 180) * arrowLength,
-    y2: p4y - Math.sin((Math.PI * a2) / 180) * arrowLength,
+    x1: p4x + Math.cos(a1Rad) * arrowLength,
+    y1: p4y + Math.sin(a1Rad) * arrowLength,
+    x2: p4x + Math.cos(a2Rad) * arrowLength,
+    y2: p4y + Math.sin(a2Rad) * arrowLength,
   }
 }
 
@@ -133,14 +152,50 @@ export const isTopic = (target?: HTMLElement): target is Topic => {
 }
 
 export const unionTopics = (nodes: Topic[]) => {
-  return nodes.filter(node => {
-    for (let i = 0; i < nodes.length; i++) {
-      if (node === nodes[i]) continue
-      const parent = nodes[i].parentElement.parentElement
-      if (parent.contains(node)) {
-        return false
+  return nodes
+    .filter(node => node.nodeObj.parent)
+    .filter((node, _, nodes) => {
+      for (let i = 0; i < nodes.length; i++) {
+        if (node === nodes[i]) continue
+        const { parent } = node.nodeObj
+        if (parent === nodes[i].nodeObj) {
+          return false
+        }
       }
+      return true
+    })
+}
+
+export const getTranslate = (styleText: string) => {
+  // use translate3d for GPU acceleration
+  const regex = /translate3d\(([^,]+),\s*([^,]+)/
+  const match = styleText.match(regex)
+  return match ? { x: parseFloat(match[1]), y: parseFloat(match[2]) } : { x: 0, y: 0 }
+}
+
+export const on = function (
+  list: {
+    [K in keyof GlobalEventHandlersEventMap]: {
+      dom: EventTarget
+      evt: K
+      func: (this: EventTarget, ev: GlobalEventHandlersEventMap[K]) => void
     }
-    return true
-  })
+  }[keyof GlobalEventHandlersEventMap][]
+) {
+  for (let i = 0; i < list.length; i++) {
+    const { dom, evt, func } = list[i]
+    dom.addEventListener(evt, func as EventListener)
+  }
+  return function off() {
+    for (let i = 0; i < list.length; i++) {
+      const { dom, evt, func } = list[i]
+      dom.removeEventListener(evt, func as EventListener)
+    }
+  }
+}
+
+export const getDistance = (p1: { x: number; y: number }, p2: { x: number; y: number }) => {
+  const dx = p1.x - p2.x
+  const dy = p1.y - p2.y
+  return Math.sqrt(dx * dx + dy * dy)
 }

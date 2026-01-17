@@ -1,9 +1,37 @@
 import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
-import { findEle } from './utils/dom'
-import { createSvgGroup, editSvgText } from './utils/svg'
+import { calculatePrecisePosition, createArrowGroup, createLabel, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance, Uid } from './index'
+
+const highlightColor = '#4dc4ff'
+
+export interface ArrowStyle {
+  /**
+   * stroke color of the arrow
+   */
+  stroke?: string
+  /**
+   * stroke width of the arrow
+   */
+  strokeWidth?: string | number
+  /**
+   * stroke dash array for dashed lines
+   */
+  strokeDasharray?: string
+  /**
+   * stroke line cap style
+   */
+  strokeLinecap?: 'butt' | 'round' | 'square'
+  /**
+   * opacity of the arrow
+   */
+  opacity?: string | number
+  /**
+   * color of the arrow label
+   */
+  labelColor?: string
+}
 
 export interface Arrow {
   id: string
@@ -37,8 +65,12 @@ export interface Arrow {
    * whether the arrow is bidirectional
    */
   bidirectional?: boolean
+  /**
+   * style properties for the arrow
+   */
+  style?: ArrowStyle
 }
-export type DivData = {
+export interface DivData {
   cx: number // center x
   cy: number // center y
   w: number // div width
@@ -46,8 +78,139 @@ export type DivData = {
   ctrlX: number // control point x
   ctrlY: number // control point y
 }
-export type ArrowOptions = {
+export interface ArrowOptions {
   bidirectional?: boolean
+  style?: ArrowStyle
+}
+
+/**
+ * Calculate bezier curve midpoint position
+ */
+function calcBezierMidPoint(p1x: number, p1y: number, p2x: number, p2y: number, p3x: number, p3y: number, p4x: number, p4y: number) {
+  return {
+    x: p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8,
+    y: p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8,
+  }
+}
+
+/**
+ * Update arrow label position
+ */
+function updateArrowLabel(labelEl: HTMLDivElement, x: number, y: number) {
+  if (!labelEl) return
+  labelEl.dataset.x = x.toString()
+  labelEl.dataset.y = y.toString()
+  calculatePrecisePosition(labelEl)
+}
+
+/**
+ * Update control line position
+ */
+function updateControlLine(line: SVGElement, x1: number, y1: number, x2: number, y2: number) {
+  setAttributes(line, {
+    x1: x1 + '',
+    y1: y1 + '',
+    x2: x2 + '',
+    y2: y2 + '',
+  })
+}
+
+/**
+ * Update arrow path and related elements
+ */
+function updateArrowPath(
+  arrow: CustomSvg,
+  p1x: number,
+  p1y: number,
+  p2x: number,
+  p2y: number,
+  p3x: number,
+  p3y: number,
+  p4x: number,
+  p4y: number,
+  linkItem: Arrow
+) {
+  const mainPath = `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`
+
+  // Update main path
+  arrow.line.setAttribute('d', mainPath)
+
+  // Apply styles to the main line if they exist
+  if (linkItem.style) {
+    const style = linkItem.style
+    if (style.stroke) arrow.line.setAttribute('stroke', style.stroke)
+    if (style.strokeWidth) arrow.line.setAttribute('stroke-width', String(style.strokeWidth))
+    if (style.strokeDasharray) arrow.line.setAttribute('stroke-dasharray', style.strokeDasharray)
+    if (style.strokeLinecap) arrow.line.setAttribute('stroke-linecap', style.strokeLinecap)
+    if (style.opacity !== undefined) arrow.line.setAttribute('opacity', String(style.opacity))
+  }
+
+  // Update hotzone for main path (find the first hotzone path which corresponds to the main line)
+  const hotzones = arrow.querySelectorAll('path[stroke="transparent"]')
+  if (hotzones.length > 0) {
+    hotzones[0].setAttribute('d', mainPath)
+  }
+
+  // Update arrow head
+  const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
+  if (arrowPoint) {
+    const arrowPath1 = `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`
+    arrow.arrow1.setAttribute('d', arrowPath1)
+
+    // Update hotzone for arrow1
+    if (hotzones.length > 1) {
+      hotzones[1].setAttribute('d', arrowPath1)
+    }
+
+    // Apply styles to arrow head
+    if (linkItem.style) {
+      const style = linkItem.style
+      if (style.stroke) arrow.arrow1.setAttribute('stroke', style.stroke)
+      if (style.strokeWidth) arrow.arrow1.setAttribute('stroke-width', String(style.strokeWidth))
+      if (style.strokeLinecap) arrow.arrow1.setAttribute('stroke-linecap', style.strokeLinecap)
+      if (style.opacity !== undefined) arrow.arrow1.setAttribute('opacity', String(style.opacity))
+    }
+  }
+
+  // Update start arrow if bidirectional
+  if (linkItem.bidirectional) {
+    const arrowPointStart = getArrowPoints(p2x, p2y, p1x, p1y)
+    if (arrowPointStart) {
+      const arrowPath2 = `M ${arrowPointStart.x1} ${arrowPointStart.y1} L ${p1x} ${p1y} L ${arrowPointStart.x2} ${arrowPointStart.y2}`
+      arrow.arrow2.setAttribute('d', arrowPath2)
+
+      // Update hotzone for arrow2
+      if (hotzones.length > 2) {
+        hotzones[2].setAttribute('d', arrowPath2)
+      }
+
+      // Apply styles to start arrow head
+      if (linkItem.style) {
+        const style = linkItem.style
+        if (style.stroke) arrow.arrow2.setAttribute('stroke', style.stroke)
+        if (style.strokeWidth) arrow.arrow2.setAttribute('stroke-width', String(style.strokeWidth))
+        if (style.strokeLinecap) arrow.arrow2.setAttribute('stroke-linecap', style.strokeLinecap)
+        if (style.opacity !== undefined) arrow.arrow2.setAttribute('opacity', String(style.opacity))
+      }
+    }
+  }
+
+  // Update label position and color
+  const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
+  if (arrow.labelEl) {
+    updateArrowLabel(arrow.labelEl, halfx, halfy)
+  }
+
+  // Apply label color if specified
+  if (linkItem.style?.labelColor) {
+    const div = arrow.labelEl
+    if (div) {
+      div.style.color = linkItem.style.labelColor
+    }
+  }
+
+  // Update highlight layer
+  updateArrowHighlight(arrow)
 }
 
 /**
@@ -100,19 +263,6 @@ function calcP(data: DivData) {
   }
 }
 
-const createText = function (string: string, x: number, y: number, color?: string) {
-  const text = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-  setAttributes(text, {
-    'text-anchor': 'middle',
-    x: x + '',
-    y: y + '',
-    fill: color || '#666',
-  })
-  text.dataset.type = 'custom-link'
-  text.innerHTML = string
-  return text
-}
-
 /**
  * FYI
  * p1: start point
@@ -124,7 +274,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   if (!from || !to) {
     return // not expand
   }
-  const start = performance.now()
+
   const fromData = calcCtrlP(mei, from, obj.delta1)
   const toData = calcCtrlP(mei, to, obj.delta2)
 
@@ -134,49 +284,123 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   const { x: p4x, y: p4y } = calcP(toData)
 
   const arrowT = getArrowPoints(p3x, p3y, p4x, p4y)
+  if (!arrowT) return
 
   const toArrow = `M ${arrowT.x1} ${arrowT.y1} L ${p4x} ${p4y} L ${arrowT.x2} ${arrowT.y2}`
   let fromArrow = ''
   if (obj.bidirectional) {
     const arrowF = getArrowPoints(p2x, p2y, p1x, p1y)
+    if (!arrowF) return
     fromArrow = `M ${arrowF.x1} ${arrowF.y1} L ${p1x} ${p1y} L ${arrowF.x2} ${arrowF.y2}`
   }
-  const newSvgGroup = createSvgGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow)
+  const newSvgGroup = createArrowGroup(`M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`, toArrow, fromArrow, obj.style)
 
-  const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
-  const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
-  const label = createText(obj.label, halfx, halfy, mei.theme.cssVar['--color'])
-  newSvgGroup.appendChild(label)
-
+  // Use extracted common function to calculate midpoint
+  const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
+  const labelColor = obj.style?.labelColor || 'rgb(235, 95, 82)'
+  const groupId = 'arrow-' + obj.id
+  newSvgGroup.id = groupId
+  const renderedLabel = mei.markdown ? mei.markdown(obj.label, obj) : obj.label
+  const label = createLabel(renderedLabel, halfx, halfy, {
+    anchor: 'middle',
+    color: labelColor,
+    dataType: 'arrow',
+    svgId: groupId,
+  })
+  newSvgGroup.labelEl = label // Store reference to label element
   newSvgGroup.arrowObj = obj
   newSvgGroup.dataset.linkid = obj.id
+  mei.labelContainer.appendChild(label)
   mei.linkSvgGroup.appendChild(newSvgGroup)
+  calculatePrecisePosition(label)
   if (!isInitPaint) {
     mei.arrows.push(obj)
     mei.currentArrow = newSvgGroup
     showLinkController(mei, obj, fromData, toData)
   }
-  const end = performance.now()
-  console.log(`DrawArrow Execution time: ${end - start} ms`)
 }
 
 export const createArrow = function (this: MindElixirInstance, from: Topic, to: Topic, options: ArrowOptions = {}) {
+  // Calculate center positions of both nodes
+  const fromOffset = getOffsetLT(this.nodes, from)
+  const toOffset = getOffsetLT(this.nodes, to)
+
+  const fromCenterX = fromOffset.offsetLeft + from.offsetWidth / 2
+  const fromCenterY = fromOffset.offsetTop + from.offsetHeight / 2
+  const toCenterX = toOffset.offsetLeft + to.offsetWidth / 2
+  const toCenterY = toOffset.offsetTop + to.offsetHeight / 2
+
+  // Calculate the vector between nodes
+  const dx = toCenterX - fromCenterX
+  const dy = toCenterY - fromCenterY
+  const distance = Math.sqrt(dx * dx + dy * dy)
+
+  // Calculate recommended offset based on distance and direction
+  // Use 30% of the distance as base offset, with min 50 and max 200
+  const baseOffset = Math.max(50, Math.min(200, distance * 0.3))
+
+  // Determine the primary direction and calculate deltas accordingly
+  const absDx = Math.abs(dx)
+  const absDy = Math.abs(dy)
+
+  let delta1, delta2
+
+  if (absDx > absDy * 1.5) {
+    // Primarily horizontal arrangement
+    // Calculate offset from the edge of the node, not the center
+    const fromEdgeOffsetX = dx > 0 ? from.offsetWidth / 2 : -from.offsetWidth / 2
+    const toEdgeOffsetX = dx > 0 ? -to.offsetWidth / 2 : to.offsetWidth / 2
+
+    delta1 = { x: fromEdgeOffsetX + (dx > 0 ? baseOffset : -baseOffset), y: 0 }
+    delta2 = { x: toEdgeOffsetX + (dx > 0 ? -baseOffset : baseOffset), y: 0 }
+  } else if (absDy > absDx * 1.5) {
+    // Primarily vertical arrangement
+    // Calculate offset from the edge of the node, not the center
+    const fromEdgeOffsetY = dy > 0 ? from.offsetHeight / 2 : -from.offsetHeight / 2
+    const toEdgeOffsetY = dy > 0 ? -to.offsetHeight / 2 : to.offsetHeight / 2
+
+    delta1 = { x: 0, y: fromEdgeOffsetY + (dy > 0 ? baseOffset : -baseOffset) }
+    delta2 = { x: 0, y: toEdgeOffsetY + (dy > 0 ? -baseOffset : baseOffset) }
+  } else {
+    // Diagonal arrangement
+    // Calculate offset from the edge of the node, not the center
+    const angle = Math.atan2(dy, dx)
+
+    // Calculate which edge point the arrow exits/enters from
+    const fromEdgeOffsetX = (from.offsetWidth / 2) * Math.cos(angle)
+    const fromEdgeOffsetY = (from.offsetHeight / 2) * Math.sin(angle)
+    const toEdgeOffsetX = -(to.offsetWidth / 2) * Math.cos(angle)
+    const toEdgeOffsetY = -(to.offsetHeight / 2) * Math.sin(angle)
+
+    // Add the control point offset from the edge
+    const offsetX = baseOffset * 0.7 * (dx > 0 ? 1 : -1)
+    const offsetY = baseOffset * 0.7 * (dy > 0 ? 1 : -1)
+
+    delta1 = { x: fromEdgeOffsetX + offsetX, y: fromEdgeOffsetY + offsetY }
+    delta2 = { x: toEdgeOffsetX - offsetX, y: toEdgeOffsetY - offsetY }
+  }
+
   const arrowObj = {
     id: generateUUID(),
     label: 'Custom Link',
     from: from.nodeObj.id,
     to: to.nodeObj.id,
-    delta1: {
-      x: 0,
-      y: -200,
-    },
-    delta2: {
-      x: 0,
-      y: -200,
-    },
+    delta1,
+    delta2,
     ...options,
   }
   drawArrow(this, from, to, arrowObj)
+
+  this.bus.fire('operation', {
+    name: 'createArrow',
+    obj: arrowObj,
+  })
+}
+
+export const createArrowFrom = function (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) {
+  hideLinkController(this)
+  const arrowObj = { ...arrow, id: generateUUID() }
+  drawArrow(this, this.findEle(arrowObj.from), this.findEle(arrowObj.to), arrowObj)
 
   this.bus.fire('operation', {
     name: 'createArrow',
@@ -195,6 +419,8 @@ export const removeArrow = function (this: MindElixirInstance, linkSvg?: CustomS
   hideLinkController(this)
   const id = link.arrowObj!.id
   this.arrows = this.arrows.filter(arrow => arrow.id !== id)
+
+  link.labelEl?.remove()
   link.remove()
   this.bus.fire('operation', {
     name: 'removeArrow',
@@ -208,8 +434,8 @@ export const selectArrow = function (this: MindElixirInstance, link: CustomSvg) 
   this.currentArrow = link
   const obj = link.arrowObj
 
-  const from = findEle(obj.from)
-  const to = findEle(obj.to)
+  const from = this.findEle(obj.from)
+  const to = this.findEle(obj.to)
 
   const fromData = calcCtrlP(this, from, obj.delta1)
   const toData = calcCtrlP(this, to, obj.delta2)
@@ -218,25 +444,90 @@ export const selectArrow = function (this: MindElixirInstance, link: CustomSvg) 
 }
 
 export const unselectArrow = function (this: MindElixirInstance) {
-  this.currentArrow = null
   hideLinkController(this)
+  this.currentArrow = null
+}
+
+/**
+ * Create a highlight path element with common attributes
+ */
+const createHighlightPath = function (d: string, highlightColor: string): SVGPathElement {
+  const path = document.createElementNS(svgNS, 'path')
+  setAttributes(path, {
+    d,
+    stroke: highlightColor,
+    fill: 'none',
+    'stroke-width': '6',
+    'stroke-linecap': 'round',
+    'stroke-linejoin': 'round',
+  })
+  return path
+}
+
+const addArrowHighlight = function (arrow: CustomSvg, highlightColor: string) {
+  const highlightGroup = document.createElementNS(svgNS, 'g')
+  highlightGroup.setAttribute('class', 'arrow-highlight')
+  highlightGroup.setAttribute('opacity', '0.45')
+
+  const highlightLine = createHighlightPath(arrow.line.getAttribute('d')!, highlightColor)
+  highlightGroup.appendChild(highlightLine)
+
+  const highlightArrow1 = createHighlightPath(arrow.arrow1.getAttribute('d')!, highlightColor)
+  highlightGroup.appendChild(highlightArrow1)
+
+  if (arrow.arrow2.getAttribute('d')) {
+    const highlightArrow2 = createHighlightPath(arrow.arrow2.getAttribute('d')!, highlightColor)
+    highlightGroup.appendChild(highlightArrow2)
+  }
+
+  arrow.insertBefore(highlightGroup, arrow.firstChild)
+}
+
+const removeArrowHighlight = function (arrow: CustomSvg) {
+  const highlightGroup = arrow.querySelector('.arrow-highlight')
+  if (highlightGroup) {
+    highlightGroup.remove()
+  }
+}
+
+const updateArrowHighlight = function (arrow: CustomSvg) {
+  const highlightGroup = arrow.querySelector('.arrow-highlight')
+  if (!highlightGroup) return
+
+  const highlightPaths = highlightGroup.querySelectorAll('path')
+  if (highlightPaths.length >= 1) {
+    highlightPaths[0].setAttribute('d', arrow.line.getAttribute('d')!)
+  }
+  if (highlightPaths.length >= 2) {
+    highlightPaths[1].setAttribute('d', arrow.arrow1.getAttribute('d')!)
+  }
+  if (highlightPaths.length >= 3 && arrow.arrow2.getAttribute('d')) {
+    highlightPaths[2].setAttribute('d', arrow.arrow2.getAttribute('d')!)
+  }
 }
 
 const hideLinkController = function (mei: MindElixirInstance) {
-  mei.helper1?.destory(mei.map)
-  mei.helper2?.destory(mei.map)
+  mei.helper1?.destroy!()
+  mei.helper2?.destroy!()
   mei.linkController.style.display = 'none'
   mei.P2.style.display = 'none'
   mei.P3.style.display = 'none'
+  if (mei.currentArrow) {
+    removeArrowHighlight(mei.currentArrow)
+  }
 }
 
 const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, fromData: DivData, toData: DivData) {
-  mei.linkController.style.display = 'initial'
-  mei.P2.style.display = 'initial'
-  mei.P3.style.display = 'initial'
-  mei.nodes.appendChild(mei.linkController)
-  mei.nodes.appendChild(mei.P2)
-  mei.nodes.appendChild(mei.P3)
+  const { linkController, P2, P3, line1, line2, nodes, map, currentArrow, bus } = mei
+  if (!currentArrow) return
+  linkController.style.display = 'initial'
+  P2.style.display = 'initial'
+  P3.style.display = 'initial'
+  nodes.appendChild(linkController)
+  nodes.appendChild(P2)
+  nodes.appendChild(P3)
+
+  addArrowHighlight(currentArrow, highlightColor)
 
   // init points
   let { x: p1x, y: p1y } = calcP(fromData)
@@ -244,97 +535,68 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   let { ctrlX: p3x, ctrlY: p3y } = toData
   let { x: p4x, y: p4y } = calcP(toData)
 
-  mei.P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
-  mei.P3.style.cssText = `top:${p3y}px;left:${p3x}px;`
-  setAttributes(mei.line1, {
-    x1: p1x + '',
-    y1: p1y + '',
-    x2: p2x + '',
-    y2: p2y + '',
-  })
-  setAttributes(mei.line2, {
-    x1: p3x + '',
-    y1: p3y + '',
-    x2: p4x + '',
-    y2: p4y + '',
-  })
+  P2.style.cssText = `top:${p2y}px;left:${p2x}px;`
+  P3.style.cssText = `top:${p3y}px;left:${p3x}px;`
+  updateControlLine(line1, p1x, p1y, p2x, p2y)
+  updateControlLine(line2, p3x, p3y, p4x, p4y)
 
-  mei.helper1 = LinkDragMoveHelper.create(mei.P2)
-  mei.helper2 = LinkDragMoveHelper.create(mei.P3)
+  mei.helper1 = LinkDragMoveHelper.create(P2)
+  mei.helper2 = LinkDragMoveHelper.create(P3)
 
-  mei.helper1.init(mei.map, (deltaX, deltaY) => {
-    if (!mei.currentArrow) return
+  mei.helper1.init(map, (deltaX, deltaY) => {
     // recalc key points
-    p2x = p2x + deltaX / mei.scaleVal
+    p2x = p2x + deltaX / mei.scaleVal // scale should keep the latest value
     p2y = p2y + deltaY / mei.scaleVal
     const p1 = calcP({ ...fromData, ctrlX: p2x, ctrlY: p2y })
     p1x = p1.x
     p1y = p1.y
-    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
-    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
+
     // update dom position
-    mei.P2.style.top = p2y + 'px'
-    mei.P2.style.left = p2x + 'px'
-    mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-    if (linkItem.bidirectional) {
-      const arrowPoint = getArrowPoints(p2x, p2y, p1x, p1y)
-      mei.currentArrow.children[2].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p1x} ${p1y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
-    }
-    setAttributes(mei.currentArrow.children[3], {
-      x: halfx + '',
-      y: halfy + '',
-    })
-    setAttributes(mei.line1, {
-      x1: p1x + '',
-      y1: p1y + '',
-      x2: p2x + '',
-      y2: p2y + '',
-    })
+    P2.style.top = p2y + 'px'
+    P2.style.left = p2x + 'px'
+
+    // Use extracted common function to update arrow
+    updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
+    updateControlLine(line1, p1x, p1y, p2x, p2y)
+
     linkItem.delta1.x = p2x - fromData.cx
     linkItem.delta1.y = p2y - fromData.cy
 
-    mei.bus.fire('updateArrowDelta', linkItem)
+    bus.fire('updateArrowDelta', linkItem)
   })
 
-  mei.helper2.init(mei.map, (deltaX, deltaY) => {
-    if (!mei.currentArrow) return
+  mei.helper2.init(map, (deltaX, deltaY) => {
     p3x = p3x + deltaX / mei.scaleVal
     p3y = p3y + deltaY / mei.scaleVal
     const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
     p4x = p4.x
     p4y = p4.y
-    const halfx = p1x / 8 + (p2x * 3) / 8 + (p3x * 3) / 8 + p4x / 8
-    const halfy = p1y / 8 + (p2y * 3) / 8 + (p3y * 3) / 8 + p4y / 8
-    const arrowPoint = getArrowPoints(p3x, p3y, p4x, p4y)
 
-    mei.P3.style.top = p3y + 'px'
-    mei.P3.style.left = p3x + 'px'
-    mei.currentArrow.children[0].setAttribute('d', `M ${p1x} ${p1y} C ${p2x} ${p2y} ${p3x} ${p3y} ${p4x} ${p4y}`)
-    mei.currentArrow.children[1].setAttribute('d', `M ${arrowPoint.x1} ${arrowPoint.y1} L ${p4x} ${p4y} L ${arrowPoint.x2} ${arrowPoint.y2}`)
-    setAttributes(mei.currentArrow.children[3], {
-      x: halfx + '',
-      y: halfy + '',
-    })
-    // TODO: absctract this
-    setAttributes(mei.line2, {
-      x1: p3x + '',
-      y1: p3y + '',
-      x2: p4x + '',
-      y2: p4y + '',
-    })
+    P3.style.top = p3y + 'px'
+    P3.style.left = p3x + 'px'
+
+    // Use extracted common function to update arrow
+    updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
+    updateControlLine(line2, p3x, p3y, p4x, p4y)
+
     linkItem.delta2.x = p3x - toData.cx
     linkItem.delta2.y = p3y - toData.cy
 
-    mei.bus.fire('updateArrowDelta', linkItem)
+    bus.fire('updateArrowDelta', linkItem)
   })
 }
 
 export function renderArrow(this: MindElixirInstance) {
   this.linkSvgGroup.innerHTML = ''
+
+  // Clear all arrow labels before re-rendering
+  const arrowLabels = this.labelContainer.querySelectorAll('.svg-label[data-type="arrow"]')
+  arrowLabels.forEach(label => label.remove())
+
   for (let i = 0; i < this.arrows.length; i++) {
     const link = this.arrows[i]
     try {
-      drawArrow(this, findEle(link.from), findEle(link.to), link, true)
+      drawArrow(this, this.findEle(link.from), this.findEle(link.to), link, true)
     } catch (e) {
       console.warn('Node may not be expanded')
     }
@@ -344,24 +606,9 @@ export function renderArrow(this: MindElixirInstance) {
 
 export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
   hideLinkController(this)
-  console.time('editSummary')
   if (!el) return
-  const textEl = el.children[3]
-  editSvgText(this, textEl, div => {
-    const node = el.arrowObj
-    const text = div.textContent?.trim() || ''
-    if (text === '') node.label = origin
-    else node.label = text
-    div.remove()
-    if (text === origin) return
-    textEl.innerHTML = node.label
-    this.linkDiv()
-    this.bus.fire('operation', {
-      name: 'finishEditArrowLabel',
-      obj: node,
-    })
-  })
-  console.timeEnd('editSummary')
+  if (!el.labelEl) return
+  editSvgText(this, el.labelEl, el.arrowObj)
 }
 
 export function tidyArrow(this: MindElixirInstance) {

@@ -74,18 +74,20 @@ test('Add Before', async ({ page, me }) => {
 test('Add Parent', async ({ page, me }) => {
   await me.click(childTopic)
   await page.keyboard.press('Control+Enter')
+  await page.keyboard.insertText('new node')
   await page.keyboard.press('Enter')
   await expect(page.locator('#input-box')).toBeHidden()
-  await expect(page.getByText('New Node')).toBeVisible()
+  await expect(page.getByText('new node')).toBeVisible()
   await me.toHaveScreenshot()
 })
 
 test('Add Child', async ({ page, me }) => {
   await me.click(childTopic)
   await page.keyboard.press('Tab')
+  await page.keyboard.insertText('new node')
   await page.keyboard.press('Enter')
   await expect(page.locator('#input-box')).toBeHidden()
-  await expect(page.getByText('New Node')).toBeVisible()
+  await expect(page.getByText('new node')).toBeVisible()
   await me.toHaveScreenshot()
 })
 
@@ -94,5 +96,8 @@ test('Copy and Paste', async ({ page, me }) => {
   await page.keyboard.press('Control+c')
   await me.click('child-topic')
   await page.keyboard.press('Control+v')
-  await me.toHaveScreenshot()
+  // I guess Playwright will auto-scroll before taking screenshots
+  // After changing the scrolling solution to transform, we can't get complete me-nodes screenshot through scrolling
+  // This is indeed a very quirky "feature"
+  await me.toHaveScreenshot(page.locator('.map-container'))
 })

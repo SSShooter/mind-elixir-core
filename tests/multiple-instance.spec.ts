@@ -35,13 +35,13 @@ test.beforeEach(async ({ me, page }) => {
 test('Add Child To Data2 Correctly', async ({ page, me }) => {
   const handle = await me.getInstance('#map2')
   handle.evaluateHandle(mei =>
-    mei.addChild(window.E('data2'), {
+    mei.addChild(window.E('data2', document.body), {
       id: 'child2',
       topic: 'child2',
     })
   )
   handle.evaluateHandle(mei =>
-    mei.addChild(window.E('child'), {
+    mei.addChild(window.E('child', document.body), {
       id: 'child3',
       topic: 'child3',
     })

@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+<a href="https://trendshift.io/repositories/13049" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13049" alt="SSShooter%2Fmind-elixir-core | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
@@ -77,16 +81,15 @@ Características:
 
 ## Experimente agora
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
 
 https://mind-elixir.com/
 
 ### Playground
 
-- Vanilla JS - https://codepen.io/ssshooter/pen/OJrJowN
-- React - https://codesandbox.io/s/mind-elixir-3-x-react-18-x-vy9fcq
-- Vue3 - https://codesandbox.io/s/mind-elixir-3-x-vue3-lth484
-- Vue2 - https://codesandbox.io/s/mind-elixir-3-x-vue-2-x-5kdfjp
+- Vanilla JS - https://codepen.io/ssshooter/pen/vEOqWjE
+- React - https://codesandbox.io/p/devbox/mind-elixir-3-x-react-18-x-forked-f3mtcd
+- Vue3 - https://codesandbox.io/p/sandbox/mind-elixir-3-x-vue3-lth484
 
 ## Documentação
 
@@ -110,6 +113,12 @@ import MindElixir from 'mind-elixir'
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
+```
+
+E no seu arquivo CSS:
+
+```css
+@import 'https://cdn.jsdelivr.net/npm/mind-elixir/dist/style.css';
 ```
 
 ### Inicialização
@@ -138,7 +147,7 @@ let options = {
   toolBar: true, // padrão true
   nodeMenu: true, // padrão true
   keypress: true, // padrão true
-  locale: 'pt', // [zh_CN,zh_TW,en,ja,pt,ru] aguardando PRs
+  locale: 'pt', // [zh_CN,zh_TW,en,ja,pt,ru,ro] aguardando PRs
   overflowHidden: false, // padrão false
   mainLinkStyle: 2, // [1,2] padrão 1
   mouseSelectionButton: 0, // 0 para botão esquerdo, 2 para botão direito, padrão 0
@@ -225,8 +234,9 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:alvo1,to:alvo2}
 })
 
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
+
+mind.bus.addListener('selectNodes', nodes => {
+  console.log(nodes)
 })
 
 mind.bus.addListener('expandNode', node => {
@@ -240,7 +250,6 @@ mind.bus.addListener('expandNode', node => {
 // exportação de dados
 const data = mind.getData() // objeto javascript, veja src/example.js
 mind.getDataString() // objeto em string
-mind.getDataMd() // markdown
 
 // importação de dados
 // inicialização
@@ -426,5 +435,5 @@ pnpm doc:md
 Obrigado por suas contribuições ao Mind Elixir! Seu apoio e dedicação tornam este projeto melhor.
 
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />
+  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core" />
 </a>

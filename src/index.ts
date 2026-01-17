@@ -1,17 +1,17 @@
 import './index.less'
-import './iconfont/iconfont.js'
+import './markdown.css'
 import { LEFT, RIGHT, SIDE, DARK_THEME, THEME } from './const'
 import { generateUUID } from './utils/index'
 import initMouseEvent from './mouse'
-import Bus from './utils/pubsub'
+import { createBus } from './utils/pubsub'
 import { findEle } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
-import dragMoveHelper from './utils/dragMoveHelper'
 import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } from './types/index'
 import methods from './methods'
 import { sub, main } from './utils/generateBranch'
-// @ts-expect-error json file
 import { version } from '../package.json'
+import { createDragMoveHelper } from './utils/dragMoveHelper'
+import type { Topic } from './docs'
 
 // TODO show up animation
 const $d = document
@@ -37,6 +37,12 @@ function MindElixir(
     overflowHidden,
     theme,
     alignment,
+    scaleSensitivity,
+    scaleMax,
+    scaleMin,
+    handleWheel,
+    markdown,
+    imageProxy,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -54,26 +60,33 @@ function MindElixir(
   this.disposable = []
   this.before = before || {}
   this.locale = locale || 'en'
-  this.contextMenu = contextMenu === undefined ? true : contextMenu
-  this.toolBar = toolBar === undefined ? true : toolBar
-  this.keypress = keypress === undefined ? true : keypress
-  this.mouseSelectionButton = mouseSelectionButton || 0
-  // record the direction before enter focus mode, must true in focus mode, reset to null after exit focus
-  this.direction = typeof direction === 'number' ? direction : 1
-  this.draggable = draggable === undefined ? true : draggable
-  this.newTopicName = newTopicName || 'new node'
-  this.editable = editable === undefined ? true : editable
-  this.allowUndo = allowUndo === undefined ? false : allowUndo
+  this.newTopicName = newTopicName || 'New Node'
+  this.contextMenu = contextMenu ?? true
+  this.toolBar = toolBar ?? true
+  this.keypress = keypress ?? true
+  this.mouseSelectionButton = mouseSelectionButton ?? 0
+  this.direction = direction ?? 1
+  this.draggable = draggable ?? true
+  this.editable = editable ?? true
+  this.allowUndo = allowUndo ?? true
+  this.scaleSensitivity = scaleSensitivity ?? 0.1
+  this.scaleMax = scaleMax ?? 1.4
+  this.scaleMin = scaleMin ?? 0.2
+  this.generateMainBranch = generateMainBranch || main
+  this.generateSubBranch = generateSubBranch || sub
+  this.overflowHidden = overflowHidden ?? false
+  this.alignment = alignment ?? 'root'
+  this.handleWheel = handleWheel ?? true
+  this.markdown = markdown || undefined // Custom markdown parser function
+  this.imageProxy = imageProxy || undefined // Image proxy function
   // this.parentMap = {} // deal with large amount of nodes
-  this.currentNode = null // the selected <tpc/> element
+  this.currentNodes = [] // selected <tpc/> elements
   this.currentArrow = null // the selected link svg element
   this.scaleVal = 1
   this.tempDirection = null
-  this.generateMainBranch = generateMainBranch || main
-  this.generateSubBranch = generateSubBranch || sub
-  this.overflowHidden = overflowHidden || false
 
-  this.bus = Bus.create()
+  this.dragMoveHelper = createDragMoveHelper(this)
+  this.bus = createBus()
 
   this.container = $d.createElement('div') // map container
   this.selectionContainer = selectionContainer || this.container
@@ -87,12 +100,11 @@ function MindElixir(
   const canvas = $d.createElement('div') // map-canvas Element
   canvas.className = 'map-canvas'
   this.map = canvas
-  this.map.setAttribute('tabindex', '0')
+  this.container.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.el.appendChild(this.container)
 
   this.nodes = $d.createElement('me-nodes')
-  this.nodes.className = 'main-node-container'
 
   this.lines = createLinkSvg('lines') // main link container
   this.summarySvg = createLinkSvg('summary') // summary container
@@ -107,16 +119,27 @@ function MindElixir(
   this.linkController.appendChild(this.line1)
   this.linkController.appendChild(this.line2)
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
-  this.alignment = alignment ?? 'root'
+
+  this.labelContainer = $d.createElement('div') // container for SVG labels
+  this.labelContainer.className = 'label-container'
 
   this.map.appendChild(this.nodes)
 
   if (this.overflowHidden) {
     this.container.style.overflow = 'hidden'
-  } else initMouseEvent(this)
+  } else {
+    this.disposable.push(initMouseEvent(this))
+  }
 }
 
 MindElixir.prototype = methods
+
+Object.defineProperty(MindElixir.prototype, 'currentNode', {
+  get() {
+    return this.currentNodes[this.currentNodes.length - 1]
+  },
+  enumerable: true,
+})
 
 MindElixir.LEFT = LEFT
 MindElixir.RIGHT = RIGHT
@@ -158,11 +181,9 @@ if (import.meta.env.MODE !== 'lite') {
   })
 }
 
-MindElixir.dragMoveHelper = dragMoveHelper
-
 export interface MindElixirCtor {
   new (options: Options): MindElixirInstance
-  E: typeof findEle
+  E: (id: string, el?: HTMLElement) => Topic
   new: typeof MindElixir.new
   version: string
   LEFT: typeof LEFT
@@ -171,7 +192,6 @@ export interface MindElixirCtor {
   THEME: typeof THEME
   DARK_THEME: typeof DARK_THEME
   prototype: MindElixirMethods
-  dragMoveHelper: typeof dragMoveHelper
 }
 
 export default MindElixir as unknown as MindElixirCtor

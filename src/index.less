@@ -1,30 +1,26 @@
 .map-container {
-  // May overwrited by js
-  --gap: 30px; // child node horizontal gap
-  --root-radius: 30px;
-  --main-radius: 20px;
-  --root-color: #ffffff;
-  --root-bgcolor: #4c4f69;
-  --root-border-color: rgba(0, 0, 0, 0);
-  --main-color: #444446;
-  --main-bgcolor: #ffffff;
-  --topic-padding: 3px;
-  --color: #777777;
-  --bgcolor: #f6f6f6;
-  --selected: #4dc4ff;
-  --panel-color: #444446;
-  --panel-bgcolor: #ffffff;
-  --panel-border-color: #eaeaea;
-  // ---
-
+  p {
+    margin: 0; // remove markdown block margin
+  }
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  font-family: -apple-system, BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC,
-    WenQuanYi Micro Hei, sans-serif;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    Helvetica Neue,
+    PingFang SC,
+    Microsoft YaHei,
+    Source Han Sans SC,
+    Noto Sans CJK SC,
+    WenQuanYi Micro Hei,
+    sans-serif;
   user-select: none;
+  -webkit-user-select: none; // for iOS
   height: 100%;
   width: 100%;
-  overflow: scroll;
-  font-size: 15px;
+  overflow: hidden; // prevent browser scroll container while dragging
+  font-size: 16px;
+  outline: none; // prevent browser default focus outline
+  touch-action: none; // use pointer events instead of touch events
   * {
     box-sizing: border-box; // must have, to make getComputedStyle work right
   }
@@ -36,51 +32,71 @@
     outline: 2px solid var(--selected);
     outline-offset: 1px;
   }
+  &.space-pressed {
+    cursor: grab !important;
+    * {
+      cursor: grab !important;
+    }
+  }
+  &.space-pressed:active {
+    cursor: grabbing !important;
+    * {
+      cursor: grabbing !important;
+    }
+  }
   .hyper-link {
     text-decoration: none;
     margin-left: 0.3em;
   }
+  me-main > me-wrapper > me-parent > me-epd {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  me-epd {
+    top: 100%;
+    transform: translateY(-50%);
+  }
   .lhs {
     direction: rtl;
+    & > me-wrapper > me-parent > me-epd {
+      left: -10px;
+    }
+    me-epd {
+      left: 5px;
+    }
     me-tpc {
       direction: ltr;
     }
   }
+  .rhs {
+    & > me-wrapper > me-parent > me-epd {
+      right: -10px;
+    }
+    me-epd {
+      right: 5px;
+    }
+  }
+  background-color: var(--bgcolor);
   .map-canvas {
-    height: 20000px;
-    width: 20000px;
     position: relative;
     user-select: none;
-    transition: transform 0.3s;
+    width: fit-content; // 100% width if not set
     transform: scale(1);
-    background-color: var(--bgcolor);
     me-nodes {
-      position: absolute;
+      position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: fit-content;
-      width: fit-content;
-    }
-    me-root {
-      position: relative;
-      me-tpc {
-        display: block;
-        font-size: 25px;
-        color: var(--root-color);
-        padding: 10px var(--gap);
-        border-radius: var(--root-radius);
-        border: var(--root-border-color) 2px solid;
-        white-space: pre-wrap;
-        background-color: var(--root-bgcolor);
-      }
+      height: max-content;
+      width: max-content;
+      padding: var(--map-padding);
     }
   }
   me-main {
-    // main node
+    // primary node / main node
     & > me-wrapper {
       position: relative; // make subline svg's offsetParent be the main node
-      margin: 45px 65px;
+      margin: var(--main-gap-y) var(--main-gap-x);
       & > me-parent {
         margin: 10px;
         padding: 0;
@@ -105,19 +121,29 @@
     display: inline-block;
     vertical-align: middle;
   }
+  me-root {
+    position: relative;
+    margin: 45px 0;
+    z-index: 10;
+    me-tpc {
+      font-size: 25px;
+      color: var(--root-color);
+      padding: 10px 30px;
+      border-radius: var(--root-radius);
+      border: var(--root-border-color) 2px solid;
+      background-color: var(--root-bgcolor);
+    }
+  }
   me-parent {
     position: relative; // for locating expand button
     cursor: pointer;
-    padding: 6px var(--gap);
-    margin-top: 10px;
+    padding: 6px var(--node-gap-x);
+    margin-top: var(--node-gap-y);
+    z-index: 10;
     me-tpc {
       position: relative;
-      display: block;
       border-radius: 3px;
       color: var(--color);
-      pointer-events: all;
-      max-width: 35em;
-      white-space: pre-wrap;
       padding: var(--topic-padding);
 
       // drag preview
@@ -129,8 +155,9 @@
       }
       .show {
         background: #7ad5ff;
-        pointer-events: none; // 不加会识别为不可移动
+        pointer-events: none;
         opacity: 0.7;
+        border-radius: 3px;
       }
       .before {
         height: 14px;
@@ -161,8 +188,15 @@
         background-image: url('./icons/minus-circle.svg') !important;
         transition: opacity 0.3s;
         opacity: 0;
-        &:hover {
-          opacity: 0.8;
+        @media (hover: hover) {
+          &:hover {
+            opacity: 0.8;
+          }
+        }
+        @media (hover: none) {
+          & {
+            opacity: 0.8;
+          }
         }
       }
     }
@@ -191,44 +225,45 @@
   .linkcontroller,
   .summary {
     pointer-events: none;
-    text {
-      pointer-events: all;
-    }
-    .selected {
-      pointer-events: none;
-    }
+    z-index: 20;
   }
+
+  .summary > g,
+  .topiclinks > g {
+    cursor: pointer;
+    pointer-events: stroke;
+    z-index: 20;
+  }
+  .label-container {
+    z-index: 21;
+  }
+
   .lines,
   .subLines {
     pointer-events: none;
-    z-index: -1;
   }
 
-  .topiclinks,
-  .linkcontroller {
-    * {
-      z-index: 100;
-    }
-  }
-  .topiclinks {
-    g {
-      cursor: pointer;
-    }
-  }
   #input-box {
     position: absolute;
     top: 0;
     left: 0;
     width: max-content; // let words expand the div and keep max length at the same time
     max-width: 35em;
-    z-index: 11;
     direction: ltr;
     user-select: auto;
     pointer-events: auto;
+    color: var(--color);
     background-color: var(--bgcolor);
+    outline: 1px solid #ccc;
+    border-radius: 2px;
+    z-index: 100;
   }
 
   me-tpc {
+    display: block;
+    max-width: 35em;
+    white-space: pre-wrap;
+    pointer-events: all;
     & > * {
       // tags,icons,images should not response to click event
       pointer-events: none;
@@ -237,13 +272,17 @@
     & > iframe {
       pointer-events: auto;
     }
+    & > .text {
+      display: inline-block;
+      // Allow links inside markdown text to be clickable
+      a {
+        pointer-events: auto;
+      }
+    }
     & > img {
       display: block;
       margin-bottom: 8px;
       object-fit: cover;
-    }
-    & > .text {
-      display: inline-block;
     }
   }
   .circle {
@@ -255,8 +294,20 @@
     border-radius: 100%;
     background: #757575;
     border: 2px solid #ffffff;
-
+    z-index: 50;
     cursor: pointer;
+  }
+
+  //  hot zone
+  .circle::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background: transparent;
   }
 
   .tags {
@@ -286,10 +337,10 @@
 
   .mind-elixir-ghost {
     position: fixed;
-    top: -100%;
-    left: -100%;
+    top: 0;
+    left: 0;
     box-sizing: content-box;
-    opacity: 0.5;
+    opacity: 0.7;
     background-color: var(--main-bgcolor);
     border: 2px solid var(--main-color);
     color: var(--main-color);
@@ -300,10 +351,31 @@
     text-overflow: ellipsis;
     padding: 8px 16px;
     border-radius: 6px;
+    display: none;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translate(10px, 10px);
   }
 
   .selection-area {
     background: #4f90f22d;
     border: 1px solid #4f90f2;
+  }
+
+  .svg-label {
+    position: absolute;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    line-height: 1.2;
+    pointer-events: auto;
+    cursor: pointer;
+    z-index: 10;
+    width: max-content;
+    max-width: 200px;
+    border-radius: 3px;
+    padding: var(--topic-padding);
+    &[data-type='arrow'] {
+      background-color: var(--main-bgcolor-transparent);
+    }
   }
 }

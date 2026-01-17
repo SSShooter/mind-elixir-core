@@ -6,6 +6,10 @@
 </p>
 
 <p align="center">
+<a href="https://trendshift.io/repositories/13049" target="_blank"><img src="https://trendshift.io/api/badge/repositories/13049" alt="SSShooter%2Fmind-elixir-core | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
+
+<p align="center">
   <a href="https://www.npmjs.com/package/mind-elixir">
     <img src="https://img.shields.io/npm/v/mind-elixir" alt="version">
   </a>
@@ -34,23 +38,45 @@
 
 Mind Elixirは、オープンソースのJavaScriptマインドマップコアです。お好みのフロントエンドフレームワークと組み合わせて使用できます。
 
-特徴：
+## 特徴
 
-- 軽量
-- 高パフォーマンス
-- フレームワーク非依存
-- プラグイン対応
-- ドラッグ＆ドロップ/ノード編集プラグイン内蔵
-- SVG/PNG/HTMLとしてエクスポート可能
-- ノードの要約
-- 一括操作対応
-- 元に戻す/やり直し
-- 効率的なショートカット
-- CSSカスタマイズが容易
+### 🎨 **ユーザーエクスペリエンス**
+
+- **滑らかな操作感** - スムーズで直感的な操作性
+- **洗練されたデザイン** - 清潔でモダンなインターフェース
+- **モバイル対応** - モバイルデバイスのタッチイベントをサポート
+- **効率的なショートカット** - パワーユーザー向けのキーボードショートカット
+
+### ⚡ **パフォーマンスとアーキテクチャ**
+
+- **軽量** - 最小バンドルサイズ
+- **高性能** - 大規模なマインドマップ用に最適化
+- **フレームワーク非依存** - 任意のフロントエンドフレームワークで動作
+- **プラグイン可能** - 拡張可能なアーキテクチャ
+
+### 🛠️ **コア機能**
+
+- **インタラクティブ編集** - 組み込みのドラッグ＆ドロップ / ノード編集機能
+- **一括操作** - 複数ノードの選択と操作
+- **元に戻す/やり直し** - 完全な操作履歴
+- **ノード接続と要約** - カスタムノードリンクとコンテンツ要約
+
+### 📤 **エクスポートとカスタマイゼーション**
+
+- **複数のエクスポート形式** - SVG / PNG / HTML エクスポート
+- **簡単なスタイリング** - CSS変数でマインドマップをカスタマイズ
+- **テーマサポート** - 組み込みテーマとカスタムスタイリング
+
+[v5 破壊的変更](https://github.com/SSShooter/mind-elixir-core/wiki/Breaking-Change#500)
 
 <details>
 <summary>目次</summary>
 
+- [特徴](#特徴)
+  - [🎨 **ユーザーエクスペリエンス**](#-ユーザーエクスペリエンス)
+  - [⚡ **パフォーマンスとアーキテクチャ**](#-パフォーマンスとアーキテクチャ)
+  - [🛠️ **コア機能**](#️-コア機能)
+  - [📤 **エクスポートとカスタマイゼーション**](#-エクスポートとカスタマイゼーション)
 - [デモを試す](#デモを試す)
   - [プレイグラウンド](#プレイグラウンド)
 - [ドキュメント](#ドキュメント)
@@ -62,12 +88,13 @@ Mind Elixirは、オープンソースのJavaScriptマインドマップコア�
   - [データ構造](#データ構造)
   - [イベントハンドリング](#イベントハンドリング)
   - [データのエクスポートとインポート](#データのエクスポートとインポート)
+  - [Markdown サポート](#markdown-サポート)
   - [操作ガード](#操作ガード)
 - [画像としてエクスポート](#画像としてエクスポート)
-  - [方法1](#方法1)
-  - [方法2](#方法2)
+  - [非推奨API](#非推奨api)
 - [テーマ](#テーマ)
 - [ショートカット](#ショートカット)
+- [誰が使っているか](#誰が使っているか)
 - [エコシステム](#エコシステム)
 - [開発](#開発)
 - [謝辞](#謝辞)
@@ -77,16 +104,15 @@ Mind Elixirは、オープンソースのJavaScriptマインドマップコア�
 
 ## デモを試す
 
-![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot2.png)
+![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
 
 https://mind-elixir.com/
 
 ### プレイグラウンド
 
-- Vanilla JS - https://codepen.io/ssshooter/pen/OJrJowN
-- React - https://codesandbox.io/s/mind-elixir-3-x-react-18-x-vy9fcq
-- Vue3 - https://codesandbox.io/s/mind-elixir-3-x-vue3-lth484
-- Vue2 - https://codesandbox.io/s/mind-elixir-3-x-vue-2-x-5kdfjp
+- Vanilla JS - https://codepen.io/ssshooter/pen/vEOqWjE
+- React - https://codesandbox.io/p/devbox/mind-elixir-3-x-react-18-x-forked-f3mtcd
+- Vue3 - https://codesandbox.io/p/sandbox/mind-elixir-3-x-vue3-lth484
 
 ## ドキュメント
 
@@ -110,6 +136,12 @@ import MindElixir from 'mind-elixir'
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/mind-elixir/dist/MindElixir.js"></script>
+```
+
+CSSファイルに追加：
+
+```css
+@import 'https://cdn.jsdelivr.net/npm/mind-elixir/dist/style.css';
 ```
 
 ### 初期化
@@ -138,7 +170,7 @@ let options = {
   toolBar: true, // デフォルトはtrue
   nodeMenu: true, // デフォルトはtrue
   keypress: true, // デフォルトはtrue
-  locale: 'ja', // [zh_CN,zh_TW,en,ja,pt,ru] PRs募集中
+  locale: 'ja', // [zh_CN,zh_TW,en,ja,pt,ru,ro] PRs募集中
   overflowHidden: false, // デフォルトはfalse
   mainLinkStyle: 2, // [1,2] デフォルトは1
   mouseSelectionButton: 0, // 0は左クリック、2は右クリック、デフォルトは0
@@ -224,8 +256,9 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:target1,to:target2}
 })
 
-mind.bus.addListener('selectNode', node => {
-  console.log(node)
+
+mind.bus.addListener('selectNodes', nodes => {
+  console.log(nodes)
 })
 
 mind.bus.addListener('expandNode', node => {
@@ -239,7 +272,6 @@ mind.bus.addListener('expandNode', node => {
 // データのエクスポート
 const data = mind.getData() // JavaScriptオブジェクト、src/example.jsを参照
 mind.getDataString() // オブジェクトを文字列化
-mind.getDataMd() // Markdown
 
 // データのインポート
 // 初期化
@@ -247,6 +279,34 @@ let mind = new MindElixir(options)
 mind.init(data)
 // データの更新
 mind.refresh(data)
+```
+
+### Markdown サポート
+
+Mind Elixirはカスタムmarkdown解析をサポートしています：
+
+```javascript
+// Markdownを無効化（デフォルト）
+let mind = new MindElixir({
+  // markdownオプションを省略 - markdown処理なし
+})
+
+// カスタムmarkdownパーサーを使用
+let mind = new MindElixir({
+  markdown: (text) => {
+    // カスタムmarkdown実装
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`(.*?)`/g, '<code>$1</code>')
+  },
+})
+
+// 任意のmarkdownライブラリを使用（marked、markdown-itなど）
+import { marked } from 'marked'
+let mind = new MindElixir({
+  markdown: (text) => marked(text),
+})
 ```
 
 ### 操作ガード
@@ -275,49 +335,26 @@ let mind = new MindElixir({
 
 ## 画像としてエクスポート
 
-### 方法1
+`@zumer/snapdom`をインストールし、次に実行します：
 
 ```typescript
-const mind = {
-  /** mind elixir instance */
-}
-const downloadPng = async () => {
-  const blob = await mind.exportPng() // Blobを取得
-  if (!blob) return
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'filename.png'
-  a.click()
-  URL.revokeObjectURL(url)
+import { snapdom } from '@zumer/snapdom'
+
+const download = async () => {
+  const result = await snapdom(mind.nodes)
+  await result.download({ format: 'jpg', filename: 'my-capture' })
 }
 ```
 
-### 方法2
+他のエクスポート形式と詳細なオプションについては、[Mind Elixirドキュメント](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images)を参照してください。
 
-`@ssshooter/modern-screenshot`をインストールし、次に実行します：
+### 非推奨API
+
+> ⚠️ **非推奨**：`mind.exportSvg()`メソッドは非推奨であり、将来のバージョンで削除される予定です。
 
 ```typescript
-import { domToPng } from '@ssshooter/modern-screenshot'
-
-const download = async () => {
-  const dataUrl = await domToPng(mind.nodes, {
-    onCloneNode: node => {
-      const n = node as HTMLDivElement
-      n.style.position = ''
-      n.style.top = ''
-      n.style.left = ''
-      n.style.bottom = ''
-      n.style.right = ''
-    },
-    padding: 300,
-    quality: 1,
-  })
-  const link = document.createElement('a')
-  link.download = 'screenshot.png'
-  link.href = dataUrl
-  link.click()
-}
+// 非推奨 - 新規プロジェクトでは使用しないでください
+const svgData = await mind.exportSvg()
 ```
 
 ## テーマ
@@ -361,25 +398,11 @@ Mind Elixirは`prefers-color-scheme`の変更を監視しません。スキー�
 
 ## ショートカット
 
-| ショートカット       | 機能                           |
-| ------------------ | -------------------------------- |
-| Enter              | 兄弟ノードを挿入                |
-| Tab                | 子ノードを挿入                  |
-| F1                 | マップを中央に配置              |
-| F2                 | 現在のノードの編集を開始        |
-| ↑                  | 前の兄弟ノードを選択            |
-| ↓                  | 次の兄弟ノードを選択            |
-| ← / →              | 親または最初の子ノードを選択    |
-| PageUp / Alt + ↑   | ノードを上に移動                |
-| PageDown / Alt + ↓ | ノードを下に移動                |
-| Ctrl + ↑           | レイアウトパターンをサイドに変更 |
-| Ctrl + ←           | レイアウトパターンを左に変更    |
-| Ctrl + →           | レイアウトパターンを右に変更    |
-| Ctrl + C           | 現在のノードをコピー            |
-| Ctrl + V           | コピーしたノードを貼り付け      |
-| Ctrl + "+"         | マインドマップをズームイン      |
-| Ctrl + "-"         | マインドマップをズームアウト    |
-| Ctrl + 0           | ズームレベルをリセット          |
+詳細については、[ショートカットガイド](https://docs.mind-elixir.com/docs/guides/shortcuts)を参照してください。
+
+## 誰が使っているか
+
+- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
 
 ## エコシステム
 
@@ -416,6 +439,8 @@ pnpm doc
 pnpm doc:md
 ```
 
+[DeepWiki](https://deepwiki.com/SSShooter/mind-elixir-core) を使用してMind Elixirについて詳しく学ぶ
+
 ## 謝辞
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)
@@ -425,5 +450,5 @@ pnpm doc:md
 Mind Elixirへの貢献に感謝します！あなたのサポートと献身がこのプロジェクトをより良くします。
 
 <a href="https://github.com/SSShooter/mind-elixir-core/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core&columns=6" />
+  <img src="https://contrib.rocks/image?repo=SSShooter/mind-elixir-core" />
 </a>

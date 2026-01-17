@@ -1,20 +1,22 @@
-import type Bus from '../utils/pubsub'
 import type { Topic, CustomSvg } from './dom'
-import type { EventMap, Operation } from '../utils/pubsub'
+import type { createBus, EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
-import type SelectionArea from '@viselect/vanilla'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { Locale } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
+import type { createDragMoveHelper } from '../utils/dragMoveHelper'
+import type SelectionArea from '../viselect/src'
 export { type MindElixirMethods } from '../methods'
 
-export enum DirectionClass {
-  LHS = 'lhs',
-  RHS = 'rhs',
-}
+export const DirectionClass = {
+  LHS: 'lhs',
+  RHS: 'rhs',
+} as const
+
+export type DirectionClass = (typeof DirectionClass)[keyof typeof DirectionClass]
 
 type Before = Partial<{
   [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
@@ -35,13 +37,18 @@ export type Theme = {
    * Color palette for main branches
    */
   palette: string[]
-  cssVar: Partial<{
-    '--gap': string
+  cssVar: {
+    '--node-gap-x': string
+    '--node-gap-y': string
+    '--main-gap-x': string
+    '--main-gap-y': string
     '--main-color': string
     '--main-bgcolor': string
+    '--main-bgcolor-transparent': string
     '--color': string
     '--bgcolor': string
     '--selected': string
+    '--accent-color': string
     '--root-color': string
     '--root-bgcolor': string
     '--root-border-color': string
@@ -51,7 +58,8 @@ export type Theme = {
     '--panel-color': string
     '--panel-bgcolor': string
     '--panel-border-color': string
-  }>
+    '--map-padding': string
+  }
 }
 
 export type Alignment = 'root' | 'nodes'
@@ -65,7 +73,11 @@ export interface KeypressOptions {
  *
  * @public
  */
-export interface MindElixirInstance extends Required<Options>, MindElixirMethods {
+export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' | 'imageProxy'>, MindElixirMethods {
+  markdown?: (markdown: string, obj: NodeObj | Arrow | Summary) => string // Keep markdown as optional
+  imageProxy?: (url: string) => string // Keep imageProxy as optional
+  dragged: Topic[] | null // currently dragged nodes
+  spacePressed: boolean // space key pressed state
   el: HTMLElement
   disposable: Array<() => void>
   isFocusMode: boolean
@@ -75,14 +87,14 @@ export interface MindElixirInstance extends Required<Options>, MindElixirMethods
   arrows: Arrow[]
   summaries: Summary[]
 
-  currentNode: Topic | null
-  currentNodes: Topic[] | null
+  readonly currentNode: Topic | null
+  currentNodes: Topic[]
   currentSummary: SummarySvgGroup | null
   currentArrow: CustomSvg | null
   waitCopy: Topic[] | null
 
   scaleVal: number
-  tempDirection: number | null
+  tempDirection: 0 | 1 | 2 | null
 
   container: HTMLElement
   map: HTMLElement
@@ -91,6 +103,7 @@ export interface MindElixirInstance extends Required<Options>, MindElixirMethods
   lines: SVGElement
   summarySvg: SVGElement
   linkController: SVGElement
+  labelContainer: HTMLElement // Container for SVG labels
   P2: HTMLElement
   P3: HTMLElement
   line1: SVGElement
@@ -105,12 +118,13 @@ export interface MindElixirInstance extends Required<Options>, MindElixirMethods
    */
   helper2?: LinkDragMoveHelperInstance
 
-  bus: ReturnType<typeof Bus.create<EventMap>>
+  bus: ReturnType<typeof createBus<EventMap>>
   history: Operation[]
   undo: () => void
   redo: () => void
 
   selection: SelectionArea
+  dragMoveHelper: ReturnType<typeof createDragMoveHelper>
 }
 type PathString = string
 /**
@@ -120,7 +134,7 @@ type PathString = string
  */
 export interface Options {
   el: string | HTMLElement
-  direction?: number
+  direction?: 0 | 1 | 2
   locale?: Locale
   draggable?: boolean
   editable?: boolean
@@ -137,12 +151,39 @@ export interface Options {
   theme?: Theme
   selectionContainer?: string | HTMLElement
   alignment?: Alignment
+  scaleSensitivity?: number
+  scaleMin?: number
+  scaleMax?: number
+  handleWheel?: true | ((e: WheelEvent) => void)
+  /**
+   * Custom markdown parser function that takes markdown string and returns HTML string
+   * If not provided, markdown will be disabled
+   * @default undefined
+   */
+  markdown?: (markdown: string, obj: NodeObj | Arrow | Summary) => string
+  /**
+   * Image proxy function to handle image URLs, mainly used to solve CORS issues
+   * If provided, all image URLs will be processed through this function before setting to img src
+   * @default undefined
+   */
+  imageProxy?: (url: string) => string
 }
 
 export type Uid = string
 
 export type Left = 0
 export type Right = 1
+
+/**
+ * Tag object for node tags with optional styling
+ *
+ * @public
+ */
+export interface TagObj {
+  text: string
+  style?: Partial<CSSStyleDeclaration> | Record<string, string>
+  className?: string
+}
 
 /**
  * MindElixir node object
@@ -152,14 +193,18 @@ export type Right = 1
 export interface NodeObj {
   topic: string
   id: Uid
-  style?: {
-    fontSize?: string
-    color?: string
-    background?: string
-    fontWeight?: string
-  }
+  style?: Partial<{
+    fontSize: string
+    fontFamily: string
+    color: string
+    background: string
+    fontWeight: string
+    width: string
+    border: string
+    textDecoration: string
+  }>
   children?: NodeObj[]
-  tags?: string[]
+  tags?: (string | TagObj)[]
   icons?: string[]
   hyperLink?: string
   expanded?: boolean
@@ -204,6 +249,6 @@ export type MindElixirData = {
   nodeData: NodeObj
   arrows?: Arrow[]
   summaries?: Summary[]
-  direction?: number
+  direction?: 0 | 1 | 2
   theme?: Theme
 }

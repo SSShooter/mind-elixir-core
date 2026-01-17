@@ -2,7 +2,6 @@ import i18n from '../i18n'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
-import dragMoveHelper from '../utils/dragMoveHelper'
 import './contextMenu.less'
 import type { ArrowOptions } from '../arrow'
 
@@ -47,7 +46,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
   const up = createLi('cm-up', lang.moveUp, 'PgUp')
   const down = createLi('cm-down', lang.moveDown, 'Pgdn')
   const link = createLi('cm-link', lang.link, '')
-  const linkBidirectional = createLi('cm-link-bidirectional', 'Bidirectional Link', '')
+  const linkBidirectional = createLi('cm-link-bidirectional', lang.linkBidirectional, '')
   const summary = createLi('cm-summary', lang.summary, '')
 
   const menuUl = document.createElement('ul')
@@ -84,14 +83,12 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
 
   mind.container.append(menuContainer)
   let isRoot = true
-  mind.container.oncontextmenu = function (e) {
-    e.preventDefault()
-    if (!mind.editable) return
-    if (dragMoveHelper.moved) return
-    // console.log(e.pageY, e.screenY, e.clientY)
+  // Helper function to actually render and position context menu.
+  const showMenu = (e: MouseEvent) => {
+    console.log('showContextMenu', e)
     const target = e.target as HTMLElement
     if (isTopic(target)) {
-      if (target.parentElement.tagName === 'ME-ROOT') {
+      if (target.parentElement!.tagName === 'ME-ROOT') {
         isRoot = true
       } else {
         isRoot = false
@@ -111,12 +108,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
         add_sibling.className = ''
         remove_child.className = ''
       }
-      if (!mind.currentNodes) mind.selectNode(target)
       menuContainer.hidden = false
-
-      if (dragMoveHelper.mousedown) {
-        dragMoveHelper.mousedown = false
-      }
 
       menuUl.style.top = ''
       menuUl.style.bottom = ''
@@ -147,6 +139,8 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
     }
   }
 
+  mind.bus.addListener('showContextMenu', showMenu)
+
   menuContainer.onclick = e => {
     if (e.target === menuContainer) menuContainer.hidden = true
   }
@@ -166,7 +160,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
   }
   remove_child.onclick = () => {
     if (isRoot) return
-    mind.removeNode()
+    mind.removeNodes(mind.currentNodes || [])
     menuContainer.hidden = true
   }
   focus.onclick = () => {
@@ -215,7 +209,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
   summary.onclick = () => {
     menuContainer.hidden = true
     mind.createSummary()
-    mind.unselectNodes()
+    mind.unselectNodes(mind.currentNodes)
   }
   return () => {
     // maybe useful?

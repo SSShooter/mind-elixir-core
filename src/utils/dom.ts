@@ -1,26 +1,27 @@
 import { LEFT } from '../const'
 import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
 import type { MindElixirInstance, NodeObj } from '../types/index'
-import { encodeHTML } from '../utils/index'
+import { encodeHTML, getOffsetLT } from '../utils/index'
 import { layoutChildren } from './layout'
 
 // DOM manipulation
 const $d = document
-export const findEle = (id: string, instance?: MindElixirInstance) => {
-  const scope = instance ? instance.el : $d
-  const ele = scope.querySelector<Topic>(`[data-nodeid=me${id}]`)
+export const findEle = function (this: MindElixirInstance, id: string, el?: HTMLElement) {
+  const scope = this?.el ? this.el : el ? el : document
+  const ele = scope.querySelector<Topic>(`[data-nodeid="me${id}"]`)
   if (!ele) throw new Error(`FindEle: Node ${id} not found, maybe it's collapsed.`)
   return ele
 }
 
-export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
+export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = ''
 
   if (nodeObj.style) {
-    tpc.style.color = nodeObj.style.color || ''
-    tpc.style.background = nodeObj.style.background || ''
-    tpc.style.fontSize = nodeObj.style.fontSize + 'px'
-    tpc.style.fontWeight = nodeObj.style.fontWeight || 'normal'
+    const style = nodeObj.style
+    type KeyOfStyle = keyof typeof style
+    for (const key in style) {
+      tpc.style[key as KeyOfStyle] = style[key as KeyOfStyle]!
+    }
   }
 
   if (nodeObj.dangerouslySetInnerHTML) {
@@ -32,7 +33,8 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
     const img = nodeObj.image
     if (img.url && img.width && img.height) {
       const imgEl = $d.createElement('img')
-      imgEl.src = img.url
+      // Use imageProxy function if provided, otherwise use original URL
+      imgEl.src = this.imageProxy ? this.imageProxy(img.url) : img.url
       imgEl.style.width = img.width + 'px'
       imgEl.style.height = img.height + 'px'
       if (img.fit) imgEl.style.objectFit = img.fit
@@ -48,7 +50,14 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   {
     const textEl = $d.createElement('span')
     textEl.className = 'text'
-    textEl.textContent = nodeObj.topic
+
+    // Check if markdown parser is provided and topic contains markdown syntax
+    if (this.markdown) {
+      textEl.innerHTML = this.markdown(nodeObj.topic, nodeObj)
+    } else {
+      textEl.textContent = nodeObj.topic
+    }
+
     tpc.appendChild(textEl)
     tpc.text = textEl
   }
@@ -78,7 +87,25 @@ export const shapeTpc = function (tpc: Topic, nodeObj: NodeObj) {
   if (nodeObj.tags && nodeObj.tags.length) {
     const tagsEl = $d.createElement('div')
     tagsEl.className = 'tags'
-    tagsEl.innerHTML = nodeObj.tags.map(tag => `<span>${encodeHTML(tag)}</span>`).join('')
+
+    nodeObj.tags.forEach(tag => {
+      const span = $d.createElement('span')
+
+      if (typeof tag === 'string') {
+        span.textContent = tag
+      } else {
+        span.textContent = tag.text
+        if (tag.className) {
+          span.className = tag.className
+        }
+        if (tag.style) {
+          Object.assign(span.style, tag.style)
+        }
+      }
+
+      tagsEl.appendChild(span)
+    })
+
     tpc.appendChild(tagsEl)
     tpc.tags = tagsEl
   } else if (tpc.tags) {
@@ -106,7 +133,7 @@ export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeOb
 export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj) {
   const p = $d.createElement('me-parent') as Parent
   const tpc = this.createTopic(nodeObj)
-  shapeTpc(tpc, nodeObj)
+  shapeTpc.call(this, tpc, nodeObj)
   p.appendChild(tpc)
   return { p, tpc }
 }
@@ -121,7 +148,7 @@ export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj)
   const topic = $d.createElement('me-tpc') as Topic
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
-  topic.draggable = this.draggable
+  // topic.draggable = this.draggable
   return topic
 }
 
@@ -139,22 +166,33 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   console.time('editTopic')
   if (!el) return
   const div = $d.createElement('div')
-  const origin = el.text.textContent as string
-  el.appendChild(div)
+  const node = el.nodeObj
+
+  // Get the original content from topic
+  const originalContent = node.topic
+
+  // Use getOffsetLT to calculate el's offset relative to this.nodes
+  const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, el)
+
+  // Insert input box into this.nodes instead of el
+  this.nodes.appendChild(div)
   div.id = 'input-box'
-  div.textContent = origin
+  div.textContent = originalContent
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
   const style = getComputedStyle(el)
-  div.style.cssText = `min-width:${el.offsetWidth - 8}px;
+  div.style.cssText = `
+  left: ${offsetLeft}px;
+  top: ${offsetTop}px;
+  min-width:${el.offsetWidth - 8}px;
   color:${style.color};
+  font-size:${style.fontSize};
   padding:${style.padding};
-  margin:${style.margin};
-  font:${style.font};
+  margin:${style.margin}; 
   background-color:${style.backgroundColor !== 'rgba(0, 0, 0, 0)' && style.backgroundColor};
-  border-radius:${style.borderRadius};`
+  border: ${style.border};
+  border-radius:${style.borderRadius}; `
   if (this.direction === LEFT) div.style.right = '0'
-  div.focus()
 
   selectText(div)
 
@@ -173,23 +211,30 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
 
       e.preventDefault()
       div.blur()
-      this.map.focus()
+      this.container.focus()
     }
   })
+
   div.addEventListener('blur', () => {
     if (!div) return
-    const node = el.nodeObj
-    const topic = div.textContent?.trim() || ''
-    if (topic === '') node.topic = origin
-    else node.topic = topic
     div.remove()
-    if (topic === origin) return
-    el.text.textContent = node.topic
+    const inputContent = div.textContent?.trim() || ''
+    if (inputContent === originalContent || inputContent === '') return
+
+    // Update topic content
+    node.topic = inputContent
+
+    if (this.markdown) {
+      el.text.innerHTML = this.markdown(node.topic, node)
+    } else {
+      el.text.textContent = inputContent
+    }
+
     this.linkDiv()
     this.bus.fire('operation', {
       name: 'finishEdit',
       obj: node,
-      origin,
+      origin: originalContent,
     })
   })
   console.timeEnd('editTopic')

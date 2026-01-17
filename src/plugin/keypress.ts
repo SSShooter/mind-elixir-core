@@ -1,6 +1,7 @@
 import type { Topic } from '../types/dom'
 import type { KeypressOptions, MindElixirInstance } from '../types/index'
 import { DirectionClass } from '../types/index'
+import { setExpand } from '../utils'
 
 const selectRootLeft = (mei: MindElixirInstance) => {
   const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
@@ -45,7 +46,7 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionC
   }
 }
 const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' | 'next') {
-  const current = mei.currentNode || mei.currentNodes?.[0]
+  const current = mei.currentNode
   if (!current) return
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) return
@@ -53,17 +54,26 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
   const sibling = current.parentElement.parentElement[s]
   if (sibling) {
     mei.selectNode(sibling.firstChild.firstChild)
+  } else {
+    // handle multiple nodes including last node
+    mei.selectNode(current)
   }
 }
-const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out') {
+export const handleZoom = function (
+  mei: MindElixirInstance,
+  direction: 'in' | 'out',
+  offset?: {
+    x: number
+    y: number
+  }
+) {
+  const { scaleVal, scaleSensitivity } = mei
   switch (direction) {
     case 'in':
-      if (mei.scaleVal > 1.6) return
-      mei.scale((mei.scaleVal += 0.2))
+      mei.scale(scaleVal + scaleSensitivity, offset)
       break
     case 'out':
-      if (mei.scaleVal < 0.6) return
-      mei.scale((mei.scaleVal -= 0.2))
+      mei.scale(scaleVal - scaleSensitivity, offset)
   }
 }
 
@@ -72,18 +82,48 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
   const handleRemove = () => {
     if (mind.currentArrow) mind.removeArrow()
     else if (mind.currentSummary) mind.removeSummary(mind.currentSummary.summaryObj.id)
-    else if (mind.currentNode) {
-      mind.removeNode()
-    } else if (mind.currentNodes) {
+    else if (mind.currentNodes) {
       mind.removeNodes(mind.currentNodes)
+    }
+  }
+
+  // Track key sequence for Ctrl+K+Ctrl+0
+  let ctrlKPressed = false
+  let ctrlKTimeout: number | null = null
+  const handleControlKPlusX = (e: KeyboardEvent) => {
+    const nodeData = mind.nodeData
+    if (e.key === '0') {
+      // Ctrl+K+Ctrl+0: Collapse all nodes
+      for (const node of nodeData.children!) {
+        setExpand(node, false)
+      }
+    }
+    if (e.key === '=') {
+      // Ctrl+K+Ctrl+1: Expand all nodes
+      for (const node of nodeData.children!) {
+        setExpand(node, true)
+      }
+    }
+    if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+      for (const node of nodeData.children!) {
+        setExpand(node, true, Number(e.key) - 1)
+      }
+    }
+    mind.refresh()
+    mind.toCenter()
+
+    ctrlKPressed = false
+    if (ctrlKTimeout) {
+      clearTimeout(ctrlKTimeout)
+      ctrlKTimeout = null
+      mind.container.removeEventListener('keydown', handleControlKPlusX)
     }
   }
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
     Enter: e => {
-      // enter
       if (e.shiftKey) {
         mind.insertSibling('before')
-      } else if (e.ctrlKey) {
+      } else if (e.ctrlKey || e.metaKey) {
         mind.insertParent()
       } else {
         mind.insertSibling('after')
@@ -96,7 +136,13 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       mind.toCenter()
     },
     F2: () => {
-      mind.beginEdit()
+      if (mind.currentSummary) {
+        mind.editSummary(mind.currentSummary)
+      } else if (mind.currentArrow) {
+        mind.editArrowLabel(mind.currentArrow)
+      } else {
+        mind.beginEdit()
+      }
     },
     ArrowUp: e => {
       if (e.altKey) {
@@ -134,14 +180,12 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     },
     c: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        if (mind.currentNode) mind.waitCopy = [mind.currentNode]
-        else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
+        mind.waitCopy = mind.currentNodes
       }
     },
     x: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        if (mind.currentNode) mind.waitCopy = [mind.currentNode]
-        else if (mind.currentNodes) mind.waitCopy = mind.currentNodes
+        mind.waitCopy = mind.currentNodes
         handleRemove()
       }
     },
@@ -155,7 +199,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
         }
       }
     },
-    '+': (e: KeyboardEvent) => {
+    '=': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
         handleZoom(mind, 'in')
       }
@@ -167,31 +211,38 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     },
     '0': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        mind.scale(1)
+        if (ctrlKPressed) {
+          return
+        } else {
+          // Regular Ctrl+0: Reset zoom
+          mind.scale(1)
+        }
+      }
+    },
+    k: (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey) {
+        ctrlKPressed = true
+        // Reset the flag after 2 seconds if no follow-up key is pressed
+        if (ctrlKTimeout) {
+          clearTimeout(ctrlKTimeout)
+          mind.container.removeEventListener('keydown', handleControlKPlusX)
+        }
+        ctrlKTimeout = window.setTimeout(() => {
+          ctrlKPressed = false
+          ctrlKTimeout = null
+        }, 2000)
+        mind.container.addEventListener('keydown', handleControlKPlusX)
       }
     },
     Delete: handleRemove,
     Backspace: handleRemove,
     ...options,
   }
-  mind.map.onkeydown = e => {
+  mind.container.onkeydown = e => {
+    // it will prevent all input in children node, so we have to stop propagation in input element
     e.preventDefault()
     if (!mind.editable) return
-    // console.log(e, e.target)
-    if (e.target !== e.currentTarget) {
-      // input
-      return
-    }
     const keyHandler = key2func[e.key]
     keyHandler && keyHandler(e)
-  }
-
-  mind.map.onwheel = e => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault()
-      if (e.deltaY < 0) handleZoom(mind, 'in')
-      else if (mind.scaleVal - 0.2 > 0) handleZoom(mind, 'out')
-      e.stopPropagation()
-    }
   }
 }

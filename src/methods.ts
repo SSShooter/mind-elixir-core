@@ -9,7 +9,7 @@ import selection from './plugin/selection'
 import { editTopic, createWrapper, createParent, createChildren, createTopic, findEle } from './utils/dom'
 import { getObjById, generateNewObj, fillParent } from './utils/index'
 import { layout } from './utils/layout'
-import changeTheme from './utils/theme'
+import { changeTheme } from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
 import * as arrow from './arrow'
@@ -92,12 +92,12 @@ const methods = {
       if (this.contextMenu) {
         this.disposable.push(contextMenu(this, this.contextMenu))
       }
-      this.draggable && nodeDraggable(this)
-      this.allowUndo && operationHistory(this)
+      this.draggable && this.disposable.push(nodeDraggable(this))
+      this.allowUndo && this.disposable.push(operationHistory(this))
     }
-    this.toCenter()
     this.layout()
     this.linkDiv()
+    this.toCenter()
   },
   destroy(this: Partial<MindElixirInstance>) {
     this.disposable!.forEach(fn => fn())
@@ -107,7 +107,6 @@ const methods = {
     this.arrows = undefined
     this.summaries = undefined
     this.currentArrow = undefined
-    this.currentNode = undefined
     this.currentNodes = undefined
     this.currentSummary = undefined
     this.waitCopy = undefined

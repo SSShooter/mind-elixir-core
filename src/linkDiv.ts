@@ -1,7 +1,7 @@
 import { createPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
 import type { Wrapper, Topic } from './types/dom'
-import { DirectionClass, type MindElixirInstance } from './types/index'
+import type { DirectionClass, MindElixirInstance } from './types/index'
 
 /**
  * Link nodes with svg,
@@ -23,17 +23,6 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   const pW = root.offsetWidth
   const pH = root.offsetHeight
 
-  const nodes = this.map.querySelector("me-nodes");
-  const nw = (nodes as HTMLElement).offsetWidth;
-
-  // pin center
-  this.nodes.style.top = `${10000 - this.nodes.offsetHeight / 2}px`
-  if (this.alignment === 'root') {
-    this.nodes.style.left = `${10000 - pL - pW / 2}px`
-  } else {
-    this.nodes.style.left = `${10000 - nw / 2}px`
-  }
-
   const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
   this.lines.innerHTML = ''
 
@@ -51,17 +40,6 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     tpc.style.borderColor = branchColor
     this.lines.appendChild(createPath(mainPath, branchColor, '3'))
 
-    // set position of main node expander
-    const expander = el.children[0].children[1]
-    if (expander) {
-      expander.style.top = (expander.parentNode.offsetHeight - expander.offsetHeight) / 2 + 'px'
-      if (direction === DirectionClass.LHS) {
-        expander.style.left = -10 + 'px'
-      } else {
-        expander.style.right = -10 + 'px'
-      }
-    }
-
     // generate link inside main node
     if (mainNode && mainNode !== el) {
       continue
@@ -76,6 +54,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     traverseChildren(this, svg, branchColor, el, direction, true)
   }
 
+  this.labelContainer.innerHTML = ''
   this.renderArrow()
   this.renderSummary()
   console.timeEnd('linkDiv')
@@ -115,12 +94,6 @@ const traverseChildren = function (
     const expander = childP.children[1]
 
     if (expander) {
-      expander.style.bottom = -(expander.offsetHeight / 2) + 'px'
-      if (direction === DirectionClass.LHS) {
-        expander.style.left = 10 + 'px'
-      } else if (direction === DirectionClass.RHS) {
-        expander.style.right = 10 + 'px'
-      }
       // this property is added in the layout phase
       if (!expander.expanded) continue
     } else {
