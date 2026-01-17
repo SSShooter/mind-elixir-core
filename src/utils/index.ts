@@ -69,28 +69,30 @@ export const throttle = <T extends (...args: never[]) => void>(fn: T, wait: numb
 }
 
 export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: number) {
+  // Calculate the direction vector from p3 (control point) to p4 (end point)
+  const deltax = p4x - p3x
   const deltay = p4y - p3y
-  const deltax = p3x - p4x
-  let angle = (Math.atan(Math.abs(deltay) / Math.abs(deltax)) / 3.14) * 180
-  if (isNaN(angle)) return
-  if (deltax < 0 && deltay > 0) {
-    angle = 180 - angle
-  }
-  if (deltax < 0 && deltay < 0) {
-    angle = 180 + angle
-  }
-  if (deltax > 0 && deltay < 0) {
-    angle = 360 - angle
-  }
+
+  // Use atan2 to get the angle directly, which handles all quadrants correctly
+  // atan2(y, x) returns angle in radians from -PI to PI
+  const angleRad = Math.atan2(deltay, deltax)
+
+  // Convert to degrees for easier understanding (optional, could work directly with radians)
+  const angleDeg = (angleRad * 180) / Math.PI
+
   const arrowLength = 12
   const arrowAngle = 30
-  const a1 = angle + arrowAngle
-  const a2 = angle - arrowAngle
+
+  // Calculate the two arrow head points
+  // Subtract arrowAngle to get the two wing angles
+  const a1Rad = ((angleDeg + 180 - arrowAngle) * Math.PI) / 180
+  const a2Rad = ((angleDeg + 180 + arrowAngle) * Math.PI) / 180
+
   return {
-    x1: p4x + Math.cos((Math.PI * a1) / 180) * arrowLength,
-    y1: p4y - Math.sin((Math.PI * a1) / 180) * arrowLength,
-    x2: p4x + Math.cos((Math.PI * a2) / 180) * arrowLength,
-    y2: p4y - Math.sin((Math.PI * a2) / 180) * arrowLength,
+    x1: p4x + Math.cos(a1Rad) * arrowLength,
+    y1: p4y + Math.sin(a1Rad) * arrowLength,
+    x2: p4x + Math.cos(a2Rad) * arrowLength,
+    y2: p4y + Math.sin(a2Rad) * arrowLength,
   }
 }
 
