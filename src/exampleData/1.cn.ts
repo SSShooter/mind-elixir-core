@@ -528,6 +528,7 @@ const aboutMindElixir: MindElixirData = {
       '--root-border-color': 'rgba(0, 0, 0, 0)',
       '--main-color': '#444446',
       '--main-bgcolor': '#ffffff',
+      '--main-bgcolor-transparent': 'rgba(255, 255, 255, 0.8)',
       '--topic-padding': '3px',
       '--color': '#777777',
       '--bgcolor': '#f6f6f6',

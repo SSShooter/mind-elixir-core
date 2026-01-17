@@ -44,6 +44,7 @@ export type Theme = {
     '--main-gap-y': string
     '--main-color': string
     '--main-bgcolor': string
+    '--main-bgcolor-transparent': string
     '--color': string
     '--bgcolor': string
     '--selected': string

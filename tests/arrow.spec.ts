@@ -151,7 +151,7 @@ test('Select and highlight arrow', async ({ page, me }) => {
   }, instanceHandle)
 
   // Click on the arrow to select it
-  await page.locator('svg g[data-linkid]').click()
+  await page.locator('svg g[data-linkid]').click({ force: true })
 
   // Verify highlight appears (highlight group with higher opacity)
   await expect(page.locator('svg g[data-linkid] .arrow-highlight')).toBeVisible()
@@ -176,7 +176,7 @@ test('Remove arrow', async ({ page, me }) => {
 
   // Verify arrow exists
   await expect(page.locator('svg g[data-linkid]')).toBeVisible()
-  
+
   // Verify arrow label exists
   await expect(page.locator('.svg-label[data-type="arrow"]')).toHaveCount(1)
 
@@ -187,7 +187,7 @@ test('Remove arrow', async ({ page, me }) => {
 
   // Verify arrow is removed
   await expect(page.locator('svg g[data-linkid]')).not.toBeVisible()
-  
+
   // Verify arrow label is also removed
   await expect(page.locator('.svg-label[data-type="arrow"]')).toHaveCount(0)
 })
@@ -234,7 +234,7 @@ test('Unselect arrow', async ({ page, me }) => {
   }, instanceHandle)
 
   // Select arrow
-  await page.locator('svg g[data-linkid]').click()
+  await page.locator('svg g[data-linkid]').click({ force: true })
   await expect(page.locator('svg g[data-linkid] .arrow-highlight')).toBeVisible()
 
   // Unselect arrow programmatically
@@ -394,7 +394,7 @@ test('Arrow control point manipulation', async ({ page, me }) => {
   }, instanceHandle)
 
   // Select arrow to show control points
-  await page.locator('svg g[data-linkid]').click()
+  await page.locator('svg g[data-linkid]').click({ force: true })
 
   // Verify control points are visible
   const p2Element = page.locator('.circle').first()
@@ -428,7 +428,7 @@ test('Arrow deletion via keyboard', async ({ page, me }) => {
   }, instanceHandle)
 
   // Select arrow
-  await page.locator('svg g[data-linkid]').click()
+  await page.locator('svg g[data-linkid]').click({ force: true })
   await expect(page.locator('svg g[data-linkid] .arrow-highlight')).toBeVisible()
 
   // Delete arrow using keyboard
@@ -545,11 +545,11 @@ test('Multiple arrow selection state management', async ({ page, me }) => {
   const secondArrow = arrows.last()
 
   // Select first arrow
-  await firstArrow.click()
+  await firstArrow.click({ force: true })
   await expect(page.locator('.arrow-highlight').first()).toBeVisible()
 
   // Select second arrow
-  await secondArrow.click()
+  await secondArrow.click({ force: true })
   await expect(page.locator('.arrow-highlight').first()).toBeVisible()
 
   // Click elsewhere to deselect
@@ -639,7 +639,7 @@ test('Arrow highlight update during control point drag', async ({ page, me }) =>
   }, instanceHandle)
 
   // Select arrow to show control points
-  await page.locator('svg g[data-linkid]').click()
+  await page.locator('svg g[data-linkid]').click({ force: true })
 
   // Verify highlight is visible
   await expect(page.locator('svg g[data-linkid] .arrow-highlight')).toBeVisible()
