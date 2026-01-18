@@ -195,6 +195,7 @@ export interface MindElixirCtor {
 }
 
 export default MindElixir as unknown as MindElixirCtor
+export { LEFT, RIGHT, SIDE, THEME, DARK_THEME } // bypass ssr error
 
 // types
 export type * from './utils/pubsub'

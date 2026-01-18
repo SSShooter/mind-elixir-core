@@ -30,7 +30,7 @@ export const THEME: Theme = {
     '--panel-color': '#444446',
     '--panel-bgcolor': '#ffffff',
     '--panel-border-color': '#eaeaea',
-    '--map-padding': '50px',
+    '--map-padding': '50px 80px',
   },
 }
 

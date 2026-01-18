@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.6.1 - 2026-01-18
+
+### Bug Fixes
+
+- Unify map padding across themes (`50px` → `50px 80px`)
+- Export constants (LEFT, RIGHT, SIDE, THEME, DARK_THEME) to bypass SSR errors
+
 ## 5.6.0 - 2026-01-17
 
 ### Features
