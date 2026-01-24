@@ -21,7 +21,7 @@ export default function (mind: MindElixirInstance) {
   const activePointers = new Map<number, { x: number; y: number }>()
 
   // Node drag state - only initialize if draggable is enabled
-  const nodeDragState = mind.draggable ? createNodeDragState(mind) : null
+  const nodeDragState = mind.editable ? createNodeDragState(mind) : null
 
   // Long press state for touch devices
   let longPressTimer: number | null = null

@@ -22,7 +22,6 @@ function MindElixir(
     el,
     direction,
     locale,
-    draggable,
     editable,
     contextMenu,
     toolBar,
@@ -67,7 +66,6 @@ function MindElixir(
   this.keypress = keypress ?? true
   this.mouseSelectionButton = mouseSelectionButton ?? 0
   this.direction = direction ?? 1
-  this.draggable = draggable ?? true
   this.editable = editable ?? true
   this.allowUndo = allowUndo ?? true
   this.scaleSensitivity = scaleSensitivity ?? 0.1

@@ -88,11 +88,11 @@ const methods = {
 
       if (this.editable) {
         selection(this)
+        this.disposable.push(nodeDraggable(this))
       }
       if (this.contextMenu) {
         this.disposable.push(contextMenu(this, this.contextMenu))
       }
-      this.draggable && this.disposable.push(nodeDraggable(this))
       this.allowUndo && this.disposable.push(operationHistory(this))
     }
     this.layout()

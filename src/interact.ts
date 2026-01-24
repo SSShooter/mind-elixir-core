@@ -40,7 +40,7 @@ export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewN
   // selectNode clears all selected nodes by default
   this.clearSelection()
   this.scrollIntoView(tpc)
-  this.selection.select(tpc)
+  this.selection?.select(tpc)
   if (isNewNode) {
     this.bus.fire('selectNewNode', tpc.nodeObj)
   }
@@ -48,7 +48,7 @@ export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewN
 
 export const selectNodes = function (this: MindElixirInstance, tpcs: Topic[]): void {
   // update currentNodes in selection.ts to keep sync with SelectionArea cache
-  this.selection.select(tpcs)
+  this.selection?.select(tpcs)
 }
 
 export const unselectNodes = function (this: MindElixirInstance, tpcs: Topic[]) {

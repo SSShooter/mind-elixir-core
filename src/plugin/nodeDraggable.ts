@@ -110,8 +110,8 @@ export function handleNodeDragStart(mind: MindElixirInstance, state: NodeDragSta
   state.startY = e.clientY
   state.pointerId = e.pointerId
 
-  // Cancel selection
-  mind.selection.cancel()
+  // no selection if editable === false
+  mind.selection?.cancel()
 
   // Select node if not already selected
   let nodes = mind.currentNodes

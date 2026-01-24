@@ -10,7 +10,6 @@ const options: Options = {
   direction: MindElixir.RIGHT,
   // data: MindElixir.new('new topic'),
   locale: 'en',
-  draggable: true,
   editable: true,
   contextMenu: {
     focus: true,
@@ -53,7 +52,6 @@ console.log('test E function', E('bd4313fbac40284b'))
 //   el: '#map2',
 //   direction: 2,
 //   data: MindElixir.example2,
-//   draggable: false,
 //   // overflowHidden: true,
 //   nodeMenu: true,
 // })

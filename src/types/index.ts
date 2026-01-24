@@ -135,6 +135,9 @@ export interface Options {
   el: string | HTMLElement
   direction?: 0 | 1 | 2
   locale?: Locale
+  /**
+   * @deprecated Use `editable` instead
+   */
   draggable?: boolean
   editable?: boolean
   contextMenu?: boolean | ContextMenuOption

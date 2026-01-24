@@ -173,7 +173,6 @@ import example from 'mind-elixir/dist/example1'
 let options = {
   el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // default true
   toolBar: true, // default true
   nodeMenu: true, // default true
   keypress: true, // default true
