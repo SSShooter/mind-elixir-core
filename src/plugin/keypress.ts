@@ -272,5 +272,9 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       } catch (error) {
         // Not a valid JSON from MindElixir, fall through to pasteHandler.
       }
+    }
+    if (mind.pasteHandler) {
+      mind.pasteHandler(e)
+    }
   })
 }

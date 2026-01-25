@@ -166,6 +166,12 @@ export interface Options {
    * @default undefined
    */
   imageProxy?: (url: string) => string
+
+  /**
+   * Custom paste handler when there are no nodes copied;
+   * @default undefined
+   */
+  pasteHandler?: (e: ClipboardEvent) => void
 }
 
 export type Uid = string
