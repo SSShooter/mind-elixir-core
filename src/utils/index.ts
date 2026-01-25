@@ -166,21 +166,6 @@ export const unionTopics = (nodes: Topic[]) => {
     })
 }
 
-export const unionNodeObjs = (nodes: NodeObj[]) => {
-  return nodes
-    .filter(node => node.parent)
-    .filter((node, _, nodes) => {
-      for (let i = 0; i < nodes.length; i++) {
-        if (node === nodes[i]) continue
-        const { parent } = node
-        if (parent === nodes[i]) {
-          return false
-        }
-      }
-      return true
-    })
-}
-
 export const getTranslate = (styleText: string) => {
   // use translate3d for GPU acceleration
   const regex = /translate3d\(([^,]+),\s*([^,]+)/
