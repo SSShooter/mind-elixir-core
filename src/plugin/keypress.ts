@@ -1,8 +1,8 @@
 import { stringifyData } from '../interact'
 import type { Topic } from '../types/dom'
-import type { KeypressOptions, MindElixirInstance } from '../types/index'
+import type { KeypressOptions, MindElixirInstance, NodeObj } from '../types/index'
 import { DirectionClass } from '../types/index'
-import { setExpand, unionNodeObjs } from '../utils'
+import { setExpand, unionTopics } from '../utils'
 
 const COPY_MAGIC = 'MIND-ELIXIR-WAIT-COPY'
 
@@ -235,7 +235,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
   const handleSetNodesClip = (e: ClipboardEvent) => {
     if (mind.currentNodes.length === 0) return false
     if (e.clipboardData) {
-      const nodeObjs = unionNodeObjs(mind.currentNodes.map(node => node.nodeObj))
+      const nodeObjs = unionTopics(mind.currentNodes).map(node => node.nodeObj)
       const data = stringifyData({
         magic: COPY_MAGIC,
         data: nodeObjs,
@@ -258,13 +258,10 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       try {
         const parsed = JSON.parse(json)
         if (parsed && parsed.magic === COPY_MAGIC && Array.isArray(parsed.data)) {
-          const data = parsed.data
+          const data = parsed.data as NodeObj[]
+          const tpc = data.map(obj => ({ nodeObj: obj })) as Topic[] // fake Topic
           if (data.length > 0 && mind.currentNode) {
-            if (data.length === 1) {
-              mind.copyNodeObj(data[0], mind.currentNode)
-            } else {
-              mind.copyNodeObjs(data, mind.currentNode)
-            }
+            mind.copyNodes(tpc, mind.currentNode)
             e.preventDefault()
           }
           return
