@@ -43,6 +43,7 @@ function MindElixir(
     handleWheel,
     markdown,
     imageProxy,
+    pasteHandler,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -129,6 +130,10 @@ function MindElixir(
     this.container.style.overflow = 'hidden'
   } else {
     this.disposable.push(initMouseEvent(this))
+  }
+
+  if (pasteHandler) {
+    this.pasteHandler = pasteHandler
   }
 }
 

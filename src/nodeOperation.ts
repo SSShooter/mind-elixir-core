@@ -166,7 +166,6 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
 }
 
 export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: Topic) {
-  tpcs = unionTopics(tpcs)
   const objs = []
   for (let i = 0; i < tpcs.length; i++) {
     const node = tpcs[i]

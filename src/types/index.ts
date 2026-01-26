@@ -91,7 +91,6 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   currentNodes: Topic[]
   currentSummary: SummarySvgGroup | null
   currentArrow: CustomSvg | null
-  waitCopy: Topic[] | null
 
   scaleVal: number
   tempDirection: 0 | 1 | 2 | null
@@ -167,6 +166,12 @@ export interface Options {
    * @default undefined
    */
   imageProxy?: (url: string) => string
+
+  /**
+   * Custom paste handler when there are no nodes copied;
+   * @default undefined
+   */
+  pasteHandler?: (e: ClipboardEvent) => void
 }
 
 export type Uid = string
