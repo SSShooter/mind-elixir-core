@@ -397,6 +397,8 @@ See [Shortcuts Guide](https://docs.mind-elixir.com/docs/guides/shortcuts) for de
 ## Who's using
 
 - [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
+- [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
+- [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
 ## Ecosystem
 
