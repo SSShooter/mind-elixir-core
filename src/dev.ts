@@ -35,7 +35,7 @@ const options: Options = {
   newTopicName: '子节点',
   locale: 'en',
   // mouseSelectionButton: 2,
-  editable: false,
+  editable: true,
   markdown: (text: string, obj: (NodeObj & { useMd?: boolean }) | (Arrow & { useMd?: boolean }) | (Summary & { useMd?: boolean })) => {
     if (!text) return ''
     // if (!obj.useMd) return text
