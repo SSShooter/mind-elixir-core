@@ -2,7 +2,7 @@ import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } 
 import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
 import { calculatePrecisePosition, createArrowGroup, createLabel, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
-import type { MindElixirInstance, Uid } from './index'
+import { type MindElixirInstance, type Uid } from './index'
 
 const highlightColor = '#4dc4ff'
 
@@ -50,14 +50,14 @@ export interface Arrow {
   /**
    *  offset of control point from start point
    */
-  delta1: {
+  delta1?: {
     x: number
     y: number
   }
   /**
    * offset of control point from end point
    */
-  delta2: {
+  delta2?: {
     x: number
     y: number
   }
@@ -264,6 +264,79 @@ function calcP(data: DivData) {
 }
 
 /**
+ * Calculate default delta values based on node positions and directions
+ */
+const calculateDefaultDeltas = function (mei: MindElixirInstance, from: Topic, to: Topic) {
+  // Calculate center positions of both nodes
+  const fromOffset = getOffsetLT(mei.nodes, from)
+  const toOffset = getOffsetLT(mei.nodes, to)
+
+  const fromCenterX = fromOffset.offsetLeft + from.offsetWidth / 2
+  const fromCenterY = fromOffset.offsetTop + from.offsetHeight / 2
+  const toCenterX = toOffset.offsetLeft + to.offsetWidth / 2
+  const toCenterY = toOffset.offsetTop + to.offsetHeight / 2
+
+  // Calculate the vector between nodes
+  const dx = toCenterX - fromCenterX
+  const dy = toCenterY - fromCenterY
+  const distance = Math.sqrt(dx * dx + dy * dy)
+
+  // Calculate recommended offset based on distance and direction
+  // Use 30% of the distance as base offset, with min 50 and max 200
+  const baseOffset = Math.max(50, Math.min(200, distance * 0.3))
+
+  // Determine the primary direction and calculate deltas accordingly
+  const absDx = Math.abs(dx)
+  const absDy = Math.abs(dy)
+
+  let delta1, delta2
+
+  // Use C-type curve when nodes are close together to avoid overlapping
+  const isCloseDistance = distance < 150
+  if (isCloseDistance) {
+    const xMul = from.closest('me-main')!.className === 'lhs' ? -1 : 1
+    delta1 = { x: 200 * xMul, y: 0 }
+    delta2 = { x: 200 * xMul, y: 0 }
+  } else if (absDx > absDy * 1.5) {
+    // Primarily horizontal arrangement
+    // Calculate offset from the edge of the node, not the center
+    const fromEdgeOffsetX = dx > 0 ? from.offsetWidth / 2 : -from.offsetWidth / 2
+    const toEdgeOffsetX = dx > 0 ? -to.offsetWidth / 2 : to.offsetWidth / 2
+
+    delta1 = { x: fromEdgeOffsetX + (dx > 0 ? baseOffset : -baseOffset), y: 0 }
+    delta2 = { x: toEdgeOffsetX + (dx > 0 ? -baseOffset : baseOffset), y: 0 }
+  } else if (absDy > absDx * 1.5) {
+    // Primarily vertical arrangement
+    // Calculate offset from the edge of the node, not the center
+    const fromEdgeOffsetY = dy > 0 ? from.offsetHeight / 2 : -from.offsetHeight / 2
+    const toEdgeOffsetY = dy > 0 ? -to.offsetHeight / 2 : to.offsetHeight / 2
+
+    // Use straight vertical line for longer distances
+    delta1 = { x: 0, y: fromEdgeOffsetY + (dy > 0 ? baseOffset : -baseOffset) }
+    delta2 = { x: 0, y: toEdgeOffsetY + (dy > 0 ? -baseOffset : baseOffset) }
+  } else {
+    // Diagonal arrangement
+    // Calculate offset from the edge of the node, not the center
+    const angle = Math.atan2(dy, dx)
+
+    // Calculate which edge point the arrow exits/enters from
+    const fromEdgeOffsetX = (from.offsetWidth / 2) * Math.cos(angle)
+    const fromEdgeOffsetY = (from.offsetHeight / 2) * Math.sin(angle)
+    const toEdgeOffsetX = -(to.offsetWidth / 2) * Math.cos(angle)
+    const toEdgeOffsetY = -(to.offsetHeight / 2) * Math.sin(angle)
+
+    // Add the control point offset from the edge
+    const offsetX = baseOffset * 0.7 * (dx > 0 ? 1 : -1)
+    const offsetY = baseOffset * 0.7 * (dy > 0 ? 1 : -1)
+
+    delta1 = { x: fromEdgeOffsetX + offsetX, y: fromEdgeOffsetY + offsetY }
+    delta2 = { x: toEdgeOffsetX - offsetX, y: toEdgeOffsetY - offsetY }
+  }
+
+  return { delta1, delta2 }
+}
+
+/**
  * FYI
  * p1: start point
  * p2: control point of start point
@@ -273,6 +346,13 @@ function calcP(data: DivData) {
 const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj: Arrow, isInitPaint?: boolean) {
   if (!from || !to) {
     return // not expand
+  }
+
+  // If delta1 or delta2 are not provided, calculate default values
+  if (!obj.delta1 || !obj.delta2) {
+    const defaults = calculateDefaultDeltas(mei, from, to)
+    obj.delta1 = defaults.delta1
+    obj.delta2 = defaults.delta2
   }
 
   const fromData = calcCtrlP(mei, from, obj.delta1)
@@ -321,72 +401,12 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
 }
 
 export const createArrow = function (this: MindElixirInstance, from: Topic, to: Topic, options: ArrowOptions = {}) {
-  // Calculate center positions of both nodes
-  const fromOffset = getOffsetLT(this.nodes, from)
-  const toOffset = getOffsetLT(this.nodes, to)
-
-  const fromCenterX = fromOffset.offsetLeft + from.offsetWidth / 2
-  const fromCenterY = fromOffset.offsetTop + from.offsetHeight / 2
-  const toCenterX = toOffset.offsetLeft + to.offsetWidth / 2
-  const toCenterY = toOffset.offsetTop + to.offsetHeight / 2
-
-  // Calculate the vector between nodes
-  const dx = toCenterX - fromCenterX
-  const dy = toCenterY - fromCenterY
-  const distance = Math.sqrt(dx * dx + dy * dy)
-
-  // Calculate recommended offset based on distance and direction
-  // Use 30% of the distance as base offset, with min 50 and max 200
-  const baseOffset = Math.max(50, Math.min(200, distance * 0.3))
-
-  // Determine the primary direction and calculate deltas accordingly
-  const absDx = Math.abs(dx)
-  const absDy = Math.abs(dy)
-
-  let delta1, delta2
-
-  if (absDx > absDy * 1.5) {
-    // Primarily horizontal arrangement
-    // Calculate offset from the edge of the node, not the center
-    const fromEdgeOffsetX = dx > 0 ? from.offsetWidth / 2 : -from.offsetWidth / 2
-    const toEdgeOffsetX = dx > 0 ? -to.offsetWidth / 2 : to.offsetWidth / 2
-
-    delta1 = { x: fromEdgeOffsetX + (dx > 0 ? baseOffset : -baseOffset), y: 0 }
-    delta2 = { x: toEdgeOffsetX + (dx > 0 ? -baseOffset : baseOffset), y: 0 }
-  } else if (absDy > absDx * 1.5) {
-    // Primarily vertical arrangement
-    // Calculate offset from the edge of the node, not the center
-    const fromEdgeOffsetY = dy > 0 ? from.offsetHeight / 2 : -from.offsetHeight / 2
-    const toEdgeOffsetY = dy > 0 ? -to.offsetHeight / 2 : to.offsetHeight / 2
-
-    delta1 = { x: 0, y: fromEdgeOffsetY + (dy > 0 ? baseOffset : -baseOffset) }
-    delta2 = { x: 0, y: toEdgeOffsetY + (dy > 0 ? -baseOffset : baseOffset) }
-  } else {
-    // Diagonal arrangement
-    // Calculate offset from the edge of the node, not the center
-    const angle = Math.atan2(dy, dx)
-
-    // Calculate which edge point the arrow exits/enters from
-    const fromEdgeOffsetX = (from.offsetWidth / 2) * Math.cos(angle)
-    const fromEdgeOffsetY = (from.offsetHeight / 2) * Math.sin(angle)
-    const toEdgeOffsetX = -(to.offsetWidth / 2) * Math.cos(angle)
-    const toEdgeOffsetY = -(to.offsetHeight / 2) * Math.sin(angle)
-
-    // Add the control point offset from the edge
-    const offsetX = baseOffset * 0.7 * (dx > 0 ? 1 : -1)
-    const offsetY = baseOffset * 0.7 * (dy > 0 ? 1 : -1)
-
-    delta1 = { x: fromEdgeOffsetX + offsetX, y: fromEdgeOffsetY + offsetY }
-    delta2 = { x: toEdgeOffsetX - offsetX, y: toEdgeOffsetY - offsetY }
-  }
-
+  // Create arrow object without delta values - they will be calculated in drawArrow
   const arrowObj = {
     id: generateUUID(),
     label: 'Custom Link',
     from: from.nodeObj.id,
     to: to.nodeObj.id,
-    delta1,
-    delta2,
     ...options,
   }
   drawArrow(this, from, to, arrowObj)
@@ -437,8 +457,8 @@ export const selectArrow = function (this: MindElixirInstance, link: CustomSvg) 
   const from = this.findEle(obj.from)
   const to = this.findEle(obj.to)
 
-  const fromData = calcCtrlP(this, from, obj.delta1)
-  const toData = calcCtrlP(this, to, obj.delta2)
+  const fromData = calcCtrlP(this, from, obj.delta1!)
+  const toData = calcCtrlP(this, to, obj.delta2!)
 
   showLinkController(this, obj, fromData, toData)
 }
@@ -559,8 +579,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
     updateControlLine(line1, p1x, p1y, p2x, p2y)
 
-    linkItem.delta1.x = p2x - fromData.cx
-    linkItem.delta1.y = p2y - fromData.cy
+    linkItem.delta1!.x = p2x - fromData.cx
+    linkItem.delta1!.y = p2y - fromData.cy
 
     bus.fire('updateArrowDelta', linkItem)
   })
@@ -579,8 +599,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
     updateControlLine(line2, p3x, p3y, p4x, p4y)
 
-    linkItem.delta2.x = p3x - toData.cx
-    linkItem.delta2.y = p3y - toData.cy
+    linkItem.delta2!.x = p3x - toData.cx
+    linkItem.delta2!.y = p3y - toData.cy
 
     bus.fire('updateArrowDelta', linkItem)
   })

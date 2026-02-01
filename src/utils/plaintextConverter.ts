@@ -224,8 +224,6 @@ function parseArrow(content: string, context: ParseContext): Arrow | null {
       label,
       from: context.nodeIdMap.get(fromRefId) || fromRefId,
       to: context.nodeIdMap.get(toRefId) || toRefId,
-      delta1: { x: 100, y: 100 },
-      delta2: { x: 100, y: 100 },
       bidirectional: true,
     } as Arrow
   }
@@ -242,8 +240,6 @@ function parseArrow(content: string, context: ParseContext): Arrow | null {
       label,
       from: context.nodeIdMap.get(fromRefId) || fromRefId,
       to: context.nodeIdMap.get(toRefId) || toRefId,
-      delta1: { x: 100, y: 100 },
-      delta2: { x: 100, y: 100 },
     } as Arrow
   }
 
@@ -259,8 +255,6 @@ function parseArrow(content: string, context: ParseContext): Arrow | null {
       label,
       from: context.nodeIdMap.get(fromRefId) || fromRefId,
       to: context.nodeIdMap.get(toRefId) || toRefId,
-      delta1: { x: 100, y: 100 },
-      delta2: { x: 100, y: 100 },
     } as Arrow
   }
 

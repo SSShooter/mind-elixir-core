@@ -200,4 +200,4 @@ document.querySelector('#ssr')!.innerHTML = renderSSRHTML(layoutSSR(window.m.nod
 import plaintextExample from './exampleData/plaintext'
 
 const convertedData = plaintextToMindElixir(plaintextExample)
-mind.refresh(convertedData)
+// mind.refresh(convertedData)
