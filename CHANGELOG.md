@@ -1,5 +1,26 @@
 # Changelog
 
+## 5.7.0 - 2026-02-01
+
+### Features
+
+- Refactor clipboard handling using native events
+- Import pasteHandler for improved clipboard operations
+- Remove draggable option
+- Add plaintext converter for importing/exporting mind maps
+- Allow creating arrows without offset
+
+### Refactors
+
+- Refactor node operations and improve structure
+- Refactor keypress handling and clipboard functions
+- Refactor utility functions in index.ts
+
+### Chores
+
+- Update readme
+- Upgrade playwright to latest version
+
 ## 5.6.1 - 2026-01-18
 
 ### Bug Fixes
