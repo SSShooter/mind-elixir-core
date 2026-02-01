@@ -14,6 +14,7 @@ import { marked } from 'marked'
 import { md2html } from 'simple-markdown-to-html'
 import type { Arrow } from './arrow'
 import type { Summary } from './summary'
+import { plaintextToMindElixir } from './utils/plaintextConverter'
 
 interface Window {
   m?: MindElixirInstance
@@ -194,3 +195,9 @@ window.destroy = () => {
 }
 
 document.querySelector('#ssr')!.innerHTML = renderSSRHTML(layoutSSR(window.m.nodeData))
+
+// Test plaintext converter
+import plaintextExample from './exampleData/plaintext'
+
+const convertedData = plaintextToMindElixir(plaintextExample)
+mind.refresh(convertedData)

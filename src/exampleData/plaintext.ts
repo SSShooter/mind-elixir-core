@@ -1,0 +1,25 @@
+export default `- Root Node
+  - Child Node 1
+    - Child Node 1-1
+    - Child Node 1-2
+    - Child Node 1-3
+    - }:2 Summary of first two nodes
+  - Child Node 2
+    - Child Node 2-1 [^id1]
+    - Child Node 2-2 [^id2]
+    - Child Node 2-3 {color: #e87a90}
+    - > [^id1] <-Bidirectional Link-> [^id2]
+  - Child Node 3
+    - Child Node 3-1 [^id3]
+    - Child Node 3-2 [^id4]
+    - Child Node 3-3 [^id5]
+    - > [^id3] >-Unidirectional Link-> [^id4]
+    - > [^id3] <-Unidirectional Link-< [^id5]
+  - Child Node 4
+    - Child Node 4-1 [^id6]
+    - Child Node 4-2 [^id7]
+    - Child Node 4-3 [^id8]
+    - } Summary of all previous nodes
+    - Child Node 4-4
+  - > [^id1] <-Link position is not restricted, as long as the id can be found during rendering-> [^id8]
+`
