@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.7.1 - 2026-02-02
+
+### Bug Fixes
+
+- Correct input copy behavior
+
 ## 5.7.0 - 2026-02-01
 
 ### Features

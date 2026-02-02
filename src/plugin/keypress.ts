@@ -233,6 +233,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
   }
 
   const handleSetNodesClip = (e: ClipboardEvent) => {
+    if (e.target instanceof HTMLElement && e.target.id === 'input-box') return false
     if (mind.currentNodes.length === 0) return false
     if (e.clipboardData) {
       const nodeObjs = unionTopics(mind.currentNodes).map(node => node.nodeObj)
