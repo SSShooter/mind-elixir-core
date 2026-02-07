@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.8.0 - 2026-02-07
+
+### Features
+
+- Build & export plaintext converter
+
 ## 5.7.1 - 2026-02-02
 
 ### Bug Fixes
