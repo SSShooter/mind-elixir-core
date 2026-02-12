@@ -320,8 +320,12 @@ let mind = new MindElixir({
   // ...
   before: {
     async addChild(el, obj) {
-      await saveDataToDb()
-      return true
+      try {
+        await saveDataToDb()
+        return true
+      } catch (err) {
+        return false
+      }
     },
   },
 })
