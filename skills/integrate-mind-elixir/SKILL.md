@@ -152,7 +152,30 @@ mind.bus.addListener('expandNode', node => {
 })
 ```
 
-## 6. Theme Customization
+## 6. Operation Guards
+
+You can use `before` hooks to intercept and control user operations. This is useful for asynchronous validation or saving data before applying changes.
+
+```javascript
+let mind = new MindElixir({
+  // ... other options
+  before: {
+    // Return true to allow, false to prevent
+    // Supports async functions
+    async addChild(el, obj) {
+      try {
+        await saveDataToDb()
+        return true
+      } catch (err) {
+        return false // Operation blocked
+      }
+    },
+    // Other hooks: insertSibling, removeNode, moveNode, etc.
+  },
+})
+```
+
+## 7. Theme Customization
 
 You can customize the theme during initialization or dynamically.
 
