@@ -53,7 +53,6 @@ console.log('test E function', E('bd4313fbac40284b'))
 //   direction: 2,
 //   data: MindElixir.example2,
 //   // overflowHidden: true,
-//   nodeMenu: true,
 // })
 // mind2.init()
 

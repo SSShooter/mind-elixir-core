@@ -168,7 +168,6 @@ let options = {
   draggable: true, // デフォルトはtrue
   contextMenu: true, // デフォルトはtrue
   toolBar: true, // デフォルトはtrue
-  nodeMenu: true, // デフォルトはtrue
   keypress: true, // デフォルトはtrue
   locale: 'ja', // [zh_CN,zh_TW,en,ja,pt,ru,ro] PRs募集中
   overflowHidden: false, // デフォルトはfalse
@@ -256,7 +255,6 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:target1,to:target2}
 })
 
-
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
 })
@@ -293,7 +291,7 @@ let mind = new MindElixir({
 
 // カスタムmarkdownパーサーを使用
 let mind = new MindElixir({
-  markdown: (text) => {
+  markdown: text => {
     // カスタムmarkdown実装
     return text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -305,7 +303,7 @@ let mind = new MindElixir({
 // 任意のmarkdownライブラリを使用（marked、markdown-itなど）
 import { marked } from 'marked'
 let mind = new MindElixir({
-  markdown: (text) => marked(text),
+  markdown: text => marked(text),
 })
 ```
 

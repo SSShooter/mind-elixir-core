@@ -168,7 +168,6 @@ let options = {
   draggable: true, // por defecto true
   contextMenu: true, // por defecto true
   toolBar: true, // por defecto true
-  nodeMenu: true, // por defecto true
   keypress: true, // por defecto true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] esperando PRs
   overflowHidden: false, // por defecto false
@@ -257,7 +256,6 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:objetivo1,to:objetivo2}
 })
 
-
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
 })
@@ -294,7 +292,7 @@ let mind = new MindElixir({
 
 // Usar analizador markdown personalizado
 let mind = new MindElixir({
-  markdown: (text) => {
+  markdown: text => {
     // Tu implementación markdown personalizada
     return text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -306,7 +304,7 @@ let mind = new MindElixir({
 // Usar cualquier biblioteca markdown (ej. marked, markdown-it, etc.)
 import { marked } from 'marked'
 let mind = new MindElixir({
-  markdown: (text) => marked(text),
+  markdown: text => marked(text),
 })
 ```
 

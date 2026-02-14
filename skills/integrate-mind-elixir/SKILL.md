@@ -63,7 +63,6 @@ let options = {
   el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
   toolBar: true, // default true
-  nodeMenu: true, // default true
   keypress: true, // default true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro]
   overflowHidden: false, // default false

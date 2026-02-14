@@ -145,7 +145,6 @@ let options = {
   draggable: true, // par défaut true
   contextMenu: true, // par défaut true
   toolBar: true, // par défaut true
-  nodeMenu: true, // par défaut true
   keypress: true, // par défaut true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] en attente de PRs
   overflowHidden: false, // par défaut false
@@ -233,7 +232,6 @@ mind.bus.addListener('operation', operation => {
   // name: moveNode
   // obj: {from:cible1,to:cible2}
 })
-
 
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
@@ -371,25 +369,25 @@ Soyez conscient que Mind Elixir n'observera pas le changement de `prefers-color-
 
 ## Raccourcis
 
-| Raccourci          | Fonction                                  |
-| ------------------ | ----------------------------------------- |
-| Entrée            | Insérer un nœud frère                    |
-| Tab               | Insérer un nœud enfant                    |
-| F1                | Centrer la carte                          |
-| F2                | Commencer l'édition du nœud actuel        |
-| ↑                 | Sélectionner le nœud frère précédent      |
-| ↓                 | Sélectionner le nœud frère suivant        |
-| ← / →             | Sélectionner le parent ou le premier enfant|
-| PageUp / Alt + ↑  | Déplacer le nœud vers le haut            |
-| PageDown / Alt + ↓| Déplacer le nœud vers le bas             |
-| Ctrl + ↑          | Changer la disposition en mode latéral    |
-| Ctrl + ←          | Changer la disposition vers la gauche     |
-| Ctrl + →          | Changer la disposition vers la droite     |
-| Ctrl + C          | Copier le nœud actuel                    |
-| Ctrl + V          | Coller le nœud copié                     |
-| Ctrl + "+"        | Zoomer la carte mentale                  |
-| Ctrl + "-"        | Dézoomer la carte mentale                |
-| Ctrl + 0          | Réinitialiser le niveau de zoom          |
+| Raccourci          | Fonction                                    |
+| ------------------ | ------------------------------------------- |
+| Entrée             | Insérer un nœud frère                       |
+| Tab                | Insérer un nœud enfant                      |
+| F1                 | Centrer la carte                            |
+| F2                 | Commencer l'édition du nœud actuel          |
+| ↑                  | Sélectionner le nœud frère précédent        |
+| ↓                  | Sélectionner le nœud frère suivant          |
+| ← / →              | Sélectionner le parent ou le premier enfant |
+| PageUp / Alt + ↑   | Déplacer le nœud vers le haut               |
+| PageDown / Alt + ↓ | Déplacer le nœud vers le bas                |
+| Ctrl + ↑           | Changer la disposition en mode latéral      |
+| Ctrl + ←           | Changer la disposition vers la gauche       |
+| Ctrl + →           | Changer la disposition vers la droite       |
+| Ctrl + C           | Copier le nœud actuel                       |
+| Ctrl + V           | Coller le nœud copié                        |
+| Ctrl + "+"         | Zoomer la carte mentale                     |
+| Ctrl + "-"         | Dézoomer la carte mentale                   |
+| Ctrl + 0           | Réinitialiser le niveau de zoom             |
 
 ## Écosystème
 

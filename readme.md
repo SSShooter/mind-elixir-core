@@ -191,7 +191,6 @@ let options = {
   el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
   toolBar: true, // default true
-  nodeMenu: true, // default true
   keypress: true, // default true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] waiting for PRs
   overflowHidden: false, // default false

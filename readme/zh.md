@@ -168,7 +168,6 @@ let options = {
   draggable: true, // 默认 true
   contextMenu: true, // 默认 true
   toolBar: true, // 默认 true
-  nodeMenu: true, // 默认 true
   keypress: true, // 默认 true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] 等待 PRs
   overflowHidden: false, // 默认 false
@@ -257,7 +256,6 @@ mind.bus.addListener('operation', operation => {
   // obj: {from:目标1,to:目标2}
 })
 
-
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
 })
@@ -294,7 +292,7 @@ let mind = new MindElixir({
 
 // 使用自定义 markdown 解析器
 let mind = new MindElixir({
-  markdown: (text) => {
+  markdown: text => {
     // 你的自定义 markdown 实现
     return text
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
@@ -306,7 +304,7 @@ let mind = new MindElixir({
 // 使用任何 markdown 库（例如 marked、markdown-it 等）
 import { marked } from 'marked'
 let mind = new MindElixir({
-  markdown: (text) => marked(text),
+  markdown: text => marked(text),
 })
 ```
 

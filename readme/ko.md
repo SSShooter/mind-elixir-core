@@ -145,7 +145,6 @@ let options = {
   draggable: true, // default true
   contextMenu: true, // default true
   toolBar: true, // default true
-  nodeMenu: true, // default true
   keypress: true, // default true
   locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] waiting for PRs
   overflowHidden: false, // default false
@@ -233,7 +232,6 @@ mind.bus.addListener('operation', operation => {
   // name: moveNode
   // obj: {from:target1,to:target2}
 })
-
 
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
@@ -371,25 +369,25 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 
 ## 단축키
 
-| 단축키             | 기능                       |
-| ----------------- | -------------------------- |
-| Enter             | 형제 노드 삽입              |
-| Tab               | 자식 노드 삽입              |
-| F1                | 맵 중앙 정렬                |
-| F2                | 현재 노드 편집 시작          |
-| ↑                 | 이전 형제 노드 선택          |
-| ↓                 | 다음 형제 노드 선택          |
-| ← / →             | 부모 또는 첫 자식 노드 선택   |
-| PageUp / Alt + ↑  | 노드 위로 이동              |
-| PageDown / Alt + ↓| 노드 아래로 이동            |
-| Ctrl + ↑          | 레이아웃을 측면으로 변경     |
-| Ctrl + ←          | 레이아웃을 왼쪽으로 변경     |
-| Ctrl + →          | 레이아웃을 오른쪽으로 변경    |
-| Ctrl + C          | 현재 노드 복사              |
-| Ctrl + V          | 복사된 노드 붙여넣기         |
-| Ctrl + "+"        | 마인드맵 확대               |
-| Ctrl + "-"        | 마인드맵 축소               |
-| Ctrl + 0          | 확대/축소 수준 초기화        |
+| 단축키             | 기능                        |
+| ------------------ | --------------------------- |
+| Enter              | 형제 노드 삽입              |
+| Tab                | 자식 노드 삽입              |
+| F1                 | 맵 중앙 정렬                |
+| F2                 | 현재 노드 편집 시작         |
+| ↑                  | 이전 형제 노드 선택         |
+| ↓                  | 다음 형제 노드 선택         |
+| ← / →              | 부모 또는 첫 자식 노드 선택 |
+| PageUp / Alt + ↑   | 노드 위로 이동              |
+| PageDown / Alt + ↓ | 노드 아래로 이동            |
+| Ctrl + ↑           | 레이아웃을 측면으로 변경    |
+| Ctrl + ←           | 레이아웃을 왼쪽으로 변경    |
+| Ctrl + →           | 레이아웃을 오른쪽으로 변경  |
+| Ctrl + C           | 현재 노드 복사              |
+| Ctrl + V           | 복사된 노드 붙여넣기        |
+| Ctrl + "+"         | 마인드맵 확대               |
+| Ctrl + "-"         | 마인드맵 축소               |
+| Ctrl + 0           | 확대/축소 수준 초기화       |
 
 ## 생태계
 

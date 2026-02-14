@@ -49,7 +49,7 @@ Características:
 - Resumo de nós
 - Suporte a operações em massa
 - Desfazer / Refazer
-- Atalhos eficientes 
+- Atalhos eficientes
 - Estilização fácil dos nós com variáveis CSS
 
 <details>
@@ -145,7 +145,6 @@ let options = {
   draggable: true, // padrão true
   contextMenu: true, // padrão true
   toolBar: true, // padrão true
-  nodeMenu: true, // padrão true
   keypress: true, // padrão true
   locale: 'pt', // [zh_CN,zh_TW,en,ja,pt,ru,ro] aguardando PRs
   overflowHidden: false, // padrão false
@@ -233,7 +232,6 @@ mind.bus.addListener('operation', operation => {
   // name: moveNode
   // obj: {from:alvo1,to:alvo2}
 })
-
 
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
@@ -371,25 +369,25 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 
 ## Atalhos
 
-| Atalho             | Função                            |
-| ------------------ | --------------------------------- |
-| Enter              | Inserir Nó Irmão                  |
-| Tab                | Inserir Nó Filho                  |
-| F1                 | Centralizar o Mapa                |
-| F2                 | Começar a Editar o Nó Atual       |
-| ↑                  | Selecionar o Nó Irmão Anterior    |
-| ↓                  | Selecionar o Próximo Nó Irmão     |
-| ← / →              | Selecionar Pai ou Primeiro Filho  |
-| PageUp / Alt + ↑   | Mover Nó para Cima                |
-| PageDown / Alt + ↓ | Mover Nó para Baixo               |
-| Ctrl + ↑           | Mudar Padrão de Layout para Lado  |
+| Atalho             | Função                               |
+| ------------------ | ------------------------------------ |
+| Enter              | Inserir Nó Irmão                     |
+| Tab                | Inserir Nó Filho                     |
+| F1                 | Centralizar o Mapa                   |
+| F2                 | Começar a Editar o Nó Atual          |
+| ↑                  | Selecionar o Nó Irmão Anterior       |
+| ↓                  | Selecionar o Próximo Nó Irmão        |
+| ← / →              | Selecionar Pai ou Primeiro Filho     |
+| PageUp / Alt + ↑   | Mover Nó para Cima                   |
+| PageDown / Alt + ↓ | Mover Nó para Baixo                  |
+| Ctrl + ↑           | Mudar Padrão de Layout para Lado     |
 | Ctrl + ←           | Mudar Padrão de Layout para Esquerda |
-| Ctrl + →           | Mudar Padrão de Layout para Direita |
-| Ctrl + C           | Copiar o Nó Atual                 |
-| Ctrl + V           | Colar o Nó Copiado                |
-| Ctrl + "+"         | Aumentar Zoom do Mapa Mental      |
-| Ctrl + "-"         | Diminuir Zoom do Mapa Mental      |
-| Ctrl + 0           | Redefinir Nível de Zoom           |
+| Ctrl + →           | Mudar Padrão de Layout para Direita  |
+| Ctrl + C           | Copiar o Nó Atual                    |
+| Ctrl + V           | Colar o Nó Copiado                   |
+| Ctrl + "+"         | Aumentar Zoom do Mapa Mental         |
+| Ctrl + "-"         | Diminuir Zoom do Mapa Mental         |
+| Ctrl + 0           | Redefinir Nível de Zoom              |
 
 ## Ecossistema
 
