@@ -141,7 +141,7 @@ const m2 = new MindElixir({
   theme: MindElixir.DARK_THEME,
   // alignment: 'nodes',
 })
-m2.init(data)
+m2.init(example)
 
 function sleep() {
   return new Promise<void>(res => {

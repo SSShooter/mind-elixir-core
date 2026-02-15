@@ -114,10 +114,10 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
       menuUl.style.bottom = ''
       menuUl.style.left = ''
       menuUl.style.right = ''
-      const rect = menuUl.getBoundingClientRect()
       const height = menuUl.offsetHeight
       const width = menuUl.offsetWidth
-
+      // for transformed container
+      const rect = menuUl.getBoundingClientRect()
       const relativeY = e.clientY - rect.top
       const relativeX = e.clientX - rect.left
 
