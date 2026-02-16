@@ -78,7 +78,7 @@ Apply inline styles using JSON-like syntax:
 
 ```text
 - Root
-  - Styled Node {color: #e87a90}
+  - Styled Node {color: "#e87a90"}
   - Another Node {color: #3298db, background: #ecf0f1}
 ```
 

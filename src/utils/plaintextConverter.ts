@@ -18,19 +18,19 @@ interface ParsedLine {
 
 export const plaintextExample = `- Root Node
   - Child Node 1
-    - Child Node 1-1
+    - Child Node 1-1 {"color": "#e87a90", "fontSize": "18px"}
     - Child Node 1-2
     - Child Node 1-3
     - }:2 Summary of first two nodes
   - Child Node 2
     - Child Node 2-1 [^id1]
     - Child Node 2-2 [^id2]
-    - Child Node 2-3 {color: #e87a90}
+    - Child Node 2-3
     - > [^id1] <-Bidirectional Link-> [^id2]
   - Child Node 3
     - Child Node 3-1 [^id3]
     - Child Node 3-2 [^id4]
-    - Child Node 3-3 [^id5]
+    - Child Node 3-3 [^id5] {"fontFamily": "Arial", "fontWeight": "bold"}
     - > [^id3] >-Unidirectional Link-> [^id4]
     - > [^id3] <-Unidirectional Link-< [^id5]
   - Child Node 4
@@ -49,7 +49,7 @@ export const plaintextExample = `- Root Node
  * - Root node
  *   - Child 1
  *     - Child 1-1 [^id1]
- *     - Child 1-2 {color: #e87a90}
+ *     - Child 1-2 {"color": "#e87a90", "fontSize": "18px", "fontFamily": "Arial"}
  *     - }:2 Summary of first two nodes
  *   - Child 2 [^id2]
  *     - > [^id1] <-label-> [^id2]
@@ -185,6 +185,18 @@ function getIndent(line: string): number {
   return match ? match[1].length : 0
 }
 
+function parseStyleObject(styleStr: string): NodeObj['style'] {
+  try {
+    // Try to parse as JSON (supports both {key: value} and {"key": "value"} formats)
+    // Add curly braces if not present
+    const jsonStr = styleStr.trim().startsWith('{') ? styleStr : `{${styleStr}}`
+    return JSON.parse(jsonStr)
+  } catch {
+    // If JSON parsing fails, return empty object (invalid style will be ignored)
+    return {}
+  }
+}
+
 function parseLine(line: string): ParsedLine {
   const trimmed = line.trim()
 
@@ -221,10 +233,10 @@ function parseLine(line: string): ParsedLine {
     nodeContent = nodeContent.replace(refMatch[0], '').trim()
   }
 
-  // Extract style: {color: #hex}
-  const styleMatch = nodeContent.match(/\{color:\s*(#[0-9a-fA-F]{6})\}/)
+  // Extract style: {color: #hex, fontSize: 16px, fontFamily: Arial, ...}
+  const styleMatch = nodeContent.match(/\{([^}]+)\}/)
   if (styleMatch) {
-    style = { color: styleMatch[1] }
+    style = parseStyleObject(styleMatch[1])
     nodeContent = nodeContent.replace(styleMatch[0], '').trim()
   }
 

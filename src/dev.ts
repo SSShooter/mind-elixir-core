@@ -197,4 +197,5 @@ window.destroy = () => {
 document.querySelector('#ssr')!.innerHTML = renderSSRHTML(layoutSSR(window.m.nodeData))
 
 const convertedData = plaintextToMindElixir(plaintextExample)
+// console.log('convertedData', convertedData)
 // mind.refresh(convertedData)

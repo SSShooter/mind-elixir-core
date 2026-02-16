@@ -25,11 +25,8 @@ npm install mind-elixir
 Create a wrapper component for `mind-elixir` to handle the lifecycle and updates.
 
 ```tsx
-import MindElixir, {
-  type MindElixirData,
-  type MindElixirInstance
-} from "mind-elixir"
-import { useEffect, useRef } from "react"
+import MindElixir, { type MindElixirData, type MindElixirInstance } from 'mind-elixir'
+import { useEffect, useRef } from 'react'
 
 export function MindmapRenderer({ data }: { data: MindElixirData | null }) {
   const elRef = useRef<HTMLDivElement>(null)
@@ -40,13 +37,11 @@ export function MindmapRenderer({ data }: { data: MindElixirData | null }) {
 
     meRef.current = new MindElixir({
       el: elRef.current,
-      direction: MindElixir.RIGHT
+      direction: MindElixir.RIGHT,
     })
 
     // Initial empty state or loading state
-    meRef.current.init(
-      data || { nodeData: { topic: "Loading...", id: "root" } }
-    )
+    meRef.current.init(data || { nodeData: { topic: 'Loading...', id: 'root' } })
 
     return () => {
       // Cleanup if necessary
@@ -61,7 +56,7 @@ export function MindmapRenderer({ data }: { data: MindElixirData | null }) {
     }
   }, [data])
 
-  return <div ref={elRef} style={{ height: "500px", width: "100%" }} />
+  return <div ref={elRef} style={{ height: '500px', width: '100%' }} />
 }
 ```
 
@@ -88,7 +83,7 @@ Mind Elixir supports two main formats:
   - Child Node 2
     - Child Node 2-1 [^id1]
     - Child Node 2-2 [^id2]
-    - Child Node 2-3 {color: #e87a90}
+    - Child Node 2-3 {color: "#e87a90"}
     - > [^id1] <-Bidirectional Link-> [^id2]
   - Child Node 3
     - Child Node 3-1 [^id3]
@@ -110,19 +105,19 @@ Mind Elixir supports two main formats:
 Use `mind-elixir/plaintextConverter` (or a custom parser) to convert text to the Mind Elixir JSON format.
 
 ````typescript
-import { plaintextToMindElixir } from "mind-elixir/plaintextConverter"
+import { plaintextToMindElixir } from 'mind-elixir/plaintextConverter'
 
 // Helper to clean Markdown code blocks if your stream includes them
 function cleanStreamContent(content: string): string {
   return content
-    .replace(/^```[\w]*\n?/gm, "")
-    .replace(/```$/gm, "")
+    .replace(/^```[\w]*\n?/gm, '')
+    .replace(/```$/gm, '')
     .trim()
 }
 
 // State hooks in your parent component
 const [mindmapData, setMindmapData] = useState<MindElixirData | null>(null)
-const accumulatedText = useRef("")
+const accumulatedText = useRef('')
 const lastRenderTime = useRef(0)
 
 // Streaming function (Generic Example)
@@ -160,7 +155,7 @@ function updateMindmap() {
     setMindmapData(data) // This triggers the useEffect in MindmapRenderer
   } catch (e) {
     // Ignore parse errors from incomplete chunks
-    console.warn("Partial parse error ignored")
+    console.warn('Partial parse error ignored')
   }
 }
 ````
