@@ -224,7 +224,8 @@ export default function (mind: MindElixirInstance) {
 
     // Support space + left mouse button drag
     const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
-    const isNormalDrag = (e.button === mouseMoveButton && e.pointerType === 'mouse') || e.pointerType === 'touch'
+    // both button can be used to drag in readonly mode
+    const isNormalDrag = !mind.editable || (e.button === mouseMoveButton && e.pointerType === 'mouse') || e.pointerType === 'touch'
 
     if (!isSpaceDrag && !isNormalDrag) return
 
