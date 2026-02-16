@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.8.2 - 2026-02-16
+
+### Features
+
+- Both buttons can be used to drag in readonly mode
+- Support more styles in plaintext converter
+
 ## 5.8.0 - 2026-02-07
 
 ### Features
