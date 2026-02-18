@@ -4,7 +4,6 @@ import type { Summary } from '../summary'
 
 interface ParseContext {
   arrowLines: { content: string; parentChildren: NodeObj[] }[]
-  summaryLines: { content: string; parentChildren: NodeObj[]; parentId: string }[]
   nodeIdMap: Map<string, string> // maps [^id] to actual node id
 }
 
@@ -39,7 +38,8 @@ export const plaintextExample = `- Root Node
     - Child Node 4-3 [^id8]
     - } Summary of all previous nodes
     - Child Node 4-4
-  - > [^id1] <-Link position is not restricted, as long as the id can be found during rendering-> [^id8]
+- > [^id1] <-Link position is not restricted, as long as the id can be found during rendering-> [^id8]
+
 `
 
 /**
@@ -54,130 +54,106 @@ export const plaintextExample = `- Root Node
  *   - Child 2 [^id2]
  *     - > [^id1] <-label-> [^id2]
  *
+ * When the plaintext contains more than one top-level node, a synthetic root
+ * node is automatically created to wrap them as first-level children.
+ *
  * @param plaintext - The plaintext string to convert
+ * @param rootName - Optional name for the synthetic root node when multiple
+ *   top-level nodes are detected (defaults to 'Root')
  * @returns MindElixirData object
  */
-export function plaintextToMindElixir(plaintext: string): MindElixirData {
+export function plaintextToMindElixir(plaintext: string, rootName = 'Root'): MindElixirData {
   const lines = plaintext.split('\n').filter(line => line.trim())
 
-  const context: ParseContext = {
-    arrowLines: [],
-    summaryLines: [],
-    nodeIdMap: new Map(),
-  }
-
-  // First pass: parse nodes and collect arrows/summaries for later processing
-  const root = parseNode(lines, 0, -2, context)
-
-  if (!root.node) {
+  if (lines.length === 0) {
     throw new Error('Failed to parse plaintext: no root node found')
   }
 
-  // Second pass: process arrows and summaries
+  const context: ParseContext = {
+    arrowLines: [],
+    nodeIdMap: new Map(),
+  }
+
+  const summaries: Summary[] = []
+
+  // Stack tracks the current ancestry path: each entry holds the indent level and the node
+  const stack: { indent: number; node: NodeObj }[] = []
+  // Collect top-level nodes
+  const topLevelNodes: NodeObj[] = []
+
+  // Single pass: iterate through all lines once
+  for (const line of lines) {
+    const indent = getIndent(line)
+    const parsed = parseLine(line)
+
+    // Pop the stack until we find the parent for this indent level
+    while (stack.length > 0 && stack[stack.length - 1].indent >= indent) {
+      stack.pop()
+    }
+
+    const parent = stack.length > 0 ? stack[stack.length - 1].node : null
+    const parentChildren = parent ? (parent.children ??= []) : topLevelNodes
+
+    if (parsed.type === 'arrow') {
+      context.arrowLines.push({
+        content: parsed.content,
+        parentChildren,
+      })
+      continue
+    }
+
+    if (parsed.type === 'summary') {
+      const summary = parseSummary(parsed.content, parentChildren, parent?.id ?? '')
+      if (summary) summaries.push(summary)
+      continue
+    }
+
+    // Create node
+    const nodeId = generateId()
+    const node: NodeObj = {
+      topic: parsed.topic,
+      id: nodeId,
+    }
+
+    if (parsed.style) {
+      node.style = parsed.style
+    }
+
+    if (parsed.refId) {
+      context.nodeIdMap.set(parsed.refId, nodeId)
+    }
+
+    // Attach to parent or top-level
+    parentChildren.push(node)
+
+    // Push onto stack so subsequent deeper lines become children of this node
+    stack.push({ indent, node })
+  }
+
+  if (topLevelNodes.length === 0) {
+    throw new Error('Failed to parse plaintext: no root node found')
+  }
+
+  // If there are multiple top-level nodes, wrap them under a synthetic root
+  let rootNode: NodeObj
+  if (topLevelNodes.length === 1) {
+    rootNode = topLevelNodes[0]
+  } else {
+    rootNode = {
+      topic: rootName,
+      id: generateId(),
+      children: topLevelNodes,
+    }
+  }
+
+  // Process arrows (deferred because they depend on nodeIdMap which is built during the pass)
   const arrows = context.arrowLines.map(({ content }) => parseArrow(content, context)).filter((a): a is Arrow => a !== null)
 
-  const summaries = context.summaryLines
-    .map(({ content, parentChildren, parentId }) => parseSummary(content, parentChildren, parentId))
-    .filter((s): s is Summary => s !== null)
-
   return {
-    nodeData: root.node,
+    nodeData: rootNode,
     arrows: arrows.length > 0 ? arrows : undefined,
     summaries: summaries.length > 0 ? summaries : undefined,
   }
-}
-
-interface ParseResult {
-  node: NodeObj | null
-  nextIndex: number
-}
-
-function parseNode(lines: string[], index: number, parentIndent: number, context: ParseContext): ParseResult {
-  if (index >= lines.length) {
-    return { node: null, nextIndex: index }
-  }
-
-  const line = lines[index]
-  const indent = getIndent(line)
-
-  if (indent <= parentIndent) {
-    return { node: null, nextIndex: index }
-  }
-
-  const parsed = parseLine(line)
-
-  // If this line is an arrow or summary at the current level, we need to handle it
-  // Note: We should only skip arrows/summaries when parsing a child recursively
-  // But when encountered directly, collect them and skip creating a node
-  if (parsed.type === 'arrow' || parsed.type === 'summary') {
-    // We can't add to context here because we don't have the parent's children yet
-    // Just skip and let the parent handle it
-    return { node: null, nextIndex: index + 1 }
-  }
-
-  // Create the node
-  const nodeId = generateId()
-  const node: NodeObj = {
-    topic: parsed.topic,
-    id: nodeId,
-  }
-
-  if (parsed.style) {
-    node.style = parsed.style
-  }
-
-  if (parsed.refId) {
-    context.nodeIdMap.set(parsed.refId, nodeId)
-  }
-
-  // Parse children
-  const children: NodeObj[] = []
-  let currentIndex = index + 1
-
-  while (currentIndex < lines.length) {
-    const childLine = lines[currentIndex]
-    const childIndent = getIndent(childLine)
-
-    // Not a child
-    if (childIndent <= indent) {
-      break
-    }
-
-    // Direct child only
-    if (childIndent === indent + 2) {
-      const childParsed = parseLine(childLine)
-
-      if (childParsed.type === 'arrow') {
-        context.arrowLines.push({
-          content: childParsed.content,
-          parentChildren: children,
-        })
-        currentIndex++
-      } else if (childParsed.type === 'summary') {
-        context.summaryLines.push({
-          content: childParsed.content,
-          parentChildren: children,
-          parentId: nodeId, // Pass parent node ID
-        })
-        currentIndex++
-      } else {
-        const result = parseNode(lines, currentIndex, indent, context)
-        if (result.node) {
-          children.push(result.node)
-        }
-        currentIndex = result.nextIndex
-      }
-    } else {
-      // Skip deeper indented lines (will be handled recursively)
-      currentIndex++
-    }
-  }
-
-  if (children.length > 0) {
-    node.children = children
-  }
-
-  return { node, nextIndex: currentIndex }
 }
 
 function getIndent(line: string): number {

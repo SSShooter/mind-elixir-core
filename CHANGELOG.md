@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.8.3 - 2026-02-18
+
+### Refactors
+
+- Refactor plaintext converter
+
 ## 5.8.2 - 2026-02-16
 
 ### Features
