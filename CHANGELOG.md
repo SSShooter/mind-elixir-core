@@ -1,5 +1,19 @@
 # Changelog
 
+## 5.9.0 - 2026-02-21
+
+### Features
+
+- Add mindElixirToPlaintext
+
+### Bug Fixes
+
+- Fix arrow highlight show repeatedly
+
+### Refactors
+
+- Optimize plaintext converter algorithm
+
 ## 5.8.3 - 2026-02-18
 
 ### Refactors
