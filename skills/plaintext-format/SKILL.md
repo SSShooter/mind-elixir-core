@@ -64,13 +64,11 @@ Create connections between nodes using the `>` prefix and arrow syntax:
   - Node A [^id1]
   - Node B [^id2]
   - > [^id1] >-Forward Link-> [^id2]
-  - > [^id2] <-Backward Link-< [^id1]
 ```
 
 **Formats:**
 
 - Forward: `> [^sourceId] >-Label-> [^targetId]`
-- Backward: `> [^sourceId] <-Label-< [^targetId]`
 
 ### 2.3 Node Styling
 
@@ -78,11 +76,11 @@ Apply inline styles using JSON-like syntax:
 
 ```text
 - Root
-  - Styled Node {color: "#e87a90"}
-  - Another Node {color: #3298db, background: #ecf0f1}
+  - Styled Node {"color": "#e87a90"}
+  - Another Node {"color": "#3298db", "background": "#ecf0f1"}
 ```
 
-**Format:** `{property: value, property2: value2}` at the end of the topic text.
+**Format:** `{"property": "value", "property2": "value2"}` at the end of the topic text.
 
 **Common Properties:**
 
@@ -120,13 +118,13 @@ Create summary nodes that visually group previous siblings:
 ```text
 - Project Planning
   - Phase 1: Research [^phase1]
-    - Market Analysis {color: #3298db}
-    - Competitor Study {color: #3298db}
+    - Market Analysis {"color": "#3298db"}
+    - Competitor Study {"color": "#3298db"}
     - }:2 Research Summary
   - Phase 2: Development [^phase2]
-    - Frontend {color: #2ecc71}
-    - Backend {color: #2ecc71}
-    - Testing {color: #f39c12}
+    - Frontend {"color": "#2ecc71"}
+    - Backend {"color": "#2ecc71"}
+    - Testing {"color": "#f39c12"}
     - } Development Summary
   - Phase 3: Launch [^phase3]
     - Marketing
@@ -256,16 +254,15 @@ function safeParse(plaintext: string): MindElixirData | null {
 
 ## 7. Format Specification Summary
 
-| Feature            | Syntax                      | Example                    |
-| ------------------ | --------------------------- | -------------------------- |
-| Node               | `- Topic`                   | `- My Node`                |
-| Node with ID       | `- Topic [^id]`             | `- Node A [^id1]`          |
-| Node with Style    | `- Topic {prop: value}`     | `- Node {color: #ff0000}`  |
-| Bidirectional Link | `> [^id1] <-Label-> [^id2]` | `> [^a] <-connects-> [^b]` |
-| Forward Link       | `> [^id1] >-Label-> [^id2]` | `> [^a] >-leads to-> [^b]` |
-| Backward Link      | `> [^id1] <-Label-< [^id2]` | `> [^a] <-from-< [^b]`     |
-| Summary (all)      | `} Summary text`            | `} Overview`               |
-| Summary (N nodes)  | `}:N Summary text`          | `}:3 Last three items`     |
+| Feature            | Syntax                      | Example                       |
+| ------------------ | --------------------------- | ----------------------------- |
+| Node               | `- Topic`                   | `- My Node`                   |
+| Node with ID       | `- Topic [^id]`             | `- Node A [^id1]`             |
+| Node with Style    | `- Topic {"prop": "value"}` | `- Node {"color": "#ff0000"}` |
+| Bidirectional Link | `> [^id1] <-Label-> [^id2]` | `> [^a] <-connects-> [^b]`    |
+| Forward Link       | `> [^id1] >-Label-> [^id2]` | `> [^a] >-leads to-> [^b]`    |
+| Summary (all)      | `} Summary text`            | `} Overview`                  |
+| Summary (N nodes)  | `}:N Summary text`          | `}:3 Last three items`        |
 
 ## 8. TypeScript Types
 
