@@ -202,5 +202,3 @@ mind.refresh(convertedData)
 
 const plaintext = mindElixirToPlaintext(mind.getData())
 console.log('plaintext', plaintext)
-
-// TODO: 编辑中的arrow再次点击会出现重复的高亮

@@ -51,6 +51,8 @@ export default function (mind: MindElixirInstance) {
 
   // Helper: Handle SVG label interactions (click or double-click)
   const handleSvgLabelInteraction = (target: HTMLElement, isDoubleClick: boolean): boolean => {
+    if (target.id === 'input-box' || target.closest('#input-box')) return false
+
     const label = target.closest('.svg-label') as HTMLElement
     if (label) {
       const id = label.dataset.svgId!
