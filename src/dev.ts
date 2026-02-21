@@ -14,7 +14,7 @@ import { marked } from 'marked'
 import { md2html } from 'simple-markdown-to-html'
 import type { Arrow } from './arrow'
 import type { Summary } from './summary'
-import { plaintextExample, plaintextToMindElixir } from './utils/plaintextConverter'
+import { mindElixirToPlaintext, plaintextExample, plaintextToMindElixir } from './utils/plaintextConverter'
 
 interface Window {
   m?: MindElixirInstance
@@ -197,5 +197,10 @@ window.destroy = () => {
 document.querySelector('#ssr')!.innerHTML = renderSSRHTML(layoutSSR(window.m.nodeData))
 
 const convertedData = plaintextToMindElixir(plaintextExample)
-// console.log('convertedData', convertedData)
-// mind.refresh(convertedData)
+console.log('convertedData', convertedData)
+mind.refresh(convertedData)
+
+const plaintext = mindElixirToPlaintext(mind.getData())
+console.log('plaintext', plaintext)
+
+// TODO: 编辑中的arrow再次点击会出现重复的高亮

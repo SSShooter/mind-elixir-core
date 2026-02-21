@@ -198,7 +198,7 @@ export interface TagObj {
  *
  * @public
  */
-export interface NodeObj {
+export interface NodeObj<M = unknown> {
   topic: string
   id: Uid
   style?: Partial<{
@@ -243,6 +243,10 @@ export interface NodeObj {
    * Extra data for the node, which can be used to store any custom data.
    */
   note?: string
+  /**
+   * Generic metadata for the node, can be used to store any custom data.
+   */
+  metadata?: M
   // TODO: checkbox
   // checkbox?: boolean | undefined
 }

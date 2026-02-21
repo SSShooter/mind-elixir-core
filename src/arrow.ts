@@ -33,7 +33,7 @@ export interface ArrowStyle {
   labelColor?: string
 }
 
-export interface Arrow {
+export interface Arrow<M = unknown> {
   id: string
   /**
    * label of arrow
@@ -69,6 +69,10 @@ export interface Arrow {
    * style properties for the arrow
    */
   style?: ArrowStyle
+  /**
+   * Generic metadata for the arrow, can be used to store any custom data.
+   */
+  metadata?: M
 }
 export interface DivData {
   cx: number // center x
