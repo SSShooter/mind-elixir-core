@@ -5,7 +5,6 @@ import { encodeHTML, getOffsetLT } from '../utils/index'
 import { layoutChildren } from './layout'
 
 // DOM manipulation
-const $d = document
 export const findEle = function (this: MindElixirInstance, id: string, el?: HTMLElement) {
   const scope = this?.el ? this.el : el ? el : document
   const ele = scope.querySelector<Topic>(`[data-nodeid="me${id}"]`)
@@ -32,7 +31,7 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
   if (nodeObj.image) {
     const img = nodeObj.image
     if (img.url && img.width && img.height) {
-      const imgEl = $d.createElement('img')
+      const imgEl = document.createElement('img')
       // Use imageProxy function if provided, otherwise use original URL
       imgEl.src = this.imageProxy ? this.imageProxy(img.url) : img.url
       imgEl.style.width = img.width + 'px'
@@ -48,7 +47,7 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
   }
 
   {
-    const textEl = $d.createElement('span')
+    const textEl = document.createElement('span')
     textEl.className = 'text'
 
     // Check if markdown parser is provided and topic contains markdown syntax
@@ -63,7 +62,7 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
   }
 
   if (nodeObj.hyperLink) {
-    const linkEl = $d.createElement('a')
+    const linkEl = document.createElement('a')
     linkEl.className = 'hyper-link'
     linkEl.target = '_blank'
     linkEl.innerText = '🔗'
@@ -75,7 +74,7 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
   }
 
   if (nodeObj.icons && nodeObj.icons.length) {
-    const iconsEl = $d.createElement('span')
+    const iconsEl = document.createElement('span')
     iconsEl.className = 'icons'
     iconsEl.innerHTML = nodeObj.icons.map(icon => `<span>${encodeHTML(icon)}</span>`).join('')
     tpc.appendChild(iconsEl)
@@ -85,11 +84,11 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
   }
 
   if (nodeObj.tags && nodeObj.tags.length) {
-    const tagsEl = $d.createElement('div')
+    const tagsEl = document.createElement('div')
     tagsEl.className = 'tags'
 
     nodeObj.tags.forEach(tag => {
-      const span = $d.createElement('span')
+      const span = document.createElement('span')
 
       if (typeof tag === 'string') {
         span.textContent = tag
@@ -115,7 +114,7 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
 
 // everything start from `Wrapper`
 export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean) {
-  const grp = $d.createElement('me-wrapper') as Wrapper
+  const grp = document.createElement('me-wrapper') as Wrapper
   const { p, tpc } = this.createParent(nodeObj)
   grp.appendChild(p)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
@@ -131,7 +130,7 @@ export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeOb
 }
 
 export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj) {
-  const p = $d.createElement('me-parent') as Parent
+  const p = document.createElement('me-parent') as Parent
   const tpc = this.createTopic(nodeObj)
   shapeTpc.call(this, tpc, nodeObj)
   p.appendChild(tpc)
@@ -139,20 +138,20 @@ export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj
 }
 
 export const createChildren = function (this: MindElixirInstance, wrappers: Wrapper[]) {
-  const children = $d.createElement('me-children') as Children
+  const children = document.createElement('me-children') as Children
   children.append(...wrappers)
   return children
 }
 
 export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj) {
-  const topic = $d.createElement('me-tpc') as Topic
+  const topic = document.createElement('me-tpc') as Topic
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   return topic
 }
 
 export function selectText(div: HTMLElement) {
-  const range = $d.createRange()
+  const range = document.createRange()
   range.selectNodeContents(div)
   const getSelection = window.getSelection()
   if (getSelection) {
@@ -164,7 +163,7 @@ export function selectText(div: HTMLElement) {
 export const editTopic = function (this: MindElixirInstance, el: Topic) {
   console.time('editTopic')
   if (!el) return
-  const div = $d.createElement('div')
+  const div = document.createElement('div')
   const node = el.nodeObj
 
   // Get the original content from topic
@@ -240,7 +239,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
 }
 
 export const createExpander = function (expanded: boolean | undefined): Expander {
-  const expander = $d.createElement('me-epd') as Expander
+  const expander = document.createElement('me-epd') as Expander
   // if expanded is undefined, treat as expanded
   expander.expanded = expanded !== false
   expander.className = expanded !== false ? 'minus' : ''

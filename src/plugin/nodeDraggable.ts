@@ -3,8 +3,6 @@ import type { MindElixirInstance } from '../types/index'
 
 export type InsertType = 'before' | 'after' | 'in' | null
 
-const $d = document
-
 export const insertPreview = function (tpc: Topic, insertType: InsertType) {
   if (!insertType) {
     clearPreview(tpc)
@@ -13,7 +11,7 @@ export const insertPreview = function (tpc: Topic, insertType: InsertType) {
   let el = tpc.querySelector('.insert-preview')
   const className = `insert-preview ${insertType} show`
   if (!el) {
-    el = $d.createElement('div')
+    el = document.createElement('div')
     tpc.appendChild(el)
   }
   el.className = className
@@ -207,7 +205,7 @@ export function handleNodeDragMove(mind: MindElixirInstance, state: NodeDragStat
 
   // Check for drop target
   // minus threshold infers that position of the cursor is above topic
-  const topMeet = $d.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
+  const topMeet = document.elementFromPoint(e.clientX, e.clientY - threshold) as Topic
   if (canMove(topMeet, dragged)) {
     state.meet = topMeet
     const rect = topMeet.getBoundingClientRect()
@@ -218,7 +216,7 @@ export function handleNodeDragMove(mind: MindElixirInstance, state: NodeDragStat
       state.insertType = 'in'
     }
   } else {
-    const bottomMeet = $d.elementFromPoint(e.clientX, e.clientY + threshold) as Topic
+    const bottomMeet = document.elementFromPoint(e.clientX, e.clientY + threshold) as Topic
     if (canMove(bottomMeet, dragged)) {
       state.meet = bottomMeet
       const rect = bottomMeet.getBoundingClientRect()

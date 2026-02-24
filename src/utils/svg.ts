@@ -5,7 +5,6 @@ import type { MindElixirInstance } from '../types'
 import type { CustomSvg } from '../types/dom'
 import { selectText } from './dom'
 
-const $d = document
 export const svgNS = 'http://www.w3.org/2000/svg'
 
 export interface SvgTextOptions {
@@ -85,7 +84,7 @@ export const findLabelBySvgId = function (svgId: string): HTMLDivElement | null 
 }
 
 export const createPath = function (d: string, color: string, width: string) {
-  const path = $d.createElementNS(svgNS, 'path')
+  const path = document.createElementNS(svgNS, 'path')
   setAttributes(path, {
     d,
     stroke: color || '#666',
@@ -96,14 +95,14 @@ export const createPath = function (d: string, color: string, width: string) {
 }
 
 export const createLinkSvg = function (klass: string) {
-  const svg = $d.createElementNS(svgNS, 'svg')
+  const svg = document.createElementNS(svgNS, 'svg')
   svg.setAttribute('class', klass)
   svg.setAttribute('overflow', 'visible')
   return svg
 }
 
 export const createLine = function () {
-  const line = $d.createElementNS(svgNS, 'line')
+  const line = document.createElementNS(svgNS, 'line')
   line.setAttribute('stroke', '#4dc4ff')
   line.setAttribute('fill', 'none')
   line.setAttribute('stroke-width', '2')
@@ -123,7 +122,7 @@ export const createArrowGroup = function (
     opacity?: string | number
   }
 ): CustomSvg {
-  const g = $d.createElementNS(svgNS, 'g') as CustomSvg
+  const g = document.createElementNS(svgNS, 'g') as CustomSvg
   const svgs = [
     {
       name: 'line',
@@ -140,7 +139,7 @@ export const createArrowGroup = function (
   ] as const
   svgs.forEach((item, i) => {
     const d = item.d
-    const path = $d.createElementNS(svgNS, 'path')
+    const path = document.createElementNS(svgNS, 'path')
     const attrs: { [key: string]: string } = {
       d,
       stroke: style?.stroke || 'rgb(227, 125, 116)',
@@ -160,7 +159,7 @@ export const createArrowGroup = function (
       path.setAttribute('stroke-dasharray', style?.strokeDasharray || '8,2')
     }
 
-    const hotzone = $d.createElementNS(svgNS, 'path')
+    const hotzone = document.createElementNS(svgNS, 'path')
     const hotzoneAttrs = {
       d,
       stroke: 'transparent',

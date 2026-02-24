@@ -3,8 +3,6 @@ import type { Children } from '../types/dom'
 import { DirectionClass, type MindElixirInstance, type NodeObj } from '../types/index'
 import { shapeTpc } from './dom'
 
-const $d = document
-
 // Set main nodes' direction and invoke layoutChildren()
 export const layout = function (this: MindElixirInstance) {
   console.time('layout')
@@ -13,7 +11,7 @@ export const layout = function (this: MindElixirInstance) {
   const tpc = this.createTopic(this.nodeData)
   shapeTpc.call(this, tpc, this.nodeData) // shape root tpc
   tpc.draggable = false
-  const root = $d.createElement('me-root')
+  const root = document.createElement('me-root')
   root.appendChild(tpc)
 
   const mainNodes = this.nodeData.children || []
@@ -42,9 +40,9 @@ export const layout = function (this: MindElixirInstance) {
 }
 
 const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root: HTMLElement) {
-  const leftPart = $d.createElement('me-main')
+  const leftPart = document.createElement('me-main')
   leftPart.className = DirectionClass.LHS
-  const rightPart = $d.createElement('me-main')
+  const rightPart = document.createElement('me-main')
   rightPart.className = DirectionClass.RHS
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
@@ -71,7 +69,7 @@ const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root:
 }
 
 export const layoutChildren = function (mei: MindElixirInstance, data: NodeObj[]) {
-  const chldr = $d.createElement('me-children') as Children
+  const chldr = document.createElement('me-children') as Children
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
     const { grp } = mei.createWrapper(nodeObj)

@@ -14,7 +14,6 @@ import { createDragMoveHelper } from './utils/dragMoveHelper'
 import type { Topic } from './docs'
 
 // TODO show up animation
-const $d = document
 
 function MindElixir(
   this: MindElixirInstance,
@@ -87,7 +86,7 @@ function MindElixir(
   this.dragMoveHelper = createDragMoveHelper(this)
   this.bus = createBus()
 
-  this.container = $d.createElement('div') // map container
+  this.container = document.createElement('div') // map container
   this.selectionContainer = selectionContainer || this.container
 
   this.container.className = 'map-container'
@@ -96,21 +95,21 @@ function MindElixir(
   this.theme = theme || (mediaQuery.matches ? DARK_THEME : THEME)
 
   // infrastructure
-  const canvas = $d.createElement('div') // map-canvas Element
+  const canvas = document.createElement('div') // map-canvas Element
   canvas.className = 'map-canvas'
   this.map = canvas
   this.container.setAttribute('tabindex', '0')
   this.container.appendChild(this.map)
   this.el.appendChild(this.container)
 
-  this.nodes = $d.createElement('me-nodes')
+  this.nodes = document.createElement('me-nodes')
 
   this.lines = createLinkSvg('lines') // main link container
   this.summarySvg = createLinkSvg('summary') // summary container
 
   this.linkController = createLinkSvg('linkcontroller') // bezier controller container
-  this.P2 = $d.createElement('div') // bezier P2
-  this.P3 = $d.createElement('div') // bezier P3
+  this.P2 = document.createElement('div') // bezier P2
+  this.P3 = document.createElement('div') // bezier P3
   this.P2.className = this.P3.className = 'circle'
   this.P2.style.display = this.P3.style.display = 'none'
   this.line1 = createLine() // bezier auxiliary line1
@@ -119,7 +118,7 @@ function MindElixir(
   this.linkController.appendChild(this.line2)
   this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
 
-  this.labelContainer = $d.createElement('div') // container for SVG labels
+  this.labelContainer = document.createElement('div') // container for SVG labels
   this.labelContainer.className = 'label-container'
 
   this.map.appendChild(this.nodes)
