@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.9.1 - 2026-02-24
+
+### Features
+
+- Improve pinch gesture ux
+
+### Refactors
+
+- Remove top-level scope document to avoid immediate errors in SSR applications
+
 ## 5.9.0 - 2026-02-21
 
 ### Features

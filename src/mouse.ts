@@ -267,24 +267,14 @@ export default function (mind: MindElixirInstance) {
         if (lastDistance == null) {
           lastDistance = newDistance
         } else {
-          const delta = newDistance - lastDistance
-          const THRESHOLD = 8
-
-          if (Math.abs(delta) > THRESHOLD) {
-            if (delta > 0) {
-              handleZoom(mind, 'in', {
-                x: (p1.x + p2.x) / 2,
-                y: (p1.y + p2.y) / 2,
-              })
-            } else {
-              handleZoom(mind, 'out', {
-                x: (p1.x + p2.x) / 2,
-                y: (p1.y + p2.y) / 2,
-              })
-            }
-
-            lastDistance = newDistance
+          if (lastDistance > 0) {
+            const scaleRatio = newDistance / lastDistance
+            mind.scale(mind.scaleVal * scaleRatio, {
+              x: (p1.x + p2.x) / 2,
+              y: (p1.y + p2.y) / 2,
+            })
           }
+          lastDistance = newDistance
         }
         return
       }
