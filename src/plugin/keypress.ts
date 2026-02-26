@@ -6,12 +6,9 @@ import { setExpand, unionTopics } from '../utils'
 
 const COPY_MAGIC = 'MIND-ELIXIR-WAIT-COPY'
 
-const selectRootLeft = (mei: MindElixirInstance) => {
-  const tpcs = mei.map.querySelectorAll('.lhs>me-wrapper>me-parent>me-tpc')
-  mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
-}
-const selectRootRight = (mei: MindElixirInstance) => {
-  const tpcs = mei.map.querySelectorAll('.rhs>me-wrapper>me-parent>me-tpc')
+const selectRootSide = (mei: MindElixirInstance, direction: DirectionClass) => {
+  const tpcs = mei.map.querySelectorAll(`.${direction}>me-wrapper>me-parent>me-tpc`)
+  if (tpcs.length === 0) return
   mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
 }
 const selectRoot = (mei: MindElixirInstance) => {
@@ -37,7 +34,7 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionC
   const nodeObj = current.nodeObj
   const main = current.offsetParent.offsetParent.parentElement
   if (!nodeObj.parent) {
-    direction === DirectionClass.LHS ? selectRootLeft(mei) : selectRootRight(mei)
+    selectRootSide(mei, direction)
   } else if (main.className === direction) {
     selectFirstChild(mei, current)
   } else {

@@ -217,8 +217,8 @@ export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
 }
 
 export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
-  if (tpcs.length === 0) return
   tpcs = unionTopics(tpcs)
+  if (tpcs.length === 0) return
   for (const tpc of tpcs) {
     const nodeObj = tpc.nodeObj
     const siblingLength = removeNodeObj(nodeObj)
@@ -227,7 +227,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   const last = tpcs[tpcs.length - 1]
   this.selectNode(this.findEle(last.nodeObj.parent!.id))
   this.linkDiv()
-  // 删除关注的是删除后选择的节点，所以先选择节点再触发 removeNodes 事件可以在事件中通过 currentNodes 获取之后选择的节点
+  // 删除关注的是删除后选择的节点，所以先选择节点，再触发 removeNodes 事件可以在事件中通过 currentNodes 获取之后选择的节点
   this.bus.fire('operation', {
     name: 'removeNodes',
     objs: tpcs.map(tpc => tpc.nodeObj),
