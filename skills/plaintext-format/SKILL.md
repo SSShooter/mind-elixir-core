@@ -5,7 +5,7 @@ description: Guide for understanding and converting Mind Elixir plaintext format
 
 # Mind Elixir Plaintext Format
 
-This skill explains the Mind Elixir plaintext format specification and how to convert it to the Mind Elixir JSON data structure. The plaintext format is ideal for human editing, AI generation, and streaming scenarios.
+This skill explains the Mind Elixir plaintext format specification and how to convert between it and the Mind Elixir JSON data structure. The plaintext format is ideal for human editing, AI generation, and streaming scenarios.
 
 ## 1. Format Overview
 
@@ -133,11 +133,11 @@ Create summary nodes that visually group previous siblings:
   - > [^phase2] >-Leads to-> [^phase3]
 ```
 
-## 3. Converting Plaintext to Mind Elixir Data
+## 3. Conversion API
 
-### 3.1 Using the Built-in Converter
+### 3.1 Plaintext to Mind Elixir Data
 
-Mind Elixir provides a built-in converter for plaintext format:
+Mind Elixir provides a built-in converter for plaintext parsing:
 
 ```javascript
 import { plaintextToMindElixir } from 'mind-elixir/plaintextConverter'
@@ -152,7 +152,19 @@ const mindElixirData = plaintextToMindElixir(plaintext)
 // Returns MindElixirData object ready for mind.init() or mind.refresh()
 ```
 
-### 3.2 Integration Example
+### 3.2 Mind Elixir Data to Plaintext
+
+You can also convert an existing mind map back to the plaintext format, which is useful for exporting and saving data:
+
+```javascript
+import { mindElixirToPlaintext } from 'mind-elixir/plaintextConverter'
+
+const mindElixirData = mind.getAllData()
+const plaintext = mindElixirToPlaintext(mindElixirData)
+// Returns a string containing the mind map in plaintext format
+```
+
+### 3.3 Integration Example
 
 ```javascript
 import MindElixir from 'mind-elixir'
@@ -269,6 +281,7 @@ function safeParse(plaintext: string): MindElixirData | null {
 ```typescript
 import type { MindElixirData, NodeObj } from 'mind-elixir'
 
-// Converter function type
+// Converter functions
 function plaintextToMindElixir(plaintext: string): MindElixirData
+function mindElixirToPlaintext(data: MindElixirData): string
 ```

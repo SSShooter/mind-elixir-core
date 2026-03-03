@@ -79,14 +79,10 @@ Use `npx skills add` to install guides to your project:
 **Integration Guide**:
 
 ```bash
-npx skills add https://github.com/ssshooter/mind-elixir-core/blob/master/skills/integrate-mind-elixir
+npx skills add ssshooter/mind-elixir-core
 ```
 
-**Other Skills**:
-
-- [Customize Markdown](skills/customize-markdown/SKILL.md): `npx skills add https://github.com/ssshooter/mind-elixir-core/blob/master/skills/customize-markdown`
-- [Export as Image](skills/export-mindmap-image/SKILL.md): `npx skills add https://github.com/ssshooter/mind-elixir-core/blob/master/skills/export-mindmap-image`
-- [Streaming Mindmap](skills/streaming-mindmap/SKILL.md): `npx skills add https://github.com/ssshooter/mind-elixir-core/blob/master/skills/streaming-mindmap`
+![mind elixir skills](./images/skills.jpg)
 
 <details>
 <summary>Table of Contents</summary>
