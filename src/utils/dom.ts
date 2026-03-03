@@ -216,7 +216,8 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   div.addEventListener('blur', () => {
     if (!div) return
     div.remove()
-    const inputContent = div.textContent?.trim() || ''
+    // NOTE: Do not use textContent here. Safari requires innerText to properly map <br> tags to \n line breaks for editable content.
+    const inputContent = div.innerText?.trim() || ''
     if (inputContent === originalContent || inputContent === '') return
 
     // Update topic content

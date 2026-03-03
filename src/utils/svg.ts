@@ -212,7 +212,8 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
 
   div.addEventListener('blur', () => {
     if (!div) return
-    const text = div.textContent?.trim() || ''
+    // NOTE: Do not use textContent here. Safari requires innerText to properly map <br> tags to \n line breaks for editable content.
+    const text = div.innerText?.trim() || ''
     if (text === '') node.label = origin
     else node.label = text
     div.remove()
