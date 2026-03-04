@@ -41,6 +41,7 @@ export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewN
   this.clearSelection()
   this.scrollIntoView(tpc)
   this.selection?.select(tpc)
+  this.map.focus()
   if (isNewNode) {
     this.bus.fire('selectNewNode', tpc.nodeObj)
   }
