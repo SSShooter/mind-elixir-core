@@ -46,6 +46,18 @@ test('Clear and reset', async ({ page, me }) => {
   await me.toHaveScreenshot()
 })
 
+test('ESC cancels edit and discards changes', async ({ page, me }) => {
+  await me.dblclick(topic)
+  await expect(page.locator('#input-box')).toBeVisible()
+  await page.keyboard.insertText('changes to discard')
+  await page.keyboard.press('Escape')
+  await expect(page.locator('#input-box')).toBeHidden()
+  // Original topic text is preserved
+  await expect(page.getByText(topic)).toBeVisible()
+  // Node should remain selected
+  await expect(page.locator('.selected')).toHaveText(topic)
+})
+
 test('Remove Node', async ({ page, me }) => {
   await me.click(childTopic)
   await page.keyboard.press('Delete')
