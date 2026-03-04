@@ -214,6 +214,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
       e.preventDefault()
       div.blur()
       this.selectNode(el)
+      this.container.focus()
     }
   })
 
