@@ -210,6 +210,10 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
       e.preventDefault()
       div.blur()
       this.container.focus()
+    } else if (key === 'Escape') {
+      e.preventDefault()
+      div.blur()
+      this.selectNode(el)
     }
   })
 
