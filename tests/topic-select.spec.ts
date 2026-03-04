@@ -49,7 +49,27 @@ test.beforeEach(async ({ me }) => {
   await me.init(data)
 })
 
-test('Select Sibling', async ({ page, me }) => {
+test('Keyboard shortcuts work immediately after clicking a node when map is unfocused', async ({ page, me }) => {
+  // Blur the map container to simulate the window not having focus
+  await page.evaluate(() => {
+    const container = document.querySelector('.map-container') as HTMLElement
+    container.blur()
+  })
+  // Verify the map container lost focus
+  const isFocused = await page.evaluate(() => document.activeElement?.classList.contains('map-container'))
+  expect(isFocused).toBe(false)
+
+  // Click a node to select it - this should focus the map container
+  await me.click('child1')
+
+  // Verify the map container has focus after selecting a node
+  const isNowFocused = await page.evaluate(() => document.activeElement?.classList.contains('map-container'))
+  expect(isNowFocused).toBe(true)
+
+  // Press Delete immediately - should work without needing an additional click
+  await page.keyboard.press('Delete')
+  await expect(page.getByText('child1')).toBeHidden()
+})
   await me.click('child2')
   await page.keyboard.press('ArrowUp')
   await expect(page.locator('.selected')).toHaveText('child1')
