@@ -262,6 +262,8 @@
   me-tpc {
     display: block;
     max-width: 35em;
+    // allow shift enter to wrap text.
+    // but in markdown mode, it may cause unexpected behavior.
     white-space: pre-wrap;
     pointer-events: all;
     & > * {
