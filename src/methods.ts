@@ -86,10 +86,8 @@ const methods = {
     if (import.meta.env.MODE !== 'lite') {
       this.keypress && keypressInit(this, this.keypress)
 
-      if (this.editable) {
-        selection(this)
-        this.disposable.push(nodeDraggable(this))
-      }
+      selection(this)
+      this.disposable.push(nodeDraggable(this))
       if (this.contextMenu) {
         this.disposable.push(contextMenu(this, this.contextMenu))
       }

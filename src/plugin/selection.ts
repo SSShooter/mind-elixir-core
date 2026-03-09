@@ -25,6 +25,7 @@ export default function (mei: MindElixirInstance) {
     },
   })
     .on('beforestart', ({ event }) => {
+      if (!mei.editable) return false
       if (mei.spacePressed) return false
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false

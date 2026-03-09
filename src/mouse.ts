@@ -20,8 +20,8 @@ export default function (mind: MindElixirInstance) {
   let lastDistance: number | null = null
   const activePointers = new Map<number, { x: number; y: number }>()
 
-  // Node drag state - only initialize if draggable is enabled
-  const nodeDragState = mind.editable ? createNodeDragState(mind) : null
+  // Node drag state - always initialize
+  const nodeDragState = createNodeDragState(mind)
 
   // Long press state for touch devices
   let longPressTimer: number | null = null
@@ -190,7 +190,7 @@ export default function (mind: MindElixirInstance) {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
 
     // Handle node dragging with left button or touch (only for topics)
-    if (nodeDragState && (e.button === 0 || e.pointerType === 'touch')) {
+    if (mind.editable && nodeDragState && (e.button === 0 || e.pointerType === 'touch')) {
       // For touch, only start drag with single finger
       if (e.pointerType === 'touch' && activePointers.size > 1) {
         // Cancel any ongoing drag if second finger touches
