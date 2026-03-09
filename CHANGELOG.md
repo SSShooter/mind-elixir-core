@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.9.3 - 2026-03-09
+
+### Features
+
+- Support `Esc` key to exit node editing
+
+### Bug Fixes
+
+- Support dynamically toggling drag and selection features
+
 ## 5.9.2 - 2026-03-03
 
 ### Bug Fixes
