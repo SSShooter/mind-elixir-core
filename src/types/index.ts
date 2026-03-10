@@ -121,6 +121,13 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   history: Operation[]
   undo: () => void
   redo: () => void
+  /**
+   * Reset the undo/redo stack and update the internal baseline snapshot to the
+   * current diagram state. Call this after loading new data into an existing
+   * instance (e.g. after `refresh()`) to prevent users from undoing back into
+   * a previously loaded diagram.
+   */
+  clearHistory: () => void
 
   selection: SelectionArea
   dragMoveHelper: ReturnType<typeof createDragMoveHelper>
