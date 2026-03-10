@@ -92,6 +92,7 @@ export default function (mei: MindElixirInstance) {
     history = []
     currentIndex = -1
     current = mei.getData()
+    currentSelectedNodes = []
   }
   const handleOperation = function (operation: Operation) {
     if (operation.name === 'beginEdit') return
