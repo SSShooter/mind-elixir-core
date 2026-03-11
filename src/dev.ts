@@ -15,6 +15,7 @@ import { md2html } from 'simple-markdown-to-html'
 import type { Arrow } from './arrow'
 import type { Summary } from './summary'
 import { mindElixirToPlaintext, plaintextExample, plaintextToMindElixir } from './utils/plaintextConverter'
+import { en } from './i18n'
 
 interface Window {
   m?: MindElixirInstance
@@ -34,7 +35,6 @@ const E = MindElixir.E
 const options: Options = {
   el: '#map',
   newTopicName: '子节点',
-  locale: 'en',
   // mouseSelectionButton: 2,
   editable: true,
   markdown: (text: string, obj: (NodeObj & { useMd?: boolean }) | (Arrow & { useMd?: boolean }) | (Summary & { useMd?: boolean })) => {
@@ -82,6 +82,7 @@ const options: Options = {
   // To disable markdown, simply omit the markdown option or set it to undefined
   // if you set contextMenu to false, you should handle contextmenu event by yourself, e.g. preventDefault
   contextMenu: {
+    locale: en,
     focus: true,
     link: true,
     extend: [

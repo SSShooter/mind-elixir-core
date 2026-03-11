@@ -20,7 +20,6 @@ function MindElixir(
   {
     el,
     direction,
-    locale,
     editable,
     contextMenu,
     toolBar,
@@ -58,7 +57,6 @@ function MindElixir(
   this.el = ele as HTMLElement
   this.disposable = []
   this.before = before || {}
-  this.locale = locale || 'en'
   this.newTopicName = newTopicName || 'New Node'
   this.contextMenu = contextMenu ?? true
   this.toolBar = toolBar ?? true

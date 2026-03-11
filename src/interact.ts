@@ -1,4 +1,3 @@
-import type { Locale } from './i18n'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
@@ -334,17 +333,6 @@ export const initSide = function (this: MindElixirInstance) {
   this.refresh()
   this.toCenter()
   this.bus.fire('changeDirection', this.direction)
-}
-
-/**
- * @function
- * @instance
- * @name setLocale
- * @memberof MapInteraction
- */
-export const setLocale = function (this: MindElixirInstance, locale: Locale) {
-  this.locale = locale
-  this.refresh()
 }
 
 export const expandNode = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {

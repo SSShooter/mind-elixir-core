@@ -1,9 +1,10 @@
-import i18n from '../i18n'
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
 import './contextMenu.less'
 import type { ArrowOptions } from '../arrow'
+import type { LangPack } from '../i18n'
+import { en } from '../i18n'
 
 export type ContextMenuOption = {
   focus?: boolean
@@ -13,16 +14,16 @@ export type ContextMenuOption = {
     key?: string
     onclick: (e: MouseEvent) => void
   }[]
+  locale?: LangPack
 }
 
 export default function (mind: MindElixirInstance, option: true | ContextMenuOption) {
-  option =
-    option === true
-      ? {
-          focus: true,
-          link: true,
-        }
-      : option
+  const defaultOption = {
+    focus: true,
+    link: true,
+    locale: en,
+  }
+  option = option === true ? defaultOption : Object.assign(defaultOption, option)
   const createTips = (words: string) => {
     const div = document.createElement('div')
     div.innerText = words
@@ -35,8 +36,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
     li.innerHTML = `<span>${encodeHTML(name)}</span><span ${keyname ? 'class="key"' : ''}>${encodeHTML(keyname)}</span>`
     return li
   }
-  const locale = i18n[mind.locale] ? mind.locale : 'en'
-  const lang = i18n[locale]
+  const lang = option.locale!
   const add_child = createLi('cm-add_child', lang.addChild, 'Tab')
   const add_parent = createLi('cm-add_parent', lang.addParent, 'Ctrl + Enter')
   const add_sibling = createLi('cm-add_sibling', lang.addSibling, 'Enter')

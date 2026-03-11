@@ -4,7 +4,7 @@ import type { MindElixirMethods } from './methods'
 import type { Summary, SummarySvgGroup } from './summary'
 import type { MindElixirData, MindElixirInstance, NodeObj, NodeObjExport, Options, Theme, TagObj } from './types'
 import type { MainLineParams, SubLineParams } from './utils/generateBranch'
-import type { Locale } from './i18n'
+import type { LangPack } from './i18n'
 export {
   methods,
   Theme,
@@ -19,7 +19,7 @@ export {
   Arrow,
   MainLineParams,
   SubLineParams,
-  Locale,
+  LangPack,
   TagObj,
 }
 
