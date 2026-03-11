@@ -179,3 +179,93 @@ export const ro: LangPack = {
   clickTips: 'Click pe nodul țintă',
   summary: 'Rezumat',
 }
+
+export const da: LangPack = {
+  addChild: 'Tilføj barn',
+  addParent: 'Tilføj forælder',
+  addSibling: 'Tilføj søskende',
+  removeNode: 'Fjern node',
+  focus: 'Fokus-tilstand',
+  cancelFocus: 'Annuller fokus-tilstand',
+  moveUp: 'Flyt op',
+  moveDown: 'Flyt ned',
+  link: 'Link',
+  linkBidirectional: 'To-vejs link',
+  clickTips: 'Klik på målknuden',
+  summary: 'Resumé',
+}
+
+export const fi: LangPack = {
+  addChild: 'Lisää lapsi',
+  addParent: 'Lisää vanhempi',
+  addSibling: 'Lisää sisarus',
+  removeNode: 'Poista solmu',
+  focus: 'Kohdistustila',
+  cancelFocus: 'Peruuta kohdistustila',
+  moveUp: 'Siirrä ylös',
+  moveDown: 'Siirrä alas',
+  link: 'Linkki',
+  linkBidirectional: 'Kaksisuuntainen linkki',
+  clickTips: 'Klikkaa kohdesolmua',
+  summary: 'Yhteenveto',
+}
+
+export const de: LangPack = {
+  addChild: 'Kind hinzufügen',
+  addParent: 'Eltern hinzufügen',
+  addSibling: 'Geschwister hinzufügen',
+  removeNode: 'Knoten entfernen',
+  focus: 'Fokusmodus',
+  cancelFocus: 'Fokusmodus abbrechen',
+  moveUp: 'Nach oben verschieben',
+  moveDown: 'Nach unten verschieben',
+  link: 'Link',
+  linkBidirectional: 'Zweiseitiger Link',
+  clickTips: 'Bitte klicken Sie auf den Zielknoten',
+  summary: 'Zusammenfassung',
+}
+
+export const nl: LangPack = {
+  addChild: 'Kind toevoegen',
+  addParent: 'Ouder toevoegen',
+  addSibling: 'Broer/Zus toevoegen',
+  removeNode: 'Knoop verwijderen',
+  focus: 'Focusmodus',
+  cancelFocus: 'Focusmodus annuleren',
+  moveUp: 'Omhoog verplaatsen',
+  moveDown: 'Omlaag verplaatsen',
+  link: 'Link',
+  linkBidirectional: 'Bidirectionele link',
+  clickTips: 'Klik op de doelknoop',
+  summary: 'Samenvatting',
+}
+
+export const nb: LangPack = {
+  addChild: 'Legg til barn',
+  addParent: 'Legg til forelder',
+  addSibling: 'Legg til søsken',
+  removeNode: 'Fjern node',
+  focus: 'Fokusmodus',
+  cancelFocus: 'Avbryt fokusmodus',
+  moveUp: 'Flytt opp',
+  moveDown: 'Flytt ned',
+  link: 'Lenke',
+  linkBidirectional: 'Toveis lenke',
+  clickTips: 'Klikk på målnoden',
+  summary: 'Sammendrag',
+}
+
+export const sv: LangPack = {
+  addChild: 'Lägg till barn',
+  addParent: 'Lägg till förälder',
+  addSibling: 'Lägg till syskon',
+  removeNode: 'Ta bort nod',
+  focus: 'Fokusläge',
+  cancelFocus: 'Avbryt fokusläge',
+  moveUp: 'Flytta upp',
+  moveDown: 'Flytta ner',
+  link: 'Länk',
+  linkBidirectional: 'Tvåvägslänk',
+  clickTips: 'Klicka på målnoden',
+  summary: 'Sammanfattning',
+}
