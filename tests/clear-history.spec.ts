@@ -4,9 +4,7 @@ const diagramA = {
   nodeData: {
     id: 'root-a',
     topic: 'Diagram A',
-    children: [
-      { id: 'child-a', topic: 'Child A' },
-    ],
+    children: [{ id: 'child-a', topic: 'Child A' }],
   },
 }
 
@@ -14,9 +12,7 @@ const diagramB = {
   nodeData: {
     id: 'root-b',
     topic: 'Diagram B',
-    children: [
-      { id: 'child-b', topic: 'Child B' },
-    ],
+    children: [{ id: 'child-b', topic: 'Child B' }],
   },
 }
 
@@ -24,25 +20,24 @@ test.beforeEach(async ({ me }) => {
   await me.init(diagramA)
 })
 
-test('clearHistory - undo cannot revert into the pre-refresh diagram', async ({ page, me }) => {
+test('clearHistory - undo cannot revert into pre-refresh diagram', async ({ page, me }) => {
   // Perform an operation in Diagram A
   await me.click('Child A')
   await page.keyboard.press('Tab')
   await page.keyboard.press('Enter')
   await expect(me.getByText('New Node')).toBeVisible()
 
-  // Load a new diagram and clear the history
-  await page.evaluate(data => {
+  // Load Diagram B and clear the history stack
+  await page.evaluate((data: typeof diagramB) => {
     const mind = (window as any)['#map']
     mind.refresh(data)
     mind.clearHistory()
   }, diagramB)
 
-  // Diagram B should now be shown
   await expect(me.getByText('Diagram B')).toBeVisible()
   await expect(me.getByText('Diagram A')).toBeHidden()
 
-  // Undo should NOT travel back into Diagram A
+  // Undo should be a no-op — must not travel back into Diagram A
   await page.keyboard.press('Control+z')
   await expect(me.getByText('Diagram B')).toBeVisible()
   await expect(me.getByText('Diagram A')).toBeHidden()
@@ -54,18 +49,20 @@ test('clearHistory - undo cannot revert into the pre-refresh diagram', async ({ 
 })
 
 test('clearHistory - operations after clearHistory are undoable normally', async ({ page, me }) => {
-  // Perform an operation in Diagram A then load Diagram B and clear history
+  // Perform an operation in Diagram A, then switch to Diagram B and clear history
   await me.click('Child A')
   await page.keyboard.press('Delete')
   await expect(me.getByText('Child A')).toBeHidden()
 
-  await page.evaluate(data => {
+  await page.evaluate((data: typeof diagramB) => {
     const mind = (window as any)['#map']
     mind.refresh(data)
     mind.clearHistory()
   }, diagramB)
 
-  // Now add a node to Diagram B
+  await expect(me.getByText('Diagram B')).toBeVisible()
+
+  // Add a node to Diagram B
   await me.click('Child B')
   await page.keyboard.press('Tab')
   await page.keyboard.press('Enter')
@@ -74,32 +71,33 @@ test('clearHistory - operations after clearHistory are undoable normally', async
   // Undo the add — should work
   await page.keyboard.press('Control+z')
   await expect(me.getByText('New Node')).toBeHidden()
+  await expect(me.getByText('Diagram B')).toBeVisible()
 
-  // Redo the add — should also work
-  await page.keyboard.press('Control+y')
-  await expect(me.getByText('New Node')).toBeVisible()
-
-  // One more undo should be a no-op (no history before the cleared point)
-  await page.keyboard.press('Control+z') // undo add
-  await page.keyboard.press('Control+z') // should be no-op, not reach Diagram A
+  // Another undo should be a no-op — must not reach Diagram A
+  await page.keyboard.press('Control+z')
   await expect(me.getByText('Diagram B')).toBeVisible()
   await expect(me.getByText('Diagram A')).toBeHidden()
+
+  // Redo restores the added node
+  await page.keyboard.press('Control+y')
+  await expect(me.getByText('New Node')).toBeVisible()
 })
 
 test('clearHistory - first undo baseline is the refreshed diagram state', async ({ page, me }) => {
-  // Load Diagram B, clear history, then add a node and undo
-  await page.evaluate(data => {
+  // Switch to Diagram B and clear history
+  await page.evaluate((data: typeof diagramB) => {
     const mind = (window as any)['#map']
     mind.refresh(data)
     mind.clearHistory()
   }, diagramB)
 
+  // Add a node to Diagram B
   await me.click('Child B')
   await page.keyboard.press('Tab')
   await page.keyboard.press('Enter')
   await expect(me.getByText('New Node')).toBeVisible()
 
-  // Undo restores exactly to the state right after refresh (Diagram B with just Child B)
+  // Undo should restore exactly to the post-refresh state of Diagram B
   await page.keyboard.press('Control+z')
   await expect(me.getByText('New Node')).toBeHidden()
   await expect(me.getByText('Child B')).toBeVisible()
