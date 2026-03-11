@@ -88,6 +88,12 @@ export default function (mei: MindElixirInstance) {
       }
     }
   }
+  mei.clearHistory = function () {
+    history = []
+    currentIndex = -1
+    current = mei.getData()
+    mei.clearSelection()
+  }
   const handleOperation = function (operation: Operation) {
     if (operation.name === 'beginEdit') return
     history = history.slice(0, currentIndex + 1)
