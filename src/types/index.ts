@@ -146,7 +146,7 @@ export interface Options {
   /**
    * @deprecated Use `contextMenu.locale` instead.
    */
-  locale?: LangPack
+  locale?: string
   /**
    * @deprecated Use `editable` instead
    */

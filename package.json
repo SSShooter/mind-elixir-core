@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "5.9.3",
+  "version": "5.10.0-beta.1",
   "type": "module",
   "description": "Mind elixir is a free open source mind map core.",
   "keywords": [
@@ -28,21 +28,18 @@
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "import": "./dist/MindElixir.js",
-      "require": "./dist/MindElixir.js"
+      "import": "./dist/MindElixir.js"
     },
     "./lite": {
       "import": "./dist/MindElixirLite.iife.js"
     },
     "./example": {
       "types": "./dist/types/exampleData/1.d.ts",
-      "import": "./dist/example.js",
-      "require": "./dist/example.js"
+      "import": "./dist/example.js"
     },
     "./LayoutSsr": {
       "types": "./dist/types/utils/LayoutSsr.d.ts",
-      "import": "./dist/LayoutSsr.js",
-      "require": "./dist/LayoutSsr.js"
+      "import": "./dist/LayoutSsr.js"
     },
     "./readme.md": "./readme.md",
     "./package.json": "./package.json",
@@ -51,13 +48,10 @@
     "./plaintextConverter": {
       "types": "./dist/types/utils/plaintextConverter.d.ts",
       "import": "./dist/PlaintextConverter.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "example": [
-        "./dist/types/exampleData/1.d.ts"
-      ]
+    },
+    "./i18n": {
+      "types": "./dist/types/i18n.d.ts",
+      "import": "./dist/i18n.js"
     }
   },
   "main": "dist/MindElixir.js",

@@ -30,6 +30,11 @@ const buildList = [
     enrty: __dirname + './src/utils/plaintextConverter.ts',
     formats: ['es'],
   },
+  {
+    name: 'i18n',
+    enrty: __dirname + './src/i18n.ts',
+    formats: ['es'],
+  },
 ]
 for (let i = 0; i < buildList.length; i++) {
   const info = buildList[i]
