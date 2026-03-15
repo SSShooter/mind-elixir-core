@@ -10,7 +10,6 @@
     "visualization"
   ],
   "scripts": {
-    "prepare": "husky install",
     "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,json,ts}\" --fix",
     "dev": "vite",
     "build": "node build.js && tsc",
