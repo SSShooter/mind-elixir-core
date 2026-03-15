@@ -56,6 +56,7 @@ Import and initialize Mind Elixir in your JavaScript/TypeScript file.
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import { en } from 'mind-elixir/i18n'
 import 'mind-elixir/style.css'
 
 // 1. Define options
@@ -64,11 +65,28 @@ let options = {
   direction: MindElixir.LEFT,
   toolBar: true, // default true
   keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro]
   overflowHidden: false, // default false
-  mainLinkStyle: 2, // [1,2] default 1
-  mouseSelectionButton: 0, // 0 for left button, 2 for right button
-  contextMenu: true, // default true
+  mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
+  contextMenu: {
+    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv]
+    focus: true,
+    link: true,
+    extend: [
+      {
+        name: 'Node edit',
+        onclick: () => {
+          alert('extend menu')
+        },
+      },
+    ],
+  }, // default true
+  before: {
+    insertSibling(type, obj) {
+      return true
+    },
+  },
+  // Custom markdown parser (optional)
+  // markdown: (text) => customMarkdownParser(text), // provide your own markdown parser function
 }
 
 // 2. Create instance
@@ -183,14 +201,20 @@ const options = {
   // ...
   theme: {
     name: 'Dark',
-    palette: ['#848FA0', '#748BE9', '#D2F9FE'], // colors for main lines
+    // main lines color palette
+    palette: ['#848FA0', '#748BE9', '#D2F9FE', '#4145A5', '#789AFA', '#706CF4', '#EF987F', '#775DD5', '#FCEECF', '#DA7FBC'],
+    // overwrite css variables
     cssVar: {
       '--main-color': '#ffffff',
       '--main-bgcolor': '#4c4f69',
       '--color': '#cccccc',
       '--bgcolor': '#252526',
+      '--panel-color': '255, 255, 255',
+      '--panel-bgcolor': '45, 55, 72',
     },
+    // all variables see /src/index.less
   },
+  // ...
 }
 ```
 
@@ -199,10 +223,12 @@ Change theme dynamically:
 ```javascript
 mind.changeTheme({
   name: 'Latte',
-  palette: ['#dd7878', '#ea76cb'],
+  palette: ['#dd7878', '#ea76cb', '#8839ef', '#e64553', '#fe640b', '#df8e1d', '#40a02b', '#209fb5', '#1e66f5', '#7287fd'],
   cssVar: {
     '--main-color': '#444446',
-    // ...
+    '--main-bgcolor': '#ffffff',
+    '--color': '#777777',
+    '--bgcolor': '#f6f6f6',
   },
 })
 ```
