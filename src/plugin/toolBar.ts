@@ -79,7 +79,7 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
   }
 
   mind.el.addEventListener('fullscreenchange', handleFullscreenChange)
-  fc.onclick = () => {
+  const handleFullscreenClick = () => {
     recordCurrentState()
     if (document.fullscreenElement !== mind.el) {
       mind.el.requestFullscreen()
@@ -87,6 +87,7 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
       document.exitFullscreen()
     }
   }
+  fc.onclick = handleFullscreenClick
 
   // There is an unresolvable issue here: when users exit fullscreen using the ESC key,
   // the browser doesn't provide an opportunity to call recordCurrentState,
@@ -94,16 +95,33 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
   // Although this could be implemented by periodic calculations or listening to move/zoom events, it's too complex.
   // After weighing the options, we've decided not to implement it for now.
 
-  gc.onclick = () => {
+  const handleToCenterClick = () => {
     mind.toCenter()
   }
-  zo.onclick = () => {
+  gc.onclick = handleToCenterClick
+  const handleZoomOutClick = () => {
     mind.scale(mind.scaleVal - mind.scaleSensitivity)
   }
-  zi.onclick = () => {
+  zo.onclick = handleZoomOutClick
+  const handleZoomInClick = () => {
     mind.scale(mind.scaleVal + mind.scaleSensitivity)
   }
-  return toolBarRBContainer
+  zi.onclick = handleZoomInClick
+
+  let disposed = false
+  const dispose = () => {
+    if (disposed) return
+    disposed = true
+
+    mind.el.removeEventListener('fullscreenchange', handleFullscreenChange)
+    fc.onclick = null
+    gc.onclick = null
+    zo.onclick = null
+    zi.onclick = null
+    toolBarRBContainer.remove()
+  }
+
+  return { container: toolBarRBContainer, dispose }
 }
 function createToolBarLTContainer(mind: MindElixirInstance) {
   const toolBarLTContainer = document.createElement('div')
@@ -115,19 +133,48 @@ function createToolBarLTContainer(mind: MindElixirInstance) {
   toolBarLTContainer.appendChild(r)
   toolBarLTContainer.appendChild(s)
   toolBarLTContainer.className = 'mind-elixir-toolbar lt'
-  l.onclick = () => {
+  const handleLeftClick = () => {
     mind.initLeft()
   }
-  r.onclick = () => {
+  l.onclick = handleLeftClick
+  const handleRightClick = () => {
     mind.initRight()
   }
-  s.onclick = () => {
+  r.onclick = handleRightClick
+  const handleSideClick = () => {
     mind.initSide()
   }
-  return toolBarLTContainer
+  s.onclick = handleSideClick
+
+  let disposed = false
+  const dispose = () => {
+    if (disposed) return
+    disposed = true
+
+    l.onclick = null
+    r.onclick = null
+    s.onclick = null
+    toolBarLTContainer.remove()
+  }
+
+  return { container: toolBarLTContainer, dispose }
 }
 
 export default function (mind: MindElixirInstance) {
-  mind.container.append(createToolBarRBContainer(mind))
-  mind.container.append(createToolBarLTContainer(mind))
+  mind.toolBarCleanup?.()
+
+  const rb = createToolBarRBContainer(mind)
+  const lt = createToolBarLTContainer(mind)
+  const cleanup = () => {
+    rb.dispose()
+    lt.dispose()
+    if (mind.toolBarCleanup === cleanup) {
+      mind.toolBarCleanup = undefined
+    }
+  }
+
+  mind.toolBarCleanup = cleanup
+  mind.disposable.push(cleanup)
+  mind.container.append(rb.container)
+  mind.container.append(lt.container)
 }

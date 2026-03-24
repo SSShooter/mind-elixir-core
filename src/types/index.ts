@@ -124,6 +124,10 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
 
   selection: SelectionArea
   dragMoveHelper: ReturnType<typeof createDragMoveHelper>
+  /**
+   * @internal
+   */
+  toolBarCleanup?: () => void
 }
 type PathString = string
 /**
