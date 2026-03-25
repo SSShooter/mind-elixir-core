@@ -161,7 +161,12 @@ function createToolBarLTContainer(mind: MindElixirInstance) {
 }
 
 export default function (mind: MindElixirInstance) {
-  mind.toolBarCleanup?.()
+  const oldCleanup = mind.toolBarCleanup
+  if (oldCleanup) {
+    oldCleanup()
+    const i = mind.disposable.indexOf(oldCleanup)
+    if (i > -1) mind.disposable.splice(i, 1)
+  }
 
   const rb = createToolBarRBContainer(mind)
   const lt = createToolBarLTContainer(mind)
