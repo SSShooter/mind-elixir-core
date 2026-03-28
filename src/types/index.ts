@@ -5,7 +5,7 @@ import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
 import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
-import type { Locale } from '../i18n'
+import type { LangPack } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
 import type { createDragMoveHelper } from '../utils/dragMoveHelper'
 import type SelectionArea from '../viselect/src'
@@ -143,7 +143,10 @@ type PathString = string
 export interface Options {
   el: string | HTMLElement
   direction?: 0 | 1 | 2
-  locale?: Locale
+  /**
+   * @deprecated Use `contextMenu.locale` instead.
+   */
+  locale?: string
   /**
    * @deprecated Use `editable` instead
    */

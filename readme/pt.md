@@ -137,20 +137,19 @@ E no seu arquivo CSS:
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import { pt } from 'mind-elixir/i18n'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // ou HTMLDivElement
   direction: MindElixir.LEFT,
   draggable: true, // padrão true
-  contextMenu: true, // padrão true
   toolBar: true, // padrão true
   keypress: true, // padrão true
-  locale: 'pt', // [zh_CN,zh_TW,en,ja,pt,ru,ro] aguardando PRs
   overflowHidden: false, // padrão false
-  mainLinkStyle: 2, // [1,2] padrão 1
   mouseSelectionButton: 0, // 0 para botão esquerdo, 2 para botão direito, padrão 0
-  contextMenuOption: {
+  contextMenu: {
+    locale: pt,
     focus: true,
     link: true,
     extend: [

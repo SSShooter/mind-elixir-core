@@ -160,6 +160,7 @@ CSSファイルに追加：
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import { ja } from 'mind-elixir/i18n'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
@@ -169,11 +170,10 @@ let options = {
   contextMenu: true, // デフォルトはtrue
   toolBar: true, // デフォルトはtrue
   keypress: true, // デフォルトはtrue
-  locale: 'ja', // [zh_CN,zh_TW,en,ja,pt,ru,ro] PRs募集中
   overflowHidden: false, // デフォルトはfalse
-  mainLinkStyle: 2, // [1,2] デフォルトは1
   mouseSelectionButton: 0, // 0は左クリック、2は右クリック、デフォルトは0
-  contextMenuOption: {
+  contextMenu: {
+    locale: ja,
     focus: true,
     link: true,
     extend: [

@@ -160,6 +160,7 @@ import MindElixir from 'mind-elixir'
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import { en } from 'mind-elixir/i18n'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
@@ -169,11 +170,10 @@ let options = {
   contextMenu: true, // 默认 true
   toolBar: true, // 默认 true
   keypress: true, // 默认 true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] 等待 PRs
   overflowHidden: false, // 默认 false
-  mainLinkStyle: 2, // [1,2] 默认 1
   mouseSelectionButton: 0, // 0 为左键，2 为右键，默认 0
   contextMenuOption: {
+    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv]
     focus: true,
     link: true,
     extend: [

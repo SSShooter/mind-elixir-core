@@ -137,6 +137,7 @@ Et dans votre fichier CSS :
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import { fr } from 'mind-elixir/i18n'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
@@ -146,11 +147,10 @@ let options = {
   contextMenu: true, // par défaut true
   toolBar: true, // par défaut true
   keypress: true, // par défaut true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] en attente de PRs
   overflowHidden: false, // par défaut false
-  mainLinkStyle: 2, // [1,2] par défaut 1
   mouseSelectionButton: 0, // 0 pour le bouton gauche, 2 pour le bouton droit, par défaut 0
-  contextMenuOption: {
+  contextMenu: {
+    locale: fr,
     focus: true,
     link: true,
     extend: [

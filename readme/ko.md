@@ -137,20 +137,18 @@ import MindElixir from 'mind-elixir'
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import { ko } from 'mind-elixir/i18n'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
   draggable: true, // default true
-  contextMenu: true, // default true
-  toolBar: true, // default true
   keypress: true, // default true
-  locale: 'en', // [zh_CN,zh_TW,en,ja,pt,ru,ro] waiting for PRs
   overflowHidden: false, // default false
-  mainLinkStyle: 2, // [1,2] default 1
   mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
-  contextMenuOption: {
+  contextMenu: {
+    locale: ko,
     focus: true,
     link: true,
     extend: [
