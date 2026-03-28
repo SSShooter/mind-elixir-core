@@ -245,34 +245,48 @@ function parseLine(line: string): ParsedLine {
 }
 
 function parseArrow(content: string, context: ParseContext): Arrow | null {
-  // Bidirectional: [^id1] <-label-> [^id2]
-  const bidirectionalMatch = content.match(/\[\^([\w-]+)\]\s*<-([^-]*)->\s*\[\^([\w-]+)\]/)
+  // Bidirectional: [^id1] (x,y) <-label-> (x,y) [^id2]
+  const bidirectionalMatch = content.match(
+    /\[\^([\w-]+)\](?:\s*\(([\d.-]+),([\d.-]+)\))?\s*<-([^-]*)->(?:\s*\(([\d.-]+),([\d.-]+)\))?\s*\[\^([\w-]+)\]/
+  )
   if (bidirectionalMatch) {
     const fromRefId = bidirectionalMatch[1]
-    const label = bidirectionalMatch[2].trim()
-    const toRefId = bidirectionalMatch[3]
+    const d1x = bidirectionalMatch[2]
+    const d1y = bidirectionalMatch[3]
+    const label = bidirectionalMatch[4].trim()
+    const d2x = bidirectionalMatch[5]
+    const d2y = bidirectionalMatch[6]
+    const toRefId = bidirectionalMatch[7]
 
     return {
       id: generateUUID(),
       label,
       from: context.nodeIdMap.get(fromRefId) || fromRefId,
       to: context.nodeIdMap.get(toRefId) || toRefId,
+      delta1: d1x && d1y ? { x: Number(d1x), y: Number(d1y) } : undefined,
+      delta2: d2x && d2y ? { x: Number(d2x), y: Number(d2y) } : undefined,
       bidirectional: true,
     } as Arrow
   }
 
-  // Forward: [^id1] >-label-> [^id2]
-  const forwardMatch = content.match(/\[\^([\w-]+)\]\s*>-([^-]*)->\s*\[\^([\w-]+)\]/)
+  // Forward: [^id1] (x,y) >-label-> (x,y) [^id2]
+  const forwardMatch = content.match(/\[\^([\w-]+)\](?:\s*\(([\d.-]+),([\d.-]+)\))?\s*>-([^-]*)->(?:\s*\(([\d.-]+),([\d.-]+)\))?\s*\[\^([\w-]+)\]/)
   if (forwardMatch) {
     const fromRefId = forwardMatch[1]
-    const label = forwardMatch[2].trim()
-    const toRefId = forwardMatch[3]
+    const d1x = forwardMatch[2]
+    const d1y = forwardMatch[3]
+    const label = forwardMatch[4].trim()
+    const d2x = forwardMatch[5]
+    const d2y = forwardMatch[6]
+    const toRefId = forwardMatch[7]
 
     return {
       id: generateUUID(),
       label,
       from: context.nodeIdMap.get(fromRefId) || fromRefId,
       to: context.nodeIdMap.get(toRefId) || toRefId,
+      delta1: d1x && d1y ? { x: Number(d1x), y: Number(d1y) } : undefined,
+      delta2: d2x && d2y ? { x: Number(d2x), y: Number(d2y) } : undefined,
     } as Arrow
   }
 

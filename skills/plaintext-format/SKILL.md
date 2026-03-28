@@ -52,10 +52,16 @@ Create connections between nodes using the `>` prefix and arrow syntax:
 - Root
   - Node A [^id1]
   - Node B [^id2]
-  - > [^id1] <-Link Label-> [^id2]
+  - > [^id1] (10,20) <-Link Label-> (-10,-20) [^id2]
 ```
 
-**Format:** `> [^sourceId] <-Label-> [^targetId]`
+**Format:** `> [^sourceId] (delta1X,delta1Y) <-Label-> (delta2X,delta2Y) [^targetId]`
+
+- `(delta1X,delta1Y)`: Offset of the control point from the **start** node.
+- `(delta2X,delta2Y)`: Offset of the control point from the **end** node.
+
+> [!TIP]
+> **Optional Coordinates**: When manually writing or generating plaintext (e.g., via AI), you can **omit** the `(x,y)` coordinates. Mind Elixir will automatically calculate default balanced offsets when rendering. However, when you export data back to plaintext, these coordinates will be included to preserve any manual adjustments made in the UI.
 
 #### Unidirectional Links
 
@@ -129,7 +135,7 @@ Create summary nodes that visually group previous siblings:
   - Phase 3: Launch [^phase3]
     - Marketing
     - Deployment
-  - > [^phase1] >-Leads to-> [^phase2]
+  - > [^phase1] (50,0) >-Leads to-> (-50,0) [^phase2]
   - > [^phase2] >-Leads to-> [^phase3]
 ```
 
@@ -271,8 +277,8 @@ function safeParse(plaintext: string): MindElixirData | null {
 | Node               | `- Topic`                   | `- My Node`                   |
 | Node with ID       | `- Topic [^id]`             | `- Node A [^id1]`             |
 | Node with Style    | `- Topic {"prop": "value"}` | `- Node {"color": "#ff0000"}` |
-| Bidirectional Link | `> [^id1] <-Label-> [^id2]` | `> [^a] <-connects-> [^b]`    |
-| Forward Link       | `> [^id1] >-Label-> [^id2]` | `> [^a] >-leads to-> [^b]`    |
+| Bidirectional Link | `> [^id1] (x,y) <-Label-> (x,y) [^id2]` | `> [^a] (10,20) <-connects-> (-10,-20) [^b]` |
+| Forward Link       | `> [^id1] (x,y) >-Label-> (x,y) [^id2]` | `> [^a] (10,20) >-leads to-> (-10,-20) [^b]` |
 | Summary (all)      | `} Summary text`            | `} Overview`                  |
 | Summary (N nodes)  | `}:N Summary text`          | `}:3 Last three items`        |
 

@@ -109,7 +109,9 @@ export function mindElixirToPlaintext(data: MindElixirData): string {
         if (el.type === 'arrow') {
           const a = el.arrow
           const connector = a.bidirectional ? `<-${a.label ?? ''}->` : `>-${a.label ?? ''}->`
-          lines.push(`${childIndent}- > [^${getRefId(a.from)}] ${connector} [^${getRefId(a.to)}]`)
+          const d1 = a.delta1 ? ` (${a.delta1.x},${a.delta1.y})` : ''
+          const d2 = a.delta2 ? ` (${a.delta2.x},${a.delta2.y})` : ''
+          lines.push(`${childIndent}- > [^${getRefId(a.from)}]${d1} ${connector}${d2} [^${getRefId(a.to)}]`)
         } else if (el.type === 'summary') {
           const s = el.summary
           const count = s.end - s.start + 1
@@ -129,7 +131,9 @@ export function mindElixirToPlaintext(data: MindElixirData): string {
   // Emit root-level arrows
   for (const a of rootArrows) {
     const connector = a.bidirectional ? `<-${a.label ?? ''}->` : `>-${a.label ?? ''}->`
-    lines.push(`- > [^${getRefId(a.from)}] ${connector} [^${getRefId(a.to)}]`)
+    const d1 = a.delta1 ? ` (${a.delta1.x},${a.delta1.y})` : ''
+    const d2 = a.delta2 ? ` (${a.delta2.x},${a.delta2.y})` : ''
+    lines.push(`- > [^${getRefId(a.from)}]${d1} ${connector}${d2} [^${getRefId(a.to)}]`)
   }
 
   return lines.join('\n') + '\n'
