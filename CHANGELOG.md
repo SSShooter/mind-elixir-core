@@ -1,5 +1,18 @@
 # Changelog
 
+## 5.10.0 - 2026-03-29
+
+### Breaking Changes
+
+- **i18n**: The `locale` option has moved from the top-level `Options` to `contextMenu.locale`.
+  - The top-level `Options.locale` now only accepts a language code (`string`) and is **deprecated**.
+  - To provide custom translations or set the language, use `contextMenu: { locale: LangPack }`.
+  - Predefined language packs (like `en`, `zh_CN`) are now available via the new `i18n` export.
+
+### Features
+
+- Support preserving arrow delta coordinates (x,y) in plaintext converter
+
 ## 5.9.3 - 2026-03-09
 
 ### Features
