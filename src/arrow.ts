@@ -337,7 +337,10 @@ const calculateDefaultDeltas = function (mei: MindElixirInstance, from: Topic, t
     delta2 = { x: toEdgeOffsetX - offsetX, y: toEdgeOffsetY - offsetY }
   }
 
-  return { delta1, delta2 }
+  return {
+    delta1: { x: Math.round(delta1.x), y: Math.round(delta1.y) },
+    delta2: { x: Math.round(delta2.x), y: Math.round(delta2.y) },
+  }
 }
 
 /**
@@ -583,8 +586,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
     updateControlLine(line1, p1x, p1y, p2x, p2y)
 
-    linkItem.delta1!.x = p2x - fromData.cx
-    linkItem.delta1!.y = p2y - fromData.cy
+    linkItem.delta1!.x = Math.round(p2x - fromData.cx)
+    linkItem.delta1!.y = Math.round(p2y - fromData.cy)
 
     bus.fire('updateArrowDelta', linkItem)
   })
@@ -603,8 +606,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
     updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
     updateControlLine(line2, p3x, p3y, p4x, p4y)
 
-    linkItem.delta2!.x = p3x - toData.cx
-    linkItem.delta2!.y = p3y - toData.cy
+    linkItem.delta2!.x = Math.round(p3x - toData.cx)
+    linkItem.delta2!.y = Math.round(p3y - toData.cy)
 
     bus.fire('updateArrowDelta', linkItem)
   })
