@@ -90,7 +90,7 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
     mei.selectNode(current)
   }
 }
-export const handleZoom = function (mei: MindElixirInstance, direction: 'in' | 'out', offset?: ZoomOffset) {
+export const handleKeypressZoom = function (mei: MindElixirInstance, direction: 'in' | 'out', offset?: ZoomOffset) {
   const scaleDelta = direction === 'in' ? mei.scaleSensitivity : -mei.scaleSensitivity
   applyScaleDelta(mei, scaleDelta, offset)
 }
@@ -103,10 +103,7 @@ export const handleWheelZoom = (mei: MindElixirInstance, e: WheelEvent) => {
     viewportHeight: mei.container.clientHeight || window.innerHeight,
   })
 
-  applyScaleDelta(mei, scaleDelta, {
-    x: e.clientX,
-    y: e.clientY,
-  })
+  applyScaleDelta(mei, scaleDelta, { x: e.clientX, y: e.clientY })
 }
 
 export default function (mind: MindElixirInstance, options: boolean | KeypressOptions) {
@@ -213,12 +210,12 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     },
     '=': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        handleZoom(mind, 'in')
+        handleKeypressZoom(mind, 'in')
       }
     },
     '-': (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
-        handleZoom(mind, 'out')
+        handleKeypressZoom(mind, 'out')
       }
     },
     '0': (e: KeyboardEvent) => {
