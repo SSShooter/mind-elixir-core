@@ -1,4 +1,3 @@
-import { handleZoom } from './plugin/keypress'
 import {
   createNodeDragState,
   handleNodeDragStart,
@@ -7,6 +6,7 @@ import {
   handleNodeDragCancel,
   updateGhostPosition,
 } from './plugin/nodeDraggable'
+import { handleWheelZoom } from './plugin/keypress'
 import type { SummarySvgGroup } from './summary'
 import type { Expander, CustomSvg, Topic } from './types/dom'
 import type { MindElixirInstance } from './types/index'
@@ -389,14 +389,9 @@ export default function (mind: MindElixirInstance) {
   const handleWheel = (e: WheelEvent) => {
     e.stopPropagation()
     e.preventDefault()
-    if (e.ctrlKey || e.metaKey) {
-      if (e.deltaY < 0) handleZoom(mind, 'in', mind.dragMoveHelper)
-      else if (mind.scaleVal - mind.scaleSensitivity > 0) handleZoom(mind, 'out', mind.dragMoveHelper)
-    } else if (e.shiftKey) {
-      mind.move(-e.deltaY, 0)
-    } else {
-      mind.move(-e.deltaX, -e.deltaY)
-    }
+    if (e.ctrlKey || e.metaKey) return handleWheelZoom(mind, e)
+    if (e.shiftKey) return mind.move(-e.deltaY, 0)
+    mind.move(-e.deltaX, -e.deltaY)
   }
 
   const { container } = mind
