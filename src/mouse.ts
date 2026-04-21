@@ -92,9 +92,9 @@ export default function (mind: MindElixirInstance) {
     return false
   }
 
-  const handleClick = (e: MouseEvent) => {
+  const handleSingleClick = (e: PointerEvent) => {
     // Only handle primary button clicks
-    if (e.button !== 0) return
+    if (e.pointerType === 'mouse' && e.button !== 0) return
     if (mind.helper1?.moved) {
       mind.helper1.clear()
       return
@@ -132,28 +132,15 @@ export default function (mind: MindElixirInstance) {
     handleSvgLabelInteraction(target, false)
   }
 
-  const handleDblClick = (e: MouseEvent) => {
+  const handleDoubleClick = (e: PointerEvent) => {
     if (!mind.editable) return
     const target = e.target as HTMLElement
-    console.log('handleDblClick', target)
     if (isTopic(target)) {
       mind.beginEdit(target)
     }
 
     // Handle SVG label interactions
     handleSvgLabelInteraction(target, true)
-  }
-
-  const handleTouchDblClick = (e: PointerEvent) => {
-    if (e.pointerType === 'mouse') return
-    if (activePointers.size > 1) return
-    const currentTime = new Date().getTime()
-    const tapLength = currentTime - lastTap
-    if (tapLength < 300 && tapLength > 0) {
-      handleDblClick(e)
-    }
-
-    lastTap = currentTime
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -329,6 +316,21 @@ export default function (mind: MindElixirInstance) {
       }
     }
 
+    // Handle click / double-click for both mouse and touch via pointer events
+    // For touch: skip if multi-finger gesture or map was dragged
+    const isTouchTap = e.pointerType === 'touch' && activePointers.size === 0 && !dragMoveHelper.moved
+    const isMouseClick = e.pointerType === 'mouse' && !dragMoveHelper.moved
+    if (isTouchTap || isMouseClick) {
+      const currentTime = new Date().getTime()
+      const tapLength = currentTime - lastTap
+      if (tapLength < 300 && tapLength > 0) {
+        handleDoubleClick(e)
+      } else {
+        handleSingleClick(e)
+      }
+      lastTap = currentTime
+    }
+
     if (!dragMoveHelper.mousedown) return
     releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
     dragMoveHelper.clear()
@@ -400,9 +402,6 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'pointermove', func: handlePointerMove },
     { dom: container, evt: 'pointerup', func: handlePointerUp },
     { dom: container, evt: 'pointercancel', func: handlePointerCancel },
-    { dom: container, evt: 'pointerdown', func: handleTouchDblClick },
-    { dom: container, evt: 'click', func: handleClick },
-    { dom: container, evt: 'dblclick', func: handleDblClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
     { dom: container, evt: 'blur', func: handleBlur },
