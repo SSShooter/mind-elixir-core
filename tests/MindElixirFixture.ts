@@ -5,11 +5,12 @@ interface Window {
   m: MindElixirInstance
   MindElixir: MindElixirCtor
   E: typeof MindElixir.E
+  [key: string]: any
 }
 declare let window: Window
 
 export class MindElixirFixture {
-  private m: MindElixirInstance
+  // private m: MindElixirInstance
 
   constructor(public readonly page: Page) {
     //
@@ -19,23 +20,22 @@ export class MindElixirFixture {
     await this.page.goto('http://localhost:23334/test.html')
   }
   async init(data: MindElixirData, el = '#map') {
-    // evaluate return Serializable value
+    const dataStr = JSON.stringify(data)
     await this.page.evaluate(
-      ({ data, el }) => {
+      ({ dataStr, el }) => {
         const MindElixir = window.MindElixir
         const options: Options = {
           el,
           direction: MindElixir.SIDE,
-          allowUndo: true, // Enable undo/redo functionality for tests
-          keypress: true, // Enable keyboard shortcuts
-          editable: true, // Enable editing
+          allowUndo: true,
+          keypress: true,
+          editable: true,
         }
         const mind = new MindElixir(options)
-        mind.init(JSON.parse(JSON.stringify(data)))
+        mind.init(JSON.parse(dataStr))
         window[el] = mind
-        return mind
       },
-      { data, el }
+      { dataStr, el }
     )
   }
   async getInstance(el = '#map') {
