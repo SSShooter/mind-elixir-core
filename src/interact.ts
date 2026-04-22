@@ -37,6 +37,7 @@ export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElemen
 
 export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   // selectNode clears all selected nodes by default
+  console.trace(111)
   this.clearSelection()
   this.scrollIntoView(tpc)
   this.selection?.select(tpc)

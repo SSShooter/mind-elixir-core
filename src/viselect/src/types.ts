@@ -6,11 +6,6 @@ export type DeepPartial<T> = T extends unknown[] ? T : T extends HTMLElement ? T
 
 export type Quantify<T> = T[] | T
 
-export interface ScrollEvent extends MouseEvent {
-  deltaY: number
-  deltaX: number
-}
-
 export interface ChangedElements {
   added: Element[]
   removed: Element[]
@@ -54,7 +49,6 @@ export type OverlapMode = 'keep' | 'drop' | 'invert'
 
 export interface Scrolling {
   speedDivider: number
-  manualSpeed: number
   startScrollMargins: { x: number; y: number }
 }
 

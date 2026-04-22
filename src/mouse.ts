@@ -178,7 +178,7 @@ export default function (mind: MindElixirInstance) {
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
 
     // Handle node dragging with left button or touch (only for topics)
-    if (mind.editable && nodeDragState && (e.button === 0 || e.pointerType === 'touch')) {
+    if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
       // For touch, only start drag with single finger
       if (e.pointerType === 'touch' && activePointers.size > 1) {
         // Cancel any ongoing drag if second finger touches

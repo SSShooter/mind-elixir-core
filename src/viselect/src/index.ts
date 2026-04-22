@@ -1,5 +1,5 @@
 import { EventTarget } from './EventEmitter'
-import type { AreaLocation, Coordinates, ScrollEvent, SelectionEvents, SelectionOptions, SelectionStore } from './types'
+import type { AreaLocation, Coordinates, SelectionEvents, SelectionOptions, SelectionStore } from './types'
 import type { PartialSelectionOptions } from './types'
 import { css } from './utils/css'
 import { domRect } from './utils/domRect'
@@ -60,9 +60,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   private _scrollSpeed: Coordinates = { x: 0, y: 0 }
   private _scrollDelta: Coordinates = { x: 0, y: 0 }
 
-  // Required for keydown scrolling
-  private _lastMousePosition = { x: 0, y: 0 }
-
   constructor(opt: PartialSelectionOptions) {
     super()
 
@@ -89,7 +86,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
           : { x: 10, y: 10 },
         scrolling: {
           speedDivider: 10,
-          manualSpeed: 750,
           ...opt.behaviour?.scrolling,
           startScrollMargins: {
             x: 0,
@@ -333,12 +329,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         this._targetElement!.scrollWidth !== this._targetElement!.clientWidth
 
       if (this._scrollAvailable) {
-        // Detect mouse scrolling
-        on(this._targetElement, 'wheel', this._wheelScroll, { passive: false })
-
-        // Detect keyboard scrolling
-        on(this._options.document, 'keydown', this._keyboardScroll, { passive: false })
-
         /**
          * The selection-area will also cover another element
          * out of the current scrollable parent. So find all elements
@@ -402,14 +392,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   _onTapMove(evt: MouseEvent | TouchEvent): void {
     const { _scrollSpeed, _areaLocation, _options, _frame } = this
     const { speedDivider } = _options.behaviour.scrolling
-    const _targetElement = this._targetElement as Element
 
     const { x, y } = simplifyEvent(evt)
     _areaLocation.x2 = x
     _areaLocation.y2 = y
-
-    this._lastMousePosition.x = x
-    this._lastMousePosition.y = y
 
     if (this._scrollAvailable && !this._scrollingActive && (_scrollSpeed.y || _scrollSpeed.x)) {
       // Continuous scrolling
@@ -498,38 +484,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     off(this._targetElement, 'scroll', this._onStartAreaScroll)
   }
 
-  _wheelScroll(evt: ScrollEvent): void {
-    const { manualSpeed } = this._options.behaviour.scrolling
-
-    // Consistent scrolling speed on all browsers
-    const deltaY = evt.deltaY ? (evt.deltaY > 0 ? 1 : -1) : 0
-    const deltaX = evt.deltaX ? (evt.deltaX > 0 ? 1 : -1) : 0
-    this._scrollSpeed.y += deltaY * manualSpeed
-    this._scrollSpeed.x += deltaX * manualSpeed
-    this._onTapMove(evt)
-
-    // Prevent default scrolling behavior, e.g. page scrolling
-    evt.preventDefault()
-  }
-
-  _keyboardScroll(evt: KeyboardEvent): void {
-    const { manualSpeed } = this._options.behaviour.scrolling
-
-    const deltaX = evt.key === 'ArrowLeft' ? -1 : evt.key === 'ArrowRight' ? 1 : 0
-    const deltaY = evt.key === 'ArrowUp' ? -1 : evt.key === 'ArrowDown' ? 1 : 0
-
-    this._scrollSpeed.x += Math.sign(deltaX) * manualSpeed
-    this._scrollSpeed.y += Math.sign(deltaY) * manualSpeed
-
-    evt.preventDefault()
-
-    this._onTapMove({
-      clientX: this._lastMousePosition.x,
-      clientY: this._lastMousePosition.y,
-      preventDefault: () => void 0,
-    } as ScrollEvent)
-  }
-
   _recalculateSelectionAreaRect(): void {
     const { _scrollSpeed, _areaLocation, _targetElement, _options } = this
     const _targetRect = this._targetRect as DOMRect
@@ -610,12 +564,6 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     this._scrollSpeed.x = 0
     this._scrollSpeed.y = 0
-
-    // Unbind mouse scrolling listener
-    off(this._targetElement, 'wheel', this._wheelScroll, { passive: true })
-
-    // Unbind keyboard scrolling listener
-    off(this._options.document, 'keydown', this._keyboardScroll, { passive: true })
 
     // Remove selection-area from dom
     this._clippingElement.remove()

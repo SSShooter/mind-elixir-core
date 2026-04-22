@@ -10,8 +10,10 @@ export default function (mei: MindElixirInstance) {
     container: mei.selectionContainer,
     mindElixirInstance: mei, // 传递 MindElixir 实例
     features: {
-      // deselectOnBlur: true,
       touch: false,
+      singleTap: {
+        allow: false,
+      },
     },
     behaviour: {
       triggers,
