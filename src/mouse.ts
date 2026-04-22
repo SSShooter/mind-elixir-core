@@ -121,12 +121,6 @@ export default function (mind: MindElixirInstance) {
       } else {
         mind.expandNode((target as Expander).previousSibling)
       }
-    } else if (target.tagName === 'ME-TPC' && mind.currentNodes.length > 1) {
-      // This is a bit complex, intertwined with selection and nodeDraggable
-      // The main conflict is between multi-node dragging and selecting a single node when multiple nodes are already selected
-      if (!e.ctrlKey && !e.metaKey) {
-        mind.selectNode(target as Topic)
-      }
     } else if (!mind.editable) {
       return
     }
@@ -193,6 +187,8 @@ export default function (mind: MindElixirInstance) {
           mind.selection?.select(target)
         }
       } else if (!nodes.includes(target)) {
+        // This is a bit complex, intertwined with selection and nodeDraggable
+        // The main conflict is between multi-node dragging and selecting a single node when multiple nodes are already selected
         mind.selectNode(target)
       }
     }
