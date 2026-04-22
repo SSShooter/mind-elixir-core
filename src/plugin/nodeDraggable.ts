@@ -163,7 +163,7 @@ export function showDragGhost(mind: MindElixirInstance, state: NodeDragState): v
   }
 
   // Clear map drag state
-  mind.dragMoveHelper.clear()
+  mind.panHelper.clear()
 }
 
 export function handleNodeDragMove(mind: MindElixirInstance, state: NodeDragState, e: PointerEvent): void {

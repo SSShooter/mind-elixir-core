@@ -1,5 +1,5 @@
 import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
-import LinkDragMoveHelper from './utils/LinkDragMoveHelper'
+import LinkPanHelper from './utils/LinkPanHelper'
 import { calculatePrecisePosition, createArrowGroup, createLabel, editSvgText, svgNS } from './utils/svg'
 import type { CustomSvg, Topic } from './types/dom'
 import { type MindElixirInstance, type Uid } from './index'
@@ -567,8 +567,8 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   updateControlLine(line1, p1x, p1y, p2x, p2y)
   updateControlLine(line2, p3x, p3y, p4x, p4y)
 
-  mei.helper1 = LinkDragMoveHelper.create(P2)
-  mei.helper2 = LinkDragMoveHelper.create(P3)
+  mei.helper1 = LinkPanHelper.create(P2)
+  mei.helper2 = LinkPanHelper.create(P3)
 
   mei.helper1.init(map, (deltaX, deltaY) => {
     // recalc key points

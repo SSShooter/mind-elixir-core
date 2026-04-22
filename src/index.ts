@@ -10,7 +10,7 @@ import type { MindElixirData, MindElixirInstance, MindElixirMethods, Options } f
 import methods from './methods'
 import { sub, main } from './utils/generateBranch'
 import { version } from '../package.json'
-import { createDragMoveHelper } from './utils/dragMoveHelper'
+import { createPanHelper } from './utils/panHelper'
 import type { Topic } from './docs'
 
 // TODO show up animation
@@ -81,7 +81,7 @@ function MindElixir(
   this.scaleVal = 1
   this.tempDirection = null
 
-  this.dragMoveHelper = createDragMoveHelper(this)
+  this.panHelper = createPanHelper(this)
   this.bus = createBus()
 
   this.container = document.createElement('div') // map container

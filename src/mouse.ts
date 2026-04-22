@@ -13,7 +13,7 @@ import type { MindElixirInstance } from './types/index'
 import { getDistance, isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
-  const { dragMoveHelper } = mind
+  const { panHelper } = mind
   let lastTap = 0
   let lastTapTarget: EventTarget | null = null
   mind.spacePressed = false
@@ -104,8 +104,8 @@ export default function (mind: MindElixirInstance) {
       mind.helper2.clear()
       return
     }
-    if (dragMoveHelper.moved) {
-      dragMoveHelper.clear()
+    if (panHelper.moved) {
+      panHelper.clear()
       return
     }
 
@@ -172,7 +172,7 @@ export default function (mind: MindElixirInstance) {
       }
     }
 
-    dragMoveHelper.moved = false
+    panHelper.moved = false
 
     const target = e.target as HTMLElement
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
@@ -220,11 +220,11 @@ export default function (mind: MindElixirInstance) {
     if (!isSpaceDrag && !isNormalDrag) return
 
     // Store initial position for movement calculation
-    dragMoveHelper.x = e.clientX
-    dragMoveHelper.y = e.clientY
+    panHelper.x = e.clientX
+    panHelper.y = e.clientY
 
     if (target.className !== 'circle' && target.contentEditable !== 'plaintext-only') {
-      dragMoveHelper.mousedown = true
+      panHelper.mousedown = true
       // Capture pointer to ensure we receive all pointer events even if pointer moves outside the element
       target.setPointerCapture(e.pointerId)
     }
@@ -278,17 +278,17 @@ export default function (mind: MindElixirInstance) {
     }
 
     // click trigger pointermove in windows chrome
-    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only' || (mind.spacePressed && dragMoveHelper.mousedown)) {
+    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only' || (mind.spacePressed && panHelper.mousedown)) {
       // drag and move the map
       // Calculate movement delta manually since pointer events don't have movementX/Y
-      const movementX = e.clientX - dragMoveHelper.x
-      const movementY = e.clientY - dragMoveHelper.y
+      const movementX = e.clientX - panHelper.x
+      const movementY = e.clientY - panHelper.y
 
-      dragMoveHelper.onMove(movementX, movementY)
+      panHelper.onMove(movementX, movementY)
     }
 
-    dragMoveHelper.x = e.clientX
-    dragMoveHelper.y = e.clientY
+    panHelper.x = e.clientX
+    panHelper.y = e.clientY
   }
 
   const handlePointerUp = (e: PointerEvent) => {
@@ -319,8 +319,8 @@ export default function (mind: MindElixirInstance) {
 
     // Handle click / double-click for both mouse and touch via pointer events
     // For touch: skip if multi-finger gesture or map was dragged
-    const isTouchTap = e.pointerType === 'touch' && activePointers.size === 0 && !dragMoveHelper.moved
-    const isMouseClick = e.pointerType === 'mouse' && e.button === 0 && !dragMoveHelper.moved
+    const isTouchTap = e.pointerType === 'touch' && activePointers.size === 0 && !panHelper.moved
+    const isMouseClick = e.pointerType === 'mouse' && e.button === 0 && !panHelper.moved
     if (isTouchTap || isMouseClick) {
       const currentTime = new Date().getTime()
       const tapLength = currentTime - lastTap
@@ -331,9 +331,9 @@ export default function (mind: MindElixirInstance) {
       lastTapTarget = e.target
     }
 
-    if (!dragMoveHelper.mousedown) return
+    if (!panHelper.mousedown) return
     releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
-    dragMoveHelper.clear()
+    panHelper.clear()
   }
 
   // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
@@ -342,8 +342,8 @@ export default function (mind: MindElixirInstance) {
     clearLongPress()
 
     // Clear drag state when window loses focus (e.g., alert dialog appears)
-    if (dragMoveHelper.mousedown) {
-      dragMoveHelper.clear()
+    if (panHelper.mousedown) {
+      panHelper.clear()
     }
     // Also cancel any ongoing node drag
     if (nodeDragState && (nodeDragState.isDragging || nodeDragState.pointerId !== null)) {
@@ -383,7 +383,7 @@ export default function (mind: MindElixirInstance) {
     }
     setTimeout(() => {
       // delay to avoid conflict with click event on Mac
-      if (mind.dragMoveHelper.moved) return
+      if (mind.panHelper.moved) return
       mind.bus.fire('showContextMenu', e)
     }, 200)
   }

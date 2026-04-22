@@ -1,13 +1,13 @@
 import type { Topic, CustomSvg } from './dom'
 import type { createBus, EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods, OperationMap, Operations } from '../methods'
-import type { LinkDragMoveHelperInstance } from '../utils/LinkDragMoveHelper'
+import type { LinkPanHelperInstance } from '../utils/LinkPanHelper'
 import type { Arrow } from '../arrow'
 import type { Summary, SummarySvgGroup } from '../summary'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { LangPack } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
-import type { createDragMoveHelper } from '../utils/dragMoveHelper'
+import type { createPanHelper } from '../utils/panHelper'
 import type SelectionArea from '../viselect/src'
 export { type MindElixirMethods } from '../methods'
 
@@ -111,11 +111,11 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   /**
    * @internal
    */
-  helper1?: LinkDragMoveHelperInstance
+  helper1?: LinkPanHelperInstance
   /**
    * @internal
    */
-  helper2?: LinkDragMoveHelperInstance
+  helper2?: LinkPanHelperInstance
 
   bus: ReturnType<typeof createBus<EventMap>>
   history: Operation[]
@@ -132,7 +132,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   clearHistory?: () => void
 
   selection: SelectionArea
-  dragMoveHelper: ReturnType<typeof createDragMoveHelper>
+  panHelper: ReturnType<typeof createPanHelper>
 }
 type PathString = string
 /**
