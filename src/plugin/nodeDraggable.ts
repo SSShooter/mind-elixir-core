@@ -108,18 +108,8 @@ export function handleNodeDragStart(mind: MindElixirInstance, state: NodeDragSta
   state.startY = e.clientY
   state.pointerId = e.pointerId
 
-  // no selection if editable === false
-  mind.selection?.cancel()
-
-  // Select node if not already selected
-  let nodes = mind.currentNodes
-  if (!nodes?.includes(target)) {
-    mind.selectNode(target)
-    nodes = mind.currentNodes
-  }
-
   // Prepare for potential drag
-  mind.dragged = nodes
+  mind.dragged = mind.currentNodes
 
   // If immediate mode (e.g., long press), show ghost immediately
   if (immediate) {

@@ -124,7 +124,9 @@ export default function (mind: MindElixirInstance) {
     } else if (target.tagName === 'ME-TPC' && mind.currentNodes.length > 1) {
       // This is a bit complex, intertwined with selection and nodeDraggable
       // The main conflict is between multi-node dragging and selecting a single node when multiple nodes are already selected
-      mind.selectNode(target as Topic)
+      if (!e.ctrlKey && !e.metaKey) {
+        mind.selectNode(target as Topic)
+      }
     } else if (!mind.editable) {
       return
     }
@@ -176,6 +178,24 @@ export default function (mind: MindElixirInstance) {
 
     const target = e.target as HTMLElement
     const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
+
+    // Unified node selection
+    if (mind.editable && (e.button === 0 || e.pointerType === 'touch') && isTopic(target)) {
+      mind.selection?.cancel()
+      const nodes = mind.currentNodes || []
+      const isMulti = e.ctrlKey || e.metaKey
+
+      if (isMulti) {
+        if (nodes.includes(target)) {
+          mind.selection?.deselect(target)
+          return // Skip drag if we just deselected
+        } else {
+          mind.selection?.select(target)
+        }
+      } else if (!nodes.includes(target)) {
+        mind.selectNode(target)
+      }
+    }
 
     // Handle node dragging with left button or touch (only for topics)
     if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {

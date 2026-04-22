@@ -37,7 +37,7 @@ export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElemen
 
 export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   // selectNode clears all selected nodes by default
-  console.trace(111)
+  console.trace('selectNode')
   this.clearSelection()
   this.scrollIntoView(tpc)
   this.selection?.select(tpc)
@@ -47,6 +47,7 @@ export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewN
 }
 
 export const selectNodes = function (this: MindElixirInstance, tpcs: Topic[]): void {
+  console.trace('selectNodes')
   // update currentNodes in selection.ts to keep sync with SelectionArea cache
   this.selection?.select(tpcs)
 }

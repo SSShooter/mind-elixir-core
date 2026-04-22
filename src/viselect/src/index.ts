@@ -801,7 +801,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       this._emitEvent('move', null)
       this._emitEvent('stop', null)
     }
-
+    console.trace('select', elements)
     return elements
   }
 

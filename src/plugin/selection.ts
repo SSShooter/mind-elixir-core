@@ -11,6 +11,9 @@ export default function (mei: MindElixirInstance) {
     mindElixirInstance: mei, // 传递 MindElixir 实例
     features: {
       touch: false,
+      singleTap: {
+        allow: false,
+      },
     },
     behaviour: {
       triggers,
