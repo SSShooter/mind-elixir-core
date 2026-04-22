@@ -1,5 +1,26 @@
 # Changelog
 
+## 5.11.0 - 2026-04-22
+
+### Features
+
+- Improve Magic Trackpad UX
+
+### Bug Fixes
+
+- Prevent double-clicking multiple elements
+
+### Refactors
+
+- Round arrow delta values to integers
+- Use pointer events to handle click & double-click
+- Unify node selection logic to `mouse.ts`
+- Rename `dragmove` to `pan`
+
+### Tests
+
+- Improve test compatibility for macOS and extend timeouts
+
 ## 5.10.0 - 2026-03-29
 
 ### Breaking Changes
