@@ -7,8 +7,7 @@ import {
   updateGhostPosition,
 } from './plugin/nodeDraggable'
 import { handleWheelZoom } from './plugin/keypress'
-import type { SummarySvgGroup } from './summary'
-import type { Expander, CustomSvg, Topic } from './types/dom'
+import type { Expander, ArrowSvg, Topic, SummarySvg } from './types/dom'
 import type { MindElixirInstance } from './types/index'
 import { getDistance, isTopic, on } from './utils'
 
@@ -83,10 +82,10 @@ export default function (mind: MindElixirInstance) {
       const svgElement = document.getElementById(id)
       if (svgElement) {
         if (type === 'arrow') {
-          isDoubleClick ? mind.editArrowLabel(svgElement as unknown as CustomSvg) : mind.selectArrow(svgElement as unknown as CustomSvg)
+          isDoubleClick ? mind.editArrowLabel(svgElement as unknown as ArrowSvg) : mind.selectArrow(svgElement as unknown as ArrowSvg)
           return true
         } else if (type === 'summary') {
-          isDoubleClick ? mind.editSummary(svgElement as unknown as SummarySvgGroup) : mind.selectSummary(svgElement as unknown as SummarySvgGroup)
+          isDoubleClick ? mind.editSummary(svgElement as unknown as SummarySvg) : mind.selectSummary(svgElement as unknown as SummarySvg)
           return true
         }
       }
@@ -97,7 +96,7 @@ export default function (mind: MindElixirInstance) {
     if (topiclinksContainer) {
       const svgGroup = target.closest('g')
       if (svgGroup) {
-        isDoubleClick ? mind.editArrowLabel(svgGroup as unknown as CustomSvg) : mind.selectArrow(svgGroup as unknown as CustomSvg)
+        isDoubleClick ? mind.editArrowLabel(svgGroup as unknown as ArrowSvg) : mind.selectArrow(svgGroup as unknown as ArrowSvg)
         return true
       }
     }
@@ -107,7 +106,7 @@ export default function (mind: MindElixirInstance) {
     if (summaryContainer) {
       const svgGroup = target.closest('g')
       if (svgGroup) {
-        isDoubleClick ? mind.editSummary(svgGroup as unknown as SummarySvgGroup) : mind.selectSummary(svgGroup as unknown as SummarySvgGroup)
+        isDoubleClick ? mind.editSummary(svgGroup as unknown as SummarySvg) : mind.selectSummary(svgGroup as unknown as SummarySvg)
         return true
       }
     }

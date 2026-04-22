@@ -1,4 +1,4 @@
-import type { MindElixirInstance, Topic } from '.'
+import type { MindElixirInstance, SummarySvg, Topic } from '.'
 import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { createLabel, editSvgText, svgNS } from './utils/svg'
@@ -41,12 +41,6 @@ export interface Summary {
    * style of the summary
    */
   style?: SummaryStyle
-}
-
-export type SummarySvgGroup = SVGGElement & {
-  children: [SVGPathElement]
-  summaryObj: Summary
-  labelEl?: HTMLDivElement // Reference to the label div element
 }
 
 const calcRange = function (nodes: Topic[]) {
@@ -102,7 +96,7 @@ const calcRange = function (nodes: Topic[]) {
 }
 
 const creatGroup = function (id: string) {
-  const group = document.createElementNS(svgNS, 'g') as SummarySvgGroup
+  const group = document.createElementNS(svgNS, 'g') as SummarySvg
   group.setAttribute('id', id)
   return group
 }
@@ -192,7 +186,7 @@ export const createSummary = function (this: MindElixirInstance, options: Summar
   const { currentNodes: nodes, summaries, bus } = this
   const { parent, start, end } = calcRange(nodes)
   const summary = { id: generateUUID(), parent, start, end, label: 'summary', style: options.style }
-  const g = drawSummary(this, summary) as SummarySvgGroup
+  const g = drawSummary(this, summary) as SummarySvg
   summaries.push(summary)
   this.editSummary(g)
   bus.fire('operation', {
@@ -226,7 +220,7 @@ export const removeSummary = function (this: MindElixirInstance, id: string) {
   })
 }
 
-export const selectSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
+export const selectSummary = function (this: MindElixirInstance, el: SummarySvg) {
   const label = el.labelEl
   if (label) {
     label.classList.add('selected')
@@ -253,7 +247,7 @@ export const renderSummary = function (this: MindElixirInstance) {
   this.nodes.insertAdjacentElement('beforeend', this.summarySvg)
 }
 
-export const editSummary = function (this: MindElixirInstance, el: SummarySvgGroup) {
+export const editSummary = function (this: MindElixirInstance, el: SummarySvg) {
   if (!el) return
   if (!el.labelEl) return
   editSvgText(this, el.labelEl, el.summaryObj)

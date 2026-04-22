@@ -1,7 +1,7 @@
 import { generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkPanHelper from './utils/LinkPanHelper'
 import { calculatePrecisePosition, createArrowGroup, createLabel, editSvgText, svgNS } from './utils/svg'
-import type { CustomSvg, Topic } from './types/dom'
+import type { ArrowSvg, Topic } from './types/dom'
 import { type MindElixirInstance, type Uid } from './index'
 
 const highlightColor = '#4dc4ff'
@@ -123,7 +123,7 @@ function updateControlLine(line: SVGElement, x1: number, y1: number, x2: number,
  * Update arrow path and related elements
  */
 function updateArrowPath(
-  arrow: CustomSvg,
+  arrow: ArrowSvg,
   p1x: number,
   p1y: number,
   p2x: number,
@@ -385,7 +385,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   // Use extracted common function to calculate midpoint
   const { x: halfx, y: halfy } = calcBezierMidPoint(p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y)
   const labelColor = obj.style?.labelColor || 'rgb(235, 95, 82)'
-  const groupId = 'arrow-' + obj.id
+  const groupId = 'a-' + obj.id
   newSvgGroup.id = groupId
   const renderedLabel = mei.markdown ? mei.markdown(obj.label, obj) : obj.label
   const label = createLabel(renderedLabel, halfx, halfy, {
@@ -435,7 +435,7 @@ export const createArrowFrom = function (this: MindElixirInstance, arrow: Omit<A
   })
 }
 
-export const removeArrow = function (this: MindElixirInstance, linkSvg?: CustomSvg) {
+export const removeArrow = function (this: MindElixirInstance, linkSvg?: ArrowSvg) {
   let link
   if (linkSvg) {
     link = linkSvg
@@ -457,7 +457,7 @@ export const removeArrow = function (this: MindElixirInstance, linkSvg?: CustomS
   })
 }
 
-export const selectArrow = function (this: MindElixirInstance, link: CustomSvg) {
+export const selectArrow = function (this: MindElixirInstance, link: ArrowSvg) {
   this.currentArrow = link
   const obj = link.arrowObj
 
@@ -493,7 +493,7 @@ const createHighlightPath = function (d: string, highlightColor: string): SVGPat
   return path
 }
 
-const addArrowHighlight = function (arrow: CustomSvg, highlightColor: string) {
+const addArrowHighlight = function (arrow: ArrowSvg, highlightColor: string) {
   const highlightGroup = document.createElementNS(svgNS, 'g')
   highlightGroup.setAttribute('class', 'arrow-highlight')
   highlightGroup.setAttribute('opacity', '0.45')
@@ -512,14 +512,14 @@ const addArrowHighlight = function (arrow: CustomSvg, highlightColor: string) {
   arrow.insertBefore(highlightGroup, arrow.firstChild)
 }
 
-const removeArrowHighlight = function (arrow: CustomSvg) {
+const removeArrowHighlight = function (arrow: ArrowSvg) {
   const highlightGroup = arrow.querySelector('.arrow-highlight')
   if (highlightGroup) {
     highlightGroup.remove()
   }
 }
 
-const updateArrowHighlight = function (arrow: CustomSvg) {
+const updateArrowHighlight = function (arrow: ArrowSvg) {
   const highlightGroup = arrow.querySelector('.arrow-highlight')
   if (!highlightGroup) return
 
@@ -633,7 +633,7 @@ export function renderArrow(this: MindElixirInstance) {
   this.nodes.appendChild(this.linkSvgGroup)
 }
 
-export function editArrowLabel(this: MindElixirInstance, el: CustomSvg) {
+export function editArrowLabel(this: MindElixirInstance, el: ArrowSvg) {
   hideLinkController(this)
   if (!el) return
   if (!el.labelEl) return

@@ -2,7 +2,7 @@ import { setAttributes } from '.'
 import type { Arrow } from '../arrow'
 import type { Summary } from '../summary'
 import type { MindElixirInstance } from '../types'
-import type { CustomSvg } from '../types/dom'
+import type { ArrowSvg } from '../types/dom'
 import { selectText } from './dom'
 
 export const svgNS = 'http://www.w3.org/2000/svg'
@@ -121,8 +121,8 @@ export const createArrowGroup = function (
     strokeLinecap?: 'butt' | 'round' | 'square'
     opacity?: string | number
   }
-): CustomSvg {
-  const g = document.createElementNS(svgNS, 'g') as CustomSvg
+): ArrowSvg {
+  const g = document.createElementNS(svgNS, 'g') as ArrowSvg
   const svgs = [
     {
       name: 'line',

@@ -1,4 +1,5 @@
 import type { Arrow } from '../arrow'
+import type { Summary } from '../summary'
 import type { NodeObj } from './index'
 
 export interface Wrapper extends HTMLElement {
@@ -50,12 +51,15 @@ export interface Expander extends HTMLElement {
   previousSibling: Topic
 }
 
-export type CustomLine = SVGPathElement
-export type CustomArrow = SVGPathElement
-export interface CustomSvg extends SVGGElement {
+export interface ArrowSvg extends SVGGElement {
   arrowObj: Arrow
-  labelEl?: HTMLDivElement // Reference to the label div element
+  labelEl?: HTMLDivElement
   line: SVGPathElement
   arrow1: SVGPathElement
   arrow2: SVGPathElement
+}
+
+export interface SummarySvg extends SVGGElement {
+  summaryObj: Summary
+  labelEl?: HTMLDivElement
 }

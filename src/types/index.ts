@@ -1,9 +1,9 @@
-import type { Topic, CustomSvg } from './dom'
+import type { Topic, ArrowSvg, SummarySvg } from './dom'
 import type { createBus, EventMap, Operation } from '../utils/pubsub'
 import type { MindElixirMethods, OperationMap, Operations } from '../methods'
 import type { LinkPanHelperInstance } from '../utils/LinkPanHelper'
 import type { Arrow } from '../arrow'
-import type { Summary, SummarySvgGroup } from '../summary'
+import type { Summary } from '../summary'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { LangPack } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
@@ -89,8 +89,8 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
 
   readonly currentNode: Topic | null
   currentNodes: Topic[]
-  currentSummary: SummarySvgGroup | null
-  currentArrow: CustomSvg | null
+  currentSummary: SummarySvg | null
+  currentArrow: ArrowSvg | null
 
   scaleVal: number
   tempDirection: 0 | 1 | 2 | null

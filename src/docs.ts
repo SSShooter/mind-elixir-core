@@ -1,7 +1,7 @@
 import type { Arrow } from './arrow'
+import type { Summary } from './summary'
 import type methods from './methods'
 import type { MindElixirMethods } from './methods'
-import type { Summary, SummarySvgGroup } from './summary'
 import type { MindElixirData, MindElixirInstance, NodeObj, NodeObjExport, Options, Theme, TagObj } from './types'
 import type { MainLineParams, SubLineParams } from './utils/generateBranch'
 import type { LangPack } from './i18n'
@@ -15,7 +15,6 @@ export {
   NodeObj,
   NodeObjExport,
   Summary,
-  SummarySvgGroup,
   Arrow,
   MainLineParams,
   SubLineParams,
