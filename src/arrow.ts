@@ -468,11 +468,13 @@ export const selectArrow = function (this: MindElixirInstance, link: CustomSvg) 
   const toData = calcCtrlP(this, to, obj.delta2!)
 
   showLinkController(this, obj, fromData, toData)
+  this.bus.fire('selectArrow', obj)
 }
 
 export const unselectArrow = function (this: MindElixirInstance) {
   hideLinkController(this)
   this.currentArrow = null
+  this.bus.fire('unselectArrow')
 }
 
 /**

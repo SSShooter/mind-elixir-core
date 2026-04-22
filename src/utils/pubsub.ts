@@ -83,6 +83,10 @@ export type EventMap = {
    *  please use throttling to prevent performance degradation
    */
   updateArrowDelta: (arrow: Arrow) => void
+  selectArrow: (arrow: Arrow) => void
+  unselectArrow: () => void
+  selectSummary: (summary: Summary) => void
+  unselectSummary: () => void
   showContextMenu: (e: MouseEvent) => void
 }
 

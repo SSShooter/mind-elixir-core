@@ -232,11 +232,13 @@ export const selectSummary = function (this: MindElixirInstance, el: SummarySvgG
     label.classList.add('selected')
   }
   this.currentSummary = el
+  this.bus.fire('selectSummary', el.summaryObj)
 }
 
 export const unselectSummary = function (this: MindElixirInstance) {
   this.currentSummary?.labelEl?.classList.remove('selected')
   this.currentSummary = null
+  this.bus.fire('unselectSummary')
 }
 
 export const renderSummary = function (this: MindElixirInstance) {
