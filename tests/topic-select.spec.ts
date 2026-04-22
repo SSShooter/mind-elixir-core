@@ -42,6 +42,7 @@ const select = async (page: Page) => {
   await page.mouse.move(200, 100)
   await page.mouse.down()
   await page.getByText('child2').hover({ force: true })
+  await page.waitForTimeout(1000)
   await page.mouse.up()
 }
 
