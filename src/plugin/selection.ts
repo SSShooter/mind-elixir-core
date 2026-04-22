@@ -64,24 +64,30 @@ export default function (mei: MindElixirInstance) {
           // console.log('removed ', removed)
         }
         if (added.length > 0) {
-          for (const el of added) {
-            el.className = 'selected'
+          const newNodes = (added as Topic[]).filter(el => !mei.currentNodes?.includes(el))
+          if (newNodes.length > 0) {
+            for (const el of newNodes) {
+              el.className = 'selected'
+            }
+            mei.currentNodes = [...(mei.currentNodes || []), ...newNodes]
+            mei.bus.fire(
+              'selectNodes',
+              newNodes.map(el => el.nodeObj)
+            )
           }
-          mei.currentNodes = [...mei.currentNodes, ...(added as Topic[])]
-          mei.bus.fire(
-            'selectNodes',
-            (added as Topic[]).map(el => el.nodeObj)
-          )
         }
         if (removed.length > 0) {
-          for (const el of removed) {
-            el.classList.remove('selected')
+          const removedNodes = (removed as Topic[]).filter(el => mei.currentNodes?.includes(el))
+          if (removedNodes.length > 0) {
+            for (const el of removedNodes) {
+              el.classList.remove('selected')
+            }
+            mei.currentNodes = (mei.currentNodes || []).filter(el => !removedNodes.includes(el))
+            mei.bus.fire(
+              'unselectNodes',
+              removedNodes.map(el => el.nodeObj)
+            )
           }
-          mei.currentNodes = mei.currentNodes!.filter(el => !removed?.includes(el))
-          mei.bus.fire(
-            'unselectNodes',
-            (removed as Topic[]).map(el => el.nodeObj)
-          )
         }
       }
     )
