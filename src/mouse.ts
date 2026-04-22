@@ -320,7 +320,7 @@ export default function (mind: MindElixirInstance) {
     // Handle click / double-click for both mouse and touch via pointer events
     // For touch: skip if multi-finger gesture or map was dragged
     const isTouchTap = e.pointerType === 'touch' && activePointers.size === 0 && !dragMoveHelper.moved
-    const isMouseClick = e.pointerType === 'mouse' && !dragMoveHelper.moved
+    const isMouseClick = e.pointerType === 'mouse' && e.button === 0 && !dragMoveHelper.moved
     if (isTouchTap || isMouseClick) {
       const currentTime = new Date().getTime()
       const tapLength = currentTime - lastTap
