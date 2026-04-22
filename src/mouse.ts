@@ -13,7 +13,7 @@ import type { MindElixirInstance } from './types/index'
 import { getDistance, isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
-  const { panHelper } = mind
+  const { panHelper, container } = mind
   let lastTap = 0
   let lastTapTarget: EventTarget | null = null
   mind.spacePressed = false
@@ -25,22 +25,44 @@ export default function (mind: MindElixirInstance) {
   const nodeDragState = createNodeDragState(mind)
 
   // Long press state for touch devices
-  let longPressTimer: number | null = null
-  let longPressStartPos: { x: number; y: number } | null = null
-  let longPressTarget: HTMLElement | null = null
-  let longPressPointerId: number | null = null
-  const LONG_PRESS_DURATION = 500 // 长按时间阈值（毫秒）
-  const LONG_PRESS_MOVE_THRESHOLD = 10 // 移动阈值（像素）
-
-  // Helper: Clear long press timer and state
-  const clearLongPress = () => {
-    if (longPressTimer !== null) {
-      clearTimeout(longPressTimer)
-      longPressTimer = null
-      longPressStartPos = null
-      longPressTarget = null
-      longPressPointerId = null
-    }
+  const longPressHelper = {
+    timer: null as number | null,
+    startPos: null as { x: number; y: number } | null,
+    target: null as HTMLElement | null,
+    pointerId: null as number | null,
+    DURATION: 500,
+    MOVE_THRESHOLD: 10,
+    clear() {
+      if (this.timer !== null) {
+        clearTimeout(this.timer)
+        this.timer = null
+        this.startPos = null
+        this.target = null
+        this.pointerId = null
+      }
+    },
+    start(e: PointerEvent, cb: (e: PointerEvent) => void) {
+      this.timer = window.setTimeout(() => {
+        cb(e)
+        this.timer = null
+        this.startPos = null
+        this.target = null
+        this.pointerId = null
+      }, this.DURATION)
+      this.startPos = { x: e.clientX, y: e.clientY }
+      this.target = e.target as HTMLElement
+      this.pointerId = e.pointerId
+    },
+    handleMove(e: PointerEvent) {
+      if (this.timer !== null && this.startPos !== null && e.pointerId === this.pointerId) {
+        const dx = e.clientX - this.startPos.x
+        const dy = e.clientY - this.startPos.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+        if (distance > this.MOVE_THRESHOLD) {
+          this.clear()
+        }
+      }
+    },
   }
 
   // Helper: Release pointer capture if it exists
@@ -140,20 +162,6 @@ export default function (mind: MindElixirInstance) {
     handleSvgLabelInteraction(target, true)
   }
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Space') {
-      mind.spacePressed = true
-      mind.container.classList.add('space-pressed')
-    }
-  }
-
-  const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.code === 'Space') {
-      mind.spacePressed = false
-      mind.container.classList.remove('space-pressed')
-    }
-  }
-
   const handlePointerDown = (e: PointerEvent) => {
     if (e.pointerType === 'touch') {
       // Record current touch point
@@ -164,7 +172,7 @@ export default function (mind: MindElixirInstance) {
         const [p1, p2] = Array.from(activePointers.values())
         lastDistance = getDistance(p1, p2)
         // Cancel long press when second finger touches
-        clearLongPress()
+        longPressHelper.clear()
       }
     }
 
@@ -204,22 +212,15 @@ export default function (mind: MindElixirInstance) {
       } else if (e.pointerType === 'touch' && activePointers.size === 1) {
         // For touch: start long press timer instead of immediate drag
         if (isTopic(target) || target.closest('me-tpc')) {
-          longPressStartPos = { x: e.clientX, y: e.clientY }
-          longPressTarget = target
-          longPressPointerId = e.pointerId
-          longPressTimer = window.setTimeout(() => {
+          longPressHelper.start(e, e => {
             // Long press triggered, start drag with immediate ghost display
             if (handleNodeDragStart(mind, nodeDragState, e, true)) {
-              if (longPressTarget) {
-                longPressTarget.setPointerCapture(e.pointerId)
+              if (longPressHelper.target) {
+                longPressHelper.target.setPointerCapture(e.pointerId)
               }
               updateGhostPosition(nodeDragState.ghost, e.clientX, e.clientY)
             }
-            longPressTimer = null
-            longPressStartPos = null
-            longPressTarget = null
-            longPressPointerId = null
-          }, LONG_PRESS_DURATION)
+          })
         }
       } else if (e.pointerType === 'mouse' && handleNodeDragStart(mind, nodeDragState, e, false)) {
         // For mouse: start drag immediately
@@ -252,16 +253,7 @@ export default function (mind: MindElixirInstance) {
       activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
 
       // Check if long press should be cancelled due to movement
-      if (longPressTimer !== null && longPressStartPos !== null && e.pointerId === longPressPointerId) {
-        const dx = e.clientX - longPressStartPos.x
-        const dy = e.clientY - longPressStartPos.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance > LONG_PRESS_MOVE_THRESHOLD) {
-          // Movement exceeded threshold, cancel long press
-          clearLongPress()
-        }
-      }
+      longPressHelper.handleMove(e)
 
       // Only handle pinch zoom when there are 2+ fingers
       if (activePointers.size >= 2) {
@@ -316,7 +308,7 @@ export default function (mind: MindElixirInstance) {
       }
 
       // Cancel long press timer if still active
-      clearLongPress()
+      longPressHelper.clear()
     }
 
     // Handle node drag end
@@ -354,14 +346,14 @@ export default function (mind: MindElixirInstance) {
   // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
   const handleBlur = () => {
     // Clear long press timer
-    clearLongPress()
+    longPressHelper.clear()
 
     // Clear drag state when window loses focus (e.g., alert dialog appears)
     if (panHelper.mousedown) {
       panHelper.clear()
     }
     // Also cancel any ongoing node drag
-    if (nodeDragState && (nodeDragState.isDragging || nodeDragState.pointerId !== null)) {
+    if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
       handleNodeDragCancel(mind, nodeDragState)
     }
   }
@@ -374,11 +366,11 @@ export default function (mind: MindElixirInstance) {
       }
 
       // Cancel long press timer
-      clearLongPress()
+      longPressHelper.clear()
     }
 
     // Cancel node drag
-    if (nodeDragState && nodeDragState.pointerId === e.pointerId) {
+    if (nodeDragState.pointerId === e.pointerId) {
       handleNodeDragCancel(mind, nodeDragState)
     }
 
@@ -411,7 +403,20 @@ export default function (mind: MindElixirInstance) {
     mind.move(-e.deltaX, -e.deltaY)
   }
 
-  const { container } = mind
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      mind.spacePressed = true
+      mind.container.classList.add('space-pressed')
+    }
+  }
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.code === 'Space') {
+      mind.spacePressed = false
+      mind.container.classList.remove('space-pressed')
+    }
+  }
+
   const off = on([
     { dom: container, evt: 'pointerdown', func: handlePointerDown },
     { dom: container, evt: 'pointermove', func: handlePointerMove },
