@@ -1,5 +1,7 @@
 import { test, expect } from './mind-elixir-test'
 
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 const data = {
   nodeData: {
     topic: 'Root Node',
@@ -44,7 +46,7 @@ test('Keyboard Shortcuts - Ctrl+Z for Undo', async ({ page, me }) => {
   await expect(page.getByText('Left Child 1')).toBeHidden()
 
   // Test Ctrl+Z
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(page.getByText('Left Child 1')).toBeVisible()
 })
 
@@ -52,11 +54,11 @@ test('Keyboard Shortcuts - Ctrl+Y for Redo', async ({ page, me }) => {
   // Perform and undo an operation
   await me.click('Left Child 1')
   await page.keyboard.press('Delete')
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(page.getByText('Left Child 1')).toBeVisible()
 
   // Test Ctrl+Y
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(page.getByText('Left Child 1')).toBeHidden()
 })
 
@@ -67,11 +69,11 @@ test('Keyboard Shortcuts - Ctrl+Shift+Z for Redo', async ({ page, me }) => {
   await page.keyboard.press('Enter')
   await expect(page.getByText('New Node')).toBeVisible()
 
-  await page.keyboard.press('Control+z') // Undo
+  await page.keyboard.press(`${modifier}+z`) // Undo
   await expect(page.getByText('New Node')).toBeHidden()
 
   // Test Ctrl+Shift+Z (alternative redo)
-  await page.keyboard.press('Control+Shift+Z')
+  await page.keyboard.press(`${modifier}+Shift+Z`)
   await expect(page.getByText('New Node')).toBeVisible()
 })
 
@@ -105,7 +107,7 @@ test('Keyboard Shortcuts - Meta+Y for Redo (Mac style)', async ({ page, me }) =>
 test('Keyboard Shortcuts - Meta+Shift+Z for Redo (Mac style)', async ({ page, me }) => {
   // Perform and undo an operation
   await me.click('Left Child 2')
-  await page.keyboard.press('Control+Enter') // Add parent
+  await page.keyboard.press(`${modifier}+Enter`) // Add parent
   await page.keyboard.press('Enter')
   await expect(page.getByText('New Node')).toBeVisible()
 
@@ -128,7 +130,7 @@ test('Keyboard Shortcuts - Rapid Undo/Redo Sequence', async ({ page, me }) => {
 
   // Operation 2: Edit the new node
   await me.dblclick('New Node')
-  await page.keyboard.press('Control+a')
+  await page.keyboard.press(`${modifier}+a`)
   await page.keyboard.insertText('Edited Node')
   await page.keyboard.press('Enter')
   await expect(page.getByText('Edited Node')).toBeVisible()
@@ -140,24 +142,24 @@ test('Keyboard Shortcuts - Rapid Undo/Redo Sequence', async ({ page, me }) => {
   await expect(newNodes).toHaveCount(1)
 
   // Rapid undo sequence
-  await page.keyboard.press('Control+z') // Undo add sibling
+  await page.keyboard.press(`${modifier}+z`) // Undo add sibling
   await expect(newNodes).toHaveCount(0)
 
-  await page.keyboard.press('Control+z') // Undo edit
+  await page.keyboard.press(`${modifier}+z`) // Undo edit
   await expect(page.getByText('Edited Node')).toBeHidden()
   await expect(page.getByText('New Node')).toBeVisible()
 
-  await page.keyboard.press('Control+z') // Undo add child
+  await page.keyboard.press(`${modifier}+z`) // Undo add child
   await expect(page.getByText('New Node')).toBeHidden()
 
   // Rapid redo sequence
-  await page.keyboard.press('Control+y') // Redo add child
+  await page.keyboard.press(`${modifier}+y`) // Redo add child
   await expect(page.getByText('New Node')).toBeVisible()
 
-  await page.keyboard.press('Control+y') // Redo edit
+  await page.keyboard.press(`${modifier}+y`) // Redo edit
   await expect(page.getByText('Edited Node')).toBeVisible()
 
-  await page.keyboard.press('Control+y') // Redo add sibling
+  await page.keyboard.press(`${modifier}+y`) // Redo add sibling
   await expect(newNodes).toHaveCount(1)
 })
 
@@ -168,17 +170,17 @@ test('Keyboard Shortcuts - Undo/Redo with Node Movement', async ({ page, me }) =
 
   // Verify the node moved (this depends on the specific implementation)
   // We'll check by trying to undo the move
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
 
   // Redo the move
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
 })
 
 test('Keyboard Shortcuts - Undo/Redo Edge Cases', async ({ page, me }) => {
   // Test undo when at the beginning of history
-  await page.keyboard.press('Control+z')
-  await page.keyboard.press('Control+z')
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
+  await page.keyboard.press(`${modifier}+z`)
+  await page.keyboard.press(`${modifier}+z`)
   // Should not crash or cause issues
   await expect(page.getByText('Root Node')).toBeVisible()
 
@@ -188,9 +190,9 @@ test('Keyboard Shortcuts - Undo/Redo Edge Cases', async ({ page, me }) => {
   await expect(page.getByText('Right Child 1')).toBeHidden()
 
   // Test redo when at the end of history
-  await page.keyboard.press('Control+y')
-  await page.keyboard.press('Control+y')
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
+  await page.keyboard.press(`${modifier}+y`)
+  await page.keyboard.press(`${modifier}+y`)
   // Should not crash or cause issues
   await expect(page.getByText('Right Child 1')).toBeHidden()
 })
@@ -198,21 +200,21 @@ test('Keyboard Shortcuts - Undo/Redo Edge Cases', async ({ page, me }) => {
 test('Keyboard Shortcuts - Undo/Redo with Complex Node Operations', async ({ page, me }) => {
   // Test with copy/paste operations
   await me.click('Left Branch 1')
-  await page.keyboard.press('Control+c') // Copy
+  await page.keyboard.press(`${modifier}+c`) // Copy
 
   await me.click('Right Branch 1')
-  await page.keyboard.press('Control+v') // Paste
+  await page.keyboard.press(`${modifier}+v`) // Paste
 
   // Should have two "Left Branch 1" nodes now
   const leftBranchNodes = page.getByText('Left Branch 1')
   await expect(leftBranchNodes).toHaveCount(2)
 
   // Undo the paste
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(leftBranchNodes).toHaveCount(1)
 
   // Redo the paste
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(leftBranchNodes).toHaveCount(2)
 })
 
@@ -223,13 +225,13 @@ test('Keyboard Shortcuts - Undo/Redo Preserves Focus', async ({ page, me }) => {
   await page.keyboard.press('Enter')
 
   // Undo should restore focus to the original node
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
 
   // Test that the original node still has focus by performing an action
   await page.keyboard.press('Delete')
   await expect(page.getByText('Left Child 2')).toBeHidden()
 
   // Restore for cleanup
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(page.getByText('Left Child 2')).toBeVisible()
 })

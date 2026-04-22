@@ -1,5 +1,7 @@
 import { test, expect } from './mind-elixir-test'
 
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 const id = 'root-id'
 const topic = 'root-topic'
 const childTopic = 'child-topic'
@@ -85,7 +87,7 @@ test('Add Before', async ({ page, me }) => {
 
 test('Add Parent', async ({ page, me }) => {
   await me.click(childTopic)
-  await page.keyboard.press('Control+Enter')
+  await page.keyboard.press(`${modifier}+Enter`)
   await page.keyboard.insertText('new node')
   await page.keyboard.press('Enter')
   await expect(page.locator('#input-box')).toBeHidden()
@@ -105,9 +107,9 @@ test('Add Child', async ({ page, me }) => {
 
 test('Copy and Paste', async ({ page, me }) => {
   await me.click('middle')
-  await page.keyboard.press('Control+c')
+  await page.keyboard.press(`${modifier}+c`)
   await me.click('child-topic')
-  await page.keyboard.press('Control+v')
+  await page.keyboard.press(`${modifier}+v`)
   // I guess Playwright will auto-scroll before taking screenshots
   // After changing the scrolling solution to transform, we can't get complete me-nodes screenshot through scrolling
   // This is indeed a very quirky "feature"

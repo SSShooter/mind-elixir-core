@@ -1,5 +1,7 @@
 import { test, expect } from './mind-elixir-test'
 
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 const data = {
   nodeData: {
     topic: 'Root',
@@ -25,11 +27,11 @@ test('Simple Undo/Redo - Basic Add Node', async ({ page, me }) => {
   await expect(page.getByText('New Node')).toBeVisible()
 
   // Test Ctrl+Z (undo)
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(page.getByText('New Node')).toBeHidden()
 
   // Test Ctrl+Y (redo)
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(page.getByText('New Node')).toBeVisible()
 })
 
@@ -40,11 +42,11 @@ test('Simple Undo/Redo - Basic Remove Node', async ({ page, me }) => {
   await expect(page.getByText('Child 1')).toBeHidden()
 
   // Test Ctrl+Z (undo)
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(page.getByText('Child 1')).toBeVisible()
 
   // Test Ctrl+Y (redo)
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(page.getByText('Child 1')).toBeHidden()
 })
 
@@ -56,18 +58,18 @@ test('Simple Undo/Redo - Test Ctrl+Shift+Z', async ({ page, me }) => {
   await expect(page.getByText('New Node')).toBeVisible()
 
   // Undo
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(page.getByText('New Node')).toBeHidden()
 
   // Try Ctrl+Shift+Z for redo
-  await page.keyboard.press('Control+Shift+Z')
+  await page.keyboard.press(`${modifier}+Shift+Z`)
   await page.waitForTimeout(500)
 
   const nodeVisible = await page.getByText('New Node').isVisible()
 
   // If that didn't work, try lowercase z
   if (!nodeVisible) {
-    await page.keyboard.press('Control+Shift+Z')
+    await page.keyboard.press(`${modifier}+Shift+Z`)
     await page.waitForTimeout(500)
     const nodeVisible2 = await page.getByText('New Node').isVisible()
     console.log('Node visible after Ctrl+Shift+z:', nodeVisible2)
@@ -104,35 +106,35 @@ test('Simple Undo/Redo - Multiple Operations', async ({ page, me }) => {
   await expect(newNodes).toHaveCount(2)
 
   // Undo twice
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(newNodes).toHaveCount(1)
 
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(newNodes).toHaveCount(0)
 
   // Redo twice
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(newNodes).toHaveCount(1)
 
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(newNodes).toHaveCount(2)
 })
 
 test('Simple Undo/Redo - Edit Node', async ({ page, me }) => {
   // Edit a node
   await me.dblclick('Child 1')
-  await page.keyboard.press('Control+a')
+  await page.keyboard.press(`${modifier}+a`)
   await page.keyboard.insertText('Modified Child')
   await page.keyboard.press('Enter')
   await expect(page.getByText('Modified Child')).toBeVisible()
 
   // Undo edit
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(page.getByText('Child 1')).toBeVisible()
   await expect(page.getByText('Modified Child')).toBeHidden()
 
   // Redo edit
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(page.getByText('Modified Child')).toBeVisible()
   await expect(page.getByText('Child 1')).toBeHidden()
 })

@@ -1,5 +1,7 @@
 import { test, expect } from './mind-elixir-test'
 
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 const data = {
   nodeData: {
     topic: 'Root Topic',
@@ -142,7 +144,7 @@ test('Edit summary text', async ({ page, me }) => {
   await expect(page.locator('#input-box')).toBeVisible()
 
   // Clear existing text and type new text
-  await page.keyboard.press('Control+a')
+  await page.keyboard.press(`${modifier}+a`)
   await page.keyboard.insertText('Custom Summary')
   await page.keyboard.press('Enter')
 
@@ -159,7 +161,7 @@ test('Edit summary text', async ({ page, me }) => {
   await expect(page.locator('#input-box')).toBeVisible()
 
   // Change text again
-  await page.keyboard.press('Control+a')
+  await page.keyboard.press(`${modifier}+a`)
   await page.keyboard.insertText('Updated Summary')
   await page.keyboard.press('Enter')
 
@@ -361,7 +363,7 @@ test('Summary with empty text handling', async ({ page, me }) => {
   await page.locator('#cm-summary').click()
 
   // Clear all text and press Enter
-  await page.keyboard.press('Control+a')
+  await page.keyboard.press(`${modifier}+a`)
   await page.keyboard.press('Delete')
   await page.keyboard.press('Enter')
 

@@ -133,7 +133,7 @@ export default function (mind: MindElixirInstance) {
     handleSvgLabelInteraction(target, false)
   }
 
-  const handleDoubleClick = (e: PointerEvent) => {
+  const handleDoubleClick = (e: MouseEvent | PointerEvent) => {
     if (!mind.editable) return
     const target = e.target as HTMLElement
     if (isTopic(target)) {
@@ -317,11 +317,10 @@ export default function (mind: MindElixirInstance) {
       }
     }
 
-    // Handle click / double-click for both mouse and touch via pointer events
+    // Handle click / double-click for touch via pointer events
     // For touch: skip if multi-finger gesture or map was dragged
     const isTouchTap = e.pointerType === 'touch' && activePointers.size === 0 && !panHelper.moved
-    const isMouseClick = e.pointerType === 'mouse' && e.button === 0 && !panHelper.moved
-    if (isTouchTap || isMouseClick) {
+    if (isTouchTap) {
       const currentTime = new Date().getTime()
       const tapLength = currentTime - lastTap
       if (tapLength < 300 && tapLength > 0 && lastTapTarget === e.target) {
@@ -403,6 +402,7 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'pointerup', func: handlePointerUp },
     { dom: container, evt: 'pointercancel', func: handlePointerCancel },
     { dom: container, evt: 'click', func: handleSingleClick },
+    { dom: container, evt: 'dblclick', func: handleDoubleClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
     { dom: container, evt: 'blur', func: handleBlur },

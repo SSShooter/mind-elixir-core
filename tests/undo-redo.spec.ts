@@ -1,5 +1,7 @@
 import { test, expect } from './mind-elixir-test'
 
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 const id = 'root-id'
 const topic = 'root-topic'
 const childTopic = 'child-topic'
@@ -36,19 +38,19 @@ test('Undo/Redo - Add Node Operations', async ({ page, me }) => {
   await expect(me.getByText('New Node')).toBeVisible()
 
   // Undo the add operation using Ctrl+Z
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText('New Node')).toBeHidden()
 
   // Redo the add operation using Ctrl+Y
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(me.getByText('New Node')).toBeVisible()
 
   // Undo again using Ctrl+Z
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText('New Node')).toBeHidden()
 
   // Redo using Ctrl+Shift+Z (alternative redo shortcut)
-  await page.keyboard.press('Control+Shift+Z')
+  await page.keyboard.press(`${modifier}+Shift+Z`)
   await expect(me.getByText('New Node')).toBeVisible()
 })
 
@@ -59,15 +61,15 @@ test('Undo/Redo - Remove Node Operations', async ({ page, me }) => {
   await expect(me.getByText(childTopic)).toBeHidden()
 
   // Undo the remove operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText(childTopic)).toBeVisible()
 
   // Redo the remove operation
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(me.getByText(childTopic)).toBeHidden()
 
   // Undo again to restore the node
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText(childTopic)).toBeVisible()
 })
 
@@ -83,12 +85,12 @@ test('Undo/Redo - Edit Node Operations', async ({ page, me }) => {
   await expect(me.getByText(newText)).toBeVisible()
 
   // Undo the edit operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText(originalText)).toBeVisible()
   await expect(me.getByText(newText)).toBeHidden()
 
   // Redo the edit operation
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(me.getByText(newText)).toBeVisible()
   await expect(me.getByText(originalText)).toBeHidden()
 })
@@ -117,89 +119,89 @@ test('Undo/Redo - Multiple Operations Sequence', async ({ page, me }) => {
 
   // Now undo operations step by step
   // Undo edit operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText('First New Node')).toBeHidden()
   await expect(me.getByText('New Node')).toHaveCount(2)
 
   // Undo second add operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(newNodes).toHaveCount(1)
 
   // Undo first add operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText('New Node')).toBeHidden()
 
   // Redo all operations
-  await page.keyboard.press('Control+y') // Redo first add
+  await page.keyboard.press(`${modifier}+y`) // Redo first add
   await expect(me.getByText('New Node')).toBeVisible()
 
-  await page.keyboard.press('Control+y') // Redo second add
+  await page.keyboard.press(`${modifier}+y`) // Redo second add
   await expect(newNodes).toHaveCount(2)
 
-  await page.keyboard.press('Control+y') // Redo edit
+  await page.keyboard.press(`${modifier}+y`) // Redo edit
   await expect(me.getByText('First New Node')).toBeVisible()
 })
 
 test('Undo/Redo - Copy and Paste Operations', async ({ page, me }) => {
   // Copy middle node
   await me.click(middleTopic)
-  await page.keyboard.press('Control+c')
+  await page.keyboard.press(`${modifier}+c`)
 
   // Paste to child node
   await me.click(childTopic)
-  await page.keyboard.press('Control+v')
+  await page.keyboard.press(`${modifier}+v`)
 
   // Verify the copy was successful (should have two "middle" nodes)
   const middleNodes = me.getByText(middleTopic)
   await expect(middleNodes).toHaveCount(2)
 
   // Undo the paste operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(middleNodes).toHaveCount(1)
 
   // Redo the paste operation
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(middleNodes).toHaveCount(2)
 })
 
 test('Undo/Redo - Cut and Paste Operations', async ({ page, me }) => {
   // Cut child node
   await me.click(childTopic)
-  await page.keyboard.press('Control+x')
+  await page.keyboard.press(`${modifier}+x`)
   await expect(me.getByText(childTopic)).toBeHidden()
 
   // Paste to root node
   await me.click(topic)
-  await page.keyboard.press('Control+v')
+  await page.keyboard.press(`${modifier}+v`)
   await expect(me.getByText(childTopic)).toBeVisible()
 
   // Undo the paste operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   // After undo, the node should be back in its original position
 
   // Undo the cut operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText(childTopic)).toBeVisible()
 
   // Redo the cut operation
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(me.getByText(childTopic)).toBeHidden()
 
   // Redo the paste operation
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   await expect(me.getByText(childTopic)).toBeVisible()
 })
 
 test('Undo/Redo - No Operations Available', async ({ page, me }) => {
   // Try to undo when no operations are available
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   // Should not crash or change anything
   await expect(me.getByText(topic)).toBeVisible()
   await expect(me.getByText(middleTopic)).toBeVisible()
   await expect(me.getByText(childTopic)).toBeVisible()
 
   // Try to redo when no operations are available
-  await page.keyboard.press('Control+y')
+  await page.keyboard.press(`${modifier}+y`)
   // Should not crash or change anything
   await expect(me.getByText(topic)).toBeVisible()
   await expect(me.getByText(middleTopic)).toBeVisible()
@@ -217,7 +219,7 @@ test('Undo/Redo - Node Selection Restoration', async ({ page, me }) => {
   await expect(newNode).toBeVisible()
 
   // Undo the operation
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(newNode).toBeHidden()
 
   // The original child node should be selected again after undo
@@ -226,6 +228,6 @@ test('Undo/Redo - Node Selection Restoration', async ({ page, me }) => {
   await expect(me.getByText(childTopic)).toBeHidden()
 
   // Undo the delete to restore the node
-  await page.keyboard.press('Control+z')
+  await page.keyboard.press(`${modifier}+z`)
   await expect(me.getByText(childTopic)).toBeVisible()
 })

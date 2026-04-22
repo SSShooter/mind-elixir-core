@@ -1,6 +1,8 @@
 import type { Page } from '@playwright/test'
 import { test, expect } from './mind-elixir-test'
 
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 const data = {
   nodeData: {
     topic: 'root',
@@ -87,8 +89,8 @@ test('Multiple Move In', async ({ page, me }) => {
 
 test('Multiple Copy', async ({ page, me }) => {
   await select(page)
-  await page.keyboard.press('Control+c')
+  await page.keyboard.press(`${modifier}+c`)
   await me.click('child3')
-  await page.keyboard.press('Control+v')
+  await page.keyboard.press(`${modifier}+v`)
   await me.toHaveScreenshot()
 })

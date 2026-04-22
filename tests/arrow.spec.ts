@@ -1,5 +1,7 @@
 import { test, expect } from './mind-elixir-test'
 
+const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
 const data = {
   nodeData: {
     topic: 'Root Topic',
@@ -212,7 +214,7 @@ test('Edit arrow label', async ({ page, me }) => {
   await expect(page.locator('#input-box')).toBeVisible()
 
   // Type new label
-  await page.keyboard.press('Control+a')
+  await page.keyboard.press(`${modifier}+a`)
   await page.keyboard.insertText('Updated Arrow Label')
   await page.keyboard.press('Enter')
 
