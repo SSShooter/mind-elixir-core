@@ -15,6 +15,7 @@ import { getDistance, isTopic, on } from './utils'
 export default function (mind: MindElixirInstance) {
   const { dragMoveHelper } = mind
   let lastTap = 0
+  let lastTapTarget: EventTarget | null = null
   mind.spacePressed = false
 
   let lastDistance: number | null = null
@@ -323,12 +324,11 @@ export default function (mind: MindElixirInstance) {
     if (isTouchTap || isMouseClick) {
       const currentTime = new Date().getTime()
       const tapLength = currentTime - lastTap
-      if (tapLength < 300 && tapLength > 0) {
+      if (tapLength < 300 && tapLength > 0 && lastTapTarget === e.target) {
         handleDoubleClick(e)
-      } else {
-        handleSingleClick(e)
       }
       lastTap = currentTime
+      lastTapTarget = e.target
     }
 
     if (!dragMoveHelper.mousedown) return
@@ -402,6 +402,7 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'pointermove', func: handlePointerMove },
     { dom: container, evt: 'pointerup', func: handlePointerUp },
     { dom: container, evt: 'pointercancel', func: handlePointerCancel },
+    { dom: container, evt: 'click', func: handleSingleClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
     { dom: container, evt: 'blur', func: handleBlur },
