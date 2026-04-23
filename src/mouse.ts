@@ -56,6 +56,10 @@ export default function (mind: MindElixirInstance) {
         this.lastDistance = null
       }
     },
+    clear() {
+      this.activePointers.clear()
+      this.lastDistance = null
+    },
   }
 
   // Node drag state - always initialize
@@ -294,34 +298,14 @@ export default function (mind: MindElixirInstance) {
     panHelper.handlePointerUp(e)
   }
 
-  // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
-  const handleBlur = () => {
-    // Clear long press timer
+  // Handle cases where interaction is interrupted (e.g., alert dialogs, system gestures, loss of focus)
+  const handleInterrupt = () => {
+    pinchHelper.clear()
     longPressHelper.clear()
-
-    // Clear drag state when window loses focus (e.g., alert dialog appears)
     panHelper.clear()
-    // Also cancel any ongoing node drag
     if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
       handleNodeDragCancel(mind, nodeDragState)
     }
-  }
-
-  const handlePointerCancel = (e: PointerEvent) => {
-    if (e.pointerType === 'touch') {
-      pinchHelper.handlePointerUp(e)
-
-      // Cancel long press timer
-      longPressHelper.clear()
-    }
-
-    // Cancel node drag
-    if (nodeDragState.pointerId === e.pointerId) {
-      handleNodeDragCancel(mind, nodeDragState)
-    }
-
-    // Also handle as pointer up for map movement
-    handlePointerUp(e)
   }
 
   const handleContextMenu = (e: MouseEvent) => {
@@ -367,12 +351,12 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'pointerdown', func: handlePointerDown },
     { dom: container, evt: 'pointermove', func: handlePointerMove },
     { dom: container, evt: 'pointerup', func: handlePointerUp },
-    { dom: container, evt: 'pointercancel', func: handlePointerCancel },
+    { dom: container, evt: 'pointercancel', func: handleInterrupt },
     { dom: container, evt: 'click', func: handleSingleClick },
     { dom: container, evt: 'dblclick', func: handleDoubleClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
-    { dom: container, evt: 'blur', func: handleBlur },
+    { dom: container, evt: 'blur', func: handleInterrupt },
     { dom: container, evt: 'keydown', func: handleKeyDown },
     { dom: container, evt: 'keyup', func: handleKeyUp },
   ])
