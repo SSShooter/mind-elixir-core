@@ -17,8 +17,46 @@ export default function (mind: MindElixirInstance) {
   let lastTapTarget: EventTarget | null = null
   mind.spacePressed = false
 
-  let lastDistance: number | null = null
-  const activePointers = new Map<number, { x: number; y: number }>()
+  // Pinch zoom state for touch devices
+  const pinchHelper = {
+    lastDistance: null as number | null,
+    activePointers: new Map<number, { x: number; y: number }>(),
+    handlePointerDown(e: PointerEvent) {
+      if (e.pointerType !== 'touch') return false
+      this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      if (this.activePointers.size >= 2) {
+        const [p1, p2] = Array.from(this.activePointers.values())
+        this.lastDistance = getDistance(p1, p2)
+        return true
+      }
+      return false
+    },
+    handlePointerMove(e: PointerEvent) {
+      if (e.pointerType !== 'touch' || !this.activePointers.has(e.pointerId)) return false
+      this.activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      if (this.activePointers.size >= 2) {
+        const [p1, p2] = Array.from(this.activePointers.values())
+        const newDistance = getDistance(p1, p2)
+        if (this.lastDistance !== null && this.lastDistance > 0) {
+          const scaleRatio = newDistance / this.lastDistance
+          mind.scale(mind.scaleVal * scaleRatio, {
+            x: (p1.x + p2.x) / 2,
+            y: (p1.y + p2.y) / 2,
+          })
+        }
+        this.lastDistance = newDistance
+        return true
+      }
+      return false
+    },
+    handlePointerUp(e: PointerEvent) {
+      if (e.pointerType !== 'touch') return
+      this.activePointers.delete(e.pointerId)
+      if (this.activePointers.size < 2) {
+        this.lastDistance = null
+      }
+    },
+  }
 
   // Node drag state - always initialize
   const nodeDragState = createNodeDragState(mind)
@@ -143,23 +181,13 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerDown = (e: PointerEvent) => {
-    if (e.pointerType === 'touch') {
-      // Record current touch point
-      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
-      // Only intercept the original logic when there are 2+ fingers
-      if (activePointers.size === 2) {
-        // Initialize distance when the second finger touches down
-        const [p1, p2] = Array.from(activePointers.values())
-        lastDistance = getDistance(p1, p2)
-        // Cancel long press when second finger touches
-        longPressHelper.clear()
-      }
+    if (pinchHelper.handlePointerDown(e)) {
+      longPressHelper.clear()
     }
 
-    panHelper.moved = false
+    panHelper.handlePointerDown(e)
 
     const target = e.target as HTMLElement
-    const mouseMoveButton = mind.mouseSelectionButton === 0 ? 2 : 0
 
     // Unified node selection
     if (mind.editable && (e.button === 0 || e.pointerType === 'touch') && isTopic(target)) {
@@ -184,12 +212,12 @@ export default function (mind: MindElixirInstance) {
     // Handle node dragging with left button or touch (only for topics)
     if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
       // For touch, only start drag with single finger
-      if (e.pointerType === 'touch' && activePointers.size > 1) {
+      if (e.pointerType === 'touch' && pinchHelper.activePointers.size > 1) {
         // Cancel any ongoing drag if second finger touches
         if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
           handleNodeDragCancel(mind, nodeDragState)
         }
-      } else if (e.pointerType === 'touch' && activePointers.size === 1) {
+      } else if (e.pointerType === 'touch' && pinchHelper.activePointers.size === 1) {
         // For touch: start long press timer instead of immediate drag
         if (isTopic(target) || target.closest('me-tpc')) {
           longPressHelper.start(e, e => {
@@ -208,53 +236,13 @@ export default function (mind: MindElixirInstance) {
         return
       }
     }
-
-    // Support space + left mouse button drag
-    const isSpaceDrag = mind.spacePressed && e.button === 0 && e.pointerType === 'mouse'
-    // both button can be used to drag in readonly mode
-    const isNormalDrag = !mind.editable || (e.button === mouseMoveButton && e.pointerType === 'mouse') || e.pointerType === 'touch'
-
-    if (!isSpaceDrag && !isNormalDrag) return
-
-    // Store initial position for movement calculation
-    panHelper.x = e.clientX
-    panHelper.y = e.clientY
-
-    if (target.className !== 'circle' && target.contentEditable !== 'plaintext-only') {
-      panHelper.mousedown = true
-      // Capture pointer to ensure we receive all pointer events even if pointer moves outside the element
-      target.setPointerCapture(e.pointerId)
-    }
   }
 
   const handlePointerMove = (e: PointerEvent) => {
-    if (e.pointerType === 'touch' && activePointers.has(e.pointerId)) {
-      // Update current touch point position
-      activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
-
-      // Check if long press should be cancelled due to movement
+    if (e.pointerType === 'touch') {
       longPressHelper.handleMove(e)
-
-      // Only handle pinch zoom when there are 2+ fingers
-      if (activePointers.size >= 2) {
-        const [p1, p2] = Array.from(activePointers.values())
-        const newDistance = getDistance(p1, p2)
-
-        if (lastDistance == null) {
-          lastDistance = newDistance
-        } else {
-          if (lastDistance > 0) {
-            const scaleRatio = newDistance / lastDistance
-            mind.scale(mind.scaleVal * scaleRatio, {
-              x: (p1.x + p2.x) / 2,
-              y: (p1.y + p2.y) / 2,
-            })
-          }
-          lastDistance = newDistance
-        }
-        return
-      }
     }
+    if (pinchHelper.handlePointerMove(e)) return
 
     // Handle node dragging
     if (nodeDragState && nodeDragState.pointerId !== null) {
@@ -265,27 +253,12 @@ export default function (mind: MindElixirInstance) {
       }
     }
 
-    // click trigger pointermove in windows chrome
-    if ((e.target as HTMLElement).contentEditable !== 'plaintext-only' || (mind.spacePressed && panHelper.mousedown)) {
-      // drag and move the map
-      // Calculate movement delta manually since pointer events don't have movementX/Y
-      const movementX = e.clientX - panHelper.x
-      const movementY = e.clientY - panHelper.y
-
-      panHelper.onMove(movementX, movementY)
-    }
-
-    panHelper.x = e.clientX
-    panHelper.y = e.clientY
+    panHelper.handlePointerMove(e)
   }
 
   const handlePointerUp = (e: PointerEvent) => {
     if (e.pointerType === 'touch') {
-      activePointers.delete(e.pointerId)
-      // End this zoom gesture when fewer than 2 fingers remain
-      if (activePointers.size < 2) {
-        lastDistance = null
-      }
+      pinchHelper.handlePointerUp(e)
 
       // Cancel long press timer if still active
       longPressHelper.clear()
@@ -307,7 +280,7 @@ export default function (mind: MindElixirInstance) {
 
     // Handle click / double-click for touch via pointer events
     // For touch: skip if multi-finger gesture or map was dragged
-    const isTouchTap = e.pointerType === 'touch' && activePointers.size === 0 && !panHelper.moved
+    const isTouchTap = e.pointerType === 'touch' && pinchHelper.activePointers.size === 0 && !panHelper.moved
     if (isTouchTap) {
       const currentTime = new Date().getTime()
       const tapLength = currentTime - lastTap
@@ -318,9 +291,7 @@ export default function (mind: MindElixirInstance) {
       lastTapTarget = e.target
     }
 
-    if (!panHelper.mousedown) return
-    releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
-    panHelper.clear()
+    panHelper.handlePointerUp(e)
   }
 
   // Handle cases where pointerup might not be triggered (e.g., alert dialogs)
@@ -329,9 +300,7 @@ export default function (mind: MindElixirInstance) {
     longPressHelper.clear()
 
     // Clear drag state when window loses focus (e.g., alert dialog appears)
-    if (panHelper.mousedown) {
-      panHelper.clear()
-    }
+    panHelper.clear()
     // Also cancel any ongoing node drag
     if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
       handleNodeDragCancel(mind, nodeDragState)
@@ -340,10 +309,7 @@ export default function (mind: MindElixirInstance) {
 
   const handlePointerCancel = (e: PointerEvent) => {
     if (e.pointerType === 'touch') {
-      activePointers.delete(e.pointerId)
-      if (activePointers.size < 2) {
-        lastDistance = null
-      }
+      pinchHelper.handlePointerUp(e)
 
       // Cancel long press timer
       longPressHelper.clear()
