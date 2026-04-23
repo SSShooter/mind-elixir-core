@@ -1,11 +1,4 @@
-import {
-  createNodeDragState,
-  handleNodeDragStart,
-  handleNodeDragMove,
-  handleNodeDragEnd,
-  handleNodeDragCancel,
-  updateGhostPosition,
-} from './plugin/nodeDraggable'
+import { createNodeDragState, handleNodeDragStart, handleNodeDragMove, handleNodeDragEnd, handleNodeDragCancel } from './plugin/nodeDraggable'
 import { handleWheelZoom } from './plugin/keypress'
 import type { Expander, ArrowSvg, Topic, SummarySvg } from './types/dom'
 import type { MindElixirInstance } from './types/index'
@@ -234,13 +227,12 @@ export default function (mind: MindElixirInstance) {
       }
       if (e.pointerType === 'touch') {
         mind.ptState = State.DragWait
-        longPressHelper.start(e, e => {
-          if (handleNodeDragStart(mind, nodeDragState, e, true)) {
+        longPressHelper.start(e, ev => {
+          if (handleNodeDragStart(mind, nodeDragState, ev, true)) {
             mind.ptState = State.Drag
             if (longPressHelper.target) {
-              longPressHelper.target.setPointerCapture(e.pointerId)
+              longPressHelper.target.setPointerCapture(ev.pointerId)
             }
-            updateGhostPosition(nodeDragState.ghost, e.clientX, e.clientY)
           }
         })
       } else {

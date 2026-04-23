@@ -114,6 +114,8 @@ export function handleNodeDragStart(mind: MindElixirInstance, state: NodeDragSta
   // If immediate mode (e.g., long press), show ghost immediately
   if (immediate) {
     showDragGhost(mind, state)
+    const rect = mind.container.getBoundingClientRect()
+    updateGhostPosition(state.ghost, e.clientX - rect.x, e.clientY - rect.y)
   }
 
   return true
