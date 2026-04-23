@@ -80,6 +80,7 @@ test('Multiple Move After', async ({ page, me }) => {
 test('Multiple Move In', async ({ page, me }) => {
   await select(page)
   await page.getByText('child1').hover({ force: true })
+  await page.waitForTimeout(100) // ??? I can't explain why
   await page.mouse.down()
   await me.dragOver('child3', 'in')
   await expect(page.locator('.insert-preview.in')).toBeVisible()

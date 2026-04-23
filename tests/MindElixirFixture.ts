@@ -65,6 +65,7 @@ export class MindElixirFixture {
     return this.page.getByText(topic, { exact: true })
   }
   async dragOver(topic: string, type: 'before' | 'after' | 'in') {
+    await this.page.waitForTimeout(100) // throttle
     await this.page.getByText(topic).hover({ force: true })
     await this.page.mouse.down()
     const target = await this.page.getByText(topic)

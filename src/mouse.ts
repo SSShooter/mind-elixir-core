@@ -17,6 +17,17 @@ export default function (mind: MindElixirInstance) {
   let lastTapTarget: EventTarget | null = null
   mind.spacePressed = false
 
+  const State = {
+    Idle: 0,
+    Pinch: 1,
+    DragWait: 2,
+    Drag: 3,
+    Pan: 4,
+    Select: 5,
+  }
+
+  mind.ptState = State.Idle
+
   // Pinch zoom state for touch devices
   const pinchHelper = {
     lastDistance: null as number | null,
@@ -179,112 +190,125 @@ export default function (mind: MindElixirInstance) {
     if (isTopic(target)) {
       mind.beginEdit(target)
     }
-
     // Handle SVG label interactions
     handleSvgLabelInteraction(target, true)
   }
 
   const handlePointerDown = (e: PointerEvent) => {
-    if (pinchHelper.handlePointerDown(e)) {
-      longPressHelper.clear()
-    }
-
-    panHelper.handlePointerDown(e)
-
-    const target = e.target as HTMLElement
-
-    // Unified node selection
-    if (mind.editable && (e.button === 0 || e.pointerType === 'touch') && isTopic(target)) {
-      mind.selection?.cancel()
-      const nodes = mind.currentNodes || []
-      const isMulti = e.ctrlKey || e.metaKey
-
-      if (isMulti) {
-        if (nodes.includes(target)) {
-          mind.selection?.deselect(target)
-          return // Skip drag if we just deselected
-        } else {
-          mind.selection?.select(target)
-        }
-      } else if (!nodes.includes(target)) {
-        // This is a bit complex, intertwined with selection and nodeDraggable
-        // The main conflict is between multi-node dragging and selecting a single node when multiple nodes are already selected
-        mind.selectNode(target)
-      }
-    }
-
-    // Handle node dragging with left button or touch (only for topics)
-    if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
-      // For touch, only start drag with single finger
-      if (e.pointerType === 'touch' && pinchHelper.activePointers.size > 1) {
-        // Cancel any ongoing drag if second finger touches
+    if (e.pointerType === 'touch') {
+      if (pinchHelper.handlePointerDown(e)) {
+        mind.ptState = State.Pinch
+        longPressHelper.clear()
+        panHelper.clear()
         if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
           handleNodeDragCancel(mind, nodeDragState)
         }
-      } else if (e.pointerType === 'touch' && pinchHelper.activePointers.size === 1) {
-        // For touch: start long press timer instead of immediate drag
-        if (isTopic(target) || target.closest('me-tpc')) {
-          longPressHelper.start(e, e => {
-            // Long press triggered, start drag with immediate ghost display
-            if (handleNodeDragStart(mind, nodeDragState, e, true)) {
-              if (longPressHelper.target) {
-                longPressHelper.target.setPointerCapture(e.pointerId)
-              }
-              updateGhostPosition(nodeDragState.ghost, e.clientX, e.clientY)
-            }
-          })
-        }
-      } else if (e.pointerType === 'mouse' && handleNodeDragStart(mind, nodeDragState, e, false)) {
-        // For mouse: start drag immediately
-        target.setPointerCapture(e.pointerId)
         return
+      }
+    }
+
+    if (mind.ptState === State.Pinch) return
+
+    const target = e.target as HTMLElement
+    const isNode = isTopic(target) || target.closest('me-tpc')
+
+    if (isNode && mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
+      const isTopicElement = isTopic(target)
+      if (isTopicElement) {
+        mind.selection?.cancel()
+        const nodes = mind.currentNodes || []
+        const isMulti = e.ctrlKey || e.metaKey
+
+        if (isMulti) {
+          if (nodes.includes(target as Topic)) {
+            mind.selection?.deselect(target as Topic)
+            return
+          } else {
+            mind.selection?.select(target as Topic)
+            mind.ptState = State.Select
+          }
+        } else if (!nodes.includes(target as Topic)) {
+          mind.selectNode(target as Topic)
+          mind.ptState = State.Select
+        }
+      }
+      if (e.pointerType === 'touch') {
+        mind.ptState = State.DragWait
+        longPressHelper.start(e, e => {
+          if (handleNodeDragStart(mind, nodeDragState, e, true)) {
+            mind.ptState = State.Drag
+            if (longPressHelper.target) {
+              longPressHelper.target.setPointerCapture(e.pointerId)
+            }
+            updateGhostPosition(nodeDragState.ghost, e.clientX, e.clientY)
+          }
+        })
+      } else {
+        if (handleNodeDragStart(mind, nodeDragState, e, false)) {
+          mind.ptState = State.Drag
+          target.setPointerCapture(e.pointerId)
+        }
+      }
+    } else {
+      panHelper.handlePointerDown(e)
+      if (panHelper.mousedown) {
+        mind.ptState = State.Pan
       }
     }
   }
 
   const handlePointerMove = (e: PointerEvent) => {
-    if (e.pointerType === 'touch') {
-      longPressHelper.handleMove(e)
-    }
-    if (pinchHelper.handlePointerMove(e)) return
-
-    // Handle node dragging
-    if (nodeDragState && nodeDragState.pointerId !== null) {
-      handleNodeDragMove(mind, nodeDragState, e)
-      // If dragging started, don't process map movement
-      if (nodeDragState.isDragging) {
-        return
-      }
+    if (pinchHelper.handlePointerMove(e)) {
+      return
     }
 
-    panHelper.handlePointerMove(e)
+    switch (mind.ptState) {
+      case State.DragWait:
+        if (e.pointerType === 'touch') {
+          longPressHelper.handleMove(e)
+          if (longPressHelper.timer === null) {
+            mind.ptState = State.Idle
+          }
+        }
+        break
+      case State.Drag:
+        handleNodeDragMove(mind, nodeDragState, e)
+        break
+      case State.Pan:
+        panHelper.handlePointerMove(e)
+        break
+    }
   }
 
   const handlePointerUp = (e: PointerEvent) => {
     if (e.pointerType === 'touch') {
       pinchHelper.handlePointerUp(e)
-
-      // Cancel long press timer if still active
-      longPressHelper.clear()
     }
 
-    // Handle node drag end
-    if (nodeDragState && nodeDragState.pointerId !== null) {
-      const wasDragging = nodeDragState.isDragging
-      handleNodeDragEnd(mind, nodeDragState, e)
+    const prevState = mind.ptState
 
-      // Release pointer capture
-      releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
+    switch (mind.ptState) {
+      case State.DragWait:
+        longPressHelper.clear()
+        break
+      case State.Drag:
+        handleNodeDragEnd(mind, nodeDragState, e)
+        releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
+        break
+      case State.Pan:
+        panHelper.handlePointerUp(e)
+        break
+    }
 
-      // If we were dragging nodes, don't process map movement end
-      if (wasDragging) {
-        return
+    setTimeout(() => {
+      // 统一将状态重置为 Idle，除了仍在进行中的 Pinch 状态（即屏幕上还有两根及以上的手指）
+      if (mind.ptState !== State.Pinch || pinchHelper.activePointers.size < 2) {
+        mind.ptState = State.Idle
       }
-    }
+      // 如果不用 setTimeout 会直接以 Idle 状态触发 selection 的 beforestart
+    }, 100)
 
-    // Handle click / double-click for touch via pointer events
-    // For touch: skip if multi-finger gesture or map was dragged
-    const isTouchTap = e.pointerType === 'touch' && pinchHelper.activePointers.size === 0 && !panHelper.moved
+    const isTouchTap = e.pointerType === 'touch' && pinchHelper.activePointers.size === 0 && !panHelper.moved && prevState !== State.Drag
     if (isTouchTap) {
       const currentTime = new Date().getTime()
       const tapLength = currentTime - lastTap
@@ -294,11 +318,8 @@ export default function (mind: MindElixirInstance) {
       lastTap = currentTime
       lastTapTarget = e.target
     }
-
-    panHelper.handlePointerUp(e)
   }
 
-  // Handle cases where interaction is interrupted (e.g., alert dialogs, system gestures, loss of focus)
   const handleInterrupt = () => {
     pinchHelper.clear()
     longPressHelper.clear()
@@ -306,21 +327,21 @@ export default function (mind: MindElixirInstance) {
     if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
       handleNodeDragCancel(mind, nodeDragState)
     }
+    mind.ptState = State.Idle
   }
 
   const handleContextMenu = (e: MouseEvent) => {
-    console.log('handleContextMenu', e)
     e.preventDefault()
     // Only handle right-click for context menu
     if (e.button !== 2) return
     if (!mind.editable) return
-    const target = e.target as HTMLElement
-    if (isTopic(target) && !target.classList.contains('selected')) {
-      mind.selectNode(target)
-    }
     setTimeout(() => {
       // delay to avoid conflict with click event on Mac
       if (mind.panHelper.moved) return
+      const target = e.target as HTMLElement
+      if (isTopic(target) && !target.classList.contains('selected')) {
+        mind.selectNode(target)
+      }
       mind.bus.fire('showContextMenu', e)
     }, 200)
   }

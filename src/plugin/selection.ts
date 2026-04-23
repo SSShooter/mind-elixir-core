@@ -29,6 +29,7 @@ export default function (mei: MindElixirInstance) {
     .on('beforestart', ({ event }) => {
       if (!mei.editable) return false
       if (mei.spacePressed) return false
+      if (mei.ptState !== 0) return false
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false
@@ -37,12 +38,6 @@ export default function (mei: MindElixirInstance) {
         return false
       }
       if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
-        if (target.tagName === 'ME-TPC' && target.classList.contains('selected')) {
-          // Normal click cannot deselect
-          // Also, deselection CANNOT be triggered before dragging, otherwise we can't drag multiple targets!!
-          return false
-        }
-        // trigger `move` event here
         mei.clearSelection()
       }
       // console.log('beforestart')

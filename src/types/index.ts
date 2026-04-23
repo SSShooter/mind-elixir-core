@@ -133,6 +133,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
 
   selection: SelectionArea
   panHelper: ReturnType<typeof createPanHelper>
+  ptState?: number
 }
 type PathString = string
 /**

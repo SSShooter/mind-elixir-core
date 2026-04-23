@@ -58,6 +58,7 @@ export const unselectNodes = function (this: MindElixirInstance, tpcs: Topic[]) 
 }
 
 export const clearSelection = function (this: MindElixirInstance) {
+  console.trace('clearSelection')
   this.unselectNodes(this.currentNodes)
   this.unselectSummary()
   this.unselectArrow()

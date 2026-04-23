@@ -78,6 +78,7 @@
   }
   background-color: var(--bgcolor);
   .map-canvas {
+    pointer-events: none;
     position: relative;
     user-select: none;
     width: fit-content; // 100% width if not set
@@ -112,7 +113,6 @@
   }
   me-wrapper {
     display: block;
-    pointer-events: none;
     width: fit-content;
     // position: relative;
   }
@@ -289,6 +289,7 @@
   }
   .circle {
     position: absolute;
+    pointer-events: all;
     height: 10px;
     width: 10px;
     margin-top: -5px;
