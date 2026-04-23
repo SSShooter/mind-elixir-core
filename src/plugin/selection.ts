@@ -27,9 +27,10 @@ export default function (mei: MindElixirInstance) {
     },
   })
     .on('beforestart', ({ event }) => {
+      console.log('beforestart', mei.ptState)
       if (!mei.editable) return false
       if (mei.spacePressed) return false
-      if (mei.ptState !== 0) return false
+      if (mei.ptState !== 6) return false
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false

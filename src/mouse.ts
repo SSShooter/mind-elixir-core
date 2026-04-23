@@ -17,6 +17,7 @@ export default function (mind: MindElixirInstance) {
     Drag: 3,
     Pan: 4,
     Select: 5,
+    CanvasPointerDown: 6,
   }
 
   mind.ptState = State.Idle
@@ -131,7 +132,7 @@ export default function (mind: MindElixirInstance) {
         : null
 
     if (!interaction?.type || !interaction?.element) return false
-
+    mind.clearSelection()
     const { type, element } = interaction
     if (type === 'arrow') {
       isDoubleClick ? mind.editArrowLabel(element as ArrowSvg) : mind.selectArrow(element as ArrowSvg)
@@ -169,12 +170,7 @@ export default function (mind: MindElixirInstance) {
       } else {
         mind.expandNode((target as Expander).previousSibling)
       }
-    } else if (!mind.editable) {
-      return
     }
-
-    // Handle SVG label interactions
-    handleSvgLabelInteraction(target, false)
   }
 
   const handleDoubleClick = (e: MouseEvent | PointerEvent) => {
@@ -203,6 +199,12 @@ export default function (mind: MindElixirInstance) {
     if (mind.ptState === State.Pinch) return
 
     const target = e.target as HTMLElement
+
+    if (target.className === 'map-container' && e.button === 0 && e.pointerType === 'mouse') {
+      mind.ptState = State.CanvasPointerDown
+      return
+    }
+
     const isNode = isTopic(target) || target.closest('me-tpc')
 
     if (isNode && mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
@@ -242,6 +244,16 @@ export default function (mind: MindElixirInstance) {
         }
       }
     } else {
+      // Handle SVG label interactions (selection)
+      if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
+        // Clear all selections before handling SVG interaction
+
+        if (handleSvgLabelInteraction(target, false)) {
+          mind.ptState = State.Select
+          return
+        }
+      }
+
       panHelper.handlePointerDown(e)
       if (panHelper.mousedown) {
         mind.ptState = State.Pan
@@ -273,6 +285,7 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerUp = (e: PointerEvent) => {
+    console.log('handlePointerUp')
     if (e.pointerType === 'touch') {
       pinchHelper.handlePointerUp(e)
     }
@@ -292,13 +305,10 @@ export default function (mind: MindElixirInstance) {
         break
     }
 
-    setTimeout(() => {
-      // 统一将状态重置为 Idle，除了仍在进行中的 Pinch 状态（即屏幕上还有两根及以上的手指）
-      if (mind.ptState !== State.Pinch || pinchHelper.activePointers.size < 2) {
-        mind.ptState = State.Idle
-      }
-      // 如果不用 setTimeout 会直接以 Idle 状态触发 selection 的 beforestart
-    }, 100)
+    // 统一将状态重置为 Idle，除了仍在进行中的 Pinch 状态（即屏幕上还有两根及以上的手指）
+    if (mind.ptState !== State.Pinch || pinchHelper.activePointers.size < 2) {
+      mind.ptState = State.Idle
+    }
 
     const isTouchTap = e.pointerType === 'touch' && pinchHelper.activePointers.size === 0 && !panHelper.moved && prevState !== State.Drag
     if (isTouchTap) {
