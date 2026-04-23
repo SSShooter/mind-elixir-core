@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "5.11.0",
+  "version": "5.11.1-beta.1",
   "type": "module",
   "description": "Mind elixir is a free open source mind map core.",
   "keywords": [
@@ -85,6 +85,7 @@
     "@typescript-eslint/parser": "^8.44.1",
     "@viselect/vanilla": "3.9.0",
     "@zumer/snapdom": "^1.9.11",
+    "baseline-browser-mapping": "^2.10.21",
     "eslint": "^9.36.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",

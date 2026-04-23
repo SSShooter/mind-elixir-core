@@ -114,7 +114,7 @@ function MindElixir(
   this.line2 = createLine() // bezier auxiliary line2
   this.linkController.appendChild(this.line1)
   this.linkController.appendChild(this.line2)
-  this.linkSvgGroup = createLinkSvg('topiclinks') // storage user custom link svg
+  this.arrowSvg = createLinkSvg('topiclinks') // storage user custom link svg
 
   this.labelContainer = document.createElement('div') // container for SVG labels
   this.labelContainer.className = 'label-container'

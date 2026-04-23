@@ -107,7 +107,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   P3: HTMLElement
   line1: SVGElement
   line2: SVGElement
-  linkSvgGroup: SVGElement
+  arrowSvg: SVGElement
   /**
    * @internal
    */

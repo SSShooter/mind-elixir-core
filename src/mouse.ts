@@ -73,45 +73,26 @@ export default function (mind: MindElixirInstance) {
 
   // Helper: Handle SVG label interactions (click or double-click)
   const handleSvgLabelInteraction = (target: HTMLElement, isDoubleClick: boolean): boolean => {
-    if (target.id === 'input-box' || target.closest('#input-box')) return false
+    if (target.closest('#input-box')) return false
 
-    const label = target.closest('.svg-label') as HTMLElement
-    if (label) {
-      const id = label.dataset.svgId!
-      const type = label.dataset.type
-      const svgElement = document.getElementById(id)
-      if (svgElement) {
-        if (type === 'arrow') {
-          isDoubleClick ? mind.editArrowLabel(svgElement as unknown as ArrowSvg) : mind.selectArrow(svgElement as unknown as ArrowSvg)
-          return true
-        } else if (type === 'summary') {
-          isDoubleClick ? mind.editSummary(svgElement as unknown as SummarySvg) : mind.selectSummary(svgElement as unknown as SummarySvg)
-          return true
-        }
-      }
+    const label = target.closest<HTMLElement>('.svg-label')
+    const container = target.closest<HTMLElement>('.topiclinks, .summary')
+
+    const interaction = label
+      ? { type: label.dataset.type, element: document.getElementById(label.dataset.svgId!) }
+      : container
+        ? { type: container.classList.contains('topiclinks') ? 'arrow' : 'summary', element: target.closest('g') }
+        : null
+
+    if (!interaction?.type || !interaction?.element) return false
+
+    const { type, element } = interaction
+    if (type === 'arrow') {
+      isDoubleClick ? mind.editArrowLabel(element as ArrowSvg) : mind.selectArrow(element as ArrowSvg)
+    } else {
+      isDoubleClick ? mind.editSummary(element as SummarySvg) : mind.selectSummary(element as SummarySvg)
     }
-
-    // Handle topiclinks container
-    const topiclinksContainer = target.closest('.topiclinks')
-    if (topiclinksContainer) {
-      const svgGroup = target.closest('g')
-      if (svgGroup) {
-        isDoubleClick ? mind.editArrowLabel(svgGroup as unknown as ArrowSvg) : mind.selectArrow(svgGroup as unknown as ArrowSvg)
-        return true
-      }
-    }
-
-    // Handle summary container
-    const summaryContainer = target.closest('.summary')
-    if (summaryContainer) {
-      const svgGroup = target.closest('g')
-      if (svgGroup) {
-        isDoubleClick ? mind.editSummary(svgGroup as unknown as SummarySvg) : mind.selectSummary(svgGroup as unknown as SummarySvg)
-        return true
-      }
-    }
-
-    return false
+    return true
   }
 
   const handleSingleClick = (e: PointerEvent) => {

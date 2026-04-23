@@ -398,7 +398,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   newSvgGroup.arrowObj = obj
   newSvgGroup.dataset.linkid = obj.id
   mei.labelContainer.appendChild(label)
-  mei.linkSvgGroup.appendChild(newSvgGroup)
+  mei.arrowSvg.appendChild(newSvgGroup)
   calculatePrecisePosition(label)
   if (!isInitPaint) {
     mei.arrows.push(obj)
@@ -616,7 +616,7 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
 }
 
 export function renderArrow(this: MindElixirInstance) {
-  this.linkSvgGroup.innerHTML = ''
+  this.arrowSvg.innerHTML = ''
 
   // Clear all arrow labels before re-rendering
   const arrowLabels = this.labelContainer.querySelectorAll('.svg-label[data-type="arrow"]')
@@ -630,7 +630,7 @@ export function renderArrow(this: MindElixirInstance) {
       console.warn('Node may not be expanded')
     }
   }
-  this.nodes.appendChild(this.linkSvgGroup)
+  this.nodes.appendChild(this.arrowSvg)
 }
 
 export function editArrowLabel(this: MindElixirInstance, el: ArrowSvg) {
