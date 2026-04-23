@@ -16,8 +16,7 @@ export default function (mind: MindElixirInstance) {
     DragWait: 2,
     Drag: 3,
     Pan: 4,
-    Select: 5,
-    CanvasPointerDown: 6,
+    BoxSelect: 5,
   }
 
   mind.ptState = State.Idle
@@ -74,7 +73,6 @@ export default function (mind: MindElixirInstance) {
   const longPressHelper = {
     timer: null as number | null,
     startPos: null as { x: number; y: number } | null,
-    target: null as HTMLElement | null,
     pointerId: null as number | null,
     DURATION: 500,
     MOVE_THRESHOLD: 10,
@@ -83,7 +81,6 @@ export default function (mind: MindElixirInstance) {
         clearTimeout(this.timer)
         this.timer = null
         this.startPos = null
-        this.target = null
         this.pointerId = null
       }
     },
@@ -92,11 +89,9 @@ export default function (mind: MindElixirInstance) {
         cb(e)
         this.timer = null
         this.startPos = null
-        this.target = null
         this.pointerId = null
       }, this.DURATION)
       this.startPos = { x: e.clientX, y: e.clientY }
-      this.target = e.target as HTMLElement
       this.pointerId = e.pointerId
     },
     handleMove(e: PointerEvent) {
@@ -179,7 +174,6 @@ export default function (mind: MindElixirInstance) {
     if (isTopic(target)) {
       mind.beginEdit(target)
     }
-    // Handle SVG label interactions
     handleSvgLabelInteraction(target, true)
   }
 
@@ -201,13 +195,15 @@ export default function (mind: MindElixirInstance) {
     const target = e.target as HTMLElement
 
     if (target.className === 'map-container' && e.button === 0 && e.pointerType === 'mouse') {
-      mind.ptState = State.CanvasPointerDown
+      mind.ptState = State.BoxSelect
       return
     }
+    panHelper.handlePointerDown(e)
+    if (panHelper.mousedown) {
+      mind.ptState = State.Pan
+    }
 
-    const isNode = isTopic(target) || target.closest('me-tpc')
-
-    if (isNode && mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
+    if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
       const isTopicElement = isTopic(target)
       if (isTopicElement) {
         mind.selection?.cancel()
@@ -220,59 +216,40 @@ export default function (mind: MindElixirInstance) {
             return
           } else {
             mind.selection?.select(target as Topic)
-            mind.ptState = State.Select
           }
         } else if (!nodes.includes(target as Topic)) {
           mind.selectNode(target as Topic)
-          mind.ptState = State.Select
         }
-      }
-      if (e.pointerType === 'touch') {
-        mind.ptState = State.DragWait
-        longPressHelper.start(e, ev => {
-          if (handleNodeDragStart(mind, nodeDragState, ev, true)) {
-            mind.ptState = State.Drag
-            if (longPressHelper.target) {
-              longPressHelper.target.setPointerCapture(ev.pointerId)
+
+        if (e.pointerType === 'touch') {
+          mind.ptState = State.DragWait
+          longPressHelper.start(e, ev => {
+            if (handleNodeDragStart(mind, nodeDragState, ev, true)) {
+              mind.ptState = State.Drag
+              target.setPointerCapture(ev.pointerId)
             }
+          })
+        } else {
+          if (handleNodeDragStart(mind, nodeDragState, e, false)) {
+            mind.ptState = State.Drag
+            target.setPointerCapture(e.pointerId)
           }
-        })
+        }
       } else {
-        if (handleNodeDragStart(mind, nodeDragState, e, false)) {
-          mind.ptState = State.Drag
-          target.setPointerCapture(e.pointerId)
-        }
-      }
-    } else {
-      // Handle SVG label interactions (selection)
-      if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
-        // Clear all selections before handling SVG interaction
-
-        if (handleSvgLabelInteraction(target, false)) {
-          mind.ptState = State.Select
-          return
-        }
-      }
-
-      panHelper.handlePointerDown(e)
-      if (panHelper.mousedown) {
-        mind.ptState = State.Pan
+        handleSvgLabelInteraction(target, false)
       }
     }
   }
 
   const handlePointerMove = (e: PointerEvent) => {
-    if (pinchHelper.handlePointerMove(e)) {
-      return
-    }
-
     switch (mind.ptState) {
+      case State.Pinch:
+        pinchHelper.handlePointerMove(e)
+        break
       case State.DragWait:
-        if (e.pointerType === 'touch') {
-          longPressHelper.handleMove(e)
-          if (longPressHelper.timer === null) {
-            mind.ptState = State.Idle
-          }
+        longPressHelper.handleMove(e)
+        if (longPressHelper.timer === null) {
+          mind.ptState = State.Idle
         }
         break
       case State.Drag:
@@ -303,22 +280,24 @@ export default function (mind: MindElixirInstance) {
       case State.Pan:
         panHelper.handlePointerUp(e)
         break
+      default: {
+        const isTouchTap = e.pointerType === 'touch'
+        if (isTouchTap) {
+          const currentTime = new Date().getTime()
+          const tapLength = currentTime - lastTap
+          if (tapLength < 300 && tapLength > 0 && lastTapTarget === e.target) {
+            handleDoubleClick(e)
+          }
+          lastTap = currentTime
+          lastTapTarget = e.target
+        }
+        break
+      }
     }
 
     // 统一将状态重置为 Idle，除了仍在进行中的 Pinch 状态（即屏幕上还有两根及以上的手指）
     if (mind.ptState !== State.Pinch || pinchHelper.activePointers.size < 2) {
       mind.ptState = State.Idle
-    }
-
-    const isTouchTap = e.pointerType === 'touch' && pinchHelper.activePointers.size === 0 && !panHelper.moved && prevState !== State.Drag
-    if (isTouchTap) {
-      const currentTime = new Date().getTime()
-      const tapLength = currentTime - lastTap
-      if (tapLength < 300 && tapLength > 0 && lastTapTarget === e.target) {
-        handleDoubleClick(e)
-      }
-      lastTap = currentTime
-      lastTapTarget = e.target
     }
   }
 

@@ -30,7 +30,7 @@ export default function (mei: MindElixirInstance) {
       console.log('beforestart', mei.ptState)
       if (!mei.editable) return false
       if (mei.spacePressed) return false
-      if (mei.ptState !== 6) return false
+      if (mei.ptState !== 5) return false
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false
@@ -45,6 +45,7 @@ export default function (mei: MindElixirInstance) {
       const selectionAreaElement = selection.getSelectionArea()
       selectionAreaElement.style.background = '#4f90f22d'
       selectionAreaElement.style.border = '1px solid #4f90f2'
+      selectionAreaElement.style.borderRadius = '3px'
       if (selectionAreaElement.parentElement) {
         selectionAreaElement.parentElement.style.zIndex = '9999'
       }
