@@ -44,7 +44,7 @@ export const on = eventListener('addEventListener')
 export const off = eventListener('removeEventListener')
 
 /**
- * Simplifies a touch / mouse-event
+ * Simplifies a pointer / touch / mouse-event
  * @param evt
  */
 export const simplifyEvent = (

@@ -19,7 +19,7 @@ export interface SelectionStore {
 }
 
 export interface SelectionEvent {
-  event: MouseEvent | TouchEvent | null
+  event: PointerEvent | null
   store: SelectionStore
   selection: SelectionArea
 }

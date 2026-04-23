@@ -142,7 +142,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       zIndex: '1',
     })
 
-    this._frame = frames((evt: MouseEvent | TouchEvent) => {
+    this._frame = frames((evt: PointerEvent) => {
       this._recalculateSelectionAreaRect()
       this._updateElementSelection()
       this._emitEvent('move', evt)
@@ -153,23 +153,19 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   }
 
   _toggleStartEvents(activate = true): void {
-    const { document, features } = this._options
+    const { document } = this._options
     const fn = activate ? on : off
 
-    fn(document, 'mousedown', this._onTapStart)
-
-    if (features.touch) {
-      fn(document, 'touchstart', this._onTapStart, { passive: false })
-    }
+    fn(document, 'pointerdown', this._onTapStart)
   }
 
-  _onTapStart(evt: MouseEvent | TouchEvent, silent = false): void {
+  _onTapStart(evt: PointerEvent, silent = false): void {
     console.trace('_onTapStart')
     const { x, y, target } = simplifyEvent(evt)
-    const { document, startAreas, boundaries, features, behaviour } = this._options
+    const { document, startAreas, boundaries, behaviour, features } = this._options
     const targetBoundingClientRect = target.getBoundingClientRect()
 
-    if (evt instanceof MouseEvent && !matchesTrigger(evt, behaviour.triggers)) {
+    if (!matchesTrigger(evt, behaviour.triggers)) {
       return
     }
 
@@ -203,8 +199,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     this._singleClick = true
     this.clearSelection(false, true)
 
-    on(document, ['touchmove', 'mousemove'], this._delayedTapMove, { passive: false })
-    on(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop)
+    on(document, ['pointermove'], this._delayedTapMove, { passive: false })
+    on(document, ['pointerup', 'pointercancel'], this._onTapStop)
     on(document, 'scroll', this._onScroll)
 
     if (features.deselectOnBlur) {
@@ -213,7 +209,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
   }
 
-  _onSingleTap(evt: MouseEvent | TouchEvent): void {
+  _onSingleTap(evt: PointerEvent): void {
     const {
       singleTap: { intersect },
       range,
@@ -284,7 +280,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
   }
 
-  _delayedTapMove(evt: MouseEvent | TouchEvent): void {
+  _delayedTapMove(evt: PointerEvent): void {
     const {
       container,
       document,
@@ -301,14 +297,14 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       (typeof startThreshold === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x) ||
       abs(y - y1) >= (startThreshold as Coordinates).y
     ) {
-      off(document, ['mousemove', 'touchmove'], this._delayedTapMove, { passive: false })
+      off(document, ['pointermove'], this._delayedTapMove, { passive: false })
 
       if (this._emitEvent('beforedrag', evt) === false) {
-        off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop)
+        off(document, ['pointerup', 'pointercancel'], this._onTapStop)
         return
       }
 
-      on(document, ['mousemove', 'touchmove'], this._onTapMove, { passive: false })
+      on(document, ['pointermove'], this._onTapMove, { passive: false })
 
       // Make area element visible
       css(this._area, 'display', 'block')
@@ -390,7 +386,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
   }
 
-  _onTapMove(evt: MouseEvent | TouchEvent): void {
+  _onTapMove(evt: PointerEvent): void {
     const { _scrollSpeed, _areaLocation, _options, _frame } = this
     const { speedDivider } = _options.behaviour.scrolling
 
@@ -450,7 +446,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     this._handleMoveEvent(evt)
   }
 
-  _handleMoveEvent(evt: MouseEvent | TouchEvent) {
+  _handleMoveEvent(evt: PointerEvent) {
     const { features } = this._options
 
     /**
@@ -542,15 +538,15 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     style.height = `${height}px`
   }
 
-  _onTapStop(evt: MouseEvent | TouchEvent | null, silent: boolean): void {
+  _onTapStop(evt: PointerEvent | null, silent: boolean): void {
     const { document, features } = this._options
     const { _singleClick } = this
 
     // Remove event handlers
     off(this._targetElement, 'scroll', this._onStartAreaScroll)
-    off(document, ['mousemove', 'touchmove'], this._delayedTapMove)
-    off(document, ['touchmove', 'mousemove'], this._onTapMove)
-    off(document, ['mouseup', 'touchcancel', 'touchend'], this._onTapStop)
+    off(document, ['pointermove'], this._delayedTapMove)
+    off(document, ['pointermove'], this._onTapMove)
+    off(document, ['pointerup', 'pointercancel'], this._onTapStop)
     off(document, 'scroll', this._onScroll)
 
     // Keep selection until the next time
@@ -638,7 +634,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     this._latestElement = undefined
   }
 
-  _emitEvent(name: keyof SelectionEvents, evt: MouseEvent | TouchEvent | null): unknown {
+  _emitEvent(name: keyof SelectionEvents, evt: PointerEvent | null): unknown {
     return this.emit(name, {
       event: evt,
       store: this._selection,
@@ -678,10 +674,10 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
   /**
    * Manually triggers the start of a selection
-   * @param evt A MouseEvent / TouchEvent-like object
+   * @param evt A PointerEvent-like object
    * @param silent If beforestart should be fired
    */
-  trigger(evt: MouseEvent | TouchEvent, silent = true): void {
+  trigger(evt: PointerEvent, silent = true): void {
     this._onTapStart(evt, silent)
   }
 

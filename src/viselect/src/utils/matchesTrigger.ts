@@ -16,14 +16,14 @@ export type MouseButtonWithModifiers = {
 export type Trigger = MouseButton | MouseButtonWithModifiers
 
 /**
- * Determines whether a MouseEvent should execute until completion depending on
- * which button and modifier(s) are active for the MouseEvent.
+ * Determines whether a PointerEvent/MouseEvent should execute until completion depending on
+ * which button and modifier(s) are active for the event.
  * The Event will execute to completion if ANY of the triggers "matches"
- * @param event MouseEvent that should be checked
+ * @param event PointerEvent or MouseEvent that should be checked
  * @param triggers A list of Triggers that signify that the event should execute until completion
- * @returns Whether the MouseEvent should execute until completion
+ * @returns Whether the event should execute until completion
  */
-export const matchesTrigger = (event: MouseEvent, triggers: Trigger[]): boolean =>
+export const matchesTrigger = (event: PointerEvent | MouseEvent, triggers: Trigger[]): boolean =>
   triggers.some(trigger => {
     // The trigger requires only a specific button to be pressed
     if (typeof trigger === 'number') {
