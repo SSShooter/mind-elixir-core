@@ -7,6 +7,7 @@ export function createPanHelper(mei: MindElixirInstance) {
     moved: false, // differentiate click and move
     mousedown: false,
     handlePointerDown(e: PointerEvent) {
+      this.moved = false
       const target = e.target as HTMLElement
       const mouseMoveButton = mei.mouseSelectionButton === 0 ? 2 : 0
 
@@ -22,7 +23,6 @@ export function createPanHelper(mei: MindElixirInstance) {
 
       if (target.className !== 'circle' && target.contentEditable !== 'plaintext-only') {
         this.mousedown = true
-        this.moved = false
         target.setPointerCapture(e.pointerId)
       }
     },
@@ -46,10 +46,11 @@ export function createPanHelper(mei: MindElixirInstance) {
       if (target.hasPointerCapture && target.hasPointerCapture(e.pointerId)) {
         target.releasePointerCapture(e.pointerId)
       }
-      this.clear()
+      this.mousedown = false
     },
     clear() {
       this.mousedown = false
+      this.moved = false
     },
   }
 }
