@@ -106,13 +106,6 @@ export default function (mind: MindElixirInstance) {
     },
   }
 
-  // Helper: Release pointer capture if it exists
-  const releasePointerCaptureIfExists = (target: HTMLElement, pointerId: number) => {
-    if (target.hasPointerCapture && target.hasPointerCapture(pointerId)) {
-      target.releasePointerCapture(pointerId)
-    }
-  }
-
   // Helper: Handle SVG label interactions (click or double-click)
   const handleSvgLabelInteraction = (target: HTMLElement, isDoubleClick: boolean): boolean => {
     if (target.closest('#input-box')) return false
@@ -203,9 +196,9 @@ export default function (mind: MindElixirInstance) {
       mind.ptState = State.Pan
     }
 
-    if (mind.editable && (e.button === 0 || e.pointerType === 'touch')) {
-      const isTopicElement = isTopic(target)
-      if (isTopicElement) {
+    if (e.button === 0 || e.pointerType === 'touch') {
+      const isTopicEl = isTopic(target)
+      if (isTopicEl) {
         mind.selection?.cancel()
         const nodes = mind.currentNodes || []
         const isMulti = e.ctrlKey || e.metaKey
@@ -275,7 +268,6 @@ export default function (mind: MindElixirInstance) {
         break
       case State.Drag:
         handleNodeDragEnd(mind, nodeDragState, e)
-        releasePointerCaptureIfExists(e.target as HTMLElement, e.pointerId)
         break
       case State.Pan:
         panHelper.handlePointerUp(e)
