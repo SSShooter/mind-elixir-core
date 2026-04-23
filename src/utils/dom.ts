@@ -191,7 +191,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
   border: ${style.border};
   border-radius:${style.borderRadius}; `
   if (this.direction === LEFT) div.style.right = '0'
-
+  el.style.opacity = '0'
   selectText(div)
 
   this.bus.fire('operation', {
@@ -220,6 +220,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
 
   div.addEventListener('blur', () => {
     if (!div) return
+    el.style.opacity = '1'
     div.remove()
     // NOTE: Do not use textContent here. Safari requires innerText to properly map <br> tags to \n line breaks for editable content.
     const inputContent = div.innerText?.trim() || ''

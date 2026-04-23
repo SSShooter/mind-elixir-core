@@ -180,7 +180,7 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
 
   // textEl is now a div element directly
   const origin = node.label
-
+  textEl.style.opacity = '0'
   const div = textEl.cloneNode(true) as HTMLDivElement
   mei.nodes.appendChild(div)
   div.id = 'input-box'
@@ -216,6 +216,7 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
     const text = div.innerText?.trim() || ''
     if (text === '') node.label = origin
     else node.label = text
+    textEl.style.opacity = '1'
     div.remove()
     if (text === origin) return
 
