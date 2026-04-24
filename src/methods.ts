@@ -123,6 +123,13 @@ const methods = {
     this.selection?.destroy()
     this.selection = undefined
   },
+  /**
+   * @public
+   * @param {boolean} enable
+   */
+  enableMobileMultiSelect(this: MindElixirInstance, enable: boolean) {
+    this.mobileMultiSelect = enable
+  },
 }
 
 export default methods

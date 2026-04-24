@@ -52,9 +52,10 @@ export class MindElixirFixture {
     return data
   }
   async dblclick(topic: string) {
-    await this.page.getByText(topic, { exact: true }).dblclick({
-      force: true,
-    })
+    const element = this.page.getByText(topic, { exact: true })
+    // Simulate double click by clicking twice within 300ms
+    await element.click({ force: true })
+    await element.click({ force: true })
   }
   async click(topic: string) {
     await this.page.getByText(topic, { exact: true }).click({

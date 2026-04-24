@@ -41,6 +41,7 @@ function MindElixir(
     markdown,
     imageProxy,
     pasteHandler,
+    mobileMultiSelect,
   }: Options
 ): void {
   let ele: HTMLElement | null = null
@@ -80,6 +81,7 @@ function MindElixir(
   this.currentArrow = null // the selected link svg element
   this.scaleVal = 1
   this.tempDirection = null
+  this.mobileMultiSelect = mobileMultiSelect ?? false
 
   this.panHelper = createPanHelper(this)
   this.bus = createBus()

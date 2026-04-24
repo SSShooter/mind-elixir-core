@@ -155,7 +155,9 @@ test('Edit summary text', async ({ page, me }) => {
   await expect(page.locator('.svg-label[data-type="summary"]').first()).toHaveText('Custom Summary')
 
   // Test editing existing summary by double clicking
-  await page.locator('.svg-label[data-type="summary"]').first().dblclick()
+  const label = page.locator('.svg-label[data-type="summary"]').first()
+  await label.click()
+  await label.click()
 
   // Input box should appear again
   await expect(page.locator('#input-box')).toBeVisible()

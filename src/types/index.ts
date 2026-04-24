@@ -134,6 +134,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   selection: SelectionArea
   panHelper: ReturnType<typeof createPanHelper>
   ptState?: number
+  mobileMultiSelect: boolean
 }
 type PathString = string
 /**
@@ -188,6 +189,11 @@ export interface Options {
    * @default undefined
    */
   pasteHandler?: (e: ClipboardEvent) => void
+  /**
+   * Enable mobile multi-select mode
+   * @default false
+   */
+  mobileMultiSelect?: boolean
 }
 
 export type Uid = string

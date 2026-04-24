@@ -6,9 +6,31 @@ import { getDistance, isTopic, on } from './utils'
 
 export default function (mind: MindElixirInstance) {
   const { panHelper, container } = mind
-  let lastTap = 0
-  let lastTapTarget: EventTarget | null = null
+  let nodeToDeselect: Topic | null = null
   mind.spacePressed = false
+
+  // Double-click detection helper
+  const doubleClickHelper = {
+    lastTap: 0,
+    lastTapTarget: null as EventTarget | null,
+    DOUBLE_CLICK_THRESHOLD: 300,
+    detect(e: PointerEvent, callback: (e: PointerEvent) => void) {
+      const currentTime = new Date().getTime()
+      const tapLength = currentTime - this.lastTap
+      const isDoubleClick = tapLength < this.DOUBLE_CLICK_THRESHOLD && tapLength > 0 && this.lastTapTarget === e.target
+
+      this.lastTap = currentTime
+      this.lastTapTarget = e.target
+
+      if (isDoubleClick) {
+        callback(e)
+      }
+    },
+    clear() {
+      this.lastTap = 0
+      this.lastTapTarget = null
+    },
+  }
 
   const State = {
     Idle: 0,
@@ -120,8 +142,10 @@ export default function (mind: MindElixirInstance) {
         : null
 
     if (!interaction?.type || !interaction?.element) return false
-    mind.clearSelection()
+
     const { type, element } = interaction
+    // Always clear selection and select only the target element
+    mind.clearSelection()
     if (type === 'arrow') {
       isDoubleClick ? mind.editArrowLabel(element as ArrowSvg) : mind.selectArrow(element as ArrowSvg)
     } else {
@@ -165,7 +189,9 @@ export default function (mind: MindElixirInstance) {
     if (!mind.editable) return
     const target = e.target as HTMLElement
     if (isTopic(target)) {
+      mind.selectNode(target as Topic)
       mind.beginEdit(target)
+      return
     }
     handleSvgLabelInteraction(target, true)
   }
@@ -201,13 +227,18 @@ export default function (mind: MindElixirInstance) {
       if (isTopicEl) {
         mind.selection?.cancel()
         const nodes = mind.currentNodes || []
-        const isMulti = e.ctrlKey || e.metaKey
+        const isMulti = e.ctrlKey || e.metaKey || mind.mobileMultiSelect
 
         if (isMulti) {
           if (nodes.includes(target as Topic)) {
-            mind.selection?.deselect(target as Topic)
-            return
+            // Note: Deselection is handled in pointerup to prevent conflicts with dragging.
+            // When mobileMultiSelect is enabled, we want to allow dragging already selected nodes
+            // without immediately deselecting them on pointerdown.
+            nodeToDeselect = target as Topic
           } else {
+            if (mind.currentArrow || mind.currentSummary) {
+              mind.clearSelection()
+            }
             mind.selection?.select(target as Topic)
           }
         } else if (!nodes.includes(target as Topic)) {
@@ -255,12 +286,12 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handlePointerUp = (e: PointerEvent) => {
-    console.log('handlePointerUp')
     if (e.pointerType === 'touch') {
       pinchHelper.handlePointerUp(e)
     }
 
-    const prevState = mind.ptState
+    const isDragging = nodeDragState.isDragging
+    const isPanning = panHelper.moved
 
     switch (mind.ptState) {
       case State.DragWait:
@@ -272,24 +303,21 @@ export default function (mind: MindElixirInstance) {
       case State.Pan:
         panHelper.handlePointerUp(e)
         break
-      default: {
-        const isTouchTap = e.pointerType === 'touch'
-        if (isTouchTap) {
-          const currentTime = new Date().getTime()
-          const tapLength = currentTime - lastTap
-          if (tapLength < 300 && tapLength > 0 && lastTapTarget === e.target) {
-            handleDoubleClick(e)
-          }
-          lastTap = currentTime
-          lastTapTarget = e.target
-        }
-        break
-      }
     }
+
+    // Detect and handle double-click
+    doubleClickHelper.detect(e, handleDoubleClick)
 
     // 统一将状态重置为 Idle，除了仍在进行中的 Pinch 状态（即屏幕上还有两根及以上的手指）
     if (mind.ptState !== State.Pinch || pinchHelper.activePointers.size < 2) {
       mind.ptState = State.Idle
+    }
+
+    if (nodeToDeselect) {
+      if (!isDragging && !isPanning) {
+        mind.selection?.deselect(nodeToDeselect)
+      }
+      nodeToDeselect = null
     }
   }
 
@@ -297,10 +325,12 @@ export default function (mind: MindElixirInstance) {
     pinchHelper.clear()
     longPressHelper.clear()
     panHelper.clear()
+    doubleClickHelper.clear()
     if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
       handleNodeDragCancel(mind, nodeDragState)
     }
     mind.ptState = State.Idle
+    nodeToDeselect = null
   }
 
   const handleContextMenu = (e: MouseEvent) => {
@@ -347,7 +377,6 @@ export default function (mind: MindElixirInstance) {
     { dom: container, evt: 'pointerup', func: handlePointerUp },
     { dom: container, evt: 'pointercancel', func: handleInterrupt },
     { dom: container, evt: 'click', func: handleSingleClick },
-    { dom: container, evt: 'dblclick', func: handleDoubleClick },
     { dom: container, evt: 'contextmenu', func: handleContextMenu },
     { dom: container, evt: 'wheel', func: typeof mind.handleWheel === 'function' ? mind.handleWheel : handleWheel },
     { dom: container, evt: 'blur', func: handleInterrupt },
