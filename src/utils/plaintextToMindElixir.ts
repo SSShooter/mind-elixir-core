@@ -180,15 +180,15 @@ function getIndent(line: string): number {
   return match ? match[1].length : 0
 }
 
-function parseStyleObject(styleStr: string): NodeObj['style'] {
+function parseStyleObject(styleStr: string): NodeObj['style'] | null {
   try {
     // Try to parse as JSON (supports both {key: value} and {"key": "value"} formats)
     // Add curly braces if not present
     const jsonStr = styleStr.trim().startsWith('{') ? styleStr : `{${styleStr}}`
     return JSON.parse(jsonStr)
   } catch {
-    // If JSON parsing fails, return empty object (invalid style will be ignored)
-    return {}
+    // If JSON parsing fails, return null
+    return null
   }
 }
 
@@ -221,18 +221,23 @@ function parseLine(line: string): ParsedLine {
   let refId: string | undefined
   let style: NodeObj['style'] | undefined
 
-  // Extract reference ID: [^id]
-  const refMatch = nodeContent.match(/\[\^([\w-]+)\]/)
-  if (refMatch) {
-    refId = refMatch[1]
-    nodeContent = nodeContent.replace(refMatch[0], '').trim()
+  // Extract style: {"color": "#hex", "fontSize": "16px", "fontFamily": "Arial", ...}
+  // We match from the end to avoid matching braces inside MathJax or normal text
+  const styleMatch = nodeContent.match(/\s*(\{[^}]+\})\s*$/)
+  if (styleMatch) {
+    const parsedStyle = parseStyleObject(styleMatch[1])
+    if (parsedStyle) {
+      style = parsedStyle
+      nodeContent = nodeContent.substring(0, nodeContent.length - styleMatch[0].length).trim()
+    }
   }
 
-  // Extract style: {color: #hex, fontSize: 16px, fontFamily: Arial, ...}
-  const styleMatch = nodeContent.match(/\{([^}]+)\}/)
-  if (styleMatch) {
-    style = parseStyleObject(styleMatch[1])
-    nodeContent = nodeContent.replace(styleMatch[0], '').trim()
+  // Extract reference ID: [^id]
+  // We match from the end to avoid matching footnotes inside the topic text
+  const refMatch = nodeContent.match(/\s*\[\^([\w-]+)\]\s*$/)
+  if (refMatch) {
+    refId = refMatch[1]
+    nodeContent = nodeContent.substring(0, nodeContent.length - refMatch[0].length).trim()
   }
 
   return {
