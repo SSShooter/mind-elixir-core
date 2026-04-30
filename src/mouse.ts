@@ -213,7 +213,7 @@ export default function (mind: MindElixirInstance) {
 
     const target = e.target as HTMLElement
 
-    if (target.className === 'map-container' && e.button === 0 && e.pointerType === 'mouse') {
+    if (mind.editable && target.className === 'map-container' && e.button === 0 && e.pointerType === 'mouse') {
       mind.ptState = State.BoxSelect
       return
     }
@@ -245,6 +245,7 @@ export default function (mind: MindElixirInstance) {
           mind.selectNode(target as Topic)
         }
 
+        if (!mind.editable) return
         if (e.pointerType === 'touch') {
           mind.ptState = State.DragWait
           longPressHelper.start(e, ev => {

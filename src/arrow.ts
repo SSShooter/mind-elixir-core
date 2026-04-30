@@ -467,7 +467,11 @@ export const selectArrow = function (this: MindElixirInstance, link: ArrowSvg) {
   const fromData = calcCtrlP(this, from, obj.delta1!)
   const toData = calcCtrlP(this, to, obj.delta2!)
 
-  showLinkController(this, obj, fromData, toData)
+  if (this.editable) {
+    showLinkController(this, obj, fromData, toData)
+  } else {
+    addArrowHighlight(link, highlightColor)
+  }
   this.bus.fire('selectArrow', obj)
 }
 
