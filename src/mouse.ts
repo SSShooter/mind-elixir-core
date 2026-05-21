@@ -340,7 +340,9 @@ export default function (mind: MindElixirInstance) {
     if (e.button !== 2) return
     if (!mind.editable) return
     setTimeout(() => {
-      // delay to avoid conflict with click event on Mac
+      // On Mac trackpad, a two-finger press immediately fires `contextmenu`.
+      // Delay here to wait and see if the user is actually panning.
+      // If so, cancel the context menu.
       if (mind.panHelper.moved) return
       const target = e.target as HTMLElement
       if (isTopic(target) && !target.classList.contains('selected')) {
