@@ -1,5 +1,31 @@
 # Changelog
 
+## 5.11.2 - 2026-05-21
+
+### Features
+
+- Add forceCenter parameter to scrollIntoView
+- Add enableMobileMultiSelect
+- Add summary & arrow events
+
+### Bug Fixes
+
+- Fix readonly mode misbehavior
+- Fix text truncation when parsing MathJax in plaintext
+
+### Refactors
+
+- Introduce state machine to manage pointer interactions
+- Simplify interaction state machine by merging selection logic
+- Implement CanvasPointerDown state to coordinate canvas interaction and selection logic
+- Migrate mouse and touch events to PointerEvents across viselect core
+- Unify and optimize node drag ghost positioning
+- Unify blur & pointer cancel handler
+- Encapsulate touch pinch and pan logic into dedicated helper
+- Rename linkSvgGroup to arrowSvg and optimize SVG interaction logic
+- Standardize SVG types and rename arrow group IDs for consistency
+- Aggregate long-press logic into longPressHelper object
+
 ## 5.11.0 - 2026-04-22
 
 ### Features
