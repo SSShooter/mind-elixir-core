@@ -13,12 +13,13 @@ function collectData(instance: MindElixirInstance) {
   }
 }
 
-export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElement) {
+export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElement, forceCenter = false) {
   // scrollIntoView needs to be implemented manually because native scrollIntoView behaves incorrectly after transform
   const container = this.container
   const rect = el.getBoundingClientRect()
   const containerRect = container.getBoundingClientRect()
   const isOutOfView =
+    forceCenter ||
     rect.top > containerRect.bottom - 50 ||
     rect.bottom < containerRect.top + 50 ||
     rect.left > containerRect.right - 50 ||
