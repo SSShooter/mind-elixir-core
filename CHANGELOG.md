@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.11.3 - 2026-05-22
+
+### Bug Fixes
+
+- Ignore non-left mouse button events in double-click detection
+- Prevent context menu trigger during active node editing or interaction states
+
 ## 5.11.2 - 2026-05-21
 
 ### Features
