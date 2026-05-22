@@ -15,6 +15,10 @@ export default function (mind: MindElixirInstance) {
     lastTapTarget: null as EventTarget | null,
     DOUBLE_CLICK_THRESHOLD: 300,
     detect(e: PointerEvent, callback: (e: PointerEvent) => void) {
+      if (e.button !== 0) {
+        this.clear()
+        return
+      }
       const currentTime = new Date().getTime()
       const tapLength = currentTime - this.lastTap
       const isDoubleClick = tapLength < this.DOUBLE_CLICK_THRESHOLD && tapLength > 0 && this.lastTapTarget === e.target
