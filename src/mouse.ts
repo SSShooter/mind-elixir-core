@@ -348,6 +348,7 @@ export default function (mind: MindElixirInstance) {
       // Delay here to wait and see if the user is actually panning.
       // If so, cancel the context menu.
       if (mind.panHelper.moved) return
+      if (mind.ptState !== State.Idle && mind.ptState !== State.Pan) return
       const target = e.target as HTMLElement
       if (isTopic(target) && !target.classList.contains('selected')) {
         mind.selectNode(target)
