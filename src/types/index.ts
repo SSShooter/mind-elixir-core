@@ -286,4 +286,5 @@ export type MindElixirData = {
   summaries?: Summary[]
   direction?: 0 | 1 | 2
   theme?: Theme
+  compact?: boolean
 }

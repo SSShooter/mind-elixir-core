@@ -10,6 +10,7 @@ function collectData(instance: MindElixirInstance) {
     summaries: instance.summaries,
     direction: instance.direction,
     theme: instance.theme,
+    compact: instance.compact,
   }
 }
 

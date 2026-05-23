@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.12.1 - 2026-05-23
+
+### Features
+
+- Support serializing and restoring compact mode state in MindElixirData
+
 ## 5.12.0 - 2026-05-23
 
 ### Features

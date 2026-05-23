@@ -9,6 +9,7 @@ type MindElixirDataWithUseMd = Omit<MindElixirData, 'nodeData'> & {
 }
 
 const aboutMindElixir: MindElixirDataWithUseMd = {
+  compact: true,
   nodeData: {
     id: 'me-root',
     topic: 'Mind Elixir',

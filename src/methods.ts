@@ -76,6 +76,9 @@ const methods = {
     if (data.direction !== undefined) {
       this.direction = data.direction
     }
+    if (data.compact !== undefined) {
+      this.compact = data.compact
+    }
     this.changeTheme(data.theme || this.theme, false)
     this.nodeData = data.nodeData
     fillParent(this.nodeData)
