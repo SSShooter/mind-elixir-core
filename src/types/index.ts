@@ -162,6 +162,10 @@ export interface Options {
   newTopicName?: string
   allowUndo?: boolean
   overflowHidden?: boolean
+  /**
+   * Compact mode. If true, distance fields will be controlled to a small value.
+   */
+  compact?: boolean
   generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => PathString
   generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => PathString
   theme?: Theme

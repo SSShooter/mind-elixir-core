@@ -32,6 +32,7 @@ function MindElixir(
     generateMainBranch,
     generateSubBranch,
     overflowHidden,
+    compact,
     theme,
     alignment,
     scaleSensitivity,
@@ -72,6 +73,7 @@ function MindElixir(
   this.generateMainBranch = generateMainBranch || main
   this.generateSubBranch = generateSubBranch || sub
   this.overflowHidden = overflowHidden ?? false
+  this.compact = compact ?? false
   this.alignment = alignment ?? 'root'
   this.handleWheel = handleWheel ?? true
   this.markdown = markdown || undefined // Custom markdown parser function

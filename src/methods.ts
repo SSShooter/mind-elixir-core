@@ -9,7 +9,7 @@ import selection from './plugin/selection'
 import { editTopic, createWrapper, createParent, createChildren, createTopic, findEle } from './utils/dom'
 import { getObjById, generateNewObj, fillParent } from './utils/index'
 import { layout } from './utils/layout'
-import { changeTheme } from './utils/theme'
+import { changeTheme, changeCompact } from './utils/theme'
 import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
 import * as arrow from './arrow'
@@ -64,6 +64,7 @@ const methods = {
   createTopic,
   findEle,
   changeTheme,
+  changeCompact,
   ...interact,
   ...(nodeOperationHooked as NodeOperation),
   ...arrow,
