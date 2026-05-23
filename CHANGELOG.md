@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.12.0 - 2026-05-23
+
+### Features
+
+- Add compact mode support for configurable node spacing
+
 ## 5.11.3 - 2026-05-22
 
 ### Bug Fixes
