@@ -1,13 +1,18 @@
 import { DARK_THEME, THEME } from '../const'
 import type { MindElixirInstance } from '../types/index'
 import type { Theme } from '../types/index'
+import { main, sub } from './generateBranch'
 
 export const changeTheme = function (this: MindElixirInstance, theme: Theme, shouldRefresh = true) {
-  this.theme = theme
-  const base = theme.type === 'dark' ? DARK_THEME : THEME
+  this.theme = theme as MindElixirInstance['theme']
+
+  this.generateMainBranch = this.theme.generateMainBranch || main
+  this.generateSubBranch = this.theme.generateSubBranch || sub
+
+  const base = this.theme.type === 'dark' ? DARK_THEME : THEME
   const cssVar = {
     ...base.cssVar,
-    ...theme.cssVar,
+    ...this.theme.cssVar,
   }
   if (this.compact) {
     cssVar['--node-gap-x'] = '15px'

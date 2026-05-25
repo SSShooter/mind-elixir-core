@@ -10,6 +10,7 @@ import type { ContextMenuOption } from '../plugin/contextMenu'
 import type { createPanHelper } from '../utils/panHelper'
 import type SelectionArea from '../viselect/src'
 export { type MindElixirMethods } from '../methods'
+export type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 
 export const DirectionClass = {
   LHS: 'lhs',
@@ -27,6 +28,36 @@ type Before = Partial<{
  *
  * @public
  */
+export type ThemeCssVar = {
+  '--node-gap-x': string
+  '--node-gap-y': string
+  '--main-gap-x': string
+  '--main-gap-y': string
+  '--main-color': string
+  '--main-bgcolor': string
+  '--main-bgcolor-transparent': string
+  '--main-border'?: string
+  '--color': string
+  '--bgcolor': string
+  '--selected': string
+  '--accent-color': string
+  '--root-color': string
+  '--root-bgcolor': string
+  '--root-border-color': string
+  '--root-radius': string
+  '--main-radius': string
+  '--topic-padding': string
+  '--panel-color': string
+  '--panel-bgcolor': string
+  '--panel-border-color': string
+  '--map-padding': string
+}
+
+/**
+ * MindElixir Theme
+ *
+ * @public
+ */
 export type Theme = {
   name: string
   /**
@@ -37,29 +68,9 @@ export type Theme = {
    * Color palette for main branches
    */
   palette: string[]
-  cssVar: {
-    '--node-gap-x': string
-    '--node-gap-y': string
-    '--main-gap-x': string
-    '--main-gap-y': string
-    '--main-color': string
-    '--main-bgcolor': string
-    '--main-bgcolor-transparent': string
-    '--color': string
-    '--bgcolor': string
-    '--selected': string
-    '--accent-color': string
-    '--root-color': string
-    '--root-bgcolor': string
-    '--root-border-color': string
-    '--root-radius': string
-    '--main-radius': string
-    '--topic-padding': string
-    '--panel-color': string
-    '--panel-bgcolor': string
-    '--panel-border-color': string
-    '--map-padding': string
-  }
+  cssVar?: Partial<ThemeCssVar>
+  generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => string
+  generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => string
 }
 
 export type Alignment = 'root' | 'nodes'
@@ -73,7 +84,10 @@ export interface KeypressOptions {
  *
  * @public
  */
-export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' | 'imageProxy'>, MindElixirMethods {
+export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' | 'imageProxy' | 'theme'>, MindElixirMethods {
+  theme: Omit<Theme, 'cssVar'> & {
+    cssVar: ThemeCssVar
+  }
   markdown?: (markdown: string, obj: NodeObj | Arrow | Summary) => string // Keep markdown as optional
   imageProxy?: (url: string) => string // Keep imageProxy as optional
   dragged: Topic[] | null // currently dragged nodes
@@ -94,6 +108,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
 
   scaleVal: number
   tempDirection: 0 | 1 | 2 | null
+  meta?: Record<string, any>
 
   container: HTMLElement
   map: HTMLElement
@@ -287,4 +302,8 @@ export type MindElixirData = {
   direction?: 0 | 1 | 2
   theme?: Theme
   compact?: boolean
+  /**
+   * Extension fields to store arbitrary metadata for the map.
+   */
+  meta?: Record<string, any>
 }

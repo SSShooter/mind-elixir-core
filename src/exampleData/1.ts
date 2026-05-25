@@ -9,7 +9,6 @@ type MindElixirDataWithUseMd = Omit<MindElixirData, 'nodeData'> & {
 }
 
 const aboutMindElixir: MindElixirDataWithUseMd = {
-  compact: true,
   nodeData: {
     id: 'me-root',
     topic: 'Mind Elixir',
@@ -320,7 +319,7 @@ const aboutMindElixir: MindElixirDataWithUseMd = {
         expanded: true,
         children: [
           {
-            topic: 'Drag a node to another node\nand the former one will become a child node of latter one',
+            topic: 'Drag a node to another node\n\nand the former one will become a child node of latter one',
             id: 'bd1f07c598e729dc',
           },
         ],

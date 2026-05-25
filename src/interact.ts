@@ -11,6 +11,7 @@ function collectData(instance: MindElixirInstance) {
     direction: instance.direction,
     theme: instance.theme,
     compact: instance.compact,
+    meta: instance.meta,
   }
 }
 
@@ -429,6 +430,9 @@ export const refresh = function (this: MindElixirInstance, data?: MindElixirData
     this.nodeData = data.nodeData
     this.arrows = data.arrows || []
     this.summaries = data.summaries || []
+    if (data.meta) {
+      this.meta = data.meta
+    }
     data.theme && this.changeTheme(data.theme)
   }
   fillParent(this.nodeData)

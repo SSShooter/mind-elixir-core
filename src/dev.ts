@@ -16,6 +16,8 @@ import type { Arrow } from './arrow'
 import type { Summary } from './summary'
 import { mindElixirToPlaintext, plaintextExample, plaintextToMindElixir } from './utils/plaintextConverter'
 import { en } from './i18n'
+import { markmapMain, markmapSub, straightMain, straightSub, straightUnderlineMain, straightUnderlineSub } from './branchTests'
+import '../dev.css'
 
 interface Window {
   m?: MindElixirInstance
@@ -127,6 +129,9 @@ const options: Options = {
   },
   // scaleMin:0.1
   // alignment: 'nodes',
+
+  // ================= 测试不同的分支样式 =================
+  // 现在可以通过 mind.changeBranch 动态切换了！
 }
 
 let mind = new MindElixir(options)
@@ -134,6 +139,50 @@ let mind = new MindElixir(options)
 const data = MindElixir.new('new topic')
 // example.theme = MindElixir.DARK_THEME
 mind.init(example)
+
+const branchThemes = {
+  markmap: {
+    generateMainBranch: markmapMain,
+    generateSubBranch: markmapSub,
+    cssVar: {
+      '--root-color': mind.theme.cssVar['--main-color'],
+      '--root-bgcolor': 'transparent',
+      '--root-border-color': 'transparent',
+      '--root-radius': '5px',
+      '--main-radius': '5px',
+      '--main-bgcolor': 'transparent',
+      '--main-border': 'transparent',
+    },
+  },
+  straightUnderline: {
+    generateMainBranch: straightUnderlineMain,
+    generateSubBranch: straightUnderlineSub,
+    cssVar: {
+      '--main-radius': '0',
+      '--main-bgcolor': 'transparent',
+      '--main-border': 'transparent',
+    },
+  },
+  straight: {
+    generateMainBranch: straightMain,
+    generateSubBranch: straightSub,
+  },
+}
+
+// 动态切换为特定风格，并记录在 meta 中
+mind.changeTheme({
+  ...mind.theme,
+  ...branchThemes.markmap,
+  cssVar: {
+    ...mind.theme.cssVar,
+    ...branchThemes.markmap.cssVar,
+  },
+})
+mind.meta = {
+  ...mind.meta,
+  branchStyle: 'markmap',
+}
+mind.container.dataset.branchStyle = 'markmap'
 
 const m2 = new MindElixir({
   el: '#map2',

@@ -1,0 +1,12 @@
+/* 只有当 theme name 为 markmap 时，这些样式才会生效 */
+.map-container[data-branch-style="markmap"] me-epd {
+  top: calc(100% - 9px);
+}
+
+/* 甚至可以针对左右两侧单独调整 */
+.map-container[data-branch-style="markmap"] .lhs me-epd {
+  left: 3px;
+}
+.map-container[data-branch-style="markmap"] .rhs me-epd {
+  right: 3px;
+}

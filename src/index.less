@@ -49,12 +49,10 @@
     margin-left: 0.3em;
   }
   me-main > me-wrapper > me-parent > me-epd {
-    top: 50%;
-    transform: translateY(-50%);
+    top: calc(50% - 9px);
   }
   me-epd {
-    top: 100%;
-    transform: translateY(-50%);
+    top: calc(100% - 9px);
   }
   .lhs {
     direction: rtl;
@@ -104,7 +102,7 @@
         & > me-tpc {
           border-radius: var(--main-radius);
           background-color: var(--main-bgcolor);
-          border: 2px solid var(--main-color);
+          border: var(--main-border, 2px solid var(--main-color));
           color: var(--main-color);
           padding: 8px 25px;
         }
@@ -255,7 +253,7 @@
     color: var(--color);
     background-color: var(--bgcolor);
     outline: 1px solid #ccc;
-    border-radius: 2px;
+    border-radius: 3px;
     z-index: 100;
   }
 

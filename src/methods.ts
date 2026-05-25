@@ -15,6 +15,7 @@ import * as nodeOperation from './nodeOperation'
 import * as arrow from './arrow'
 import * as summary from './summary'
 import * as exportImage from './plugin/exportImage'
+import type { MainLineParams, SubLineParams } from './utils/generateBranch'
 
 export type OperationMap = typeof nodeOperation
 export type Operations = keyof OperationMap
@@ -80,6 +81,9 @@ const methods = {
       this.compact = data.compact
     }
     this.changeTheme(data.theme || this.theme, false)
+    if (data.meta) {
+      this.meta = data.meta
+    }
     this.nodeData = data.nodeData
     fillParent(this.nodeData)
     this.arrows = data.arrows || []

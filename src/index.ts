@@ -94,7 +94,7 @@ function MindElixir(
   this.container.className = 'map-container'
 
   const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  this.theme = theme || (mediaQuery.matches ? DARK_THEME : THEME)
+  this.theme = (theme || (mediaQuery.matches ? DARK_THEME : THEME)) as MindElixirInstance['theme']
 
   // infrastructure
   const canvas = document.createElement('div') // map-canvas Element

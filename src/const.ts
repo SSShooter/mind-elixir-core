@@ -19,6 +19,7 @@ export const THEME: Theme = {
     '--root-color': '#ffffff',
     '--root-bgcolor': '#4c4f69',
     '--root-border-color': 'rgba(0, 0, 0, 0)',
+    '--main-border': '', // you can customize, it will fallback to 2px solid main-color
     '--main-color': '#444446',
     '--main-bgcolor': '#ffffff',
     '--main-bgcolor-transparent': 'rgba(255, 255, 255, 0.8)',
@@ -48,6 +49,7 @@ export const DARK_THEME: Theme = {
     '--root-color': '#ffffff',
     '--root-bgcolor': '#2d3748',
     '--root-border-color': 'rgba(255, 255, 255, 0.1)',
+    '--main-border': '',
     '--main-color': '#ffffff',
     '--main-bgcolor': '#4c4f69',
     '--main-bgcolor-transparent': 'rgba(76, 79, 105, 0.8)',
