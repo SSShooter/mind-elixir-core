@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.12.2 - 2026-05-25
+
+### Features
+
+- Add custom branch rendering and metadata support
+
 ## 5.12.1 - 2026-05-23
 
 ### Features
