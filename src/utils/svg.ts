@@ -198,6 +198,7 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
 
   div.addEventListener('keydown', e => {
     e.stopPropagation()
+    if (e.isComposing) return
     const key = e.key
 
     if (key === 'Enter' || key === 'Tab') {

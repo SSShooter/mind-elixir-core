@@ -201,6 +201,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
 
   div.addEventListener('keydown', e => {
     e.stopPropagation()
+    if (e.isComposing) return
     const key = e.key
 
     if (key === 'Enter' || key === 'Tab') {
