@@ -3,6 +3,10 @@ import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { createLabel, editSvgText, svgNS } from './utils/svg'
 import { calculatePrecisePosition } from './utils/svg'
+import { layoutSummaryBracket, type SummaryItemBox } from './utils/summaryLayout'
+
+export { layoutSummaryBracket } from './utils/summaryLayout'
+export type { SummaryItemBox, SummaryBracketLayout } from './utils/summaryLayout'
 
 export interface SummaryStyle {
   /**
@@ -133,10 +137,8 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   const parentEl = mei.findEle(parent)
   const parentObj = parentEl.nodeObj
   const side = getDirection(mei, summary)
-  let left = Infinity
-  let right = 0
-  let startTop = 0
-  let endBottom = 0
+
+  const boxes: SummaryItemBox[] = []
   for (let i = start; i <= end; i++) {
     const child = parentObj.children?.[i]
     if (!child) {
@@ -146,30 +148,30 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
     }
     const wrapper = getWrapper(mei.findEle(child.id))
     const { offsetLeft, offsetTop } = getOffsetLT(nodes, wrapper)
-    const offset = start === end ? 10 : 20
-    if (i === start) startTop = offsetTop + offset
-    if (i === end) endBottom = offsetTop + wrapper.offsetHeight - offset
-    if (offsetLeft < left) left = offsetLeft
-    if (wrapper.offsetWidth + offsetLeft > right) right = wrapper.offsetWidth + offsetLeft
+    boxes.push({
+      x: offsetLeft,
+      y: offsetTop,
+      width: wrapper.offsetWidth,
+      height: wrapper.offsetHeight,
+    })
   }
-  let path
-  let text
-  const offset = !parentObj.parent ? 0 : 10
-  const top = startTop + offset
-  const bottom = endBottom + offset
-  const md = (top + bottom) / 2
+
+  const parentIsRoot = !parentObj.parent
+  const bracket = layoutSummaryBracket(boxes, side, parentIsRoot)
   const strokeColor = style?.stroke || theme.cssVar['--color']
   const labelColor = style?.labelColor || theme.cssVar['--color']
   const groupId = 's-' + id
   // Render label with markdown if available
   const renderedLabel = mei.markdown ? mei.markdown(summaryText, summary) : summaryText
-  if (side === DirectionClass.LHS) {
-    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
-    text = createLabel(renderedLabel, left - 20, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
-  } else {
-    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, strokeColor)
-    text = createLabel(renderedLabel, right + 20, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
-  }
+
+  const path = createPath(bracket.pathD, strokeColor)
+  const text = createLabel(renderedLabel, bracket.labelX, bracket.labelY, {
+    anchor: bracket.anchor,
+    color: labelColor,
+    dataType: 'summary',
+    svgId: groupId,
+  })
+
   const group = creatGroup(groupId)
   group.appendChild(path)
   // Add label to the label container instead of SVG group

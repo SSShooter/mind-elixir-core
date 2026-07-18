@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1233.25" height="320" viewBox="0 0 1233.25 320">
+<rect width="100%" height="100%" fill="#f6f6f6"/>
+<g class="links" fill="none">
+<path d="M 589.625 160 Q 589.625 160 471 160" stroke="#dd7878" stroke-width="3" fill="none"/>
+<path d="M 364 160 C 334 160 337.8 122 304 122 H 204" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 364 160 C 334 160 334.1 161 304 161 H 204" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 364 160 C 334 160 339.95 219.5 304 219.5 H 218" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 218 219.5 C 188 219.5 189.95 200 158 200 H 87" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 218 219.5 C 188 219.5 189.95 239 158 239 H 80" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 671.1150568181819 160 Q 671.1150568181819 103.5 796 103.5" stroke="#ea76cb" stroke-width="3" fill="none"/>
+<path d="M 912 103.5 C 942 103.5 940.15 85 972 85 H 1068" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 912 103.5 C 942 103.5 939.95 124 972 124 H 1068" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 912 103.5 C 942 103.5 936.05 163 972 163 H 1068" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 668.9545454545455 160 Q 668.9545454545455 236 796 236" stroke="#8839ef" stroke-width="3" fill="none"/>
+<path d="M 917 236 C 947 236 946.9 237 977 237 H 1085" stroke="#8839ef" stroke-width="2" fill="none"/>
+<path d="M 917 236 C 947 236 943 276 977 276 H 1105" stroke="#8839ef" stroke-width="2" fill="none"/>
+</g>
+<g class="nodes">
+<g data-nodeid="meroot" class="me-node me-root">
+<rect x="536" y="130.5" width="195" height="59" rx="30" ry="30" fill="#4c4f69" stroke="rgba(0, 0, 0, 0)" stroke-width="2"/>
+<text x="568" y="167.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="25" font-weight="normal" fill="#ffffff">Arrow Demo</text>
+</g>
+<g data-nodeid="meleft-main" class="me-node me-main">
+<rect x="334" y="138.5" width="137" height="43" rx="20" ry="20" fill="#ffffff" stroke="#dd7878" stroke-width="2"/>
+<text x="361" y="164.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Left branch</text>
+</g>
+<g data-nodeid="meL1" class="me-node me-sub">
+<rect x="204" y="87" width="70" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="207" y="106" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Source A</text>
+</g>
+<g data-nodeid="meL2" class="me-node me-sub">
+<rect x="204" y="126" width="70" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="207" y="145" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Source B</text>
+</g>
+<g data-nodeid="meL3" class="me-node me-sub">
+<rect x="218" y="184.5" width="56" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="221" y="203.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Nested</text>
+</g>
+<g data-nodeid="meL3a" class="me-node me-sub">
+<rect x="87" y="165" width="71" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="90" y="184" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Deep left</text>
+</g>
+<g data-nodeid="meL3b" class="me-node me-sub">
+<rect x="80" y="204" width="78" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="83" y="223" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Also deep</text>
+</g>
+<g data-nodeid="meright-main" class="me-node me-main">
+<rect x="796" y="82" width="146" height="43" rx="20" ry="20" fill="#ffffff" stroke="#ea76cb" stroke-width="2"/>
+<text x="823" y="108" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Right branch</text>
+</g>
+<g data-nodeid="meR1" class="me-node me-sub">
+<rect x="1002" y="50" width="66" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1005" y="69" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Target A</text>
+</g>
+<g data-nodeid="meR2" class="me-node me-sub">
+<rect x="1002" y="89" width="66" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1005" y="108" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Target B</text>
+</g>
+<g data-nodeid="meR3" class="me-node me-sub">
+<rect x="1002" y="128" width="66" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1005" y="147" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Target C</text>
+</g>
+<g data-nodeid="meright-main-2" class="me-node me-main">
+<rect x="796" y="214.5" width="151" height="43" rx="20" ry="20" fill="#ffffff" stroke="#8839ef" stroke-width="2"/>
+<text x="823" y="240.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Related topic</text>
+</g>
+<g data-nodeid="meR4" class="me-node me-sub">
+<rect x="1007" y="202" width="78" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1010" y="221" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Peer node</text>
+</g>
+<g data-nodeid="meR5" class="me-node me-sub">
+<rect x="1007" y="241" width="98" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1010" y="260" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Another peer</text>
+</g>
+</g>
+<g class="arrows" fill="none">
+<g id="a-arr-sib-left" class="me-arrow">
+<path d="M 210 116 C 199 121.5 199 120.5 210 126" stroke="#e64553" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M 198.02155839610245 126.7189831305506 L 210 126 L 203.38812154210194 115.9858568385516" stroke="#e64553" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="201.75" y="121" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#e64553">sibling</text>
+</g>
+<g id="a-arr-nested" class="me-arrow">
+<path d="M 87 190.15 C 72.5 194.5 69 203.5 80 206.8" stroke="#dd7878" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M 68.32188994163397 209.56075088783652 L 80 206.8 L 71.77006456843012 198.06683546518272" stroke="#dd7878" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="73.9375" y="198.86875" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#dd7878">nested</text>
+</g>
+<g id="a-arr-sib-right" class="me-arrow">
+<path d="M 1068 64.5 C 1235 64.5 1235 103.5 1068 103.5" stroke="rgb(227, 125, 116)" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M 1078.3923048454133 97.5 L 1068 103.5 L 1078.3923048454133 109.49999999999999" stroke="rgb(227, 125, 116)" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="1193.25" y="84" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="rgb(235, 95, 82)">auto delta</text>
+</g>
+<g id="a-arr-same-side" class="me-arrow">
+<path d="M 1064 118 C 1085 128.5 1085 117.5 1064 128" stroke="#209fb5" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M 1070.611878457898 117.98585683855161 L 1064 128 L 1075.9784416038976 128.71898313055058" stroke="#209fb5" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="1079.75" y="123" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#209fb5">same side</text>
+</g>
+<g id="a-arr-bi" class="me-arrow">
+<path d="M 1085 229.5 C 1106 236.5 1116 235.5 1099.5 241" stroke="#8839ef" stroke-width="2" fill="none" stroke-dasharray="6,4" stroke-linecap="round" opacity="1"/>
+<path d="M 1107.461639438992 232.02156486666593 L 1099.5 241 L 1111.256372631194 243.4057644432721" stroke="#8839ef" stroke-width="2" fill="none" stroke-linecap="round" opacity="1"/>
+<path d="M 1096.756372631194 227.0942355567279 L 1085 229.5 L 1092.961639438992 238.47843513333407" stroke="#8839ef" stroke-width="2" fill="none" stroke-linecap="round" opacity="1"/>
+<text x="1106.3125" y="235.8125" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#8839ef" opacity="1">Bidirectional!</text>
+</g>
+<g id="a-arr-parent-child" class="me-arrow">
+<path d="M 912 125 C 949 143.5 1005 132.5 1002 131.5" stroke="#fe640b" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M 1013.756372631194 129.0942355567279 L 1002 131.5 L 1009.9616394389919 140.47843513333407" stroke="#fe640b" stroke-width="2" fill="none" stroke-linecap="round"/>
+<text x="972" y="135.5625" text-anchor="middle" dominant-baseline="middle" font-size="13" fill="#fe640b">Render</text>
+</g>
+</g>
+</svg>

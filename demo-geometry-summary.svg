@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1326" height="476" viewBox="0 0 1326 476">
+<rect width="100%" height="100%" fill="#f6f6f6"/>
+<g class="links" fill="none">
+<path d="M 546.075 238 Q 546.075 238 417 238" stroke="#dd7878" stroke-width="3" fill="none"/>
+<path d="M 338 238 C 308 238 311.8 200 278 200 H 175" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 338 238 C 308 238 308.1 239 278 239 H 192" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 338 238 C 308 238 312 278 278 278 H 184" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 338 238 C 308 238 315.9 317 278 317 H 210" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 645.0380319148936 238 Q 645.0380319148936 162 780 162" stroke="#ea76cb" stroke-width="3" fill="none"/>
+<path d="M 890 162 C 920 162 914.25 104.5 950 104.5 H 1050" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 1050 104.5 C 1080 104.5 1078.05 85 1110 85 H 1157" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 1050 104.5 C 1080 104.5 1078.05 124 1110 124 H 1143" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 890 162 C 920 162 917.95 182.5 950 182.5 H 1048" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 1048 182.5 C 1078 182.5 1076.05 163 1108 163 H 1137" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 1048 182.5 C 1078 182.5 1076.05 202 1108 202 H 1132" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 890 162 C 920 162 912.1 241 950 241 H 1039" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 890 162 C 920 162 908.2 280 950 280 H 1004" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 640.5066156914893 238 Q 640.5066156914893 372.5 780 372.5" stroke="#8839ef" stroke-width="3" fill="none"/>
+<path d="M 902 372.5 C 932 372.5 930.15 354 962 354 H 1034" stroke="#8839ef" stroke-width="2" fill="none"/>
+<path d="M 902 372.5 C 932 372.5 929.95 393 962 393 H 1051" stroke="#8839ef" stroke-width="2" fill="none"/>
+<path d="M 902 372.5 C 932 372.5 926.05 432 962 432 H 1069" stroke="#8839ef" stroke-width="2" fill="none"/>
+</g>
+<g class="nodes">
+<g data-nodeid="meroot" class="me-node me-root">
+<rect x="482" y="208.5" width="233" height="59" rx="30" ry="30" fill="#4c4f69" stroke="rgba(0, 0, 0, 0)" stroke-width="2"/>
+<text x="514" y="245.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="25" font-weight="normal" fill="#ffffff">Summary Demo</text>
+</g>
+<g data-nodeid="meleft-main" class="me-node me-main">
+<rect x="308" y="216.5" width="109" height="43" rx="20" ry="20" fill="#ffffff" stroke="#dd7878" stroke-width="2"/>
+<text x="335" y="242.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Product</text>
+</g>
+<g data-nodeid="mep1" class="me-node me-sub">
+<rect x="175" y="165" width="73" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="178" y="184" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Research</text>
+</g>
+<g data-nodeid="mep2" class="me-node me-sub">
+<rect x="192" y="204" width="56" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="195" y="223" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Design</text>
+</g>
+<g data-nodeid="mep3" class="me-node me-sub">
+<rect x="184" y="243" width="64" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="187" y="262" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Develop</text>
+</g>
+<g data-nodeid="mep4" class="me-node me-sub">
+<rect x="210" y="282" width="38" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="213" y="301" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Ship</text>
+</g>
+<g data-nodeid="meright-main" class="me-node me-main">
+<rect x="780" y="140.5" width="140" height="43" rx="20" ry="20" fill="#ffffff" stroke="#ea76cb" stroke-width="2"/>
+<text x="807" y="166.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Engineering</text>
+</g>
+<g data-nodeid="mee1" class="me-node me-sub">
+<rect x="980" y="69.5" width="70" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="983" y="88.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Frontend</text>
+</g>
+<g data-nodeid="mee1a" class="me-node me-sub">
+<rect x="1110" y="50" width="47" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1113" y="69" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">React</text>
+</g>
+<g data-nodeid="mee1b" class="me-node me-sub">
+<rect x="1110" y="89" width="33" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1113" y="108" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">CSS</text>
+</g>
+<g data-nodeid="mee2" class="me-node me-sub">
+<rect x="980" y="147.5" width="68" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="983" y="166.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Backend</text>
+</g>
+<g data-nodeid="mee2a" class="me-node me-sub">
+<rect x="1108" y="128" width="29" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1111" y="147" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">API</text>
+</g>
+<g data-nodeid="mee2b" class="me-node me-sub">
+<rect x="1108" y="167" width="24" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1111" y="186" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">DB</text>
+</g>
+<g data-nodeid="mee3" class="me-node me-sub">
+<rect x="980" y="206" width="59" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="983" y="225" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">DevOps</text>
+</g>
+<g data-nodeid="mee4" class="me-node me-sub">
+<rect x="980" y="245" width="24" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="983" y="264" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">QA</text>
+</g>
+<g data-nodeid="meright-main-2" class="me-node me-main">
+<rect x="780" y="351" width="152" height="43" rx="20" ry="20" fill="#ffffff" stroke="#8839ef" stroke-width="2"/>
+<text x="807" y="377" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Go-to-market</text>
+</g>
+<g data-nodeid="meg1" class="me-node me-sub">
+<rect x="992" y="319" width="42" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="995" y="338" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Docs</text>
+</g>
+<g data-nodeid="meg2" class="me-node me-sub">
+<rect x="992" y="358" width="59" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="995" y="377" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Launch</text>
+</g>
+<g data-nodeid="meg3" class="me-node me-sub">
+<rect x="992" y="397" width="77" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="995" y="416" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Feedback</text>
+</g>
+</g>
+<g class="summaries" fill="none">
+<g id="s-sum-left" class="me-summary">
+<path d="M 155 189 C 150 189 145 194 145 199 L 145 297 C 145 302 150 307 155 307 M 145 248 H 135" stroke="#dd7878" stroke-width="2" stroke-linecap="round" fill="none"/>
+<foreignObject x="0" y="235" width="125" height="26">
+<div xmlns="http://www.w3.org/1999/xhtml" class="svg-label" data-type="summary" style="color:#dd7878;font-size:14px;line-height:1.2;overflow-wrap:break-word;max-width:200px;text-align:right;padding:3px;box-sizing:border-box;">Full product cycle</div>
+</foreignObject>
+</g>
+<g id="s-sum-eng" class="me-summary">
+<path d="M 1147 80 C 1152 80 1157 85 1157 90 L 1157 176 C 1157 181 1152 186 1147 186 M 1157 133 H 1167" stroke="#8839ef" stroke-width="2" stroke-linecap="round" fill="none"/>
+<foreignObject x="1177" y="120" width="72" height="26">
+<div xmlns="http://www.w3.org/1999/xhtml" class="svg-label" data-type="summary" style="color:#8839ef;font-size:14px;line-height:1.2;overflow-wrap:break-word;max-width:200px;text-align:left;padding:3px;box-sizing:border-box;">App stack</div>
+</foreignObject>
+</g>
+<g id="s-sum-single" class="me-summary">
+<path d="M 1059 218.5 C 1064 218.5 1069 223.5 1069 228.5 L 1069 232.5 C 1069 237.5 1064 242.5 1059 242.5 M 1069 230.5 H 1079" stroke="#40a02b" stroke-width="2" stroke-linecap="round" fill="none"/>
+<foreignObject x="1089" y="217.5" width="48" height="26">
+<div xmlns="http://www.w3.org/1999/xhtml" class="svg-label" data-type="summary" style="color:#40a02b;font-size:14px;line-height:1.2;overflow-wrap:break-word;max-width:200px;text-align:left;padding:3px;box-sizing:border-box;">Infra</div>
+</foreignObject>
+</g>
+<g id="s-sum-long" class="me-summary">
+<path d="M 1089 343 C 1094 343 1099 348 1099 353 L 1099 412 C 1099 417 1094 422 1089 422 M 1099 382.5 H 1109" stroke="#209fb5" stroke-width="2" stroke-linecap="round" fill="none"/>
+<foreignObject x="1119" y="344.5" width="207" height="76">
+<div xmlns="http://www.w3.org/1999/xhtml" class="svg-label" data-type="summary" style="color:#209fb5;font-size:14px;line-height:1.2;overflow-wrap:break-word;max-width:200px;text-align:left;padding:3px;box-sizing:border-box;">This is a summary section that groups related go-to-market nodes and may wrap to multiple lines.</div>
+</foreignObject>
+</g>
+</g>
+</svg>

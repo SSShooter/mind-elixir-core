@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1497" height="359" viewBox="0 0 1497 359">
+<rect width="100%" height="100%" fill="#f6f6f6"/>
+<g class="links" fill="none">
+<path d="M 783.15 179.5 Q 783.15 179.5 667 179.5" stroke="#dd7878" stroke-width="3" fill="none"/>
+<path d="M 526 179.5 C 496 179.5 499.8 141.5 466 141.5 H 335" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 526 179.5 C 496 179.5 496.1 180.5 466 180.5 H 275" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 526 179.5 C 496 179.5 501.95 239 466 239 H 326" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 326 239 C 296 239 297.95 219.5 266 219.5 H 209" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 326 239 C 296 239 297.95 258.5 266 258.5 H 80" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 860.0276061776062 179.5 Q 860.0276061776062 103.5 983 103.5" stroke="#ea76cb" stroke-width="3" fill="none"/>
+<path d="M 1088 103.5 C 1118 103.5 1116.15 85 1148 85 H 1370" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 1088 103.5 C 1118 103.5 1115.95 124 1148 124 H 1337" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 1088 103.5 C 1118 103.5 1112.05 163 1148 163 H 1280" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 860.0276061776062 179.5 Q 860.0276061776062 255.5 983 255.5" stroke="#8839ef" stroke-width="3" fill="none"/>
+<path d="M 1116 255.5 C 1146 255.5 1144.15 237 1176 237 H 1410" stroke="#8839ef" stroke-width="2" fill="none"/>
+<path d="M 1116 255.5 C 1146 255.5 1143.95 276 1176 276 H 1417" stroke="#8839ef" stroke-width="2" fill="none"/>
+<path d="M 1116 255.5 C 1146 255.5 1140.05 315 1176 315 H 1408" stroke="#8839ef" stroke-width="2" fill="none"/>
+</g>
+<g class="nodes">
+<g data-nodeid="meroot" class="me-node me-root">
+<rect x="732" y="139" width="186" height="81" rx="30" ry="30" fill="#4c4f69" stroke="rgba(0, 0, 0, 0)" stroke-width="2"/>
+<text x="764" y="176" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="25" font-weight="normal" fill="#ffffff">Mind Elixir</text>
+<rect x="764" y="188" width="61" height="19.6" rx="3" ry="3" fill="#d6f0f8"/>
+<text x="768" y="202" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#276f86">Geometry</text>
+</g>
+<g data-nodeid="mea" class="me-node me-main">
+<rect x="496" y="158" width="171" height="43" rx="20" ry="20" fill="#ffffff" stroke="#dd7878" stroke-width="2"/>
+<text x="523" y="184" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">DOM-free layout</text>
+</g>
+<g data-nodeid="mea1" class="me-node me-sub">
+<rect x="335" y="106.5" width="101" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="338" y="125.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Measure text</text>
+</g>
+<g data-nodeid="mea2" class="me-node me-sub">
+<rect x="275" y="145.5" width="161" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="278" y="164.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Absolute coordinates</text>
+</g>
+<g data-nodeid="mea3" class="me-node me-sub">
+<rect x="326" y="204" width="110" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="329" y="223" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Nested branch</text>
+</g>
+<g data-nodeid="mea3a" class="me-node me-sub">
+<rect x="209" y="184.5" width="57" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="212" y="203.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Child A</text>
+</g>
+<g data-nodeid="mea3b" class="me-node me-sub">
+<rect x="80" y="223.5" width="186" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="83" y="242.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Child B with longer label</text>
+</g>
+<g data-nodeid="meb" class="me-node me-main">
+<rect x="983" y="82" width="135" height="43" rx="20" ry="20" fill="#ffffff" stroke="#ea76cb" stroke-width="2"/>
+<text x="1010" y="108" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Render SVG</text>
+</g>
+<g data-nodeid="meb1" class="me-node me-sub">
+<rect x="1178" y="50" width="192" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1181" y="69" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Links via generateBranch</text>
+</g>
+<g data-nodeid="meb2" class="me-node me-sub">
+<rect x="1178" y="89" width="159" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1181" y="108" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Theme cssVar colors</text>
+</g>
+<g data-nodeid="meb3" class="me-node me-sub">
+<rect x="1178" y="128" width="102" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1181" y="147" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">中文节点测试</text>
+</g>
+<g data-nodeid="mec" class="me-node me-main">
+<rect x="983" y="234" width="163" height="43" rx="20" ry="20" fill="#ffffff" stroke="#8839ef" stroke-width="2"/>
+<text x="1010" y="260" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">Node.js export</text>
+</g>
+<g data-nodeid="mec1" class="me-node me-sub">
+<rect x="1206" y="202" width="204" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1209" y="221" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">nodeData → layoutGeometry</text>
+</g>
+<g data-nodeid="mec2" class="me-node me-sub">
+<rect x="1206" y="241" width="211" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1209" y="260" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">layoutGeometry → SVG string</text>
+</g>
+<g data-nodeid="mec3" class="me-node me-sub">
+<rect x="1206" y="280" width="202" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="1209" y="299" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">SVG → PNG (resvg / sharp)</text>
+</g>
+</g>
+</svg>

@@ -40,6 +40,10 @@
       "types": "./dist/types/utils/LayoutSsr.d.ts",
       "import": "./dist/LayoutSsr.js"
     },
+    "./LayoutGeometry": {
+      "types": "./dist/types/utils/layout-geometry.d.ts",
+      "import": "./dist/LayoutGeometry.js"
+    },
     "./readme.md": "./readme.md",
     "./package.json": "./package.json",
     "./style": "./dist/MindElixir.css",

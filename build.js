@@ -26,6 +26,11 @@ const buildList = [
     formats: ['es'],
   },
   {
+    name: 'LayoutGeometry',
+    enrty: __dirname + './src/utils/layout-geometry.ts',
+    formats: ['es'],
+  },
+  {
     name: 'PlaintextConverter',
     enrty: __dirname + './src/utils/plaintextConverter.ts',
     formats: ['es'],

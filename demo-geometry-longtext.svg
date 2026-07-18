@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2928" height="454" viewBox="0 0 2928 454">
+<rect width="100%" height="100%" fill="#f6f6f6"/>
+<g class="links" fill="none">
+<path d="M 1165.8 227 Q 1165.8 227 861 227" stroke="#dd7878" stroke-width="3" fill="none"/>
+<path d="M 725 227 C 695 227 699.05 186.5 665 186.5 H 80" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 725 227 C 695 227 701.55 292.5 665 292.5 H 83" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 725 227 C 695 227 707.65 353.5 665 353.5 H 83" stroke="#dd7878" stroke-width="2" fill="none"/>
+<path d="M 1541.2649717514125 227 Q 1541.2649717514125 172 1863 172" stroke="#ea76cb" stroke-width="3" fill="none"/>
+<path d="M 2027 172 C 2057 172 2052.8 130 2087 130 H 2673" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 2027 172 C 2057 172 2052.8 214 2087 214 H 2677" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 2027 172 C 2057 172 2048.1 261 2087 261 H 2848" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 2027 172 C 2057 172 2044.2 300 2087 300 H 2139" stroke="#ea76cb" stroke-width="2" fill="none"/>
+<path d="M 1513.7070621468927 227 Q 1513.7070621468927 371.5 1863 371.5" stroke="#8839ef" stroke-width="3" fill="none"/>
+<path d="M 2387 371.5 C 2417 371.5 2414.95 392 2447 392 H 2740" stroke="#8839ef" stroke-width="2" fill="none"/>
+</g>
+<g class="nodes">
+<g data-nodeid="meroot" class="me-node me-root">
+<rect x="926" y="169" width="872" height="116" rx="30" ry="30" fill="#4c4f69" stroke="rgba(0, 0, 0, 0)" stroke-width="2"/>
+<text x="958" y="206" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="25" font-weight="normal" fill="#ffffff">超长根节点标题：LayoutGeometry 宽度 / 换行 验证（Root uses 25px fo</text>
+<text x="958" y="241" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="25" font-weight="normal" fill="#ffffff">nt → 35em = 875px outer）</text>
+<rect x="958" y="253" width="68" height="19.6" rx="3" ry="3" fill="#d6f0f8"/>
+<text x="962" y="267" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#276f86">long-text</text>
+<rect x="1030" y="253" width="41" height="19.6" rx="3" ry="3" fill="#d6f0f8"/>
+<text x="1034" y="267" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="12" fill="#276f86">width</text>
+</g>
+<g data-nodeid="meleft" class="me-node me-main">
+<rect x="695" y="205.5" width="166" height="43" rx="20" ry="20" fill="#ffffff" stroke="#dd7878" stroke-width="2"/>
+<text x="722" y="231.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">左侧：中文超长</text>
+</g>
+<g data-nodeid="meL1" class="me-node me-sub">
+<rect x="80" y="106.5" width="555" height="74" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="83" y="125.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">这是一段非常非常长的中文主题文本用来验证节点宽度是否会按照三十五个em</text>
+<text x="83" y="147.9" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">自动换行而不是无限横向拉长，同时检查根节点主节点与子节点在不同字号下</text>
+<text x="83" y="170.3" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">的最大宽度是否正确。</text>
+</g>
+<g data-nodeid="meL2" class="me-node me-sub">
+<rect x="83" y="190.5" width="552" height="96" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="86" y="209.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Line one is short.</text>
+<text x="86" y="231.9" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Line two is a much longer sentence that will itself wrap when it hits the c</text>
+<text x="86" y="254.3" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">ontent max width for this node role.</text>
+<text x="86" y="276.7" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">Line three: 中英 mixed 宽度测试 ABCDEFG 1234567890.</text>
+</g>
+<g data-nodeid="meL3" class="me-node me-sub">
+<rect x="83" y="296.5" width="552" height="51" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="86" y="315.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">带链接的长文本：这是一段非常非常长的中文主题文本用来验证节点宽度是</text>
+<text x="86" y="337.9" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">否会按照三十五个em自动换行而</text>
+<a href="https://example.com" target="_blank"><text x="618" y="326" font-size="14">🔗</text></a>
+</g>
+<g data-nodeid="meright" class="me-node me-main">
+<rect x="1863" y="150.5" width="194" height="43" rx="20" ry="20" fill="#ffffff" stroke="#ea76cb" stroke-width="2"/>
+<text x="1890" y="176.5" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">右侧：English long</text>
+</g>
+<g data-nodeid="meR1" class="me-node me-sub">
+<rect x="2117" y="50" width="556" height="74" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="2120" y="69" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">This is an extremely long English topic string without intentional line brea</text>
+<text x="2120" y="91.4" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">ks that should wrap within the me-tpc max-width of thirty-five ems so the</text>
+<text x="2120" y="113.80000000000001" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777"> layout does not stretch the entire branch horizontally forever and ever.</text>
+</g>
+<g data-nodeid="meR2" class="me-node me-sub">
+<rect x="2117" y="134" width="560" height="74" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="2120" y="153" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">SupercalifragilisticexpialidociousSupercalifragilisticexpialidociousSuperca</text>
+<text x="2120" y="175.4" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">lifragilisticexpialidociousSupercalifragilisticexpialidociousSupercalifragili</text>
+<text x="2120" y="197.8" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">sticexpialidociousSupercalifragilisticexpialidocious</text>
+</g>
+<g data-nodeid="meR3" class="me-node me-sub">
+<rect x="2117" y="218" width="731" height="37" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="2120" y="243" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="22" font-weight="bold" fill="#777777">Custom large font long topic — should use 35em of 22px ≈ 770 outer</text>
+</g>
+<g data-nodeid="meR4" class="me-node me-sub">
+<rect x="2117" y="265" width="22" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="2120" y="284" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">短</text>
+</g>
+<g data-nodeid="memain-long" class="me-node me-main">
+<rect x="1863" y="339" width="554" height="65" rx="20" ry="20" fill="#ffffff" stroke="#8839ef" stroke-width="2"/>
+<text x="1890" y="365" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">主节点自身也很长：main 有较大 padding(8×25) 与 2px border，bord</text>
+<text x="1890" y="387.4" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#444446">er-box 下内容区应比 560 更窄一些。</text>
+</g>
+<g data-nodeid="meM1" class="me-node me-sub">
+<rect x="2477" y="357" width="263" height="29" rx="3" ry="3" fill="transparent" stroke="transparent" stroke-width="0"/>
+<text x="2480" y="376" font-family="-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif" font-size="16" font-weight="normal" fill="#777777">子节点 max≈35×16−topicPadding×2</text>
+</g>
+</g>
+</svg>

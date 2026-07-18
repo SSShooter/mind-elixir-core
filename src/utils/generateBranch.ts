@@ -49,9 +49,14 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 
-export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
-  const GAP = parseInt(this.container.style.getPropertyValue('--node-gap-x')) // cache?
-  // const GAP = 30
+/**
+ * Pure sub-branch path generator (DOM-free).
+ * Used by both browser `linkDiv` and geometry/SSR render pipeline.
+ */
+export function subPath(
+  { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams,
+  gap: number
+): string {
   let y1 = 0
   let end = 0
   if (isFirst) {
@@ -63,18 +68,23 @@ export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, 
   let x1 = 0
   let x2 = 0
   let xMid = 0
-  const offset = (Math.abs(y1 - y2) / 300) * GAP
+  const offset = (Math.abs(y1 - y2) / 300) * gap
   if (direction === DirectionClass.LHS) {
     xMid = pL
-    x1 = xMid + GAP
-    x2 = xMid - GAP
-    end = cL + GAP
+    x1 = xMid + gap
+    x2 = xMid - gap
+    end = cL + gap
     return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
   } else {
     xMid = pL + pW
-    x1 = xMid - GAP
-    x2 = xMid + GAP
-    end = cL + cW - GAP
+    x1 = xMid - gap
+    x2 = xMid + gap
+    end = cL + cW - gap
     return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
   }
+}
+
+export function sub(this: MindElixirInstance, params: SubLineParams) {
+  const gap = parseInt(this.container.style.getPropertyValue('--node-gap-x')) || 30
+  return subPath(params, gap)
 }
