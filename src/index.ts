@@ -1,6 +1,6 @@
 import './index.less'
 import './markdown.css'
-import { LEFT, RIGHT, SIDE, DARK_THEME, THEME } from './const'
+import { LEFT, RIGHT, SIDE, DOWN, DARK_THEME, THEME } from './const'
 import { generateUUID } from './utils/index'
 import initMouseEvent from './mouse'
 import { createBus } from './utils/pubsub'
@@ -148,6 +148,7 @@ Object.defineProperty(MindElixir.prototype, 'currentNode', {
 MindElixir.LEFT = LEFT
 MindElixir.RIGHT = RIGHT
 MindElixir.SIDE = SIDE
+MindElixir.DOWN = DOWN
 
 MindElixir.THEME = THEME
 MindElixir.DARK_THEME = DARK_THEME
@@ -191,13 +192,14 @@ export interface MindElixirCtor {
   LEFT: typeof LEFT
   RIGHT: typeof RIGHT
   SIDE: typeof SIDE
+  DOWN: typeof DOWN
   THEME: typeof THEME
   DARK_THEME: typeof DARK_THEME
   prototype: MindElixirMethods
 }
 
 export default MindElixir as unknown as MindElixirCtor
-export { LEFT, RIGHT, SIDE, THEME, DARK_THEME } // bypass ssr error
+export { LEFT, RIGHT, SIDE, DOWN, THEME, DARK_THEME } // bypass ssr error
 
 // types
 export type * from './utils/pubsub'

@@ -15,6 +15,7 @@ export type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 export const DirectionClass = {
   LHS: 'lhs',
   RHS: 'rhs',
+  DOWN: 'down',
 } as const
 
 export type DirectionClass = (typeof DirectionClass)[keyof typeof DirectionClass]
@@ -107,7 +108,7 @@ export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' |
   currentArrow: ArrowSvg | null
 
   scaleVal: number
-  tempDirection: 0 | 1 | 2 | null
+  tempDirection: 0 | 1 | 2 | 3 | null
   meta?: Record<string, any>
 
   container: HTMLElement
@@ -159,7 +160,7 @@ type PathString = string
  */
 export interface Options {
   el: string | HTMLElement
-  direction?: 0 | 1 | 2
+  direction?: 0 | 1 | 2 | 3
   /**
    * @deprecated Use `contextMenu.locale` instead.
    */
@@ -299,7 +300,7 @@ export type MindElixirData = {
   nodeData: NodeObj
   arrows?: Arrow[]
   summaries?: Summary[]
-  direction?: 0 | 1 | 2
+  direction?: 0 | 1 | 2 | 3
   theme?: Theme
   compact?: boolean
   /**

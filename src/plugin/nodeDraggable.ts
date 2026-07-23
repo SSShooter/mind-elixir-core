@@ -195,6 +195,39 @@ export function handleNodeDragMove(mind: MindElixirInstance, state: NodeDragStat
 
   const threshold = 12 * mind.scaleVal
 
+  if (mind.direction === 3) {
+    // top-down layout: siblings are arranged horizontally, detect left/right
+    const leftMeet = document.elementFromPoint(e.clientX - threshold, e.clientY) as Topic
+    if (canMove(leftMeet, dragged)) {
+      state.meet = leftMeet
+      const rect = leftMeet.getBoundingClientRect()
+      if (e.clientX > rect.x + rect.width) {
+        state.insertType = 'after'
+      } else {
+        state.insertType = 'in'
+      }
+    } else {
+      const rightMeet = document.elementFromPoint(e.clientX + threshold, e.clientY) as Topic
+      if (canMove(rightMeet, dragged)) {
+        state.meet = rightMeet
+        const rect = rightMeet.getBoundingClientRect()
+        if (e.clientX < rect.x) {
+          state.insertType = 'before'
+        } else {
+          state.insertType = 'in'
+        }
+      } else {
+        state.insertType = null
+        state.meet = null
+      }
+    }
+
+    if (state.meet) {
+      insertPreview(state.meet, state.insertType)
+    }
+    return
+  }
+
   // Check for drop target
   // minus threshold infers that position of the cursor is above topic
   const topMeet = document.elementFromPoint(e.clientX, e.clientY - threshold) as Topic

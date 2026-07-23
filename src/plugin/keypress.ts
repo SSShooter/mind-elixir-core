@@ -90,6 +90,26 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
     mei.selectNode(current)
   }
 }
+// top-down layout: Up selects parent, Down selects first child
+const selectDownParent = function (mei: MindElixirInstance, current: Topic) {
+  const nodeObj = current.nodeObj
+  if (!nodeObj.parent) return
+  if (!nodeObj.parent.parent) {
+    selectRoot(mei)
+  } else {
+    selectParent(mei, current)
+  }
+}
+const selectDownChild = function (mei: MindElixirInstance, current: Topic) {
+  const nodeObj = current.nodeObj
+  if (!nodeObj.parent) {
+    const tpcs = mei.map.querySelectorAll('.down>me-wrapper>me-parent>me-tpc')
+    if (tpcs.length === 0) return
+    mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
+  } else {
+    selectFirstChild(mei, current)
+  }
+}
 export const handleKeypressZoom = function (mei: MindElixirInstance, direction: 'in' | 'out', offset?: ZoomOffset) {
   const scaleDelta = direction === 'in' ? mei.scaleSensitivity : -mei.scaleSensitivity
   applyScaleDelta(mei, scaleDelta, offset)
@@ -179,6 +199,9 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
         mind.moveUpNode()
       } else if (e.metaKey || e.ctrlKey) {
         return mind.initSide()
+      } else if (mind.direction === 3) {
+        const current = mind.currentNode || mind.currentNodes?.[0]
+        if (current) selectDownParent(mind, current)
       } else {
         handlePrevNext(mind, 'previous')
       }
@@ -186,6 +209,9 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     ArrowDown: e => {
       if (e.altKey) {
         mind.moveDownNode()
+      } else if (mind.direction === 3) {
+        const current = mind.currentNode || mind.currentNodes?.[0]
+        if (current) selectDownChild(mind, current)
       } else {
         handlePrevNext(mind, 'next')
       }
@@ -194,13 +220,21 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       if (e.metaKey || e.ctrlKey) {
         return mind.initLeft()
       }
-      handleLeftRight(mind, DirectionClass.LHS)
+      if (mind.direction === 3) {
+        handlePrevNext(mind, 'previous')
+      } else {
+        handleLeftRight(mind, DirectionClass.LHS)
+      }
     },
     ArrowRight: e => {
       if (e.metaKey || e.ctrlKey) {
         return mind.initRight()
       }
-      handleLeftRight(mind, DirectionClass.RHS)
+      if (mind.direction === 3) {
+        handlePrevNext(mind, 'next')
+      } else {
+        handleLeftRight(mind, DirectionClass.RHS)
+      }
     },
     PageUp: () => {
       return mind.moveUpNode()

@@ -341,6 +341,20 @@ export const initSide = function (this: MindElixirInstance) {
   this.bus.fire('changeDirection', this.direction)
 }
 
+/**
+ * @function
+ * @instance
+ * @name initDown
+ * @description Child nodes will distribute below the root node (top-down layout).
+ * @memberof MapInteraction
+ */
+export const initDown = function (this: MindElixirInstance) {
+  this.direction = 3
+  this.refresh()
+  this.toCenter()
+  this.bus.fire('changeDirection', this.direction)
+}
+
 export const expandNode = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
   const node = el.nodeObj
   if (typeof isExpand === 'boolean') {

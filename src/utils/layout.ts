@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE } from '../const'
+import { LEFT, RIGHT, SIDE, DOWN } from '../const'
 import type { Children } from '../types/dom'
 import { DirectionClass, type MindElixirInstance, type NodeObj } from '../types/index'
 import { shapeTpc } from './dom'
@@ -7,6 +7,8 @@ import { shapeTpc } from './dom'
 export const layout = function (this: MindElixirInstance) {
   console.time('layout')
   this.nodes.innerHTML = ''
+  // toggle the top-down layout class on the container
+  this.nodes.className = this.direction === DOWN ? 'down' : ''
 
   const tpc = this.createTopic(this.nodeData)
   shapeTpc.call(this, tpc, this.nodeData) // shape root tpc
@@ -40,6 +42,22 @@ export const layout = function (this: MindElixirInstance) {
 }
 
 const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root: HTMLElement) {
+  // Top-down layout: root on top, all main nodes in a single container below
+  if (mei.direction === DOWN) {
+    const downPart = document.createElement('me-main')
+    downPart.className = DirectionClass.DOWN
+    for (let i = 0; i < data.length; i++) {
+      const { grp: w } = mei.createWrapper(data[i])
+      downPart.appendChild(w)
+    }
+    mei.nodes.appendChild(root)
+    mei.nodes.appendChild(downPart)
+
+    mei.nodes.appendChild(mei.lines)
+    mei.nodes.appendChild(mei.labelContainer)
+    return
+  }
+
   const leftPart = document.createElement('me-main')
   leftPart.className = DirectionClass.LHS
   const rightPart = document.createElement('me-main')

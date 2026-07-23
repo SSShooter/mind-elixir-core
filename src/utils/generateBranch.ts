@@ -12,6 +12,7 @@ export interface MainLineParams {
   cH: number
   direction: DirectionClass
   containerHeight: number
+  containerWidth?: number
 }
 
 export interface SubLineParams {
@@ -29,7 +30,25 @@ export interface SubLineParams {
 
 // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#path_commands
 
-export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeight }: MainLineParams) {
+// rounded right-angle (orthogonal) connector for top-down layout:
+// vertical -> horizontal -> vertical, with rounded corners
+const roundedVertical = function (x1: number, y1: number, x2: number, y2: number, radius = 8) {
+  if (x1 === x2) return `M ${x1} ${y1} V ${y2}`
+  const midY = (y1 + y2) / 2
+  const dir = x2 > x1 ? 1 : -1
+  const r = Math.min(radius, Math.abs(x2 - x1) / 2, Math.abs(midY - y1), Math.abs(y2 - midY))
+  return `M ${x1} ${y1} V ${midY - r} Q ${x1} ${midY} ${x1 + dir * r} ${midY} H ${x2 - dir * r} Q ${x2} ${midY} ${x2} ${midY + r} V ${y2}`
+}
+
+export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeight, containerWidth }: MainLineParams) {
+  if (direction === DirectionClass.DOWN) {
+    // top-down: from root bottom center to main node top center
+    const x1 = pL + pW / 2
+    const x2 = cL + cW / 2
+    const y1 = pT + pH
+    const y2 = cT
+    return roundedVertical(x1, y1, x2, y2)
+  }
   let x1 = pL + pW / 2
   const y1 = pT + pH / 2
   let x2
@@ -50,6 +69,14 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
 }
 
 export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+  if (direction === DirectionClass.DOWN) {
+    // top-down: from parent bottom center to child top center
+    const x1 = pL + pW / 2
+    const y1 = pT + pH
+    const x2 = cL + cW / 2
+    const y2 = cT
+    return roundedVertical(x1, y1, x2, y2)
+  }
   const GAP = parseInt(this.container.style.getPropertyValue('--node-gap-x')) // cache?
   // const GAP = 30
   let y1 = 0

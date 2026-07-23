@@ -137,6 +137,9 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   let right = 0
   let startTop = 0
   let endBottom = 0
+  let maxBottom = 0
+  let startLeft = Infinity
+  let endRight = 0
   for (let i = start; i <= end; i++) {
     const child = parentObj.children?.[i]
     if (!child) {
@@ -149,26 +152,40 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
     const offset = start === end ? 10 : 20
     if (i === start) startTop = offsetTop + offset
     if (i === end) endBottom = offsetTop + wrapper.offsetHeight - offset
+    if (i === start) startLeft = offsetLeft + offset
+    if (i === end) endRight = offsetLeft + wrapper.offsetWidth - offset
+    if (offsetTop + wrapper.offsetHeight > maxBottom) maxBottom = offsetTop + wrapper.offsetHeight
     if (offsetLeft < left) left = offsetLeft
     if (wrapper.offsetWidth + offsetLeft > right) right = wrapper.offsetWidth + offsetLeft
   }
   let path
   let text
-  const offset = !parentObj.parent ? 0 : 10
-  const top = startTop + offset
-  const bottom = endBottom + offset
-  const md = (top + bottom) / 2
   const strokeColor = style?.stroke || theme.cssVar['--color']
   const labelColor = style?.labelColor || theme.cssVar['--color']
   const groupId = 's-' + id
   // Render label with markdown if available
   const renderedLabel = mei.markdown ? mei.markdown(summaryText, summary) : summaryText
-  if (side === DirectionClass.LHS) {
-    path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
-    text = createLabel(renderedLabel, left - 20, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
+  if (side === DirectionClass.DOWN) {
+    // top-down layout: horizontal bracket below the sibling group
+    const y = maxBottom + 10
+    const mid = (startLeft + endRight) / 2
+    path = createPath(
+      `M ${startLeft} ${y - 10} c 0 5 5 10 10 10 L ${endRight - 10} ${y} c 5 0 10 -5 10 -10 M ${mid} ${y} v 10`,
+      strokeColor
+    )
+    text = createLabel(renderedLabel, mid, y + 20, { anchor: 'middle', color: labelColor, dataType: 'summary', svgId: groupId })
   } else {
-    path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, strokeColor)
-    text = createLabel(renderedLabel, right + 20, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
+    const offset = !parentObj.parent ? 0 : 10
+    const top = startTop + offset
+    const bottom = endBottom + offset
+    const md = (top + bottom) / 2
+    if (side === DirectionClass.LHS) {
+      path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
+      text = createLabel(renderedLabel, left - 20, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
+    } else {
+      path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, strokeColor)
+      text = createLabel(renderedLabel, right + 20, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
+    }
   }
   const group = creatGroup(groupId)
   group.appendChild(path)

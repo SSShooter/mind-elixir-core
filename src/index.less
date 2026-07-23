@@ -74,6 +74,68 @@
       right: 5px;
     }
   }
+
+  // top-down layout
+  me-nodes.down {
+    flex-direction: column;
+    me-main {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+    }
+    // swap main gaps: bigger vertical, smaller horizontal
+    & > me-main > me-wrapper {
+      margin: var(--main-gap-x) var(--main-gap-y);
+    }
+    me-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    me-children {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      justify-content: center;
+      // vertical gap between a node and its children block (bigger)
+      margin-top: var(--node-gap-x);
+    }
+    // node box tightly wraps the topic so connectors attach to the node edges
+    me-parent {
+      margin: 0;
+      padding: 0 var(--node-gap-y); // small horizontal padding -> small sibling gap
+    }
+    // org-chart style: give child nodes a visible border
+    me-children me-parent > me-tpc {
+      border: 1px solid var(--main-color);
+      background-color: var(--main-bgcolor);
+      border-radius: 6px;
+      padding: 6px 12px;
+    }
+    me-epd,
+    & > me-main > me-wrapper > me-parent > me-epd {
+      top: calc(100% - 9px);
+      left: calc(50% - 9px);
+      right: auto;
+    }
+    // horizontal drop preview (siblings arranged left-to-right)
+    .insert-preview {
+      &.before {
+        width: 14px;
+        height: 100%;
+        top: 0;
+        left: -14px;
+      }
+      &.after {
+        width: 14px;
+        height: 100%;
+        top: 0;
+        left: auto;
+        right: -14px;
+      }
+    }
+  }
   background-color: var(--bgcolor);
   .map-canvas {
     pointer-events: none;

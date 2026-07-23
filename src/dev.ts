@@ -3,6 +3,7 @@ import MindElixir from './index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
+import org from './exampleData/org'
 import type { Options, MindElixirInstance, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import 'katex/dist/katex.min.css'
@@ -187,11 +188,13 @@ mind.container.dataset.branchStyle = 'markmap'
 const m2 = new MindElixir({
   el: '#map2',
   selectionContainer: 'body', // use body to make selection usable when transform is not 0
-  direction: MindElixir.RIGHT,
+  direction: MindElixir.DOWN,
   theme: MindElixir.DARK_THEME,
   // alignment: 'nodes',
 })
-m2.init(example)
+// NOTE: init() reads data.direction and overrides the constructor option,
+// and example data has `direction: 2`, so pass direction explicitly here.
+m2.init(org)
 
 function sleep() {
   return new Promise<void>(res => {
