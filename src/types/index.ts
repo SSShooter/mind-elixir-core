@@ -1,14 +1,11 @@
-import type { Topic, ArrowSvg, SummarySvg } from './dom'
-import type { createBus, EventMap, Operation } from '../utils/pubsub'
-import type { MindElixirMethods, OperationMap, Operations } from '../methods'
-import type { LinkPanHelperInstance } from '../utils/LinkPanHelper'
+import type { Topic } from './dom'
+import type { OperationMap, Operations } from '../methods'
 import type { Arrow } from '../arrow'
 import type { Summary } from '../summary'
 import type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 import type { LangPack } from '../i18n'
 import type { ContextMenuOption } from '../plugin/contextMenu'
-import type { createPanHelper } from '../utils/panHelper'
-import type SelectionArea from '../viselect/src'
+import type MindElixir from '../index'
 export { type MindElixirMethods } from '../methods'
 export type { MainLineParams, SubLineParams } from '../utils/generateBranch'
 
@@ -83,75 +80,13 @@ export interface KeypressOptions {
 /**
  * The MindElixir instance
  *
+ * The instance shape is owned by the `MindElixir` class; this type simply
+ * derives from it so existing `MindElixirInstance` references keep working.
+ *
  * @public
  */
-export interface MindElixirInstance extends Omit<Required<Options>, 'markdown' | 'imageProxy' | 'theme'>, MindElixirMethods {
-  theme: Omit<Theme, 'cssVar'> & {
-    cssVar: ThemeCssVar
-  }
-  markdown?: (markdown: string, obj: NodeObj | Arrow | Summary) => string // Keep markdown as optional
-  imageProxy?: (url: string) => string // Keep imageProxy as optional
-  dragged: Topic[] | null // currently dragged nodes
-  spacePressed: boolean // space key pressed state
-  el: HTMLElement
-  disposable: Array<() => void>
-  isFocusMode: boolean
-  nodeDataBackup: NodeObj
-
-  nodeData: NodeObj
-  arrows: Arrow[]
-  summaries: Summary[]
-
-  readonly currentNode: Topic | null
-  currentNodes: Topic[]
-  currentSummary: SummarySvg | null
-  currentArrow: ArrowSvg | null
-
-  scaleVal: number
-  tempDirection: 0 | 1 | 2 | 3 | null
-  meta?: Record<string, any>
-
-  container: HTMLElement
-  map: HTMLElement
-  root: HTMLElement
-  nodes: HTMLElement
-  lines: SVGElement
-  summarySvg: SVGElement
-  linkController: SVGElement
-  labelContainer: HTMLElement // Container for SVG labels
-  P2: HTMLElement
-  P3: HTMLElement
-  line1: SVGElement
-  line2: SVGElement
-  arrowSvg: SVGElement
-  /**
-   * @internal
-   */
-  helper1?: LinkPanHelperInstance
-  /**
-   * @internal
-   */
-  helper2?: LinkPanHelperInstance
-
-  bus: ReturnType<typeof createBus<EventMap>>
-  history: Operation[]
-  undo: () => void
-  redo: () => void
-  /**
-   * Reset the undo/redo stack and update the internal baseline snapshot to the
-   * current diagram state. Call this after loading new data into an existing
-   * instance (e.g. after `refresh()`) to prevent users from undoing back into
-   * a previously loaded diagram.
-   *
-   * Only available when `allowUndo` is `true` (the default).
-   */
-  clearHistory?: () => void
-
-  selection: SelectionArea
-  panHelper: ReturnType<typeof createPanHelper>
-  ptState?: number
-  mobileMultiSelect: boolean
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export type MindElixirInstance = InstanceType<typeof MindElixir>
 type PathString = string
 /**
  * The MindElixir options

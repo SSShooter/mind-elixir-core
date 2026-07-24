@@ -1,4 +1,3 @@
-import type { MindElixirCtor } from './index'
 import MindElixir from './index'
 import example from './exampleData/1'
 import example2 from './exampleData/2'
@@ -23,7 +22,7 @@ import '../dev.css'
 interface Window {
   m?: MindElixirInstance
   m2?: MindElixirInstance
-  M: MindElixirCtor
+  M: typeof MindElixir
   E: typeof MindElixir.E
   downloadPng: () => void
   downloadSvg: () => void
