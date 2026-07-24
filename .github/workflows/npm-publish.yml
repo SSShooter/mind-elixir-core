@@ -29,7 +29,21 @@ jobs:
         run: npm install -g npm@latest
       - run: pnpm i
       - run: npm run build
-      - run: NODE_AUTH_TOKEN="" npm publish
+
+      - name: Determine npm dist-tag
+        id: disttag
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" == *-* ]]; then
+            # Prerelease (e.g. 5.15.0-beta.1) -> use the prerelease identifier as dist-tag
+            TAG=$(echo "$VERSION" | sed -E 's/^[^-]+-([a-zA-Z]+).*/\1/')
+          else
+            TAG=latest
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "Publishing $VERSION with dist-tag: $TAG"
+
+      - run: NODE_AUTH_TOKEN="" npm publish --tag ${{ steps.disttag.outputs.tag }}
 
       - name: Checkout docs repository
         uses: actions/checkout@v3
