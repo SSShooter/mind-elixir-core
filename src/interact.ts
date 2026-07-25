@@ -180,22 +180,20 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
   const cRect = container.getBoundingClientRect()
   const nRect = nodes.getBoundingClientRect()
 
-  const isXVisible = nRect.left < cRect.right && nRect.right > cRect.left
-  const isYVisible = nRect.top < cRect.bottom && nRect.bottom > cRect.top
+  // Clamp the delta so the nodes' edge never passes the container center,
+  // leaving at most half of the viewport blank on any side
+  const centerX = (cRect.left + cRect.right) / 2
+  const centerY = (cRect.top + cRect.bottom) / 2
 
-  if (isXVisible) {
-    const futureLeft = nRect.left + dx
-    const futureRight = nRect.right + dx
-    if (futureLeft >= cRect.right || futureRight <= cRect.left) {
-      dx = 0
-    }
+  if (dx > 0) {
+    dx = Math.min(dx, Math.max(0, centerX - nRect.left))
+  } else if (dx < 0) {
+    dx = Math.max(dx, Math.min(0, centerX - nRect.right))
   }
-  if (isYVisible) {
-    const futureTop = nRect.top + dy
-    const futureBottom = nRect.bottom + dy
-    if (futureTop >= cRect.bottom || futureBottom <= cRect.top) {
-      dy = 0
-    }
+  if (dy > 0) {
+    dy = Math.min(dy, Math.max(0, centerY - nRect.top))
+  } else if (dy < 0) {
+    dy = Math.max(dy, Math.min(0, centerY - nRect.bottom))
   }
 
   x += dx
