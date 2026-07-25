@@ -17,7 +17,14 @@ export const DirectionClass = {
 
 export type DirectionClass = (typeof DirectionClass)[keyof typeof DirectionClass]
 
-type Before = Partial<{
+/**
+ * Before-hook map for node operations. Each hook receives the same arguments as
+ * its operation and may veto it by returning `false` (or a promise resolving to
+ * `false`).
+ *
+ * @public
+ */
+export type Before = Partial<{
   [K in Operations]: (...args: Parameters<OperationMap[K]>) => Promise<boolean> | boolean
 }>
 

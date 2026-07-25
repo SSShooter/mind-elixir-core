@@ -438,6 +438,17 @@ pnpm doc
 pnpm doc:md
 ```
 
+重新生成 `MindElixir` 类成员：
+
+`MindElixir` 类的选项与方法声明（`src/index.ts` 中的 `// #region GENERATED` 区块）由 `gen-members.js` 基于 `dist/types` 中的编译产物生成，从而让发布的 `.d.ts` 和 API 文档展示完整展开的签名。修改混入方法（`src/methods.ts`）或 `Options` 接口（`src/types/index.ts`）后，请执行：
+
+```
+pnpm tsc         # 生成最新的 dist/types
+pnpm gen:members # 重写 src/index.ts 中的生成区块
+```
+
+`src/index.ts` 底部的编译期守卫会在区块不同步时让 `tsc` 失败，因此忘记重新生成也会被及时发现。
+
 使用 [DeepWiki](https://deepwiki.com/SSShooter/mind-elixir-core) 了解更多关于 Mind Elixir 的信息
 
 ## 感谢

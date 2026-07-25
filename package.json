@@ -22,6 +22,7 @@
     "nyc": "nyc report --reporter=html",
     "doc": "api-extractor run --local --verbose",
     "doc:md": "api-documenter markdown --input-folder ./api --output-folder ./md",
+    "gen:members": "node gen-members.js",
     "beta": "npm run build && npm publish --tag beta"
   },
   "exports": {

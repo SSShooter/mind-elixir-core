@@ -6,10 +6,24 @@ import initMouseEvent from './mouse'
 import { createBus } from './utils/pubsub'
 import { findEle } from './utils/dom'
 import { createLinkSvg, createLine } from './utils/svg'
-import type { MindElixirData, MindElixirMethods, Options, Theme, ThemeCssVar, NodeObj } from './types/index'
-import type { Topic, ArrowSvg, SummarySvg } from './types/dom'
-import type { Arrow } from './arrow'
-import type { Summary } from './summary'
+import type {
+  MindElixirData,
+  MindElixirMethods,
+  Options,
+  Theme,
+  ThemeCssVar,
+  NodeObj,
+  MindElixirInstance,
+  NodeObjExport,
+  Alignment,
+  KeypressOptions,
+  Before,
+} from './types/index'
+import type { Topic, ArrowSvg, SummarySvg, Wrapper, Parent, Children } from './types/dom'
+import type { Arrow, ArrowOptions } from './arrow'
+import type { Summary, SummaryOptions } from './summary'
+import type { ContextMenuOption } from './plugin/contextMenu'
+import type { MainLineParams, SubLineParams } from './utils/generateBranch'
 import type { LinkPanHelperInstance } from './utils/LinkPanHelper'
 import type { EventMap, Operation } from './utils/pubsub'
 import type SelectionArea from './viselect/src'
@@ -22,6 +36,16 @@ import { createPanHelper } from './utils/panHelper'
 
 type ResolvedTheme = Omit<Theme, 'cssVar'> & { cssVar: ThemeCssVar }
 
+// Resolved constructor input that lives on the instance (the four excluded
+// members are refined on the class below).
+type ResolvedOptions = Omit<Required<Options>, 'el' | 'theme' | 'markdown' | 'imageProxy'>
+
+// The class is the single canonical owner of the instance shape. Instead of a
+// same-name `interface MindElixir` declaration merge (which produces a second
+// API item that collides onto the same API Documenter page and hides the class
+// members), the resolved options and the prototype-mixed methods are declared
+// directly on the class. `Object.assign` attaches the implementations at
+// runtime, and the `_Assert*` guards below keep these declarations exhaustive.
 class MindElixir {
   static readonly LEFT = LEFT
   static readonly RIGHT = RIGHT
@@ -126,6 +150,112 @@ class MindElixir {
   declare selection: SelectionArea
   declare panHelper: ReturnType<typeof createPanHelper>
   declare ptState?: number
+
+  // #region GENERATED members — do not edit by hand; run `npm run gen:members`.
+  // Resolved constructor options (defaults are applied in the constructor).
+  declare direction: 0 | 1 | 2 | 3
+  declare locale: string
+  declare draggable: boolean
+  declare editable: boolean
+  declare contextMenu: boolean | ContextMenuOption
+  declare toolBar: boolean
+  declare keypress: boolean | KeypressOptions
+  declare mouseSelectionButton: 0 | 2
+  declare before: Before
+  declare newTopicName: string
+  declare allowUndo: boolean
+  declare overflowHidden: boolean
+  declare compact: boolean
+  declare generateMainBranch: (this: MindElixirInstance, params: MainLineParams) => string
+  declare generateSubBranch: (this: MindElixirInstance, params: SubLineParams) => string
+  declare selectionContainer: string | HTMLElement
+  declare alignment: Alignment
+  declare scaleSensitivity: number
+  declare scaleMin: number
+  declare scaleMax: number
+  declare handleWheel: true | ((e: WheelEvent) => void)
+  declare pasteHandler: (e: ClipboardEvent) => void
+  declare mobileMultiSelect: boolean
+
+  // Methods mixed into the prototype via `Object.assign` (see ./methods).
+  declare scrollIntoView: (this: MindElixirInstance, el: HTMLElement, forceCenter?: boolean) => void
+  declare selectNode: (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent) => void
+  declare selectNodes: (this: MindElixirInstance, tpcs: Topic[]) => void
+  declare unselectNodes: (this: MindElixirInstance, tpcs: Topic[]) => void
+  declare clearSelection: (this: MindElixirInstance) => void
+  declare stringifyData: (data: object) => string
+  declare getDataString: (this: MindElixirInstance) => string
+  declare getData: (this: MindElixirInstance) => MindElixirData
+  declare enableEdit: (this: MindElixirInstance) => void
+  declare disableEdit: (this: MindElixirInstance) => void
+  declare scale: (this: MindElixirInstance, scaleVal: number, offset?: { x: number; y: number }) => void
+  declare scaleFit: (this: MindElixirInstance) => void
+  declare move: (this: MindElixirInstance, dx: number, dy: number, smooth?: boolean) => void
+  declare toCenter: (this: MindElixirInstance) => void
+  declare install: (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) => void
+  declare focusNode: (this: MindElixirInstance, el: Topic) => void
+  declare cancelFocus: (this: MindElixirInstance) => void
+  declare initLeft: (this: MindElixirInstance) => void
+  declare initRight: (this: MindElixirInstance) => void
+  declare initSide: (this: MindElixirInstance) => void
+  declare initDown: (this: MindElixirInstance) => void
+  declare expandNode: (this: MindElixirInstance, el: Topic, isExpand?: boolean) => void
+  declare expandNodeAll: (this: MindElixirInstance, el: Topic, isExpand?: boolean) => void
+  declare refresh: (this: MindElixirInstance, data?: MindElixirData) => void
+  declare exportSvg: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string) => Blob
+  declare exportPng: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string) => Promise<Blob | null>
+  declare getObjById: (id: string, data: NodeObj) => NodeObj | null
+  declare generateNewObj: (this: MindElixirInstance) => NodeObjExport
+  declare layout: (this: MindElixirInstance) => void
+  declare linkDiv: (this: MindElixirInstance, mainNode?: Wrapper) => void
+  declare editTopic: (this: MindElixirInstance, el: Topic) => void
+  declare createWrapper: (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean) => { grp: Wrapper; top: Parent; tpc: Topic }
+  declare createParent: (this: MindElixirInstance, nodeObj: NodeObj) => { p: Parent; tpc: Topic }
+  declare createChildren: (this: MindElixirInstance, wrappers: Wrapper[]) => Children
+  declare createTopic: (this: MindElixirInstance, nodeObj: NodeObj) => Topic
+  declare findEle: (this: MindElixirInstance, id: string, el?: HTMLElement) => Topic
+  declare changeTheme: (this: MindElixirInstance, theme: Theme, shouldRefresh?: boolean) => void
+  declare changeCompact: (this: MindElixirInstance, compact: boolean) => void
+  declare init: (this: MindElixirInstance, data: MindElixirData) => Error | undefined
+  declare destroy: (this: Partial<MindElixirInstance>) => void
+  declare enableMobileMultiSelect: (this: MindElixirInstance, enable: boolean) => void
+  declare createSummary: (this: MindElixirInstance, options?: SummaryOptions) => void
+  declare createSummaryFrom: (this: MindElixirInstance, summary: Omit<Summary, 'id'>) => void
+  declare removeSummary: (this: MindElixirInstance, id: string) => void
+  declare selectSummary: (this: MindElixirInstance, el: SummarySvg) => void
+  declare unselectSummary: (this: MindElixirInstance) => void
+  declare renderSummary: (this: MindElixirInstance) => void
+  declare editSummary: (this: MindElixirInstance, el: SummarySvg) => void
+  declare createArrow: (this: MindElixirInstance, from: Topic, to: Topic, options?: ArrowOptions) => void
+  declare createArrowFrom: (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) => void
+  declare removeArrow: (this: MindElixirInstance, linkSvg?: ArrowSvg) => void
+  declare selectArrow: (this: MindElixirInstance, link: ArrowSvg) => void
+  declare unselectArrow: (this: MindElixirInstance) => void
+  declare renderArrow: (this: MindElixirInstance) => void
+  declare editArrowLabel: (this: MindElixirInstance, el: ArrowSvg) => void
+  declare tidyArrow: (this: MindElixirInstance) => void
+  declare reshapeArrow: (this: MindElixirInstance, arrow: Arrow, patchData: Partial<Arrow>) => void
+  declare addChild: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
+  declare beginEdit: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
+  declare copyNode: (this: MindElixirInstance, node: Topic, to: Topic) => Promise<void>
+  declare copyNodes: (this: MindElixirInstance, tpcs: Topic[], to: Topic) => Promise<void>
+  declare insertParent: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
+  declare insertSibling: (
+    this: MindElixirInstance,
+    type: 'after' | 'before',
+    el?: Topic | undefined,
+    node?: NodeObj<unknown> | undefined
+  ) => Promise<void>
+  declare moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
+  declare moveNodeAfter: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveNodeBefore: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveNodeIn: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
+  declare removeNodes: (this: MindElixirInstance, tpcs: Topic[]) => Promise<void>
+  declare reshapeNode: (this: MindElixirInstance, tpc: Topic, patchData: Partial<NodeObj<unknown>>) => Promise<void>
+  declare rmSubline: (this: MindElixirInstance, tpc: Topic) => Promise<void>
+  declare setNodeTopic: (this: MindElixirInstance, el: Topic, topic: string) => Promise<void>
+  // #endregion GENERATED
 
   get currentNode(): Topic | null {
     return this.currentNodes[this.currentNodes.length - 1]
@@ -250,14 +380,24 @@ class MindElixir {
   }
 }
 
-// The class owns its instance shape. The two things that legitimately come from
-// elsewhere are composed via declaration merging:
-// - resolved constructor input (`Options`, minus the members refined above)
-// - behavior mixed into the prototype via `Object.assign` (`MindElixirMethods`)
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-interface MindElixir extends Omit<Required<Options>, 'el' | 'theme' | 'markdown' | 'imageProxy'>, MindElixirMethods {}
-
 Object.assign(MindElixir.prototype, methods)
+
+// Compile-time guards keeping the declarations above exhaustive: if a method or
+// resolved option exists on the source types but is not declared on the class,
+// the corresponding `Exclude<...>` stops being `never` and this fails to build.
+type _AssertNever<T extends never> = T
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type _MethodsDeclared = _AssertNever<Exclude<keyof MindElixirMethods, keyof MindElixir>>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type _OptionsDeclared = _AssertNever<Exclude<keyof ResolvedOptions, keyof MindElixir>>
+// The generated fields must also stay signature-compatible with their source
+// types (not just present). `_Extends` fails to build if any signature drifts;
+// re-run `npm run gen:members` after changing ./methods or the Options type.
+type _Extends<A extends B, B> = A
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type _MethodsInSync = _Extends<Pick<MindElixir, keyof MindElixirMethods>, MindElixirMethods>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type _OptionsInSync = _Extends<Pick<MindElixir, keyof ResolvedOptions>, ResolvedOptions>
 
 export default MindElixir
 export { LEFT, RIGHT, SIDE, DOWN, THEME, DARK_THEME } // bypass ssr error

@@ -422,6 +422,17 @@ pnpm doc
 pnpm doc:md
 ```
 
+Перегенерация членов класса `MindElixir`:
+
+Объявления опций и методов класса `MindElixir` (блок `// #region GENERATED` в `src/index.ts`) генерируются скриптом `gen-members.js` из скомпилированных деклараций в `dist/types`, чтобы публикуемый `.d.ts` и документация API показывали полностью развёрнутые сигнатуры. После изменения подмешиваемых методов (`src/methods.ts`) или интерфейса `Options` (`src/types/index.ts`) выполните:
+
+```
+pnpm tsc         # сгенерировать свежий dist/types
+pnpm gen:members # переписать сгенерированный блок в src/index.ts
+```
+
+Проверки на этапе компиляции в конце `src/index.ts` приводят к ошибке `tsc`, если блок рассинхронизирован, поэтому забытая перегенерация не останется незамеченной.
+
 ## Благодарности
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)

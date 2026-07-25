@@ -437,6 +437,17 @@ pnpm doc
 pnpm doc:md
 ```
 
+`MindElixir` クラスメンバーの再生成：
+
+`MindElixir` クラスのオプションとメソッドの宣言（`src/index.ts` の `// #region GENERATED` ブロック）は、`gen-members.js` が `dist/types` のコンパイル済み宣言から生成します。これにより、公開される `.d.ts` と API ドキュメントに完全に展開されたシグネチャが表示されます。ミックスインされるメソッド（`src/methods.ts`）や `Options` インターフェース（`src/types/index.ts`）を変更した後は、次を実行してください：
+
+```
+pnpm tsc         # 最新の dist/types を出力
+pnpm gen:members # src/index.ts の生成ブロックを書き換え
+```
+
+`src/index.ts` 末尾のコンパイル時ガードにより、ブロックが同期していない場合は `tsc` が失敗するため、再生成のし忘れは検出されます。
+
 [DeepWiki](https://deepwiki.com/SSShooter/mind-elixir-core) を使用してMind Elixirについて詳しく学ぶ
 
 ## 謝辞

@@ -422,6 +422,17 @@ pnpm doc
 pnpm doc:md
 ```
 
+`MindElixir` 클래스 멤버 재생성:
+
+`MindElixir` 클래스의 옵션 및 메서드 선언(`src/index.ts`의 `// #region GENERATED` 블록)은 `gen-members.js`가 `dist/types`의 컴파일된 선언으로부터 생성합니다. 이를 통해 배포되는 `.d.ts`와 API 문서에 완전히 확장된 시그니처가 표시됩니다. 믹스인 메서드(`src/methods.ts`)나 `Options` 인터페이스(`src/types/index.ts`)를 변경한 후에는 다음을 실행하세요:
+
+```
+pnpm tsc         # 최신 dist/types 생성
+pnpm gen:members # src/index.ts의 생성 블록 재작성
+```
+
+`src/index.ts` 하단의 컴파일 타임 가드는 블록이 동기화되지 않으면 `tsc`를 실패시키므로, 재생성을 잊어도 바로 발견됩니다.
+
 ## 감사의 말
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)

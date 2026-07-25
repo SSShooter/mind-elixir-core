@@ -424,6 +424,17 @@ pnpm doc
 pnpm doc:md
 ```
 
+Régénérer les membres de la classe `MindElixir` :
+
+Les déclarations d'options et de méthodes de la classe `MindElixir` (le bloc `// #region GENERATED` dans `src/index.ts`) sont générées par `gen-members.js` à partir des déclarations compilées dans `dist/types`, afin que le `.d.ts` publié et la documentation de l'API affichent des signatures entièrement développées. Après avoir modifié les méthodes mixées (`src/methods.ts`) ou l'interface `Options` (`src/types/index.ts`), exécutez :
+
+```
+pnpm tsc         # émettre un dist/types à jour
+pnpm gen:members # réécrire le bloc généré dans src/index.ts
+```
+
+Les gardes de compilation à la fin de `src/index.ts` font échouer `tsc` dès que le bloc n'est plus synchronisé, donc un oubli de régénération est détecté.
+
 ## Remerciements
 
 - [@viselect/vanilla](https://github.com/simonwep/selection/tree/master/packages/vanilla)
