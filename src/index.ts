@@ -231,7 +231,7 @@ class MindElixir {
   declare disableEdit: (this: MindElixirInstance) => void
   declare scale: (this: MindElixirInstance, scaleVal: number, offset?: { x: number; y: number }) => void
   declare scaleFit: (this: MindElixirInstance) => void
-  declare move: (this: MindElixirInstance, dx: number, dy: number, smooth?: boolean) => void
+  declare move: (this: MindElixirInstance, dx: number, dy: number, smooth?: boolean) => boolean
   declare toCenter: (this: MindElixirInstance) => void
   declare install: (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) => void
   declare focusNode: (this: MindElixirInstance, el: Topic) => void

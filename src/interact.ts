@@ -167,12 +167,15 @@ export const scaleFit = function (this: MindElixirInstance) {
 
 /**
  * Move the map by `dx` and `dy`.
+ *
+ * Returns whether the map actually moved, so callers (e.g. wheel handler)
+ * can let the event bubble when the map is stuck at the edge.
  */
-export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false) {
+export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false): boolean {
   const { map, scaleVal, bus, container, nodes } = this
   if (smooth && map.style.transition === 'transform 0.3s') {
     // Prevent consecutive smooth moves
-    return
+    return false
   }
   const transform = map.style.transform
   let { x, y } = getTranslate(transform)
@@ -196,6 +199,8 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
     dy = Math.max(dy, Math.min(0, centerY - nRect.bottom))
   }
 
+  if (dx === 0 && dy === 0) return false
+
   x += dx
   y += dy
 
@@ -208,6 +213,7 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
   map.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scaleVal})`
 
   bus.fire('move', { dx, dy })
+  return true
 }
 
 /**

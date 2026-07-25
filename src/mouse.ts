@@ -359,11 +359,18 @@ export default function (mind: MindElixirInstance) {
   }
 
   const handleWheel = (e: WheelEvent) => {
-    e.stopPropagation()
-    e.preventDefault()
-    if (e.ctrlKey || e.metaKey) return handleWheelZoom(mind, e)
-    if (e.shiftKey) return mind.move(-e.deltaY, 0)
-    mind.move(-e.deltaX, -e.deltaY)
+    if (e.ctrlKey || e.metaKey) {
+      e.stopPropagation()
+      e.preventDefault()
+      return handleWheelZoom(mind, e)
+    }
+    const moved = e.shiftKey ? mind.move(-e.deltaY, 0) : mind.move(-e.deltaX, -e.deltaY)
+    // Only consume the event when the map actually moved;
+    // otherwise let it bubble so the outer container / page can keep scrolling
+    if (moved) {
+      e.stopPropagation()
+      e.preventDefault()
+    }
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
