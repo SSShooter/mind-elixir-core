@@ -178,6 +178,47 @@ class MindElixir {
   declare mobileMultiSelect: boolean
 
   // Methods mixed into the prototype via `Object.assign` (see ./methods).
+  declare init: (this: MindElixirInstance, data: MindElixirData) => Error | undefined
+  declare destroy: (this: Partial<MindElixirInstance>) => void
+  declare enableMobileMultiSelect: (this: MindElixirInstance, enable: boolean) => void
+  declare exportSvg: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string) => Blob
+  declare exportPng: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string) => Promise<Blob | null>
+  declare createSummary: (this: MindElixirInstance, options?: SummaryOptions) => void
+  declare createSummaryFrom: (this: MindElixirInstance, summary: Omit<Summary, 'id'>) => void
+  declare removeSummary: (this: MindElixirInstance, id: string) => void
+  declare selectSummary: (this: MindElixirInstance, el: SummarySvg) => void
+  declare unselectSummary: (this: MindElixirInstance) => void
+  declare renderSummary: (this: MindElixirInstance) => void
+  declare editSummary: (this: MindElixirInstance, el: SummarySvg) => void
+  declare renderArrow: (this: MindElixirInstance) => void
+  declare editArrowLabel: (this: MindElixirInstance, el: ArrowSvg) => void
+  declare tidyArrow: (this: MindElixirInstance) => void
+  declare createArrow: (this: MindElixirInstance, from: Topic, to: Topic, options?: ArrowOptions) => void
+  declare createArrowFrom: (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) => void
+  declare removeArrow: (this: MindElixirInstance, linkSvg?: ArrowSvg) => void
+  declare selectArrow: (this: MindElixirInstance, link: ArrowSvg) => void
+  declare unselectArrow: (this: MindElixirInstance) => void
+  declare reshapeArrow: (this: MindElixirInstance, arrow: Arrow, patchData: Partial<Arrow>) => void
+  declare rmSubline: (this: MindElixirInstance, tpc: Topic) => Promise<void>
+  declare reshapeNode: (this: MindElixirInstance, tpc: Topic, patchData: Partial<NodeObj<unknown>>) => Promise<void>
+  declare insertSibling: (
+    this: MindElixirInstance,
+    type: 'before' | 'after',
+    el?: Topic | undefined,
+    node?: NodeObj<unknown> | undefined
+  ) => Promise<void>
+  declare insertParent: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
+  declare addChild: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
+  declare copyNode: (this: MindElixirInstance, node: Topic, to: Topic) => Promise<void>
+  declare copyNodes: (this: MindElixirInstance, tpcs: Topic[], to: Topic) => Promise<void>
+  declare moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
+  declare moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
+  declare removeNodes: (this: MindElixirInstance, tpcs: Topic[]) => Promise<void>
+  declare moveNodeIn: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveNodeBefore: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveNodeAfter: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare beginEdit: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
+  declare setNodeTopic: (this: MindElixirInstance, el: Topic, topic: string) => Promise<void>
   declare scrollIntoView: (this: MindElixirInstance, el: HTMLElement, forceCenter?: boolean) => void
   declare selectNode: (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent) => void
   declare selectNodes: (this: MindElixirInstance, tpcs: Topic[]) => void
@@ -202,8 +243,6 @@ class MindElixir {
   declare expandNode: (this: MindElixirInstance, el: Topic, isExpand?: boolean) => void
   declare expandNodeAll: (this: MindElixirInstance, el: Topic, isExpand?: boolean) => void
   declare refresh: (this: MindElixirInstance, data?: MindElixirData) => void
-  declare exportSvg: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string) => Blob
-  declare exportPng: (this: MindElixirInstance, noForeignObject?: boolean, injectCss?: string) => Promise<Blob | null>
   declare getObjById: (id: string, data: NodeObj) => NodeObj | null
   declare generateNewObj: (this: MindElixirInstance) => NodeObjExport
   declare layout: (this: MindElixirInstance) => void
@@ -216,45 +255,6 @@ class MindElixir {
   declare findEle: (this: MindElixirInstance, id: string, el?: HTMLElement) => Topic
   declare changeTheme: (this: MindElixirInstance, theme: Theme, shouldRefresh?: boolean) => void
   declare changeCompact: (this: MindElixirInstance, compact: boolean) => void
-  declare init: (this: MindElixirInstance, data: MindElixirData) => Error | undefined
-  declare destroy: (this: Partial<MindElixirInstance>) => void
-  declare enableMobileMultiSelect: (this: MindElixirInstance, enable: boolean) => void
-  declare createSummary: (this: MindElixirInstance, options?: SummaryOptions) => void
-  declare createSummaryFrom: (this: MindElixirInstance, summary: Omit<Summary, 'id'>) => void
-  declare removeSummary: (this: MindElixirInstance, id: string) => void
-  declare selectSummary: (this: MindElixirInstance, el: SummarySvg) => void
-  declare unselectSummary: (this: MindElixirInstance) => void
-  declare renderSummary: (this: MindElixirInstance) => void
-  declare editSummary: (this: MindElixirInstance, el: SummarySvg) => void
-  declare createArrow: (this: MindElixirInstance, from: Topic, to: Topic, options?: ArrowOptions) => void
-  declare createArrowFrom: (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) => void
-  declare removeArrow: (this: MindElixirInstance, linkSvg?: ArrowSvg) => void
-  declare selectArrow: (this: MindElixirInstance, link: ArrowSvg) => void
-  declare unselectArrow: (this: MindElixirInstance) => void
-  declare renderArrow: (this: MindElixirInstance) => void
-  declare editArrowLabel: (this: MindElixirInstance, el: ArrowSvg) => void
-  declare tidyArrow: (this: MindElixirInstance) => void
-  declare reshapeArrow: (this: MindElixirInstance, arrow: Arrow, patchData: Partial<Arrow>) => void
-  declare addChild: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
-  declare beginEdit: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
-  declare copyNode: (this: MindElixirInstance, node: Topic, to: Topic) => Promise<void>
-  declare copyNodes: (this: MindElixirInstance, tpcs: Topic[], to: Topic) => Promise<void>
-  declare insertParent: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
-  declare insertSibling: (
-    this: MindElixirInstance,
-    type: 'after' | 'before',
-    el?: Topic | undefined,
-    node?: NodeObj<unknown> | undefined
-  ) => Promise<void>
-  declare moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
-  declare moveNodeAfter: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
-  declare moveNodeBefore: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
-  declare moveNodeIn: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
-  declare moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
-  declare removeNodes: (this: MindElixirInstance, tpcs: Topic[]) => Promise<void>
-  declare reshapeNode: (this: MindElixirInstance, tpc: Topic, patchData: Partial<NodeObj<unknown>>) => Promise<void>
-  declare rmSubline: (this: MindElixirInstance, tpc: Topic) => Promise<void>
-  declare setNodeTopic: (this: MindElixirInstance, el: Topic, topic: string) => Promise<void>
   // #endregion GENERATED
 
   get currentNode(): Topic | null {
