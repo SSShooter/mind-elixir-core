@@ -123,12 +123,13 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   if (!node) {
     this.editTopic(top.firstChild)
   }
-  this.selectNode(top.firstChild, true)
-  console.timeEnd('insertParent_DOM')
+  // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
   this.bus.fire('operation', {
     name: 'insertParent',
     obj: newNodeObj,
   })
+  this.selectNode(top.firstChild, true)
+  console.timeEnd('insertParent_DOM')
 }
 
 export const addChild = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
@@ -158,11 +159,12 @@ export const copyNode = function (this: MindElixirInstance, node: Topic, to: Top
   if (!res) return
   const { newNodeObj } = res
   console.timeEnd('copyNode')
-  this.selectNode(this.findEle(newNodeObj.id))
+  // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
   this.bus.fire('operation', {
     name: 'copyNode',
     obj: newNodeObj,
   })
+  this.selectNode(this.findEle(newNodeObj.id))
 }
 
 export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: Topic) {
@@ -176,12 +178,13 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
     const { newNodeObj } = res
     objs.push(newNodeObj)
   }
-  this.unselectNodes(this.currentNodes)
-  this.selectNodes(objs.map(obj => this.findEle(obj.id)))
+  // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
   this.bus.fire('operation', {
     name: 'copyNodes',
     objs,
   })
+  this.unselectNodes(this.currentNodes)
+  this.selectNodes(objs.map(obj => this.findEle(obj.id)))
 }
 
 export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
