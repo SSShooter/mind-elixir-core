@@ -291,6 +291,11 @@ export default function (mind: MindElixirInstance) {
     }
   }
 
+  const suppressContextMenuOnce = (e: MouseEvent) => {
+    e.preventDefault()
+    window.removeEventListener('contextmenu', suppressContextMenuOnce, true)
+  }
+
   const handlePointerUp = (e: PointerEvent) => {
     if (e.pointerType === 'touch') {
       pinchHelper.handlePointerUp(e)
@@ -308,6 +313,14 @@ export default function (mind: MindElixirInstance) {
         break
       case State.Pan:
         panHelper.handlePointerUp(e)
+        // If the right button is released outside the container after panning,
+        // the contextmenu event fires on an outside element and the native menu shows.
+        // Suppress it once at window level.
+        if (panHelper.moved && e.button === 2 && e.pointerType === 'mouse') {
+          window.addEventListener('contextmenu', suppressContextMenuOnce, { capture: true, once: true })
+          // Remove the listener if no contextmenu event follows (e.g. it already fired on pointerdown on macOS)
+          setTimeout(() => window.removeEventListener('contextmenu', suppressContextMenuOnce, true), 300)
+        }
         break
     }
 
