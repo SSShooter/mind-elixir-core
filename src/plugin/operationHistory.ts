@@ -112,8 +112,10 @@ export default function (mei: MindElixirInstance) {
   }
   const handleKeyDown = function (e: KeyboardEvent) {
     // console.log(`mei.map.addEventListener('keydown', handleKeyDown)`, e.key, history.length, currentIndex)
-    if ((e.metaKey || e.ctrlKey) && ((e.shiftKey && e.key === 'Z') || e.key === 'y')) mei.redo()
-    else if ((e.metaKey || e.ctrlKey) && e.key === 'z') mei.undo()
+    if (!e.metaKey && !e.ctrlKey) return
+    // Use e.code for physical key matching unaffected by CapsLock and input method
+    if (e.code === 'KeyZ') e.shiftKey ? mei.redo() : mei.undo()
+    else if (e.code === 'KeyY') mei.redo()
   }
   const handleSelectNodes = function () {
     currentSelectedNodes = mei.currentNodes.map(n => n.nodeObj)
