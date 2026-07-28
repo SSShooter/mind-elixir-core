@@ -120,10 +120,13 @@ export default function (mei: MindElixirInstance) {
   }
   mei.bus.addListener('operation', handleOperation)
   mei.bus.addListener('selectNodes', handleSelectNodes)
+  // 反选（如 Ctrl+点击）只会 fire unselectNodes，也需同步选中状态，避免记录陈旧的 currentSelected
+  mei.bus.addListener('unselectNodes', handleSelectNodes)
   mei.container.addEventListener('keydown', handleKeyDown)
   return () => {
     mei.bus.removeListener('operation', handleOperation)
     mei.bus.removeListener('selectNodes', handleSelectNodes)
+    mei.bus.removeListener('unselectNodes', handleSelectNodes)
     mei.container.removeEventListener('keydown', handleKeyDown)
   }
 }
