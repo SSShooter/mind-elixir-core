@@ -3,6 +3,11 @@
   top: calc(100% - 9px);
 }
 
+/* 一级节点的 padding 与次级节点保持一致 */
+.map-container[data-branch-style="markmap"] me-main > me-wrapper > me-parent > me-tpc {
+  padding: var(--topic-padding);
+}
+
 /* 甚至可以针对左右两侧单独调整 */
 .map-container[data-branch-style="markmap"] .lhs me-epd {
   left: 3px;

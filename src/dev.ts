@@ -170,6 +170,9 @@ const branchThemes = {
 }
 
 // 动态切换为特定风格，并记录在 meta 中
+// 注意：必须先设置 dataset.branchStyle 让相关 CSS(dev.css)先生效，
+// 再 changeTheme 触发 refresh 重算布局和连线，否则连线会按旧节点尺寸绘制而错位
+mind.container.dataset.branchStyle = 'markmap'
 mind.changeTheme({
   ...mind.theme,
   ...branchThemes.markmap,
@@ -182,7 +185,6 @@ mind.meta = {
   ...mind.meta,
   branchStyle: 'markmap',
 }
-mind.container.dataset.branchStyle = 'markmap'
 
 const m2 = new MindElixir({
   el: '#map2',

@@ -9,33 +9,35 @@ export function markmapMain({ pT, pL, pW, pH, cT, cL, cW, cH, direction }: MainL
   const y2 = cT + cH // 连接到子节点底部
   let x1, x2, end, ctrlX
 
-  // 利用左右两边各 15px 的 padding 空间作为曲线缓冲，同时缩短下划线(end)使之完美对齐
+  // 一级节点 tpc 的 padding 与次级节点一致(很小)，下划线向节点外各延伸 15px，
+  // 与次级节点(me-parent 带 --node-gap-x padding)的下划线观感保持一致
   if (direction === DirectionClass.LHS) {
     x1 = pL + 15
-    x2 = cL + cW - 15
-    end = cL + 15
+    x2 = cL + cW + 15
+    end = cL - 15
     ctrlX = x1 - (x1 - x2) / 2
   } else {
     x1 = pL + pW - 15
-    x2 = cL + 15
-    end = cL + cW - 15
+    x2 = cL - 15
+    end = cL + cW + 15
     ctrlX = x1 + (x2 - x1) / 2
   }
   return `M ${x1} ${y1} C ${ctrlX} ${y1} ${ctrlX} ${y2} ${x2} ${y2} H ${end}`
 }
 
-export function markmapSub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction }: SubLineParams) {
+export function markmapSub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   const y1 = pT + pH // 父节点从底部下划线末端出发
   const y2 = cT + cH // 连接到子节点底部下划线
 
+  // isFirst: 父节点是一级节点，其 me-parent 无 padding，起点需外移到下划线末端
   let x1, x2, end, ctrlX
   if (direction === DirectionClass.LHS) {
-    x1 = pL + 15
+    x1 = isFirst ? pL - 15 : pL + 15
     x2 = cL + cW - 15
     end = cL + 15
     ctrlX = x1 - (x1 - x2) / 2
   } else {
-    x1 = pL + pW - 15
+    x1 = isFirst ? pL + pW + 15 : pL + pW - 15
     x2 = cL + 15
     end = cL + cW - 15
     ctrlX = x1 + (x2 - x1) / 2
