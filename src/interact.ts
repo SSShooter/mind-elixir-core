@@ -437,7 +437,7 @@ export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isEx
  * @function
  * @instance
  * @name refresh
- * @description Refresh mind map, you can use it after modified `this.nodeData`
+ * @description Refresh mind map, you can use it after modified `this.nodeData`. Only `nodeData`, `arrows`, `summaries` and `meta` are applied; `data.theme` is ignored, use `changeTheme` to switch theme explicitly.
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */
@@ -451,7 +451,6 @@ export const refresh = function (this: MindElixirInstance, data?: MindElixirData
     if (data.meta) {
       this.meta = data.meta
     }
-    data.theme && this.changeTheme(data.theme)
   }
   fillParent(this.nodeData)
   // create dom element for every node

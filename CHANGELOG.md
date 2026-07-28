@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.15.0 (Unreleased)
+
+### Breaking Changes
+
+- `refresh(data)` no longer applies `data.theme`. Theme handling is fully decoupled from `refresh`; call `changeTheme(theme)` explicitly when you need to switch themes (e.g. `mind.changeTheme(data.theme)` before/after `mind.refresh(data)`).
+
+### Bug Fixes
+
+- `undo`/`redo` no longer resets the current theme. Theme functions (`generateMainBranch`/`generateSubBranch`) could not survive the history snapshot's JSON serialization, so undoing used to revert custom branch styles to the default.
+
 ## 5.14.0 - 2026-07-12
 
 ### Features
