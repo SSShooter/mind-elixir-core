@@ -24,7 +24,7 @@ const calcCurentObject = function (operation: Operation): History['currentTarget
       type: 'summary',
       value: (operation as any).obj.id,
     }
-  } else if (['createArrow', 'removeArrow', 'finishEditArrowLabel'].includes(operation.name)) {
+  } else if (['createArrow', 'removeArrow', 'finishEditArrowLabel', 'reshapeArrow'].includes(operation.name)) {
     return {
       type: 'arrow',
       value: (operation as any).obj.id,
