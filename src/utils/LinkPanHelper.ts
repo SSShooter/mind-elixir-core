@@ -4,12 +4,14 @@ const create = function (dom: HTMLElement) {
   return {
     dom,
     moved: false, // differentiate click and move
+    sessionMoved: false, // whether the current drag session actually moved
     pointerdown: false,
     lastX: 0,
     lastY: 0,
     handlePointerMove(e: PointerEvent) {
       if (this.pointerdown) {
         this.moved = true
+        this.sessionMoved = true
         // Calculate delta manually since pointer events don't have movementX/Y
         const deltaX = e.clientX - this.lastX
         const deltaY = e.clientY - this.lastY
@@ -21,21 +23,27 @@ const create = function (dom: HTMLElement) {
     handlePointerDown(e: PointerEvent) {
       if (e.button !== 0) return
       this.pointerdown = true
+      this.sessionMoved = false
       this.lastX = e.clientX
       this.lastY = e.clientY
       // Set pointer capture for better tracking
       this.dom.setPointerCapture(e.pointerId)
     },
     handleClear(e: PointerEvent) {
+      const isDragEnd = this.pointerdown && this.sessionMoved
       this.pointerdown = false
+      this.sessionMoved = false
       // Release pointer capture
       if (e.pointerId !== undefined) {
         this.dom.releasePointerCapture(e.pointerId)
       }
+      if (isDragEnd) this.onEnd && this.onEnd()
     },
     cb: null as ((deltaX: number, deltaY: number) => void) | null,
-    init(map: HTMLElement, cb: (deltaX: number, deltaY: number) => void) {
+    onEnd: null as (() => void) | null,
+    init(map: HTMLElement, cb: (deltaX: number, deltaY: number) => void, onEnd?: () => void) {
       this.cb = cb
+      this.onEnd = onEnd || null
       this.handleClear = this.handleClear.bind(this)
       this.handlePointerMove = this.handlePointerMove.bind(this)
       this.handlePointerDown = this.handlePointerDown.bind(this)

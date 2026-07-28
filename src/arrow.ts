@@ -584,47 +584,66 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   mei.helper1 = LinkPanHelper.create(P2)
   mei.helper2 = LinkPanHelper.create(P3)
 
-  mei.helper1.init(map, (deltaX, deltaY) => {
-    // recalc key points
-    p2x = p2x + deltaX / mei.scaleVal // scale should keep the latest value
-    p2y = p2y + deltaY / mei.scaleVal
-    const p1 = calcP({ ...fromData, ctrlX: p2x, ctrlY: p2y })
-    p1x = p1.x
-    p1y = p1.y
+  // Capture the pre-drag state so control point dragging can be recorded in operation history
+  let dragOrigin = deepClone(linkItem)
+  const handleDragEnd = () => {
+    bus.fire('operation', {
+      name: 'reshapeArrow',
+      obj: linkItem,
+      origin: dragOrigin,
+    })
+    dragOrigin = deepClone(linkItem)
+  }
 
-    // update dom position
-    P2.style.top = p2y + 'px'
-    P2.style.left = p2x + 'px'
+  mei.helper1.init(
+    map,
+    (deltaX, deltaY) => {
+      // recalc key points
+      p2x = p2x + deltaX / mei.scaleVal // scale should keep the latest value
+      p2y = p2y + deltaY / mei.scaleVal
+      const p1 = calcP({ ...fromData, ctrlX: p2x, ctrlY: p2y })
+      p1x = p1.x
+      p1y = p1.y
 
-    // Use extracted common function to update arrow
-    updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
-    updateControlLine(line1, p1x, p1y, p2x, p2y)
+      // update dom position
+      P2.style.top = p2y + 'px'
+      P2.style.left = p2x + 'px'
 
-    linkItem.delta1!.x = Math.round(p2x - fromData.cx)
-    linkItem.delta1!.y = Math.round(p2y - fromData.cy)
+      // Use extracted common function to update arrow
+      updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
+      updateControlLine(line1, p1x, p1y, p2x, p2y)
 
-    bus.fire('updateArrowDelta', linkItem)
-  })
+      linkItem.delta1!.x = Math.round(p2x - fromData.cx)
+      linkItem.delta1!.y = Math.round(p2y - fromData.cy)
 
-  mei.helper2.init(map, (deltaX, deltaY) => {
-    p3x = p3x + deltaX / mei.scaleVal
-    p3y = p3y + deltaY / mei.scaleVal
-    const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
-    p4x = p4.x
-    p4y = p4.y
+      bus.fire('updateArrowDelta', linkItem)
+    },
+    handleDragEnd
+  )
 
-    P3.style.top = p3y + 'px'
-    P3.style.left = p3x + 'px'
+  mei.helper2.init(
+    map,
+    (deltaX, deltaY) => {
+      p3x = p3x + deltaX / mei.scaleVal
+      p3y = p3y + deltaY / mei.scaleVal
+      const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
+      p4x = p4.x
+      p4y = p4.y
 
-    // Use extracted common function to update arrow
-    updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
-    updateControlLine(line2, p3x, p3y, p4x, p4y)
+      P3.style.top = p3y + 'px'
+      P3.style.left = p3x + 'px'
 
-    linkItem.delta2!.x = Math.round(p3x - toData.cx)
-    linkItem.delta2!.y = Math.round(p3y - toData.cy)
+      // Use extracted common function to update arrow
+      updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
+      updateControlLine(line2, p3x, p3y, p4x, p4y)
 
-    bus.fire('updateArrowDelta', linkItem)
-  })
+      linkItem.delta2!.x = Math.round(p3x - toData.cx)
+      linkItem.delta2!.y = Math.round(p3y - toData.cy)
+
+      bus.fire('updateArrowDelta', linkItem)
+    },
+    handleDragEnd
+  )
 }
 
 export function renderArrow(this: MindElixirInstance) {
