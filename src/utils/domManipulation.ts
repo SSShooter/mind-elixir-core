@@ -1,4 +1,4 @@
-import { LEFT, RIGHT, SIDE } from '../const'
+import { DOWN, LEFT, RIGHT, SIDE } from '../const'
 import { rmSubline } from '../nodeOperation'
 import type { MindElixirInstance, NodeObj } from '../types'
 import type { Topic, Wrapper } from '../types/dom'
@@ -10,6 +10,9 @@ export const judgeDirection = function ({ map, direction }: MindElixirInstance, 
     return LEFT
   } else if (direction === RIGHT) {
     return RIGHT
+  } else if (direction === DOWN) {
+    // top-down layout has a single main container, no side to pick
+    return DOWN
   } else if (direction === SIDE) {
     const l = map.querySelector('.lhs')?.childElementCount || 0
     const r = map.querySelector('.rhs')?.childElementCount || 0
@@ -38,7 +41,10 @@ export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper
     mei.linkDiv(wrapper.offsetParent as Wrapper)
   } else if (top.tagName === 'ME-ROOT') {
     const direction = judgeDirection(mei, tpc.nodeObj)
-    if (direction === LEFT) {
+    if (direction === DOWN) {
+      // `me-nodes` carries the `down` class as well, so the tag name is required here
+      mei.container.querySelector('me-main.down')?.appendChild(wrapper)
+    } else if (direction === LEFT) {
       mei.container.querySelector('.lhs')?.appendChild(wrapper)
     } else {
       mei.container.querySelector('.rhs')?.appendChild(wrapper)
