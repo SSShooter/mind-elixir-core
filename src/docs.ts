@@ -21,7 +21,7 @@ export {
   SubLineParams,
   LangPack,
   TagObj,
-  MindElixir,  
+  MindElixir,
 }
 
 export type * from './types/dom'

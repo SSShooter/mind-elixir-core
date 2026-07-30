@@ -34,7 +34,19 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const cH = tpc.offsetHeight
     const direction = el.parentNode.className as DirectionClass
 
-    const mainPath = this.generateMainBranch({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeight: this.nodes.offsetHeight, containerWidth: this.nodes.offsetWidth })
+    const mainPath = this.generateMainBranch({
+      pT,
+      pL,
+      pW,
+      pH,
+      cT,
+      cL,
+      cW,
+      cH,
+      direction,
+      containerHeight: this.nodes.offsetHeight,
+      containerWidth: this.nodes.offsetWidth,
+    })
     const palette = this.theme.palette
     const branchColor = tpc.nodeObj.branchColor || palette[i % palette.length]
     tpc.style.borderColor = branchColor

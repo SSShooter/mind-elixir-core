@@ -182,10 +182,7 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
     // top-down layout: horizontal bracket below the sibling group
     const y = maxBottom + 10
     const mid = (startLeft + endRight) / 2
-    path = createPath(
-      `M ${startLeft} ${y - 10} c 0 5 5 10 10 10 L ${endRight - 10} ${y} c 5 0 10 -5 10 -10 M ${mid} ${y} v 10`,
-      strokeColor
-    )
+    path = createPath(`M ${startLeft} ${y - 10} c 0 5 5 10 10 10 L ${endRight - 10} ${y} c 5 0 10 -5 10 -10 M ${mid} ${y} v 10`, strokeColor)
     text = createLabel(renderedLabel, mid, y + 20, { anchor: 'middle', color: labelColor, dataType: 'summary', svgId: groupId })
   } else {
     const offset = !parentObj.parent ? 0 : 10

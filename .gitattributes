@@ -1,0 +1,3 @@
+# Normalize all text files to LF in the repository and working tree.
+# Biome formats with LF only, so this keeps checkouts consistent across platforms.
+* text=auto eol=lf

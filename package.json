@@ -10,7 +10,8 @@
     "visualization"
   ],
   "scripts": {
-    "lint": "eslint --cache --max-warnings 0  \"src/**/*.{js,json,ts}\" --fix",
+    "lint": "biome check --write --error-on-warnings src",
+    "format": "biome format --write src",
     "dev": "vite",
     "build": "node build.js && tsc",
     "tsc": "tsc",
@@ -57,11 +58,8 @@
   "main": "dist/MindElixir.js",
   "types": "dist/types/index.d.ts",
   "lint-staged": {
-    "src/**/*.{ts,js}": [
-      "eslint --cache --fix"
-    ],
-    "src/**/*.{json,less}": [
-      "prettier --write"
+    "src/**/*.{ts,js,json}": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },
   "files": [
@@ -73,31 +71,23 @@
   "author": "ssshooter",
   "license": "MIT",
   "devDependencies": {
+    "@biomejs/biome": "2.5.6",
     "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.36.0",
     "@microsoft/api-documenter": "^7.26.34",
     "@microsoft/api-extractor": "^7.52.13",
     "@playwright/test": "^1.58.0",
     "@rollup/plugin-strip": "^3.0.4",
     "@types/node": "^24.5.2",
-    "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.44.1",
     "@viselect/vanilla": "3.9.0",
     "@zumer/snapdom": "^1.9.11",
     "baseline-browser-mapping": "^2.10.21",
-    "eslint": "^9.36.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
-    "globals": "^16.4.0",
     "husky": "^9.1.7",
     "katex": "^0.16.22",
     "less": "^4.4.1",
     "lint-staged": "^16.2.1",
     "marked": "^16.3.0",
     "nyc": "^17.1.0",
-    "prettier": "3.6.2",
     "rimraf": "^6.0.1",
     "simple-markdown-to-html": "^1.0.0",
     "typescript": "^7.0.2",
