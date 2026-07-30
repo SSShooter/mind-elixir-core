@@ -82,7 +82,7 @@ const calcRange = function (nodes: Topic[]) {
     }
   }
   if (!index) throw new Error('Can not select root node.')
-  const range = parentChains.map(chain => chain[index - 1].index).sort()
+  const range = parentChains.map(chain => chain[index - 1].index as number).sort((a, b) => a - b)
   const min = range[0] || 0
   const max = range[range.length - 1] || 0
   const parent = parentChains[0][index - 1].node
