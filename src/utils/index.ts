@@ -152,15 +152,15 @@ export const isTopic = (target?: HTMLElement): target is Topic => {
 }
 
 export const unionTopics = (nodes: Topic[]) => {
+  const selected = new Set(nodes.map(node => node.nodeObj))
   return nodes
     .filter(node => node.nodeObj.parent)
-    .filter((node, _, nodes) => {
-      for (let i = 0; i < nodes.length; i++) {
-        if (node === nodes[i]) continue
-        const { parent } = node.nodeObj
-        if (parent === nodes[i].nodeObj) {
-          return false
-        }
+    .filter(node => {
+      // exclude a node if any of its ancestors is also selected
+      let parent = node.nodeObj.parent
+      while (parent) {
+        if (selected.has(parent)) return false
+        parent = parent.parent
       }
       return true
     })
