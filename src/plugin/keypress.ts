@@ -139,34 +139,41 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
   // Track key sequence for Ctrl+K+Ctrl+0
   let ctrlKPressed = false
   let ctrlKTimeout: number | null = null
+  const cleanupCtrlK = () => {
+    ctrlKPressed = false
+    if (ctrlKTimeout) {
+      clearTimeout(ctrlKTimeout)
+      ctrlKTimeout = null
+    }
+    mind.container.removeEventListener('keydown', handleControlKPlusX)
+  }
   const handleControlKPlusX = (e: KeyboardEvent) => {
+    // ignore modifier keydowns so the chord isn't cancelled while holding Ctrl
+    if (['Control', 'Meta', 'Shift', 'Alt'].includes(e.key)) return
     const nodeData = mind.nodeData
+    let handled = true
     if (e.key === '0') {
       // Ctrl+K+Ctrl+0: Collapse all nodes
       for (const node of nodeData.children!) {
         setExpand(node, false)
       }
-    }
-    if (e.key === '=') {
+    } else if (e.key === '=') {
       // Ctrl+K+Ctrl+1: Expand all nodes
       for (const node of nodeData.children!) {
         setExpand(node, true)
       }
-    }
-    if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+    } else if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
       for (const node of nodeData.children!) {
         setExpand(node, true, Number(e.key) - 1)
       }
+    } else {
+      handled = false
     }
-    mind.refresh()
-    mind.toCenter()
-
-    ctrlKPressed = false
-    if (ctrlKTimeout) {
-      clearTimeout(ctrlKTimeout)
-      ctrlKTimeout = null
-      mind.container.removeEventListener('keydown', handleControlKPlusX)
+    if (handled) {
+      mind.refresh()
+      mind.toCenter()
     }
+    cleanupCtrlK()
   }
 
   const key2func: Record<string, (e: KeyboardEvent) => void> = {
@@ -264,15 +271,12 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     },
     k: (e: KeyboardEvent) => {
       if (e.metaKey || e.ctrlKey) {
+        cleanupCtrlK()
         ctrlKPressed = true
-        // Reset the flag after 2 seconds if no follow-up key is pressed
-        if (ctrlKTimeout) {
-          clearTimeout(ctrlKTimeout)
-          mind.container.removeEventListener('keydown', handleControlKPlusX)
-        }
+        // Cancel the sequence after 2 seconds if no follow-up key is pressed
         ctrlKTimeout = window.setTimeout(() => {
-          ctrlKPressed = false
           ctrlKTimeout = null
+          cleanupCtrlK()
         }, 2000)
         mind.container.addEventListener('keydown', handleControlKPlusX)
       }
