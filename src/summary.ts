@@ -115,6 +115,19 @@ const createPath = function (d: string, color?: string) {
 
 const getWrapper = (tpc: Topic) => tpc.parentElement.parentElement
 
+/**
+ * Remove a summary from the data and the DOM without firing any event.
+ * Used by the render phase, which must not produce undo history.
+ */
+const detachSummary = function (mei: MindElixirInstance, id: string) {
+  const index = mei.summaries.findIndex(summary => summary.id === id)
+  if (index === -1) return false
+  mei.summaries.splice(index, 1)
+  mei.nodes.querySelector('#s-' + id)?.remove()
+  mei.nodes.querySelector('#label-s-' + id)?.remove()
+  return true
+}
+
 const getDirection = function (mei: MindElixirInstance, { parent, start }: Summary) {
   const parentEl = mei.findEle(parent)
   const parentObj = parentEl.nodeObj
@@ -143,8 +156,8 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   for (let i = start; i <= end; i++) {
     const child = parentObj.children?.[i]
     if (!child) {
+      // the range is stale, let the caller decide when to clean it up
       console.warn('Child not found')
-      mei.removeSummary(id)
       return null
     }
     const wrapper = getWrapper(mei.findEle(child.id))
@@ -225,12 +238,7 @@ export const createSummaryFrom = function (this: MindElixirInstance, summary: Om
 }
 
 export const removeSummary = function (this: MindElixirInstance, id: string) {
-  const index = this.summaries.findIndex(summary => summary.id === id)
-  if (index > -1) {
-    this.summaries.splice(index, 1)
-    this.nodes.querySelector('#s-' + id)?.remove()
-    this.nodes.querySelector('#label-s-' + id)?.remove()
-  }
+  if (!detachSummary(this, id)) return
   this.bus.fire('operation', {
     name: 'removeSummary',
     obj: { id },
@@ -254,13 +262,16 @@ export const unselectSummary = function (this: MindElixirInstance) {
 
 export const renderSummary = function (this: MindElixirInstance) {
   this.summarySvg.innerHTML = ''
+  const staleIds: string[] = []
   this.summaries.forEach(summary => {
     try {
-      drawSummary(this, summary)
+      if (drawSummary(this, summary) === null) staleIds.push(summary.id)
     } catch (e) {
       console.warn('Node may not be expanded')
     }
   })
+  // clean up after the iteration, mutating `summaries` inside it would skip summaries
+  staleIds.forEach(id => detachSummary(this, id))
   this.nodes.insertAdjacentElement('beforeend', this.summarySvg)
 }
 
