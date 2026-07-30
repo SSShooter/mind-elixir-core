@@ -1,4 +1,4 @@
-import './index.less'
+import './index.css'
 import './markdown.css'
 import { LEFT, RIGHT, SIDE, DOWN, DARK_THEME, THEME } from './const'
 import { generateUUID } from './utils/index'

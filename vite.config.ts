@@ -1,8 +1,16 @@
 // vite.config.js
 import { defineConfig } from 'vite'
 import istanbul from 'vite-plugin-istanbul'
+import browserslist from 'browserslist'
+import { browserslistToTargets } from 'lightningcss'
 
 export default defineConfig({
+  css: {
+    transformer: 'lightningcss',
+    lightningcss: {
+      targets: browserslistToTargets(browserslist('>= 0.1%')),
+    },
+  },
   server: {
     host: true,
     port: 23333,

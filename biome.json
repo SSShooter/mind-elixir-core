@@ -30,7 +30,8 @@
         "useImportType": "off",
         "useExportType": "off",
         "noNonNullAssertion": "off",
-        "useTemplate": "off"
+        "useTemplate": "off",
+        "noDescendingSpecificity": "off"
       },
       "suspicious": {
         "noExplicitAny": "off",
@@ -54,7 +55,8 @@
         "useIndexOf": "off",
         "useLiteralKeys": "off",
         "useOptionalChain": "off",
-        "useDateNow": "off"
+        "useDateNow": "off",
+        "noImportantStyles": "off"
       },
       "performance": {
         "noDynamicNamespaceImportAccess": "off"

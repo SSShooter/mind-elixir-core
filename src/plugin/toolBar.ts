@@ -8,7 +8,7 @@ import living from '../icons/living.svg?raw'
 import zoomin from '../icons/zoomin.svg?raw'
 import zoomout from '../icons/zoomout.svg?raw'
 
-import './toolBar.less'
+import './toolBar.css'
 
 const map: Record<string, string> = {
   side,

@@ -1,7 +1,7 @@
 import type { Topic } from '../types/dom'
 import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
-import './contextMenu.less'
+import './contextMenu.css'
 import type { ArrowOptions } from '../arrow'
 import type { LangPack } from '../i18n'
 import { en } from '../i18n'

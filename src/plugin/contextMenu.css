@@ -1,0 +1,66 @@
+.map-container .context-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  .menu-list {
+    position: fixed;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--panel-color);
+    box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    li {
+      min-width: 200px;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 6px 10px;
+      background: var(--panel-bgcolor);
+      border-bottom: 1px solid var(--panel-border-color);
+      cursor: pointer;
+      span {
+        line-height: 20px;
+      }
+      a {
+        color: #333;
+        text-decoration: none;
+      }
+      &.disabled {
+        display: none;
+      }
+      &:hover {
+        filter: brightness(0.95);
+      }
+      &:last-child {
+        border-bottom: 0;
+      }
+      span:last-child {
+        float: right;
+      }
+    }
+  }
+  .key {
+    font-size: 10px;
+    background-color: #f1f1f1;
+    color: #333;
+    padding: 2px 5px;
+    border-radius: 3px;
+  }
+}
+
+.map-container .tips {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--panel-color);
+  background: var(--panel-bgcolor);
+  opacity: 0.8;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+}
