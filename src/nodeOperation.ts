@@ -3,9 +3,9 @@ import { createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Children, Topic } from './types/dom'
 import { DirectionClass, type MindElixirInstance, type NodeObj } from './types/index'
-import { insertNodeObj, insertParentNodeObj, moveUpObj, moveDownObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
+import { insertNodeObj, insertParentNodeObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
 import { addChildDom, removeNodeDom } from './utils/domManipulation'
-import { LEFT, RIGHT } from './const'
+import { LEFT, RIGHT, SIDE } from './const'
 
 const typeMap: Record<string, InsertPosition> = {
   before: 'beforebegin',
@@ -191,36 +191,51 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
   this.selectNodes(objs.map(obj => this.findEle(obj.id)))
 }
 
+// Resolve a move up/down into a before/after move against the adjacent
+// sibling. A move at the first/last sibling is a no-op instead of wrapping.
+const getMoveTarget = function (mei: MindElixirInstance, obj: NodeObj, delta: -1 | 1): { to: NodeObj; type: 'before' | 'after' } | undefined {
+  const siblings = obj.parent?.children as NodeObj[] | undefined
+  if (siblings === undefined) return undefined
+  // In SIDE layout root-level children are rendered into separate .lhs/.rhs
+  // containers, so reordering must stay within the same-side siblings to keep
+  // the data order consistent with the DOM order
+  const sameSideOnly = mei.direction === SIDE && !obj.parent?.parent
+  const match = (sibling: NodeObj) => !sameSideOnly || sibling.direction === obj.direction
+  let prev: NodeObj | undefined
+  let hit = false
+  for (const sibling of siblings) {
+    if (!match(sibling)) continue
+    if (sibling === obj) {
+      // moving up: swap with the previous same-side sibling, no-op at the first
+      if (delta === -1) return prev ? { to: prev, type: 'before' } : undefined
+      // moving down: keep scanning for the next same-side sibling
+      hit = true
+      continue
+    }
+    if (hit) return { to: sibling, type: 'after' }
+    prev = sibling
+  }
+  return undefined
+}
+
 export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const obj = nodeEle.nodeObj
-  moveUpObj(obj)
-  const grp = nodeEle.parentNode.parentNode
-  grp.parentNode.insertBefore(grp, grp.previousSibling)
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'moveUpNode',
-    obj,
-  })
+  if (!obj.parent) return
+  const target = getMoveTarget(this, obj, -1)
+  if (!target) return
+  moveNode([nodeEle], target.type, this.findEle(target.to.id), this)
 }
 
 export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const obj = nodeEle.nodeObj
-  moveDownObj(obj)
-  const grp = nodeEle.parentNode.parentNode
-  if (grp.nextSibling) {
-    grp.nextSibling.insertAdjacentElement('afterend', grp)
-  } else {
-    grp.parentNode.prepend(grp)
-  }
-  this.linkDiv()
-  this.bus.fire('operation', {
-    name: 'moveDownNode',
-    obj,
-  })
+  if (!obj.parent) return
+  const target = getMoveTarget(this, obj, 1)
+  if (!target) return
+  moveNode([nodeEle], target.type, this.findEle(target.to.id), this)
 }
 
 export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {

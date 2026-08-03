@@ -6,32 +6,6 @@ const getSibling = (obj: NodeObj): { siblings: NodeObj[] | undefined; index: num
   return { siblings, index }
 }
 
-export function moveUpObj(obj: NodeObj) {
-  const { siblings, index } = getSibling(obj)
-  if (siblings === undefined) return
-  const t = siblings[index]
-  if (index === 0) {
-    siblings[index] = siblings[siblings.length - 1]
-    siblings[siblings.length - 1] = t
-  } else {
-    siblings[index] = siblings[index - 1]
-    siblings[index - 1] = t
-  }
-}
-
-export function moveDownObj(obj: NodeObj) {
-  const { siblings, index } = getSibling(obj)
-  if (siblings === undefined) return
-  const t = siblings[index]
-  if (index === siblings.length - 1) {
-    siblings[index] = siblings[0]
-    siblings[0] = t
-  } else {
-    siblings[index] = siblings[index + 1]
-    siblings[index + 1] = t
-  }
-}
-
 export function removeNodeObj(obj: NodeObj) {
   const { siblings, index } = getSibling(obj)
   if (siblings === undefined) return 0
