@@ -108,18 +108,6 @@ export const generateNewObj = function (this: MindElixirInstance): NodeObjExport
   }
 }
 
-export function checkMoveValid(from: NodeObj, to: NodeObj) {
-  let valid = true
-  while (to.parent) {
-    if (to.parent === from) {
-      valid = false
-      break
-    }
-    to = to.parent
-  }
-  return valid
-}
-
 export function deepClone<T>(obj: T): T {
   const deepCloneObj = JSON.parse(
     JSON.stringify(obj, (k, v) => {
