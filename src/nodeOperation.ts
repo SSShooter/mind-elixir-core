@@ -106,6 +106,10 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
     return
   }
   const newNodeObj = node || this.generateNewObj()
+  if (!nodeObj.parent?.parent) {
+    const direction = nodeEle.closest('me-main')!.className === DirectionClass.LHS ? LEFT : RIGHT
+    newNodeObj.direction = direction
+  }
   insertParentNodeObj(nodeObj, newNodeObj)
   fillParent(this.nodeData)
 
