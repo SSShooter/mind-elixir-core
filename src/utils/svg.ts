@@ -118,7 +118,6 @@ export const createArrowGroup = function (
     stroke?: string
     strokeWidth?: string | number
     strokeDasharray?: string
-    strokeLinecap?: 'butt' | 'round' | 'square'
     opacity?: string | number
   }
 ): ArrowSvg {
@@ -144,7 +143,6 @@ export const createArrowGroup = function (
       d,
       stroke: style?.stroke || 'rgb(227, 125, 116)',
       fill: 'none',
-      'stroke-linecap': style?.strokeLinecap || 'cap',
       'stroke-width': String(style?.strokeWidth || '2'),
     }
 

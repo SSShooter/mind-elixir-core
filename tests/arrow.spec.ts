@@ -440,32 +440,6 @@ test('Arrow deletion via keyboard', async ({ page, me }) => {
   await expect(page.locator('svg g[data-linkid]')).not.toBeVisible()
 })
 
-test('Arrow with stroke linecap styles', async ({ page, me }) => {
-  const instanceHandle = await me.getInstance()
-
-  await page.evaluate(async instance => {
-    const leftChild1 = instance.findEle('left-child-1')
-    const rightChild1 = instance.findEle('right-child-1')
-
-    // Create arrow with round linecap
-    instance.createArrow(leftChild1, rightChild1, {
-      style: {
-        strokeLinecap: 'round',
-      },
-    })
-  }, instanceHandle)
-
-  // Verify arrow appears with linecap style
-  await expect(page.locator('svg g[data-linkid]')).toBeVisible()
-
-  // Verify at least one path has the linecap style
-  const hasLinecap = await page.evaluate(() => {
-    const paths = document.querySelectorAll('svg g[data-linkid] path')
-    return Array.from(paths).some(path => path.getAttribute('stroke-linecap') === 'round')
-  })
-  expect(hasLinecap).toBe(true)
-})
-
 test('Arrow label text anchor positioning', async ({ page, me }) => {
   const instanceHandle = await me.getInstance()
 
@@ -724,7 +698,6 @@ test('Arrow style application to all elements', async ({ page, me }) => {
         stroke: '#purple',
         strokeWidth: '5',
         strokeDasharray: '10,5',
-        strokeLinecap: 'square',
         opacity: '0.8',
         labelColor: '#FFA500',
       },

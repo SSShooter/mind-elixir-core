@@ -20,10 +20,6 @@ export interface ArrowStyle {
    */
   strokeDasharray?: string
   /**
-   * stroke line cap style
-   */
-  strokeLinecap?: 'butt' | 'round' | 'square'
-  /**
    * opacity of the arrow
    */
   opacity?: string | number
@@ -144,7 +140,6 @@ function updateArrowPath(
   arrow.line.setAttribute('stroke', style.stroke || 'rgb(227, 125, 116)')
   arrow.line.setAttribute('stroke-width', String(style.strokeWidth || '2'))
   arrow.line.setAttribute('stroke-dasharray', style.strokeDasharray || '8,2')
-  arrow.line.setAttribute('stroke-linecap', style.strokeLinecap || 'cap')
   if (style.opacity !== undefined && style.opacity !== null && style.opacity !== '') {
     arrow.line.setAttribute('opacity', String(style.opacity))
   } else {
@@ -171,7 +166,6 @@ function updateArrowPath(
     // Apply styles to arrow head
     arrow.arrow1.setAttribute('stroke', style.stroke || 'rgb(227, 125, 116)')
     arrow.arrow1.setAttribute('stroke-width', String(style.strokeWidth || '2'))
-    arrow.arrow1.setAttribute('stroke-linecap', style.strokeLinecap || 'cap')
     if (style.opacity !== undefined && style.opacity !== null && style.opacity !== '') {
       arrow.arrow1.setAttribute('opacity', String(style.opacity))
     } else {
@@ -202,7 +196,6 @@ function updateArrowPath(
   // Apply styles to start arrow head
   arrow.arrow2.setAttribute('stroke', style.stroke || 'rgb(227, 125, 116)')
   arrow.arrow2.setAttribute('stroke-width', String(style.strokeWidth || '2'))
-  arrow.arrow2.setAttribute('stroke-linecap', style.strokeLinecap || 'cap')
   if (style.opacity !== undefined && style.opacity !== null && style.opacity !== '') {
     arrow.arrow2.setAttribute('opacity', String(style.opacity))
   } else {
