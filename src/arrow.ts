@@ -247,32 +247,40 @@ function calcCtrlP(mei: MindElixirInstance, tpc: Topic, delta: { x: number; y: n
 }
 
 /**
- * calc start and end point using control point and div status
+ * Find the anchor point on the node's rectangular border where the arrow
+ * should start/end.
+ *
+ * @param data - Geometry of the node: center (cx, cy), size (w, h), and the
+ *   control point (ctrlX, ctrlY) the line curves towards.
+ * @returns The intersection point { x, y } of the ray shot from the node
+ *   center towards the control point with the rectangle boundary. If there is
+ *   no unique exit edge (control point coincides with the center, or the node
+ *   has zero size), the node center itself is returned.
  */
 function calcP(data: DivData) {
-  let x, y
-  const k = (data.cy - data.ctrlY) / (data.ctrlX - data.cx)
-  if (k > data.h / data.w || k < -data.h / data.w) {
-    if (data.cy - data.ctrlY < 0) {
-      x = data.cx - data.h / 2 / k
-      y = data.cy + data.h / 2
-    } else {
-      x = data.cx + data.h / 2 / k
-      y = data.cy - data.h / 2
-    }
-  } else {
-    if (data.cx - data.ctrlX < 0) {
-      x = data.cx + data.w / 2
-      y = data.cy - (data.w * k) / 2
-    } else {
-      x = data.cx - data.w / 2
-      y = data.cy + (data.w * k) / 2
-    }
+  const halfW = data.w / 2
+  const halfH = data.h / 2
+  // Direction from the node center to the control point.
+  const dx = data.ctrlX - data.cx
+  const dy = data.ctrlY - data.cy
+  const len = Math.hypot(dx, dy)
+
+  // Degenerate: control point coincides with the node center, or the node has
+  // zero size. There is no unique exit edge, fall back to the node center.
+  if (len === 0 || (halfW === 0 && halfH === 0)) {
+    return { x: data.cx, y: data.cy }
   }
-  return {
-    x,
-    y,
-  }
+
+  // Unit direction vector of the ray.
+  const ux = dx / len
+  const uy = dy / len
+
+  // Intersection of the ray (center -> control point) with the rectangle
+  // boundary: the smaller of the horizontal/vertical scaling factors wins.
+  const t = Math.min(halfW / Math.abs(ux), halfH / Math.abs(uy))
+
+  // Move along the unit direction by t to land exactly on the border.
+  return { x: data.cx + ux * t, y: data.cy + uy * t }
 }
 
 /**
