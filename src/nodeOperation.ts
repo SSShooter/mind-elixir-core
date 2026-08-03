@@ -253,7 +253,7 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
     from = from.reverse()
   }
 
-  const c: Children[] = []
+  const c = new Set<Children>()
 
   for (const f of from) {
     const obj = f.nodeObj
@@ -263,14 +263,16 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
     if (type === 'in') {
       // For 'in' type: move as child
       const fromTop = f.parentElement
-      addChildDom(mei, to, fromTop.parentElement)
+      const fromWrp = fromTop.parentElement
+      // capture the source children container before addChildDom relocates the wrapper
+      const fromChildren = fromWrp.parentElement
+      addChildDom(mei, to, fromWrp)
+      c.add(fromChildren)
     } else {
       // For 'before' and 'after' type: move as sibling
       rmSubline(f)
       const fromWrp = f.parentElement.parentNode
-      if (!c.includes(fromWrp.parentElement)) {
-        c.push(fromWrp.parentElement)
-      }
+      c.add(fromWrp.parentElement)
       const toWrp = to.parentElement.parentNode
       toWrp.insertAdjacentElement(typeMap[type], fromWrp)
     }
