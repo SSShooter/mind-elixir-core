@@ -1,14 +1,53 @@
 # Changelog
 
-## 5.15.0 (Unreleased)
+## 5.15.0 - 2026-08-03
 
 ### Breaking Changes
 
 - `refresh(data)` no longer applies `data.theme`. Theme handling is fully decoupled from `refresh`; call `changeTheme(theme)` explicitly when you need to switch themes (e.g. `mind.changeTheme(data.theme)` before/after `mind.refresh(data)`).
+- `moveUpNode` and `moveDownNode` no longer emit `moveUpNode` and `moveDownNode` operation events. They now reuse the existing `moveNode` flow and fire `moveNodeBefore`, `moveNodeAfter`, or `moveNodeIn` instead. Update any listeners accordingly.
+
+### Features
+
+- Add down layout support via `direction: 3`
+- Add `genMembers` build script for generating class member declarations from TypeScript compiler output
 
 ### Bug Fixes
 
-- `undo`/`redo` no longer resets the current theme. Theme functions (`generateMainBranch`/`generateSubBranch`) could not survive the history snapshot's JSON serialization, so undoing used to revert custom branch styles to the default.
+- Prevent undo/redo when the map is not editable
+- Fix ctrl+k chord accidentally triggering refresh
+- Return move success status to control wheel event propagation
+- Clamp node movement within container center boundaries
+- Preserve line breaks when removing div on blur
+- Ensure correct sorting of range indices in summaries
+- Avoid mutating summaries during render
+- Set direction for new parent node in `insertParent`
+- Remove residual DOM after `moveNodeIn`
+- Handle root topic positioning without `me-main` ancestor in arrow rendering
+- Correct alignment centering for downward layout
+- Align padding and adjust subline drawing for first-level nodes
+- Fix DOWN direction `addChild` on root
+- Suppress context menu after right button panning
+- Prevent errors when node has no children in keypress handler
+- Make arrow control point drag work with operation history
+- Fire events before selecting nodes to support undo operations
+- Include `reshapeArrow` in arrow operation types for undo/redo
+- Sync selection state on `unselectNodes` to avoid stale history
+
+### Refactors
+
+- Refactor MindElixir to use class-based implementation
+- Replace codegen with direct TypeScript compiler API usage for generating type declarations
+- Optimize `unionTopics` filtering logic
+- Unify `moveUpNode` and `moveDownNode` logic with `getMoveTarget` helper
+- Improve calculation of anchor point on node border
+- Remove stroke-linecap style support from arrow component
+
+### Chores
+
+- Replace ESLint and Prettier with Biome for linting and formatting
+- Replace less with lightningcss and update config
+- Bump TypeScript to 7.x
 
 ## 5.14.0 - 2026-07-12
 
