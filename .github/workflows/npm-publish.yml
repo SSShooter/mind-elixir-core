@@ -32,6 +32,8 @@ jobs:
       - name: Regenerate expanded member declarations
         run: npm run gen:members
 
+      - run: npm run format
+
       - run: npm run build
 
       - name: Determine npm dist-tag

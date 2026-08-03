@@ -24,9 +24,6 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
-import prettier from 'prettier'
-// TypeScript 7 (tsgo) no longer ships the JS compiler API, so the codegen
-// pins a TS 5 alias (`typescript-5`) purely for type-checking here.
 import ts from 'typescript-5'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -116,9 +113,6 @@ const endAt = index.indexOf(END)
 if (startAt < 0 || endAt < 0) throw new Error('GENERATED markers not found in src/index.ts')
 const patched = index.slice(0, startAt) + region + index.slice(endAt + END.length)
 
-// Format so the committed source stays clean and re-runs are idempotent.
-const config = (await prettier.resolveConfig(indexPath)) ?? {}
-const formatted = await prettier.format(patched, { ...config, filepath: indexPath })
-writeFileSync(indexPath, formatted)
+writeFileSync(indexPath, patched)
 
 console.log(`Generated ${options.length} option + ${methods.length} method declarations into src/index.ts.`)
