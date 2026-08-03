@@ -151,19 +151,23 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     // ignore modifier keydowns so the chord isn't cancelled while holding Ctrl
     if (['Control', 'Meta', 'Shift', 'Alt'].includes(e.key)) return
     const nodeData = mind.nodeData
+    if (!nodeData.children?.length) {
+      cleanupCtrlK()
+      return
+    }
     let handled = true
     if (e.key === '0') {
       // Ctrl+K+Ctrl+0: Collapse all nodes
-      for (const node of nodeData.children!) {
+      for (const node of nodeData.children) {
         setExpand(node, false)
       }
     } else if (e.key === '=') {
       // Ctrl+K+Ctrl+1: Expand all nodes
-      for (const node of nodeData.children!) {
+      for (const node of nodeData.children) {
         setExpand(node, true)
       }
     } else if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
-      for (const node of nodeData.children!) {
+      for (const node of nodeData.children) {
         setExpand(node, true, Number(e.key) - 1)
       }
     } else {
