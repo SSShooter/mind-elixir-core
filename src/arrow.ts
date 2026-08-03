@@ -307,7 +307,9 @@ const calculateDefaultDeltas = function (mei: MindElixirInstance, from: Topic, t
   // Use C-type curve when nodes are close together to avoid overlapping
   const isCloseDistance = distance < 150
   if (isCloseDistance) {
-    const xMul = from.closest('me-main')!.className === 'lhs' ? -1 : 1
+    // root topic has no me-main ancestor; bulge away from the target's side instead
+    const fromMain = from.closest('me-main')
+    const xMul = fromMain ? (fromMain.className === 'lhs' ? -1 : 1) : dx > 0 ? -1 : 1
     delta1 = { x: 200 * xMul, y: 0 }
     delta2 = { x: 200 * xMul, y: 0 }
   } else if (absDx > absDy * 1.5) {
