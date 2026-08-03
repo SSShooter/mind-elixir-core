@@ -1,3 +1,4 @@
+import { DOWN } from './const'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
 import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
@@ -223,7 +224,9 @@ const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
   const { container, map, nodes } = mei
 
   let dx, dy
-  if (mei.alignment === 'nodes' || forceAlignNodes) {
+  // Top-down layout content extends asymmetrically below the root, so centering
+  // on the root node would misplace the map. Center the whole content box instead.
+  if (mei.alignment === 'nodes' || forceAlignNodes || mei.direction === DOWN) {
     dx = (container.offsetWidth - nodes.offsetWidth) / 2
     dy = (container.offsetHeight - nodes.offsetHeight) / 2
     map.style.transformOrigin = `50% 50%`
