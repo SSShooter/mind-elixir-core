@@ -4,7 +4,7 @@
 }
 
 /* 一级节点的 padding 与次级节点保持一致 */
-.map-container[data-branch-style="markmap"] me-main > .me-wrapper > .me-parent > .me-tpc {
+.map-container[data-branch-style="markmap"] .me-main > .me-wrapper > .me-parent > .me-tpc {
   padding: var(--topic-padding);
 }
 

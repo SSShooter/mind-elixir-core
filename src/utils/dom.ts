@@ -1,6 +1,6 @@
 import { LEFT } from '../const'
 import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
-import type { MindElixirInstance, NodeObj } from '../types/index'
+import { DirectionClass, type MindElixirInstance, type NodeObj } from '../types/index'
 import { encodeHTML, getOffsetLT } from '../utils/index'
 import { layoutChildren } from './layout'
 
@@ -152,6 +152,19 @@ export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj)
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   return topic
+}
+
+export const createMain = function (directionClass: DirectionClass): HTMLElement {
+  const el = document.createElement('div')
+  el.className = `me-main ${directionClass}`
+  return el
+}
+
+export const directionOf = function (el: Element): DirectionClass {
+  const cls = el.classList
+  if (cls.contains(DirectionClass.DOWN)) return DirectionClass.DOWN
+  if (cls.contains(DirectionClass.LHS)) return DirectionClass.LHS
+  return DirectionClass.RHS
 }
 
 export function selectText(div: HTMLElement) {

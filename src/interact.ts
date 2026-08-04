@@ -398,7 +398,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
     children.remove()
   }
 
-  this.linkDiv(el.closest('me-main > .me-wrapper') as Wrapper)
+  this.linkDiv(el.closest('.me-main > .me-wrapper') as Wrapper)
 
   // Calculate position after expansion and compensate for drift
   const afterRect = el.getBoundingClientRect()

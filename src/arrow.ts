@@ -308,8 +308,8 @@ const calculateDefaultDeltas = function (mei: MindElixirInstance, from: Topic, t
   const isCloseDistance = distance < 150
   if (isCloseDistance) {
     // root topic has no me-main ancestor; bulge away from the target's side instead
-    const fromMain = from.closest('me-main')
-    const xMul = fromMain ? (fromMain.className === 'lhs' ? -1 : 1) : dx > 0 ? -1 : 1
+    const fromMain = from.closest('.me-main')
+    const xMul = fromMain ? (fromMain.classList.contains('lhs') ? -1 : 1) : dx > 0 ? -1 : 1
     delta1 = { x: 200 * xMul, y: 0 }
     delta2 = { x: 200 * xMul, y: 0 }
   } else if (absDx > absDy * 1.5) {

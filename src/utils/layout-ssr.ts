@@ -260,8 +260,8 @@ export const renderSSRHTML = function (
   const leftWrappers = layoutResult.leftNodes.map(node => renderWrapper(node)).join('')
   const rightWrappers = layoutResult.rightNodes.map(node => renderWrapper(node)).join('')
 
-  const leftPartHtml = `<me-main class="${DirectionClass.LHS}">${leftWrappers}</me-main>`
-  const rightPartHtml = `<me-main class="${DirectionClass.RHS}">${rightWrappers}</me-main>`
+  const leftPartHtml = `<div class="me-main ${DirectionClass.LHS}">${leftWrappers}</div>`
+  const rightPartHtml = `<div class="me-main ${DirectionClass.RHS}">${rightWrappers}</div>`
 
   return nodesWrapper(`<me-nodes class="${className}">${leftPartHtml}${rootHtml}${rightPartHtml}</me-nodes>`)
 }

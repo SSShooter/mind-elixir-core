@@ -66,7 +66,7 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionC
   const main = current.offsetParent.offsetParent.parentElement
   if (!nodeObj.parent) {
     selectRootSide(mei, direction)
-  } else if (main.className === direction) {
+  } else if (main.classList.contains(direction)) {
     selectFirstChild(mei, current)
   } else {
     if (!nodeObj.parent?.parent) {

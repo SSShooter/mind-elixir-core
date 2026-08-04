@@ -1,5 +1,6 @@
 import { createPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
+import { directionOf } from './utils/dom'
 import type { Wrapper, Topic } from './types/dom'
 import type { DirectionClass, MindElixirInstance } from './types/index'
 
@@ -23,7 +24,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   const pW = root.offsetWidth
   const pH = root.offsetHeight
 
-  const mainNodeList = this.map.querySelectorAll('me-main > .me-wrapper')
+  const mainNodeList = this.map.querySelectorAll('.me-main > .me-wrapper')
   this.lines.innerHTML = ''
 
   for (let i = 0; i < mainNodeList.length; i++) {
@@ -32,7 +33,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
     const { offsetLeft: cL, offsetTop: cT } = getOffsetLT(this.nodes, tpc)
     const cW = tpc.offsetWidth
     const cH = tpc.offsetHeight
-    const direction = el.parentNode.className as DirectionClass
+    const direction = directionOf(el.parentNode as Element)
 
     const mainPath = this.generateMainBranch({
       pT,

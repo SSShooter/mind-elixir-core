@@ -71,7 +71,7 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   }
   const newNodeObj = node || this.generateNewObj()
   if (!nodeObj.parent?.parent) {
-    const direction = nodeEle.closest('me-main')!.className === DirectionClass.LHS ? LEFT : RIGHT
+    const direction = nodeEle.closest('.me-main')!.classList.contains(DirectionClass.LHS) ? LEFT : RIGHT
     newNodeObj.direction = direction
   }
   insertNodeObj(newNodeObj, type, nodeObj)
@@ -107,7 +107,7 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   }
   const newNodeObj = node || this.generateNewObj()
   if (!nodeObj.parent?.parent) {
-    const direction = nodeEle.closest('me-main')!.className === DirectionClass.LHS ? LEFT : RIGHT
+    const direction = nodeEle.closest('.me-main')!.classList.contains(DirectionClass.LHS) ? LEFT : RIGHT
     newNodeObj.direction = direction
   }
   insertParentNodeObj(nodeObj, newNodeObj)
@@ -301,7 +301,7 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
   // In this case, we need to clean up the related DOM structure:
   // remove expander buttons and empty wrapper containers
   for (const item of c) {
-    if (item.childElementCount === 0 && item.tagName !== 'ME-MAIN') {
+    if (item.childElementCount === 0 && !item.classList.contains('me-main')) {
       item.previousSibling.children[1]!.remove()
       item.remove()
     }

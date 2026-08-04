@@ -43,7 +43,7 @@ export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper
     const direction = judgeDirection(mei, tpc.nodeObj)
     if (direction === DOWN) {
       // `me-nodes` carries the `down` class as well, so the tag name is required here
-      mei.container.querySelector('me-main.down')?.appendChild(wrapper)
+      mei.container.querySelector('.me-main.down')?.appendChild(wrapper)
     } else if (direction === LEFT) {
       mei.container.querySelector('.lhs')?.appendChild(wrapper)
     } else {
@@ -58,7 +58,7 @@ export const removeNodeDom = function (tpc: Topic, siblingLength: number) {
   if (siblingLength === 0) {
     // remove epd when children length === 0
     const c = p.parentNode.parentNode
-    if (c.tagName !== 'ME-MAIN') {
+    if (!c.classList.contains('me-main')) {
       // Root
       c.previousSibling.children[1]!.remove() // remove epd
       c.remove() // remove Children div

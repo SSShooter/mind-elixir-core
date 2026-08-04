@@ -1,6 +1,7 @@
 import type { MindElixirInstance, SummarySvg, Topic } from '.'
 import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
+import { directionOf } from './utils/dom'
 import { createLabel, editSvgText, svgNS } from './utils/svg'
 import { calculatePrecisePosition } from './utils/svg'
 
@@ -133,9 +134,9 @@ const getDirection = function (mei: MindElixirInstance, { parent, start }: Summa
   const parentObj = parentEl.nodeObj
   let side: DirectionClass
   if (parentObj.parent) {
-    side = parentEl.closest('me-main')!.className as DirectionClass
+    side = directionOf(parentEl.closest('.me-main')!)
   } else {
-    side = mei.findEle(parentObj.children![start].id).closest('me-main')!.className as DirectionClass
+    side = directionOf(mei.findEle(parentObj.children![start].id).closest('.me-main')!)
   }
   return side
 }
