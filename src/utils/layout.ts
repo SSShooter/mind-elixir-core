@@ -87,7 +87,8 @@ const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root:
 }
 
 export const layoutChildren = function (mei: MindElixirInstance, data: NodeObj[]) {
-  const chldr = document.createElement('me-children') as Children
+  const chldr = document.createElement('div') as unknown as Children
+  chldr.className = 'me-children'
   for (let i = 0; i < data.length; i++) {
     const nodeObj = data[i]
     const { grp } = mei.createWrapper(nodeObj)

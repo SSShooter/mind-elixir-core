@@ -136,7 +136,7 @@ export const setAttributes = (el: HTMLElement | SVGElement, attrs: { [key: strin
 }
 
 export const isTopic = (target?: HTMLElement): target is Topic => {
-  return target ? target.tagName === 'ME-TPC' : false
+  return target ? target.classList.contains('me-tpc') : false
 }
 
 export const unionTopics = (nodes: Topic[]) => {

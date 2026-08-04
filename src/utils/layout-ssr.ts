@@ -165,7 +165,6 @@ export const renderSSRHTML = function (
 
   const renderNode = (node: SSRLayoutNode, isRoot = false): string => {
     const nodeId = `me${node.id}`
-    const topicClass = isRoot ? 'me-tpc' : 'me-tpc'
 
     let styleAttr = ''
     if (node.style) {
@@ -236,7 +235,7 @@ export const renderSSRHTML = function (
       }
     }
 
-    const topicHtml = `<me-tpc class="${topicClass}" data-nodeid="${nodeId}"${styleAttr}>${topicContent}</me-tpc>`
+    const topicHtml = `<div class="me-tpc" data-nodeid="${nodeId}"${styleAttr}>${topicContent}</div>`
 
     if (isRoot) {
       return `<me-root>${topicHtml}</me-root>`
@@ -245,11 +244,11 @@ export const renderSSRHTML = function (
     let childrenHtml = ''
     if (node.children && node.children.length > 0 && node.expanded !== false) {
       const childWrappers = node.children.map(child => renderWrapper(child)).join('')
-      childrenHtml = `<me-children>${childWrappers}</me-children>`
+      childrenHtml = `<div class="me-children">${childWrappers}</div>`
     }
 
-    const parentHtml = `<me-parent>${topicHtml}</me-parent>`
-    return `<me-wrapper>${parentHtml}${childrenHtml}</me-wrapper>`
+    const parentHtml = `<div class="me-parent">${topicHtml}</div>`
+    return `<div class="me-wrapper">${parentHtml}${childrenHtml}</div>`
   }
 
   const renderWrapper = (node: SSRLayoutNode): string => {

@@ -193,7 +193,7 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
         e.preventDefault()
         tips.remove()
         const target = e.target as Topic
-        if (target.parentElement.tagName === 'ME-PARENT' || target.parentElement.tagName === 'ME-ROOT') {
+        if (target.parentElement.classList.contains('me-parent') || target.parentElement.tagName === 'ME-ROOT') {
           mind.createArrow(from, target, options)
         } else {
           console.log('link cancel')

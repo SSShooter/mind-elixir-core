@@ -37,7 +37,7 @@ const nestedData = {
 
 // Topic text order of one side container in the DOM
 const domOrder = (page: Page, selector: string) =>
-  page.evaluate(sel => Array.from(document.querySelectorAll(`${sel} > me-wrapper me-tpc`)).map(el => el.textContent), selector)
+  page.evaluate(sel => Array.from(document.querySelectorAll(`${sel} > .me-wrapper .me-tpc`)).map(el => el.textContent), selector)
 
 // Topic order of root-level children projected to one side, from the data
 const dataOrder = (page: Page, direction: number) =>

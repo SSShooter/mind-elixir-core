@@ -180,7 +180,7 @@ export default function (mind: MindElixirInstance) {
     }
 
     const target = e.target as HTMLElement
-    if (target.tagName === 'ME-EPD') {
+    if (target.classList.contains('me-epd')) {
       if (e.ctrlKey || e.metaKey) {
         mind.expandNodeAll((target as Expander).previousSibling)
       } else {

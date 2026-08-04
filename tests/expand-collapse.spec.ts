@@ -75,7 +75,7 @@ test('Expand collapsed node', async ({ page, me }) => {
   await expect(page.getByText('Child 4', { exact: true })).not.toBeVisible()
 
   // Click expand button
-  const expandButton = page.locator('me-tpc[data-nodeid="mebranch2"]').locator('..').locator('me-epd')
+  const expandButton = page.locator('.me-tpc[data-nodeid="mebranch2"]').locator('..').locator('.me-epd')
   await expandButton.click()
 
   // Verify child nodes are now visible
@@ -89,7 +89,7 @@ test('Collapse expanded node', async ({ page, me }) => {
   await expect(page.getByText('Child 2', { exact: true })).toBeVisible()
 
   // Click collapse button
-  const collapseButton = page.locator('me-tpc[data-nodeid="mebranch1"]').locator('..').locator('me-epd')
+  const collapseButton = page.locator('.me-tpc[data-nodeid="mebranch1"]').locator('..').locator('.me-epd')
   await collapseButton.click()
 
   // Verify child nodes are now not visible
@@ -99,7 +99,7 @@ test('Collapse expanded node', async ({ page, me }) => {
 
 test('Expand all children recursively', async ({ page, me }) => {
   // First collapse Branch 1
-  const branch1Button = page.locator('me-tpc[data-nodeid="mebranch1"]').locator('..').locator('me-epd')
+  const branch1Button = page.locator('.me-tpc[data-nodeid="mebranch1"]').locator('..').locator('.me-epd')
   await branch1Button.click()
 
   // Verify all child nodes are not visible
@@ -142,7 +142,7 @@ test('Auto expand when moving node to collapsed parent', async ({ page, me }) =>
   await expect(page.getByText('Child 5', { exact: true })).toBeVisible()
 
   // Verify Child 5 actually moved under Branch 2
-  const branch2Container = page.locator('me-tpc[data-nodeid="mebranch2"]').locator('..').locator('..').locator('me-children')
+  const branch2Container = page.locator('.me-tpc[data-nodeid="mebranch2"]').locator('..').locator('..').locator('.me-children')
   await expect(branch2Container.getByText('Child 5', { exact: true })).toBeVisible()
 })
 
@@ -171,7 +171,7 @@ test('Auto expand when copying node to collapsed parent', async ({ page, me }) =
 
 test('Expand state persistence after layout refresh', async ({ page, me }) => {
   // Expand Branch 2
-  const expandButton = page.locator('me-tpc[data-nodeid="mebranch2"]').locator('..').locator('me-epd')
+  const expandButton = page.locator('.me-tpc[data-nodeid="mebranch2"]').locator('..').locator('.me-epd')
   await expandButton.click()
   await expect(page.getByText('Child 3', { exact: true })).toBeVisible()
 

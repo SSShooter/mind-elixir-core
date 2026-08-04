@@ -48,29 +48,29 @@
     text-decoration: none;
     margin-left: 0.3em;
   }
-  me-main > me-wrapper > me-parent > me-epd {
+  me-main > .me-wrapper > .me-parent > .me-epd {
     top: calc(50% - 9px);
   }
-  me-epd {
+  .me-epd {
     top: calc(100% - 9px);
   }
   .lhs {
     direction: rtl;
-    & > me-wrapper > me-parent > me-epd {
+    & > .me-wrapper > .me-parent > .me-epd {
       left: -10px;
     }
-    me-epd {
+    .me-epd {
       left: 5px;
     }
-    me-tpc {
+    .me-tpc {
       direction: ltr;
     }
   }
   .rhs {
-    & > me-wrapper > me-parent > me-epd {
+    & > .me-wrapper > .me-parent > .me-epd {
       right: -10px;
     }
-    me-epd {
+    .me-epd {
       right: 5px;
     }
   }
@@ -85,15 +85,15 @@
       justify-content: center;
     }
     /* swap main gaps: bigger vertical, smaller horizontal */
-    & > me-main > me-wrapper {
+    & > me-main > .me-wrapper {
       margin: var(--main-gap-x) var(--main-gap-y);
     }
-    me-wrapper {
+    .me-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    me-children {
+    .me-children {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
@@ -102,19 +102,19 @@
       margin-top: var(--node-gap-x);
     }
     /* node box tightly wraps the topic so connectors attach to the node edges */
-    me-parent {
+    .me-parent {
       margin: 0;
       padding: 0 var(--node-gap-y); /* small horizontal padding -> small sibling gap */
     }
     /* org-chart style: give child nodes a visible border */
-    me-children me-parent > me-tpc {
+    .me-children .me-parent > .me-tpc {
       border: 1px solid var(--main-color);
       background-color: var(--main-bgcolor);
       border-radius: 6px;
       padding: 6px 12px;
     }
-    me-epd,
-    & > me-main > me-wrapper > me-parent > me-epd {
+    .me-epd,
+    & > me-main > .me-wrapper > .me-parent > .me-epd {
       top: calc(100% - 9px);
       left: calc(50% - 9px);
       right: auto;
@@ -155,13 +155,13 @@
   }
   me-main {
     /* primary node / main node */
-    & > me-wrapper {
+    & > .me-wrapper {
       position: relative; /* make subline svg's offsetParent be the main node */
       margin: var(--main-gap-y) var(--main-gap-x);
-      & > me-parent {
+      & > .me-parent {
         margin: 10px;
         padding: 0;
-        & > me-tpc {
+        & > .me-tpc {
           border-radius: var(--main-radius);
           background-color: var(--main-bgcolor);
           border: var(--main-border, 2px solid var(--main-color));
@@ -171,13 +171,13 @@
       }
     }
   }
-  me-wrapper {
+  .me-wrapper {
     display: block;
     width: fit-content;
     /* position: relative; */
   }
-  me-children,
-  me-parent {
+  .me-children,
+  .me-parent {
     display: inline-block;
     vertical-align: middle;
   }
@@ -185,7 +185,7 @@
     position: relative;
     margin: 45px 0;
     z-index: 10;
-    me-tpc {
+    .me-tpc {
       font-size: 25px;
       color: var(--root-color);
       padding: 10px 30px;
@@ -194,13 +194,13 @@
       background-color: var(--root-bgcolor);
     }
   }
-  me-parent {
+  .me-parent {
     position: relative; /* for locating expand button */
     cursor: pointer;
     padding: 6px var(--node-gap-x);
     margin-top: var(--node-gap-y);
     z-index: 10;
-    me-tpc {
+    .me-tpc {
       position: relative;
       border-radius: 3px;
       color: var(--color);
@@ -232,7 +232,7 @@
         bottom: -14px;
       }
     }
-    me-epd {
+    .me-epd {
       position: absolute;
       height: 18px;
       width: 18px;
@@ -319,7 +319,7 @@
     z-index: 100;
   }
 
-  me-tpc {
+  .me-tpc {
     display: block;
     max-width: 35em;
     /* allow shift enter to wrap text. */

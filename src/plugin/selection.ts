@@ -5,7 +5,7 @@ import SelectionArea from '../viselect/src'
 export default function (mei: MindElixirInstance) {
   const triggers: Behaviour['triggers'] = mei.mouseSelectionButton === 2 ? [2] : [0]
   const selection = new SelectionArea({
-    selectables: ['.map-container me-tpc'],
+    selectables: ['.map-container .me-tpc'],
     boundaries: [mei.container],
     container: mei.selectionContainer,
     mindElixirInstance: mei, // 传递 MindElixir 实例
@@ -67,7 +67,7 @@ export default function (mei: MindElixirInstance) {
           const newNodes = (added as Topic[]).filter(el => !mei.currentNodes?.includes(el))
           if (newNodes.length > 0) {
             for (const el of newNodes) {
-              el.className = 'selected'
+              el.classList.add('selected')
             }
             mei.currentNodes = [...(mei.currentNodes || []), ...newNodes]
             mei.bus.fire(

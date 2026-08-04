@@ -23,12 +23,12 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
   const pW = root.offsetWidth
   const pH = root.offsetHeight
 
-  const mainNodeList = this.map.querySelectorAll('me-main > me-wrapper')
+  const mainNodeList = this.map.querySelectorAll('me-main > .me-wrapper')
   this.lines.innerHTML = ''
 
   for (let i = 0; i < mainNodeList.length; i++) {
     const el = mainNodeList[i] as Wrapper
-    const tpc = el.querySelector<Topic>('me-tpc') as Topic
+    const tpc = el.querySelector<Topic>('.me-tpc') as Topic
     const { offsetLeft: cL, offsetTop: cT } = getOffsetLT(this.nodes, tpc)
     const cW = tpc.offsetWidth
     const cH = tpc.offsetHeight

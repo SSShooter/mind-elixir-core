@@ -38,12 +38,12 @@ const applyScaleDelta = (mei: MindElixirInstance, scaleDelta: number, offset?: Z
 }
 
 const selectRootSide = (mei: MindElixirInstance, direction: DirectionClass) => {
-  const tpcs = mei.map.querySelectorAll(`.${direction}>me-wrapper>me-parent>me-tpc`)
+  const tpcs = mei.map.querySelectorAll(`.${direction}>.me-wrapper>.me-parent>.me-tpc`)
   if (tpcs.length === 0) return
   mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
 }
 const selectRoot = (mei: MindElixirInstance) => {
-  mei.selectNode(mei.map.querySelector('me-root>me-tpc') as Topic)
+  mei.selectNode(mei.map.querySelector('me-root>.me-tpc') as Topic)
 }
 const selectParent = function (mei: MindElixirInstance, currentNode: Topic) {
   const parent = currentNode.parentElement.parentElement.parentElement.previousSibling
@@ -103,7 +103,7 @@ const selectDownParent = function (mei: MindElixirInstance, current: Topic) {
 const selectDownChild = function (mei: MindElixirInstance, current: Topic) {
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) {
-    const tpcs = mei.map.querySelectorAll('.down>me-wrapper>me-parent>me-tpc')
+    const tpcs = mei.map.querySelectorAll('.down>.me-wrapper>.me-parent>.me-tpc')
     if (tpcs.length === 0) return
     mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
   } else {

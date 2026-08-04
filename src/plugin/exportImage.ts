@@ -188,7 +188,7 @@ const generateSvg = (mei: MindElixirInstance, noForeignObject = false) => {
   const summaries = mapDiv.querySelector('.summary')?.cloneNode(true)
   summaries && g.appendChild(summaries)
 
-  mapDiv.querySelectorAll<Topic>('me-tpc').forEach(tpc => {
+  mapDiv.querySelectorAll<Topic>('.me-tpc').forEach(tpc => {
     if (tpc.nodeObj.dangerouslySetInnerHTML) {
       g.appendChild(convertDivToSvg(mei, tpc, noForeignObject ? false : true))
     } else {

@@ -382,7 +382,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   const parent = el.parentNode
   const expander = parent.children[1]!
   expander.expanded = node.expanded
-  expander.className = node.expanded ? 'minus' : ''
+  expander.className = 'me-epd' + (node.expanded ? ' minus' : '')
 
   rmSubline(el)
   if (node.expanded) {
@@ -398,7 +398,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
     children.remove()
   }
 
-  this.linkDiv(el.closest('me-main > me-wrapper') as Wrapper)
+  this.linkDiv(el.closest('me-main > .me-wrapper') as Wrapper)
 
   // Calculate position after expansion and compensate for drift
   const afterRect = el.getBoundingClientRect()

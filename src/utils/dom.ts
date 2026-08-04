@@ -114,7 +114,8 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
 
 // everything start from `Wrapper`
 export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean) {
-  const grp = document.createElement('me-wrapper') as Wrapper
+  const grp = document.createElement('div') as unknown as Wrapper
+  grp.className = 'me-wrapper'
   const { p, tpc } = this.createParent(nodeObj)
   grp.appendChild(p)
   if (!omitChildren && nodeObj.children && nodeObj.children.length > 0) {
@@ -130,7 +131,8 @@ export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeOb
 }
 
 export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj) {
-  const p = document.createElement('me-parent') as Parent
+  const p = document.createElement('div') as unknown as Parent
+  p.className = 'me-parent'
   const tpc = this.createTopic(nodeObj)
   shapeTpc.call(this, tpc, nodeObj)
   p.appendChild(tpc)
@@ -138,13 +140,15 @@ export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj
 }
 
 export const createChildren = function (this: MindElixirInstance, wrappers: Wrapper[]) {
-  const children = document.createElement('me-children') as Children
+  const children = document.createElement('div') as unknown as Children
+  children.className = 'me-children'
   children.append(...wrappers)
   return children
 }
 
 export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj) {
-  const topic = document.createElement('me-tpc') as Topic
+  const topic = document.createElement('div') as unknown as Topic
+  topic.className = 'me-tpc'
   topic.nodeObj = nodeObj
   topic.dataset.nodeid = 'me' + nodeObj.id
   return topic
@@ -248,9 +252,9 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
 }
 
 export const createExpander = function (expanded: boolean | undefined): Expander {
-  const expander = document.createElement('me-epd') as Expander
+  const expander = document.createElement('div') as unknown as Expander
+  expander.className = 'me-epd' + (expanded !== false ? ' minus' : '')
   // if expanded is undefined, treat as expanded
   expander.expanded = expanded !== false
-  expander.className = expanded !== false ? 'minus' : ''
   return expander
 }

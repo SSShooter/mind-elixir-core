@@ -29,7 +29,7 @@ export const judgeDirection = function ({ map, direction }: MindElixirInstance, 
 export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper: Wrapper) {
   const tpc = wrapper.children[0].children[0]
   const top = to.parentElement
-  if (top.tagName === 'ME-PARENT') {
+  if (top.classList.contains('me-parent')) {
     rmSubline(tpc)
     if (top.children[1]) {
       top.nextSibling.appendChild(wrapper)
