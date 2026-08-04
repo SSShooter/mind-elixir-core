@@ -32,7 +32,7 @@
       "import": "./dist/MindElixir.js"
     },
     "./lite": {
-      "import": "./dist/MindElixirLite.iife.js"
+      "import": "./dist/MindElixirLite.js"
     },
     "./example": {
       "types": "./dist/types/exampleData/1.d.ts",
@@ -96,7 +96,7 @@
     "simple-markdown-to-html": "^1.0.0",
     "typescript": "^7.0.2",
     "typescript-5": "npm:typescript@^5.9.3",
-    "vite": "^7.1.7",
-    "vite-plugin-istanbul": "^7.2.0"
+    "vite": "^8.2.0",
+    "vite-plugin-istanbul": "^9.0.1"
   }
 }
