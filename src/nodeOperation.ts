@@ -155,22 +155,6 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   this.selectNode(newTop.firstChild, true)
 }
 
-export const copyNode = function (this: MindElixirInstance, node: Topic, to: Topic) {
-  console.time('copyNode')
-  const deepCloneObj = deepClone(node.nodeObj)
-  refreshIds(deepCloneObj)
-  const res = addChildFunc(this, to, deepCloneObj)
-  if (!res) return
-  const { newNodeObj } = res
-  console.timeEnd('copyNode')
-  // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
-  this.bus.fire('operation', {
-    name: 'copyNode',
-    obj: newNodeObj,
-  })
-  this.selectNode(this.findEle(newNodeObj.id))
-}
-
 export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: Topic) {
   const objs = []
   for (let i = 0; i < tpcs.length; i++) {

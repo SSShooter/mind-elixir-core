@@ -4,7 +4,7 @@ import type { NodeObj } from '../types/index'
 
 type NodeOperation =
   | {
-      name: 'moveNodeIn' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'beginEdit'
+      name: 'addChild' | 'insertParent' | 'beginEdit'
       obj: NodeObj
     }
   | {
@@ -27,8 +27,6 @@ type NodeOperation =
       objs: NodeObj[]
       toObj: NodeObj
     }
-
-type MultipleNodeOperation =
   | {
       name: 'removeNodes'
       objs: NodeObj[]
@@ -71,7 +69,7 @@ export type ArrowOperation =
       origin: Arrow
     }
 
-export type Operation = NodeOperation | MultipleNodeOperation | SummaryOperation | ArrowOperation
+export type Operation = NodeOperation | SummaryOperation | ArrowOperation
 export type OperationType = Operation['name']
 
 export type EventMap = {

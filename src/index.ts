@@ -209,7 +209,6 @@ class MindElixir {
   ) => Promise<void>
   declare insertParent: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
   declare addChild: (this: MindElixirInstance, el?: Topic | undefined, node?: NodeObj<unknown> | undefined) => Promise<void>
-  declare copyNode: (this: MindElixirInstance, node: Topic, to: Topic) => Promise<void>
   declare copyNodes: (this: MindElixirInstance, tpcs: Topic[], to: Topic) => Promise<void>
   declare moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
   declare moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
