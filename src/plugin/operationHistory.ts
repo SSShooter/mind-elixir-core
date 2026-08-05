@@ -114,9 +114,12 @@ export default function (mei: MindElixirInstance) {
     // console.log(`mei.map.addEventListener('keydown', handleKeyDown)`, e.key, history.length, currentIndex)
     if (!mei.editable) return
     if (!e.metaKey && !e.ctrlKey) return
-    // Use e.code for physical key matching unaffected by CapsLock and input method
-    if (e.code === 'KeyZ') e.shiftKey ? mei.redo() : mei.undo()
-    else if (e.code === 'KeyY') mei.redo()
+    // Use e.key instead of e.code: e.code is the physical key position, which
+    // does not match the letter on non-QWERTY layouts (e.g. AZERTY Z -> code KeyW),
+    // see https://github.com/SSShooter/mind-elixir-core/issues/380
+    const key = e.key.toLowerCase()
+    if (key === 'z') e.shiftKey ? mei.redo() : mei.undo()
+    else if (key === 'y') mei.redo()
   }
   const handleSelectNodes = function () {
     currentSelectedNodes = mei.currentNodes.map(n => n.nodeObj)
