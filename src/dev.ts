@@ -3,6 +3,7 @@ import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
 import org from './exampleData/org'
+import largeMap from './exampleData/largeMap'
 import type { Options, MindElixirInstance, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import 'katex/dist/katex.min.css'
@@ -139,6 +140,7 @@ let mind = new MindElixir(options)
 const data = MindElixir.new('new topic')
 // example.theme = MindElixir.DARK_THEME
 mind.init(example)
+// mind.init(largeMap)
 
 const branchThemes = {
   markmap: {
