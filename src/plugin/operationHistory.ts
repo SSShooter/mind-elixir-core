@@ -29,7 +29,7 @@ const calcCurentObject = function (operation: Operation): History['currentTarget
       type: 'arrow',
       value: (operation as any).obj.id,
     }
-  } else if (['removeNodes', 'copyNodes', 'moveNodeBefore', 'moveNodeAfter', 'moveNodeIn'].includes(operation.name)) {
+  } else if (['removeNodes', 'copyNodes', 'moveNodesBefore', 'moveNodesAfter', 'moveNodesIn'].includes(operation.name)) {
     return {
       type: 'nodes',
       value: (operation as any).objs.map((obj: NodeObj) => obj.id),

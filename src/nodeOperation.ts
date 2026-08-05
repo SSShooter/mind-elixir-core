@@ -296,7 +296,7 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
   // 在 selectNodes 里 scrollIntoView 也没效果，所以在这里单独 scrollIntoView
   mei.scrollIntoView(from[from.length - 1])
 
-  const eventName = type === 'before' ? 'moveNodeBefore' : type === 'after' ? 'moveNodeAfter' : 'moveNodeIn'
+  const eventName = type === 'before' ? 'moveNodesBefore' : type === 'after' ? 'moveNodesAfter' : 'moveNodesIn'
   mei.bus.fire('operation', {
     name: eventName,
     objs: from.map(f => f.nodeObj),
@@ -304,15 +304,15 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
   })
 }
 
-export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+export const moveNodesIn = function (this: MindElixirInstance, from: Topic[], to: Topic) {
   moveNode(from, 'in', to, this)
 }
 
-export const moveNodeBefore = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+export const moveNodesBefore = function (this: MindElixirInstance, from: Topic[], to: Topic) {
   moveNode(from, 'before', to, this)
 }
 
-export const moveNodeAfter = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+export const moveNodesAfter = function (this: MindElixirInstance, from: Topic[], to: Topic) {
   moveNode(from, 'after', to, this)
 }
 

@@ -160,7 +160,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   }
 
   _onTapStart(evt: PointerEvent, silent = false): void {
-    console.trace('_onTapStart')
+    // console.trace('_onTapStart')
     const { x, y, target } = simplifyEvent(evt)
     const { document, startAreas, boundaries, behaviour, features } = this._options
     const targetBoundingClientRect = target.getBoundingClientRect()

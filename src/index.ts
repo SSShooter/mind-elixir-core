@@ -213,9 +213,9 @@ class MindElixir {
   declare moveUpNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
   declare moveDownNode: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
   declare removeNodes: (this: MindElixirInstance, tpcs: Topic[]) => Promise<void>
-  declare moveNodeIn: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
-  declare moveNodeBefore: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
-  declare moveNodeAfter: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveNodesIn: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveNodesBefore: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
+  declare moveNodesAfter: (this: MindElixirInstance, from: Topic[], to: Topic) => Promise<void>
   declare beginEdit: (this: MindElixirInstance, el?: Topic | undefined) => Promise<void>
   declare setNodeTopic: (this: MindElixirInstance, el: Topic, topic: string) => Promise<void>
   declare scrollIntoView: (this: MindElixirInstance, el: HTMLElement, forceCenter?: boolean) => void

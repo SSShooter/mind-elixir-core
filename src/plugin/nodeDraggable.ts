@@ -281,11 +281,11 @@ export function handleNodeDragEnd(mind: MindElixirInstance, state: NodeDragState
   if (state.isDragging && state.meet) {
     clearPreview(state.meet)
     if (state.insertType === 'before') {
-      mind.moveNodeBefore(dragged, state.meet)
+      mind.moveNodesBefore(dragged, state.meet)
     } else if (state.insertType === 'after') {
-      mind.moveNodeAfter(dragged, state.meet)
+      mind.moveNodesAfter(dragged, state.meet)
     } else if (state.insertType === 'in') {
-      mind.moveNodeIn(dragged, state.meet)
+      mind.moveNodesIn(dragged, state.meet)
     }
   }
 

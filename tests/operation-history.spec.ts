@@ -132,7 +132,7 @@ test('Operation History - Copy Multiple Nodes', async ({ page, me }) => {
 })
 
 test('Operation History - Node Movement Operations', async ({ page, me }) => {
-  // Test moveNodeBefore operation
+  // Test moveNodesBefore operation
   await me.click('Leaf A2')
   await page.keyboard.press('Alt+ArrowUp') // Move up (before sibling)
 
@@ -142,7 +142,7 @@ test('Operation History - Node Movement Operations', async ({ page, me }) => {
   // Redo move operation
   await page.keyboard.press(`${modifier}+y`)
 
-  // Test moveNodeAfter operation
+  // Test moveNodesAfter operation
   await page.keyboard.press('Alt+ArrowDown') // Move down (after sibling)
 
   // Undo move operation

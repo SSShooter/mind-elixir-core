@@ -27,7 +27,7 @@ export default function (mei: MindElixirInstance) {
     },
   })
     .on('beforestart', ({ event }) => {
-      console.log('beforestart', mei.ptState)
+      // console.log('beforestart', mei.ptState)
       if (!mei.editable) return false
       if (mei.spacePressed) return false
       if (mei.ptState !== 5) return false
@@ -41,7 +41,6 @@ export default function (mei: MindElixirInstance) {
       if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
         mei.clearSelection()
       }
-      // console.log('beforestart')
       const selectionAreaElement = selection.getSelectionArea()
       selectionAreaElement.style.background = '#4f90f22d'
       selectionAreaElement.style.border = '1px solid #4f90f2'

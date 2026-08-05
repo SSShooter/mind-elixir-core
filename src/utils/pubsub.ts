@@ -23,7 +23,7 @@ type NodeOperation =
       origin: string
     }
   | {
-      name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNodeIn'
+      name: 'moveNodesAfter' | 'moveNodesBefore' | 'moveNodesIn'
       objs: NodeObj[]
       toObj: NodeObj
     }

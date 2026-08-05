@@ -8,6 +8,11 @@
   padding: var(--topic-padding);
 }
 
+.map-container[data-branch-style="markmap"] me-root > .me-tpc {
+  padding: var(--topic-padding);
+  margin: 10px 30px;
+}
+
 /* 甚至可以针对左右两侧单独调整 */
 .map-container[data-branch-style="markmap"] .lhs .me-epd {
   left: 3px;
