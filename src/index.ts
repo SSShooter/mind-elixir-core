@@ -133,6 +133,10 @@ class MindElixir<M = any> {
   declare helper2?: LinkPanHelperInstance
 
   // Services, history and selection (attached during init / by plugins)
+  /**
+   * @internal
+   */
+  declare pluginsInitialized: boolean
   declare bus: ReturnType<typeof createBus<EventMap>>
   declare history: Operation[]
   declare undo: () => void
@@ -294,6 +298,7 @@ class MindElixir<M = any> {
     ele.innerHTML = ''
     this.el = ele as HTMLElement
     this.disposable = []
+    this.pluginsInitialized = false
     this.before = before || {}
     this.newTopicName = newTopicName || 'New Node'
     this.contextMenu = contextMenu ?? true

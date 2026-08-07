@@ -73,6 +73,8 @@ const methods = {
   ...summary,
   ...exportImage,
   init(this: MindElixir, data: MindElixirData) {
+    if (this.pluginsInitialized) return
+
     data = JSON.parse(JSON.stringify(data))
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
@@ -90,7 +92,10 @@ const methods = {
     this.arrows = data.arrows || []
     this.summaries = data.summaries || []
     this.tidyArrow()
-    // plugins
+    this.layout()
+    this.linkDiv()
+    this.toCenter()
+
     this.toolBar && toolBar(this)
     if (import.meta.env.MODE !== 'lite') {
       this.keypress && keypressInit(this, this.keypress)
@@ -102,11 +107,12 @@ const methods = {
       }
       this.allowUndo && this.disposable.push(operationHistory(this))
     }
-    this.layout()
-    this.linkDiv()
-    this.toCenter()
+    this.pluginsInitialized = true
   },
   destroy(this: Partial<MindElixir>) {
+    // A destroyed instance is not reusable: its DOM infrastructure is cleared
+    // below, so a later init() must not attempt to initialize it again.
+    this.pluginsInitialized = true
     this.disposable!.forEach(fn => fn())
     if (this.el) this.el.innerHTML = ''
     this.el = undefined
