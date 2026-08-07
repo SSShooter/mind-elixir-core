@@ -1,50 +1,45 @@
 ---
 name: Export Mind Map as Image
-description: Guide for exporting mind maps as images using `@zumer/snapdom`.
+description: Guide for exporting mind maps as images using the built-in SCST engine from `@mind-elixir/export-mindmap`.
 ---
 
 # Export Mind Map as Image
 
-Mind Elixir recommends using `@zumer/snapdom` for high-quality image exports. This tool allows you to convert the SVG nodes directly into image formats.
+Mind Elixir exports images through the built-in SCST engine from `@mind-elixir/export-mindmap`. SCST is a lightweight, high-performance DOM-to-image library based on SVG `<foreignObject>` + Canvas, with zero third-party screenshot dependencies.
 
 ## 1. Installation
 
-Install `@zumer/snapdom` as a dependency.
+Install `@mind-elixir/export-mindmap` as a dependency.
 
 ```bash
-npm install @zumer/snapdom
+npm install @mind-elixir/export-mindmap
 ```
 
 ## 2. Usage
 
-Use the `snapdom` function to capture the mind map nodes and download them.
+Use the `downloadImage` / `exportImage` functions to capture the mind map nodes and download them.
 
 ```typescript
-import { snapdom } from '@zumer/snapdom'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 // Assuming `mind` is your MindElixir instance
 
-const downloadImage = async () => {
-  // 1. Capture the nodes
-  const result = await snapdom(mind.nodes)
+// Download as PNG / JPEG / WEBP
+await downloadImage(mind, 'png') // format: 'png' | 'jpeg' | 'webp'
 
-  // 2. Download as JPG or PNG
-  await result.download({
-    format: 'jpg', // or 'png'
-    filename: 'mind-map-export',
-  })
-}
+// Or get the URL for preview / custom handling instead of downloading
+const url = await exportImage(mind, 'png')
 ```
 
-## 3. Creating a Trigger
+## 3. Using SCST directly
 
-You can add a button to your UI to trigger this function.
+SCST is also exported from the package and can be used to screenshot any DOM element.
 
-```html
-<button id="export-btn">Export Image</button>
+```typescript
+import { domToBlob, domToDataURL, domToObjectURL } from '@mind-elixir/export-mindmap'
 
-<script>
-  document.getElementById('export-btn').addEventListener('click', downloadImage)
-</script>
+const blob = await domToBlob(element, 'png', options)
+const dataUrl = await domToDataURL(element, 'jpeg', options)
+const objectUrl = await domToObjectURL(element, 'webp', options) // most memory-efficient for downloads
 ```
 
 > **Note**: The built-in `mind.exportSvg()` method is deprecated. Please use the method above for new projects.
