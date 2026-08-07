@@ -1,8 +1,8 @@
 // Codegen: regenerate the `MindElixir` class's option + prototype-method field
 // declarations (the `// #region GENERATED` block in src/index.ts) with fully
 // expanded signatures. This keeps the published .d.ts and the API docs showing
-// real types (e.g. `(this: MindElixir<M>, tpcs: Topic<M>[], to: Topic<M>) =>
-// Promise<void>`) instead of the DRY indexed-access aliases the class would
+// real types (e.g. `(tpcs: Topic<M>[], to: Topic<M>) => Promise<void>`)
+// instead of the DRY indexed-access aliases the class would
 // otherwise carry (`MindElixirMethods['copyNodes']`, `ResolvedOptions['...']`).
 //
 // Source of truth: the TypeScript checker, run directly over `src` via the
@@ -46,6 +46,11 @@ const clean = s => {
     .replace(/\b(MindElixir|MindElixirData|NodeObj|NodeObjExport|Topic|Arrow|Theme)\b(?!<)/g, '$1<M>')
 }
 
+// A generated method is declared as a member of the class, so its explicit
+// `this` parameter is redundant. Keep `this` in Options/Theme callbacks: those
+// are user-provided functions whose callback context is part of the API.
+const cleanMethod = s => clean(s).replace(/^\(this:\s*(?:Partial<)?MindElixir<M>>?(?:,\s*)?/, '(')
+
 // --- type checker over src -------------------------------------------------
 const configFile = ts.readConfigFile(join(here, 'tsconfig.json'), ts.sys.readFile)
 if (configFile.error) throw new Error(ts.flattenDiagnosticMessageText(configFile.error.messageText, '\n'))
@@ -80,7 +85,7 @@ if (!methodsDecl) throw new Error('`const methods` not found in src/methods.ts')
 const methodsType = checker.getTypeAtLocation(methodsDecl.name)
 const methods = checker.getPropertiesOfType(methodsType).map(prop => ({
   name: prop.getName(),
-  type: typeText(checker.getTypeOfSymbolAtLocation(prop, methodsDecl)),
+  type: cleanMethod(typeText(checker.getTypeOfSymbolAtLocation(prop, methodsDecl))),
 }))
 if (!methods.length) throw new Error('no methods resolved from src/methods.ts')
 
