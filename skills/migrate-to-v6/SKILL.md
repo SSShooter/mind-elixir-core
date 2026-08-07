@@ -1,53 +1,85 @@
 ---
 name: Migrate to Mind Elixir v6
-description: v6 breaking changes only. Consumer-facing breaking changes in v6 (next/v6 vs v5.15.0) are (1) mind-map inner DOM nodes are now plain `<div>`s with class names instead of custom elements (`me-main`, `me-wrapper`, `me-parent`, `me-children`, `me-tpc`, `me-epd`), (2) public instance method `copyNode` removed → use `copyNodes([node], to)`, (3) batch move methods `moveNodeIn/Before/After` renamed to `moveNodesIn/Before/After` with pluralized `operation` event names. Plus a minor `lite` build IIFE filename change.
+description: How to migrate consumer code from Mind Elixir v5 to v6.
 ---
 
-# Migrate to Mind Elixir v6 — Breaking Changes
+# Migrate to Mind Elixir v6
 
-Breaking changes introduced in `next/v6` vs `v5.15.0`. Only v6-new changes are listed (v5-line changes like `refresh()`/`draggable`→`editable`/i18n relocation are out of scope).
+Update the following usages when migrating from v5 to v6.
 
-## 1. Custom DOM elements → plain `<div>`s (class-driven)
+## 1. DOM selectors
 
-The six **inner** node elements are now `<div>`s with the same class names. `me-nodes` and `me-root` stay custom elements.
+Inner map elements are now `<div>` elements. Replace tag selectors with class selectors:
 
-| Old | New |
-| --- | --- |
-| `<me-main> <me-wrapper> <me-parent> <me-children> <me-tpc> <me-epd>` | `<div class="me-main">` … etc. |
+```diff
+- me-tpc { ... }
++ .me-tpc { ... }
 
-**Fix in consumer code:**
-- CSS: `me-tpc {…}` → `.me-tpc {…}`; descendant selectors use `.me-` classes, not tag names.
-- JS: `querySelector('me-tpc')` → `.me-tpc`; `getElementsByTagName('me-…')` → `querySelectorAll('.me-…')`; `el.tagName === 'ME-TPC'` → `el.classList.contains('me-tpc')`.
-- `me-tpc:defined` / `:not(:defined)` selectors no longer apply.
-- Direction is a class on `.me-main` (`lhs`/`rhs`/`down`) — use `directionOf(el)` or `classList.contains('lhs')`, not `className === 'lhs'`.
+- map.querySelector('me-tpc')
++ map.querySelector('.me-tpc')
+```
 
-## 2. Removed method `copyNode`
+The affected elements are `me-main`, `me-wrapper`, `me-parent`, `me-children`, `me-tpc`, and `me-epd`. `me-nodes` and `me-root` are unchanged. For direction checks, use classes such as `.me-main.lhs`, `.me-main.rhs`, and `.me-main.down`.
 
-`mind.copyNode(node, to)` removed. Use `mind.copyNodes([node], to)` (wrap in array).
-- `operation` listeners: `name === 'copyNode'` never fires → use `'copyNodes'`; payload is `objs: NodeObj[]` (not `obj`).
-- The `declare copyNode` TS member is gone.
+## 2. Copying nodes
 
-## 3. Renamed batch move methods to plural
+```diff
+- mind.copyNode(node, to)
++ mind.copyNodes([node], to)
+```
 
-The three methods whose first arg is `Topic[]` were renamed (method name == `operation` event name):
+The operation name is also `copyNodes`.
+
+## 3. Moving nodes
+
+```diff
+- mind.moveNodeIn(nodes, to)
++ mind.moveNodesIn(nodes, to)
+
+- mind.moveNodeBefore(nodes, to)
++ mind.moveNodesBefore(nodes, to)
+
+- mind.moveNodeAfter(nodes, to)
++ mind.moveNodesAfter(nodes, to)
+```
+
+Update operation listeners to use the plural names. Existing `addListener` usage does not otherwise change. `moveUpNode` and `moveDownNode` are unchanged.
+
+## 4. Operation payloads
+
+Update operation listeners as follows:
 
 | v5 | v6 |
 | --- | --- |
-| `moveNodeIn(from, to)` | `moveNodesIn(from, to)` |
-| `moveNodeBefore(from, to)` | `moveNodesBefore(from, to)` |
-| `moveNodeAfter(from, to)` | `moveNodesAfter(from, to)` |
+| `operation.obj` | `operation.target` |
+| `operation.objs` | `operation.target` |
+| `operation.toObj` | `operation.destination` |
+| `operation.type` for `insertSibling` | `operation.position` |
 
-**Fix:** rename calls AND `operation` listeners branch on the plural names (`'moveNodeIn'`→`'moveNodesIn'`, etc.). Payload stays `objs: NodeObj[], toObj`. Single-node `moveUpNode`/`moveDownNode` are **unchanged** (they internally fire the plural events). The `declare moveNode*` TS members are gone.
+`operation.target` is an object for single-target operations and an array for batch node operations.
 
-## 4. Minor: `lite` build drops IIFE output
+```diff
+- if (operation.name === 'addChild') console.log(operation.obj)
++ if (operation.name === 'addChild') console.log(operation.target)
 
-`mind-elixir/lite` no longer emits `MindElixirLite.iife.js` → now `MindElixirLite.js`. Importing via the `mind-elixir/lite` specifier is unaffected; only update if you referenced the IIFE file by path.
+- if (operation.name === 'copyNodes') console.log(operation.objs)
++ if (operation.name === 'copyNodes') console.log(operation.target)
 
-## Verification checklist
+- if (['moveNodesIn', 'moveNodesBefore', 'moveNodesAfter'].includes(operation.name)) {
+-   console.log(operation.objs, operation.toObj)
+- }
++ if (['moveNodesIn', 'moveNodesBefore', 'moveNodesAfter'].includes(operation.name)) {
++   console.log(operation.target, operation.destination)
++ }
+```
 
-1. CSS `me-…` tag selectors → `.me-…` class selectors; map still styled.
-2. JS `querySelector('me-…')` / `getElementsByTagName` / `tagName === 'ME-…'` → class-based queries + `classList.contains`.
-3. Direct `MindElixirLite.iife.js` refs → `MindElixirLite.js` (only if by path).
-4. `me-nodes` / `me-root` unchanged.
-5. `copyNode` → `copyNodes([node], to)`; listeners use `'copyNodes'` + `objs`.
-6. `moveNodeIn/Before/After` → `moveNodesIn/Before/After`; listeners use plural event names. `moveUpNode`/`moveDownNode` unchanged.
+## 5. lite build
+
+If you reference the lite build file directly:
+
+```diff
+- MindElixirLite.iife.js
++ MindElixirLite.js
+```
+
+The `mind-elixir/lite` import remains unchanged.

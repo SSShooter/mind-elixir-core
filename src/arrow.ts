@@ -431,7 +431,7 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
 
   this.bus.fire('operation', {
     name: 'createArrow',
-    obj: arrowObj,
+    target: arrowObj,
   })
 }
 
@@ -442,7 +442,7 @@ export const createArrowFrom = function (this: MindElixirInstance, arrow: Omit<A
 
   this.bus.fire('operation', {
     name: 'createArrow',
-    obj: arrowObj,
+    target: arrowObj,
   })
 }
 
@@ -455,16 +455,14 @@ export const removeArrow = function (this: MindElixirInstance, linkSvg?: ArrowSv
   }
   if (!link) return
   hideLinkController(this)
-  const id = link.arrowObj!.id
-  this.arrows = this.arrows.filter(arrow => arrow.id !== id)
+  const target = deepClone(link.arrowObj!)
+  this.arrows = this.arrows.filter(arrow => arrow.id !== target.id)
 
   link.labelEl?.remove()
   link.remove()
   this.bus.fire('operation', {
     name: 'removeArrow',
-    obj: {
-      id,
-    },
+    target,
   })
 }
 
@@ -592,7 +590,7 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   const handleDragEnd = () => {
     bus.fire('operation', {
       name: 'reshapeArrow',
-      obj: linkItem,
+      target: linkItem,
       origin: dragOrigin,
     })
     dragOrigin = deepClone(linkItem)
@@ -726,7 +724,7 @@ export const reshapeArrow = function (this: MindElixirInstance, arrow: Arrow, pa
 
   this.bus.fire('operation', {
     name: 'reshapeArrow',
-    obj: arrow,
+    target: arrow,
     origin,
   })
 }

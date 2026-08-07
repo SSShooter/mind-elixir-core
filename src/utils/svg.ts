@@ -230,12 +230,12 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
     if ('parent' in node) {
       mei.bus.fire('operation', {
         name: 'finishEditSummary',
-        obj: node,
+        target: node,
       })
     } else {
       mei.bus.fire('operation', {
         name: 'finishEditArrowLabel',
-        obj: node,
+        target: node,
       })
     }
   })

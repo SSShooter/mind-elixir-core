@@ -219,7 +219,7 @@ export const createSummary = function (this: MindElixirInstance, options: Summar
   this.editSummary(g)
   bus.fire('operation', {
     name: 'createSummary',
-    obj: summary,
+    target: summary,
   })
 }
 
@@ -231,15 +231,16 @@ export const createSummaryFrom = function (this: MindElixirInstance, summary: Om
   this.summaries.push(newSummary)
   this.bus.fire('operation', {
     name: 'createSummary',
-    obj: newSummary,
+    target: newSummary,
   })
 }
 
 export const removeSummary = function (this: MindElixirInstance, id: string) {
-  if (!detachSummary(this, id)) return
+  const target = this.summaries.find(summary => summary.id === id)
+  if (!target || !detachSummary(this, id)) return
   this.bus.fire('operation', {
     name: 'removeSummary',
-    obj: { id },
+    target,
   })
 }
 

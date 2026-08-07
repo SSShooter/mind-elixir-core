@@ -18,27 +18,25 @@ type History = {
       }
 }
 
-const calcCurentObject = function (operation: Operation): History['currentTarget'] {
-  if (['createSummary', 'removeSummary', 'finishEditSummary'].includes(operation.name)) {
-    return {
-      type: 'summary',
-      value: (operation as any).obj.id,
-    }
-  } else if (['createArrow', 'removeArrow', 'finishEditArrowLabel', 'reshapeArrow'].includes(operation.name)) {
-    return {
-      type: 'arrow',
-      value: (operation as any).obj.id,
-    }
-  } else if (['removeNodes', 'copyNodes', 'moveNodesBefore', 'moveNodesAfter', 'moveNodesIn'].includes(operation.name)) {
-    return {
-      type: 'nodes',
-      value: (operation as any).objs.map((obj: NodeObj) => obj.id),
-    }
-  } else {
-    return {
-      type: 'nodes',
-      value: [(operation as any).obj.id],
-    }
+const calcCurrentTarget = function (operation: Operation): History['currentTarget'] {
+  switch (operation.name) {
+    case 'createSummary':
+    case 'finishEditSummary':
+    case 'removeSummary':
+      return { type: 'summary', value: operation.target.id }
+    case 'createArrow':
+    case 'finishEditArrowLabel':
+    case 'removeArrow':
+    case 'reshapeArrow':
+      return { type: 'arrow', value: operation.target.id }
+    case 'removeNodes':
+    case 'copyNodes':
+    case 'moveNodesBefore':
+    case 'moveNodesAfter':
+    case 'moveNodesIn':
+      return { type: 'nodes', value: operation.target.map(node => node.id) }
+    default:
+      return { type: 'nodes', value: [operation.target.id] }
   }
 }
 
@@ -102,7 +100,7 @@ export default function (mei: MindElixirInstance) {
       prev: current,
       operation: operation.name,
       currentSelected: currentSelectedNodes.map(n => n.id),
-      currentTarget: calcCurentObject(operation),
+      currentTarget: calcCurrentTarget(operation),
       next,
     }
     history.push(item)

@@ -213,7 +213,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
 
   this.bus.fire('operation', {
     name: 'beginEdit',
-    obj: el.nodeObj,
+    target: el.nodeObj,
   })
 
   div.addEventListener('keydown', e => {
@@ -257,7 +257,7 @@ export const editTopic = function (this: MindElixirInstance, el: Topic) {
     this.linkDiv()
     this.bus.fire('operation', {
       name: 'finishEdit',
-      obj: node,
+      target: node,
       origin: originalContent,
     })
   })

@@ -30,7 +30,7 @@ export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patch
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'reshapeNode',
-    obj: newObj,
+    target: newObj,
     origin,
   })
 }
@@ -91,8 +91,8 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
-    type,
-    obj: newNodeObj,
+    position: type,
+    target: newNodeObj,
   })
   this.selectNode(top.firstChild, true)
 }
@@ -130,7 +130,7 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
   this.bus.fire('operation', {
     name: 'insertParent',
-    obj: newNodeObj,
+    target: newNodeObj,
   })
   this.selectNode(top.firstChild, true)
   console.timeEnd('insertParent_DOM')
@@ -146,7 +146,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   // 添加节点关注添加节点前选择的节点，所以先触发事件再选择节点
   this.bus.fire('operation', {
     name: 'addChild',
-    obj: newNodeObj,
+    target: newNodeObj,
   })
   console.timeEnd('addChild')
   if (!node) {
@@ -169,7 +169,7 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
   // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
   this.bus.fire('operation', {
     name: 'copyNodes',
-    objs,
+    target: objs,
   })
   this.unselectNodes(this.currentNodes)
   this.selectNodes(objs.map(obj => this.findEle(obj.id)))
@@ -236,7 +236,7 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   // 删除关注的是删除后选择的节点，所以先选择节点，再触发 removeNodes 事件可以在事件中通过 currentNodes 获取之后选择的节点
   this.bus.fire('operation', {
     name: 'removeNodes',
-    objs: tpcs.map(tpc => tpc.nodeObj),
+    target: tpcs.map(tpc => tpc.nodeObj),
   })
 }
 
@@ -299,8 +299,8 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
   const eventName = type === 'before' ? 'moveNodesBefore' : type === 'after' ? 'moveNodesAfter' : 'moveNodesIn'
   mei.bus.fire('operation', {
     name: eventName,
-    objs: from.map(f => f.nodeObj),
-    toObj,
+    target: from.map(f => f.nodeObj),
+    destination: toObj,
   })
 }
 
