@@ -1,18 +1,19 @@
+import type MindElixir from '../index'
 import { LEFT } from '../const'
 import type { Topic, Wrapper, Parent, Children, Expander } from '../types/dom'
-import { DirectionClass, type MindElixirInstance, type NodeObj } from '../types/index'
+import { DirectionClass, type NodeObj } from '../types/index'
 import { encodeHTML, getOffsetLT } from '../utils/index'
 import { layoutChildren } from './layout'
 
 // DOM manipulation
-export const findEle = function (this: MindElixirInstance, id: string, el?: HTMLElement) {
+export const findEle = function (this: MindElixir, id: string, el?: HTMLElement) {
   const scope = this?.el ? this.el : el ? el : document
   const ele = scope.querySelector<Topic>(`[data-nodeid="me${id}"]`)
   if (!ele) throw new Error(`FindEle: Node ${id} not found, maybe it's collapsed.`)
   return ele
 }
 
-export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj: NodeObj) {
+export const shapeTpc = function (this: MindElixir, tpc: Topic, nodeObj: NodeObj) {
   tpc.innerHTML = ''
 
   if (nodeObj.style) {
@@ -113,7 +114,7 @@ export const shapeTpc = function (this: MindElixirInstance, tpc: Topic, nodeObj:
 }
 
 // everything start from `Wrapper`
-export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeObj, omitChildren?: boolean) {
+export const createWrapper = function (this: MindElixir, nodeObj: NodeObj, omitChildren?: boolean) {
   const grp = document.createElement('div') as unknown as Wrapper
   grp.className = 'me-wrapper'
   const { p, tpc } = this.createParent(nodeObj)
@@ -130,7 +131,7 @@ export const createWrapper = function (this: MindElixirInstance, nodeObj: NodeOb
   return { grp, top: p, tpc }
 }
 
-export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj) {
+export const createParent = function (this: MindElixir, nodeObj: NodeObj) {
   const p = document.createElement('div') as unknown as Parent
   p.className = 'me-parent'
   const tpc = this.createTopic(nodeObj)
@@ -139,14 +140,14 @@ export const createParent = function (this: MindElixirInstance, nodeObj: NodeObj
   return { p, tpc }
 }
 
-export const createChildren = function (this: MindElixirInstance, wrappers: Wrapper[]) {
+export const createChildren = function (this: MindElixir, wrappers: Wrapper[]) {
   const children = document.createElement('div') as unknown as Children
   children.className = 'me-children'
   children.append(...wrappers)
   return children
 }
 
-export const createTopic = function (this: MindElixirInstance, nodeObj: NodeObj) {
+export const createTopic = function (this: MindElixir, nodeObj: NodeObj) {
   const topic = document.createElement('div') as unknown as Topic
   topic.className = 'me-tpc'
   topic.nodeObj = nodeObj
@@ -177,7 +178,7 @@ export function selectText(div: HTMLElement) {
   }
 }
 
-export const editTopic = function (this: MindElixirInstance, el: Topic) {
+export const editTopic = function (this: MindElixir, el: Topic) {
   console.time('editTopic')
   if (!el) return
   const div = document.createElement('div')

@@ -4,7 +4,7 @@ import example2 from './exampleData/2'
 import example3 from './exampleData/3'
 import org from './exampleData/org'
 import largeMap from './exampleData/largeMap'
-import type { Options, MindElixirInstance, NodeObj } from './types/index'
+import type { Options, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import 'katex/dist/katex.min.css'
 import katex from 'katex'
@@ -21,8 +21,8 @@ import { markmapMain, markmapSub, straightMain, straightSub, straightUnderlineMa
 import '../dev.css'
 
 interface Window {
-  m?: MindElixirInstance
-  m2?: MindElixirInstance
+  m?: MindElixir
+  m2?: MindElixir
   M: typeof MindElixir
   E: typeof MindElixir.E
   downloadPng: () => void

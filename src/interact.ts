@@ -1,10 +1,11 @@
+import type MindElixir from './index'
 import { DOWN } from './const'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
-import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
+import type { MindElixirData, NodeObj } from './types/index'
 import { fillParent, getTranslate, setExpand } from './utils/index'
 
-function collectData(instance: MindElixirInstance) {
+function collectData(instance: MindElixir) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
     arrows: instance.arrows,
@@ -16,7 +17,7 @@ function collectData(instance: MindElixirInstance) {
   }
 }
 
-export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElement, forceCenter = false) {
+export const scrollIntoView = function (this: MindElixir, el: HTMLElement, forceCenter = false) {
   // scrollIntoView needs to be implemented manually because native scrollIntoView behaves incorrectly after transform
   const container = this.container
   const rect = el.getBoundingClientRect()
@@ -39,7 +40,7 @@ export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElemen
   }
 }
 
-export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
+export const selectNode = function (this: MindElixir, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   // selectNode clears all selected nodes by default
   console.trace('selectNode')
   this.clearSelection()
@@ -50,18 +51,18 @@ export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewN
   }
 }
 
-export const selectNodes = function (this: MindElixirInstance, tpcs: Topic[]): void {
+export const selectNodes = function (this: MindElixir, tpcs: Topic[]): void {
   console.trace('selectNodes')
   // update currentNodes in selection.ts to keep sync with SelectionArea cache
   this.selection?.select(tpcs)
 }
 
-export const unselectNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
+export const unselectNodes = function (this: MindElixir, tpcs: Topic[]) {
   // no selection if editable === false
   this.selection?.deselect(tpcs)
 }
 
-export const clearSelection = function (this: MindElixirInstance) {
+export const clearSelection = function (this: MindElixir) {
   console.trace('clearSelection')
   this.unselectNodes(this.currentNodes)
   this.unselectSummary()
@@ -83,7 +84,7 @@ export const stringifyData = function (data: object) {
  * @memberof MapInteraction
  * @return {string}
  */
-export const getDataString = function (this: MindElixirInstance) {
+export const getDataString = function (this: MindElixir) {
   const data = collectData(this)
   return stringifyData(data)
 }
@@ -95,7 +96,7 @@ export const getDataString = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getData = function (this: MindElixirInstance) {
+export const getData = function (this: MindElixir) {
   return JSON.parse(this.getDataString()) as MindElixirData
 }
 
@@ -105,7 +106,7 @@ export const getData = function (this: MindElixirInstance) {
  * @name enableEdit
  * @memberof MapInteraction
  */
-export const enableEdit = function (this: MindElixirInstance) {
+export const enableEdit = function (this: MindElixir) {
   this.editable = true
 }
 
@@ -115,7 +116,7 @@ export const enableEdit = function (this: MindElixirInstance) {
  * @name disableEdit
  * @memberof MapInteraction
  */
-export const disableEdit = function (this: MindElixirInstance) {
+export const disableEdit = function (this: MindElixir) {
   this.editable = false
 }
 
@@ -127,7 +128,7 @@ export const disableEdit = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  * @param {number}
  */
-export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
+export const scale = function (this: MindElixir, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
   if ((scaleVal < this.scaleMin && scaleVal < this.scaleVal) || (scaleVal > this.scaleMax && scaleVal > this.scaleVal)) return
   const rect = this.container.getBoundingClientRect()
   // refer to /refs/scale-calc.excalidraw for the process
@@ -156,7 +157,7 @@ export const scale = function (this: MindElixirInstance, scaleVal: number, offse
 /**
  * Better to use with option `alignment: 'nodes'`.
  */
-export const scaleFit = function (this: MindElixirInstance) {
+export const scaleFit = function (this: MindElixir) {
   const heightPercent = this.nodes.offsetHeight / this.container.offsetHeight
   const widthPercent = this.nodes.offsetWidth / this.container.offsetWidth
   const scale = 1 / Math.max(1, Math.max(heightPercent, widthPercent))
@@ -172,7 +173,7 @@ export const scaleFit = function (this: MindElixirInstance) {
  * Returns whether the map actually moved, so callers (e.g. wheel handler)
  * can let the event bubble when the map is stuck at the edge.
  */
-export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false): boolean {
+export const move = function (this: MindElixir, dx: number, dy: number, smooth = false): boolean {
   const { map, scaleVal, bus, container, nodes } = this
   if (smooth && map.style.transition === 'transform 0.3s') {
     // Prevent consecutive smooth moves
@@ -220,7 +221,7 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
 /**
  * 获取默认居中的偏移
  */
-const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
+const getCenterDefault = (mei: MindElixir, forceAlignNodes = false) => {
   const { container, map, nodes } = mei
 
   let dx, dy
@@ -250,7 +251,7 @@ const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
  * @description Reset position of the map to center.
  * @memberof MapInteraction
  */
-export const toCenter = function (this: MindElixirInstance) {
+export const toCenter = function (this: MindElixir) {
   const { map, container } = this
   const { dx, dy } = getCenterDefault(this)
   container.scrollTop = 0
@@ -265,7 +266,7 @@ export const toCenter = function (this: MindElixirInstance) {
  * @description Install plugin.
  * @memberof MapInteraction
  */
-export const install = function (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) {
+export const install = function (this: MindElixir, plugin: (instance: MindElixir) => void) {
   plugin(this)
 }
 
@@ -277,7 +278,7 @@ export const install = function (this: MindElixirInstance, plugin: (instance: Mi
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const focusNode = function (this: MindElixirInstance, el: Topic) {
+export const focusNode = function (this: MindElixir, el: Topic) {
   if (!el.nodeObj.parent) return
   this.clearSelection()
   if (this.tempDirection === null) {
@@ -298,7 +299,7 @@ export const focusNode = function (this: MindElixirInstance, el: Topic) {
  * @description Exit focus mode.
  * @memberof MapInteraction
  */
-export const cancelFocus = function (this: MindElixirInstance) {
+export const cancelFocus = function (this: MindElixir) {
   this.isFocusMode = false
   if (this.tempDirection !== null) {
     this.nodeData = this.nodeDataBackup
@@ -315,7 +316,7 @@ export const cancelFocus = function (this: MindElixirInstance) {
  * @description Child nodes will distribute on the left side of the root node.
  * @memberof MapInteraction
  */
-export const initLeft = function (this: MindElixirInstance) {
+export const initLeft = function (this: MindElixir) {
   this.direction = 0
   this.refresh()
   this.toCenter()
@@ -328,7 +329,7 @@ export const initLeft = function (this: MindElixirInstance) {
  * @description Child nodes will distribute on the right side of the root node.
  * @memberof MapInteraction
  */
-export const initRight = function (this: MindElixirInstance) {
+export const initRight = function (this: MindElixir) {
   this.direction = 1
   this.refresh()
   this.toCenter()
@@ -341,7 +342,7 @@ export const initRight = function (this: MindElixirInstance) {
  * @description Child nodes will distribute on both left and right side of the root node.
  * @memberof MapInteraction
  */
-export const initSide = function (this: MindElixirInstance) {
+export const initSide = function (this: MindElixir) {
   this.direction = 2
   this.refresh()
   this.toCenter()
@@ -355,14 +356,14 @@ export const initSide = function (this: MindElixirInstance) {
  * @description Child nodes will distribute below the root node (top-down layout).
  * @memberof MapInteraction
  */
-export const initDown = function (this: MindElixirInstance) {
+export const initDown = function (this: MindElixir) {
   this.direction = 3
   this.refresh()
   this.toCenter()
   this.bus.fire('changeDirection', this.direction)
 }
 
-export const expandNode = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
+export const expandNode = function (this: MindElixir, el: Topic, isExpand?: boolean) {
   const node = el.nodeObj
   if (typeof isExpand === 'boolean') {
     node.expanded = isExpand
@@ -416,7 +417,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   this.bus.fire('expandNode', node)
 }
 
-export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
+export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: boolean) {
   const node = el.nodeObj
   const beforeRect = el.getBoundingClientRect()
   const beforePosition = {
@@ -444,7 +445,7 @@ export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isEx
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */
-export const refresh = function (this: MindElixirInstance, data?: MindElixirData) {
+export const refresh = function (this: MindElixir, data?: MindElixirData) {
   this.clearSelection()
   if (data) {
     data = JSON.parse(JSON.stringify(data)) as MindElixirData // it shouldn't contanimate the original data

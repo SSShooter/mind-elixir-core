@@ -1,7 +1,7 @@
 // Codegen: regenerate the `MindElixir` class's option + prototype-method field
 // declarations (the `// #region GENERATED` block in src/index.ts) with fully
 // expanded signatures. This keeps the published .d.ts and the API docs showing
-// real types (e.g. `(this: MindElixirInstance, tpcs: Topic[], to: Topic) =>
+// real types (e.g. `(this: MindElixir<M>, tpcs: Topic<M>[], to: Topic<M>) =>
 // Promise<void>`) instead of the DRY indexed-access aliases the class would
 // otherwise carry (`MindElixirMethods['copyNodes']`, `ResolvedOptions['...']`).
 //
@@ -39,7 +39,12 @@ const END = '  // #endregion GENERATED'
 const stripImports = s => s.replace(/import\((?:"[^"]*"|'[^']*')\)\./g, '')
 const inlineAliases = s => s.replace(/\bPathString\b/g, 'string')
 const oneLine = s => s.replace(/\s+/g, ' ').trim()
-const clean = s => oneLine(inlineAliases(stripImports(s)))
+const clean = s => {
+  const text = oneLine(inlineAliases(stripImports(s)))
+  return text
+    .replace(/\b(MindElixir|MindElixirData|NodeObj|NodeObjExport|Topic|Arrow|Theme)<any>/g, '$1<M>')
+    .replace(/\b(MindElixir|MindElixirData|NodeObj|NodeObjExport|Topic|Arrow|Theme)\b(?!<)/g, '$1<M>')
+}
 
 // --- type checker over src -------------------------------------------------
 const configFile = ts.readConfigFile(join(here, 'tsconfig.json'), ts.sys.readFile)

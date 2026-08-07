@@ -1,11 +1,12 @@
+import type MindElixir from '../index'
 import { DOWN, LEFT, RIGHT, SIDE } from '../const'
 import { rmSubline } from '../nodeOperation'
-import type { MindElixirInstance, NodeObj } from '../types'
+import type { NodeObj } from '../types'
 import type { Topic, Wrapper } from '../types/dom'
 import { createExpander } from './dom'
 
 // Judge new added node L or R
-export const judgeDirection = function ({ map, direction }: MindElixirInstance, obj: NodeObj) {
+export const judgeDirection = function ({ map, direction }: MindElixir, obj: NodeObj) {
   if (direction === LEFT) {
     return LEFT
   } else if (direction === RIGHT) {
@@ -26,7 +27,7 @@ export const judgeDirection = function ({ map, direction }: MindElixirInstance, 
   }
 }
 
-export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper: Wrapper) {
+export const addChildDom = function (mei: MindElixir, to: Topic, wrapper: Wrapper) {
   const tpc = wrapper.children[0].children[0]
   const top = to.parentElement
   if (top.classList.contains('me-parent')) {

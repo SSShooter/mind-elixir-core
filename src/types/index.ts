@@ -63,7 +63,7 @@ export type ThemeCssVar = {
  *
  * @public
  */
-export type Theme = {
+export type Theme<M = any> = {
   name: string
   /**
    * Hint for developers to use the correct theme
@@ -74,8 +74,8 @@ export type Theme = {
    */
   palette: string[]
   cssVar?: Partial<ThemeCssVar>
-  generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => string
-  generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => string
+  generateMainBranch?: (this: MindElixir<M>, params: MainLineParams) => string
+  generateSubBranch?: (this: MindElixir<M>, params: SubLineParams) => string
 }
 
 export type Alignment = 'root' | 'nodes'
@@ -85,22 +85,15 @@ export interface KeypressOptions {
 }
 
 /**
- * The MindElixir instance
- *
- * The instance shape is owned by the `MindElixir` class; this type simply
- * derives from it so existing `MindElixirInstance` references keep working.
- *
- * @public
+ * The MindElixir instance type is the exported `MindElixir` class itself.
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type MindElixirInstance = InstanceType<typeof MindElixir>
 type PathString = string
 /**
  * The MindElixir options
  *
  * @public
  */
-export interface Options {
+export interface Options<M = any> {
   el: string | HTMLElement
   direction?: 0 | 1 | 2 | 3
   /**
@@ -124,9 +117,9 @@ export interface Options {
    * Compact mode. If true, distance fields will be controlled to a small value.
    */
   compact?: boolean
-  generateMainBranch?: (this: MindElixirInstance, params: MainLineParams) => PathString
-  generateSubBranch?: (this: MindElixirInstance, params: SubLineParams) => PathString
-  theme?: Theme
+  generateMainBranch?: (this: MindElixir<M>, params: MainLineParams) => PathString
+  generateSubBranch?: (this: MindElixir<M>, params: SubLineParams) => PathString
+  theme?: Theme<M>
   selectionContainer?: string | HTMLElement
   alignment?: Alignment
   scaleSensitivity?: number
@@ -138,7 +131,7 @@ export interface Options {
    * If not provided, markdown will be disabled
    * @default undefined
    */
-  markdown?: (markdown: string, obj: NodeObj | Arrow | Summary) => string
+  markdown?: (markdown: string, obj: NodeObj<M> | Arrow<M> | Summary) => string
   /**
    * Image proxy function to handle image URLs, mainly used to solve CORS issues
    * If provided, all image URLs will be processed through this function before setting to img src
@@ -179,7 +172,7 @@ export interface TagObj {
  *
  * @public
  */
-export interface NodeObj<M = unknown> {
+export interface NodeObj<M = any> {
   topic: string
   id: Uid
   style?: Partial<{
@@ -192,7 +185,7 @@ export interface NodeObj<M = unknown> {
     border: string
     textDecoration: string
   }>
-  children?: NodeObj[]
+  children?: NodeObj<M>[]
   tags?: (string | TagObj)[]
   icons?: string[]
   hyperLink?: string
@@ -213,7 +206,7 @@ export interface NodeObj<M = unknown> {
    *
    * the Root node has no parent!
    */
-  parent?: NodeObj
+  parent?: NodeObj<M>
   /**
    * Render custom HTML in the node.
    *
@@ -231,19 +224,19 @@ export interface NodeObj<M = unknown> {
   // TODO: checkbox
   // checkbox?: boolean | undefined
 }
-export type NodeObjExport = Omit<NodeObj, 'parent'>
+export type NodeObjExport<M = any> = Omit<NodeObj<M>, 'parent'>
 
 /**
  * The exported data of MindElixir
  *
  * @public
  */
-export type MindElixirData = {
-  nodeData: NodeObj
-  arrows?: Arrow[]
+export type MindElixirData<M = any> = {
+  nodeData: NodeObj<M>
+  arrows?: Arrow<M>[]
   summaries?: Summary[]
   direction?: 0 | 1 | 2 | 3
-  theme?: Theme
+  theme?: Theme<M>
   compact?: boolean
   /**
    * Extension fields to store arbitrary metadata for the map.

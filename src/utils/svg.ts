@@ -1,7 +1,7 @@
+import type MindElixir from '../index'
 import { setAttributes } from '.'
 import type { Arrow } from '../arrow'
 import type { Summary } from '../summary'
-import type { MindElixirInstance } from '../types'
 import type { ArrowSvg } from '../types/dom'
 import { selectText } from './dom'
 
@@ -173,7 +173,7 @@ export const createArrowGroup = function (
   return g
 }
 
-export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivElement, node: Summary | Arrow) {
+export const editSvgText = function (mei: MindElixir, textEl: HTMLDivElement, node: Summary | Arrow) {
   if (!textEl) return
 
   // textEl is now a div element directly

@@ -1,6 +1,7 @@
+import type MindElixir from '../index'
 import { stringifyData } from '../interact'
 import type { Topic } from '../types/dom'
-import type { KeypressOptions, MindElixirInstance, NodeObj } from '../types/index'
+import type { KeypressOptions, NodeObj } from '../types/index'
 import { DirectionClass } from '../types/index'
 import { setExpand, unionTopics } from '../utils'
 
@@ -32,34 +33,34 @@ export const getWheelZoomScaleDelta = ({ deltaMode, deltaY, scaleSensitivity, vi
   return Math.max(-scaleSensitivity, Math.min(scaleSensitivity, rawScaleDelta))
 }
 
-const applyScaleDelta = (mei: MindElixirInstance, scaleDelta: number, offset?: ZoomOffset) => {
+const applyScaleDelta = (mei: MindElixir, scaleDelta: number, offset?: ZoomOffset) => {
   if (scaleDelta === 0) return
   mei.scale(mei.scaleVal + scaleDelta, offset)
 }
 
-const selectRootSide = (mei: MindElixirInstance, direction: DirectionClass) => {
+const selectRootSide = (mei: MindElixir, direction: DirectionClass) => {
   const tpcs = mei.map.querySelectorAll(`.${direction}>.me-wrapper>.me-parent>.me-tpc`)
   if (tpcs.length === 0) return
   mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
 }
-const selectRoot = (mei: MindElixirInstance) => {
+const selectRoot = (mei: MindElixir) => {
   mei.selectNode(mei.map.querySelector('me-root>.me-tpc') as Topic)
 }
-const selectParent = function (mei: MindElixirInstance, currentNode: Topic) {
+const selectParent = function (mei: MindElixir, currentNode: Topic) {
   const parent = currentNode.parentElement.parentElement.parentElement.previousSibling
   if (parent) {
     const target = parent.firstChild
     mei.selectNode(target)
   }
 }
-const selectFirstChild = function (mei: MindElixirInstance, currentNode: Topic) {
+const selectFirstChild = function (mei: MindElixir, currentNode: Topic) {
   const children = currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
     const target = children.firstChild.firstChild.firstChild
     mei.selectNode(target)
   }
 }
-const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionClass) {
+const handleLeftRight = function (mei: MindElixir, direction: DirectionClass) {
   const current = mei.currentNode || mei.currentNodes?.[0]
   if (!current) return
   const nodeObj = current.nodeObj
@@ -76,7 +77,7 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionC
     }
   }
 }
-const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' | 'next') {
+const handlePrevNext = function (mei: MindElixir, direction: 'previous' | 'next') {
   const current = mei.currentNode
   if (!current) return
   const nodeObj = current.nodeObj
@@ -91,7 +92,7 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
   }
 }
 // top-down layout: Up selects parent, Down selects first child
-const selectDownParent = function (mei: MindElixirInstance, current: Topic) {
+const selectDownParent = function (mei: MindElixir, current: Topic) {
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) return
   if (!nodeObj.parent.parent) {
@@ -100,7 +101,7 @@ const selectDownParent = function (mei: MindElixirInstance, current: Topic) {
     selectParent(mei, current)
   }
 }
-const selectDownChild = function (mei: MindElixirInstance, current: Topic) {
+const selectDownChild = function (mei: MindElixir, current: Topic) {
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) {
     const tpcs = mei.map.querySelectorAll('.down>.me-wrapper>.me-parent>.me-tpc')
@@ -110,12 +111,12 @@ const selectDownChild = function (mei: MindElixirInstance, current: Topic) {
     selectFirstChild(mei, current)
   }
 }
-export const handleKeypressZoom = function (mei: MindElixirInstance, direction: 'in' | 'out', offset?: ZoomOffset) {
+export const handleKeypressZoom = function (mei: MindElixir, direction: 'in' | 'out', offset?: ZoomOffset) {
   const scaleDelta = direction === 'in' ? mei.scaleSensitivity : -mei.scaleSensitivity
   applyScaleDelta(mei, scaleDelta, offset)
 }
 
-export const handleWheelZoom = (mei: MindElixirInstance, e: WheelEvent) => {
+export const handleWheelZoom = (mei: MindElixir, e: WheelEvent) => {
   const scaleDelta = getWheelZoomScaleDelta({
     deltaMode: e.deltaMode,
     deltaY: e.deltaY,
@@ -126,7 +127,7 @@ export const handleWheelZoom = (mei: MindElixirInstance, e: WheelEvent) => {
   applyScaleDelta(mei, scaleDelta, { x: e.clientX, y: e.clientY })
 }
 
-export default function (mind: MindElixirInstance, options: boolean | KeypressOptions) {
+export default function (mind: MindElixir, options: boolean | KeypressOptions) {
   options = options === true ? {} : options
   const handleRemove = () => {
     if (mind.currentArrow) mind.removeArrow()

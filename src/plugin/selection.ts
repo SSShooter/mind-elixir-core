@@ -1,8 +1,9 @@
-import type { MindElixirInstance, Topic } from '..'
+import type MindElixir from '../index'
+import type { Topic } from '..'
 import type { Behaviour } from '../viselect/src'
 import SelectionArea from '../viselect/src'
 
-export default function (mei: MindElixirInstance) {
+export default function (mei: MindElixir) {
   const triggers: Behaviour['triggers'] = mei.mouseSelectionButton === 2 ? [2] : [0]
   const selection = new SelectionArea({
     selectables: ['.map-container .me-tpc'],

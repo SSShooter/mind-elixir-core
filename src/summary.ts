@@ -1,4 +1,5 @@
-import type { MindElixirInstance, SummarySvg, Topic } from '.'
+import type MindElixir from './index'
+import type { SummarySvg, Topic } from '.'
 import { DirectionClass } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { directionOf } from './utils/dom'
@@ -120,7 +121,7 @@ const getWrapper = (tpc: Topic) => tpc.parentElement.parentElement
  * Remove a summary from the data and the DOM without firing any event.
  * Used by the render phase, which must not produce undo history.
  */
-const detachSummary = function (mei: MindElixirInstance, id: string) {
+const detachSummary = function (mei: MindElixir, id: string) {
   const index = mei.summaries.findIndex(summary => summary.id === id)
   if (index === -1) return false
   mei.summaries.splice(index, 1)
@@ -129,7 +130,7 @@ const detachSummary = function (mei: MindElixirInstance, id: string) {
   return true
 }
 
-const getDirection = function (mei: MindElixirInstance, { parent, start }: Summary) {
+const getDirection = function (mei: MindElixir, { parent, start }: Summary) {
   const parentEl = mei.findEle(parent)
   const parentObj = parentEl.nodeObj
   let side: DirectionClass
@@ -141,7 +142,7 @@ const getDirection = function (mei: MindElixirInstance, { parent, start }: Summa
   return side
 }
 
-const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
+const drawSummary = function (mei: MindElixir, summary: Summary) {
   const { id, label: summaryText, parent, start, end, style } = summary
   const { nodes, theme, summarySvg } = mei
   const parentEl = mei.findEle(parent)
@@ -209,7 +210,7 @@ const drawSummary = function (mei: MindElixirInstance, summary: Summary) {
   return group
 }
 
-export const createSummary = function (this: MindElixirInstance, options: SummaryOptions = {}) {
+export const createSummary = function (this: MindElixir, options: SummaryOptions = {}) {
   if (!this.currentNodes) return
   const { currentNodes: nodes, summaries, bus } = this
   const { parent, start, end } = calcRange(nodes)
@@ -223,7 +224,7 @@ export const createSummary = function (this: MindElixirInstance, options: Summar
   })
 }
 
-export const createSummaryFrom = function (this: MindElixirInstance, summary: Omit<Summary, 'id'>) {
+export const createSummaryFrom = function (this: MindElixir, summary: Omit<Summary, 'id'>) {
   // now I know the goodness of overloading
   const id = generateUUID()
   const newSummary = { ...summary, id }
@@ -235,7 +236,7 @@ export const createSummaryFrom = function (this: MindElixirInstance, summary: Om
   })
 }
 
-export const removeSummary = function (this: MindElixirInstance, id: string) {
+export const removeSummary = function (this: MindElixir, id: string) {
   const target = this.summaries.find(summary => summary.id === id)
   if (!target || !detachSummary(this, id)) return
   this.bus.fire('operation', {
@@ -244,7 +245,7 @@ export const removeSummary = function (this: MindElixirInstance, id: string) {
   })
 }
 
-export const selectSummary = function (this: MindElixirInstance, el: SummarySvg) {
+export const selectSummary = function (this: MindElixir, el: SummarySvg) {
   const label = el.labelEl
   if (label) {
     label.classList.add('selected')
@@ -253,13 +254,13 @@ export const selectSummary = function (this: MindElixirInstance, el: SummarySvg)
   this.bus.fire('selectSummary', el.summaryObj)
 }
 
-export const unselectSummary = function (this: MindElixirInstance) {
+export const unselectSummary = function (this: MindElixir) {
   this.currentSummary?.labelEl?.classList.remove('selected')
   this.currentSummary = null
   this.bus.fire('unselectSummary')
 }
 
-export const renderSummary = function (this: MindElixirInstance) {
+export const renderSummary = function (this: MindElixir) {
   this.summarySvg.innerHTML = ''
   const staleIds: string[] = []
   this.summaries.forEach(summary => {
@@ -274,7 +275,7 @@ export const renderSummary = function (this: MindElixirInstance) {
   this.nodes.insertAdjacentElement('beforeend', this.summarySvg)
 }
 
-export const editSummary = function (this: MindElixirInstance, el: SummarySvg) {
+export const editSummary = function (this: MindElixir, el: SummarySvg) {
   if (!el) return
   if (!el.labelEl) return
   editSvgText(this, el.labelEl, el.summaryObj)

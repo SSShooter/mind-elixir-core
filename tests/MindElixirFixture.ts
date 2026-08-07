@@ -1,16 +1,16 @@
 import { type Page, type Locator, expect } from '@playwright/test'
-import type { MindElixirCtor, MindElixirData, MindElixirInstance, Options } from '../src'
+import type { MindElixirData, Options } from '../src'
 import type MindElixir from '../src'
 interface Window {
-  m: MindElixirInstance
-  MindElixir: MindElixirCtor
+  m: MindElixir
+  MindElixir: typeof MindElixir
   E: typeof MindElixir.E
   [key: string]: any
 }
 declare let window: Window
 
 export class MindElixirFixture {
-  // private m: MindElixirInstance
+  // private m: MindElixir
 
   constructor(public readonly page: Page) {
     //
@@ -39,7 +39,7 @@ export class MindElixirFixture {
     )
   }
   async getInstance(el = '#map') {
-    const instanceHandle = await this.page.evaluateHandle(el => Promise.resolve(window[el] as MindElixirInstance), el)
+    const instanceHandle = await this.page.evaluateHandle(el => Promise.resolve(window[el] as MindElixir), el)
     return instanceHandle
   }
   async getData(el = '#map') {

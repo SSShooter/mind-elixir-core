@@ -1,5 +1,5 @@
+import type MindElixir from '../index'
 import type { MindElixirData, NodeObj, OperationType } from '../index'
-import { type MindElixirInstance } from '../index'
 import type { Operation } from '../utils/pubsub'
 
 type History = {
@@ -40,7 +40,7 @@ const calcCurrentTarget = function (operation: Operation): History['currentTarge
   }
 }
 
-export default function (mei: MindElixirInstance) {
+export default function (mei: MindElixir) {
   let history = [] as History[]
   let currentIndex = -1
   let current = mei.getData()

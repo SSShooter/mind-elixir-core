@@ -1,6 +1,6 @@
+import type MindElixir from './index'
 import type { MainLineParams, SubLineParams } from './utils/generateBranch'
 import { DirectionClass } from './types/index'
-import type { MindElixirInstance } from './types/index'
 
 // 1. Markmap-style (一直保持下划线)
 // 根节点到一级节点、以及各级节点之间，均是从父节点的底部连接到子节点的底部，并带有一条贯穿子节点的下划线
@@ -25,7 +25,7 @@ export function markmapMain({ pT, pL, pW, pH, cT, cL, cW, cH, direction }: MainL
   return `M ${x1} ${y1} C ${ctrlX} ${y1} ${ctrlX} ${y2} ${x2} ${y2} H ${end}`
 }
 
-export function markmapSub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+export function markmapSub(this: MindElixir, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   const y1 = pT + pH // 父节点从底部下划线末端出发
   const y2 = cT + cH // 连接到子节点底部下划线
 
@@ -61,7 +61,7 @@ export function straightMain({ pT, pL, pW, pH, cT, cL, cW, cH, direction }: Main
   return `M ${x1} ${y1} H ${midX} V ${y2} H ${x2}`
 }
 
-export function straightSub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction }: SubLineParams) {
+export function straightSub(this: MindElixir, { pT, pL, pW, pH, cT, cL, cW, cH, direction }: SubLineParams) {
   const y1 = pT + pH / 2
   const y2 = cT + cH / 2
   let x1, x2
@@ -94,7 +94,7 @@ export function straightUnderlineMain({ pT, pL, pW, pH, cT, cL, cW, cH, directio
   return `M ${x1} ${y1} H ${midX} V ${y2} H ${x2} H ${end}`
 }
 
-export function straightUnderlineSub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction }: SubLineParams) {
+export function straightUnderlineSub(this: MindElixir, { pT, pL, pW, pH, cT, cL, cW, cH, direction }: SubLineParams) {
   const y1 = pT + pH
   const y2 = cT + cH
   let x1, x2, end

@@ -1,5 +1,5 @@
+import type MindElixir from '../index'
 import type { Topic } from '../types/dom'
-import type { MindElixirInstance } from '../types'
 import { setAttributes } from '../utils'
 import { getOffsetLT, isTopic } from '../utils'
 
@@ -76,7 +76,7 @@ function generateSvgTextUsingForeignObject(tpc: HTMLElement, tpcStyle: CSSStyleD
   return foreignObject
 }
 
-function createElBox(mei: MindElixirInstance, tpc: Topic) {
+function createElBox(mei: MindElixir, tpc: Topic) {
   const tpcStyle = getComputedStyle(tpc)
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, tpc)
 
@@ -94,7 +94,7 @@ function createElBox(mei: MindElixirInstance, tpc: Topic) {
   })
   return bg
 }
-function convertDivToSvg(mei: MindElixirInstance, tpc: HTMLElement, useForeignObject = false) {
+function convertDivToSvg(mei: MindElixir, tpc: HTMLElement, useForeignObject = false) {
   const tpcStyle = getComputedStyle(tpc)
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, tpc)
 
@@ -120,7 +120,7 @@ function convertDivToSvg(mei: MindElixirInstance, tpc: HTMLElement, useForeignOb
   return g
 }
 
-function convertAToSvg(mei: MindElixirInstance, a: HTMLAnchorElement) {
+function convertAToSvg(mei: MindElixir, a: HTMLAnchorElement) {
   const aStyle = getComputedStyle(a)
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, a)
   const svgA = document.createElementNS(ns, 'a')
@@ -140,7 +140,7 @@ function convertAToSvg(mei: MindElixirInstance, a: HTMLAnchorElement) {
   return svgA
 }
 
-function convertImgToSvg(mei: MindElixirInstance, a: HTMLImageElement) {
+function convertImgToSvg(mei: MindElixir, a: HTMLImageElement) {
   const aStyle = getComputedStyle(a)
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, a)
   const svgI = document.createElementNS(ns, 'image')
@@ -158,7 +158,7 @@ const padding = 100
 
 const head = `<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">`
 
-const generateSvg = (mei: MindElixirInstance, noForeignObject = false) => {
+const generateSvg = (mei: MindElixir, noForeignObject = false) => {
   const mapDiv = mei.nodes
   const height = mapDiv.offsetHeight + padding * 2
   const width = mapDiv.offsetWidth + padding * 2
@@ -240,7 +240,7 @@ function blobToUrl(blob: Blob): Promise<string> {
  * Use modern-screenshot library instead with domToSvg(mind.nodes, options).
  * See: https://github.com/SSShooter/mind-elixir-core#export-as-a-image
  */
-export const exportSvg = function (this: MindElixirInstance, noForeignObject = false, injectCss?: string) {
+export const exportSvg = function (this: MindElixir, noForeignObject = false, injectCss?: string) {
   const svgEl = generateSvg(this, noForeignObject)
   const svgString = generateSvgStr(svgEl, injectCss)
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
@@ -252,7 +252,7 @@ export const exportSvg = function (this: MindElixirInstance, noForeignObject = f
  * Use modern-screenshot library instead with domToPng(mind.nodes, options).
  * See: https://github.com/SSShooter/mind-elixir-core#export-as-a-image
  */
-export const exportPng = async function (this: MindElixirInstance, noForeignObject = false, injectCss?: string): Promise<Blob | null> {
+export const exportPng = async function (this: MindElixir, noForeignObject = false, injectCss?: string): Promise<Blob | null> {
   const blob = this.exportSvg(noForeignObject, injectCss)
   // use base64 to bypass canvas taint
   const url = await blobToUrl(blob)

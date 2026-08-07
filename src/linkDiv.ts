@@ -1,8 +1,9 @@
+import type MindElixir from './index'
 import { createPath, createLinkSvg } from './utils/svg'
 import { getOffsetLT } from './utils/index'
 import { directionOf } from './utils/dom'
 import type { Wrapper, Topic } from './types/dom'
-import type { DirectionClass, MindElixirInstance } from './types/index'
+import type { DirectionClass } from './types/index'
 
 /**
  * Link nodes with svg,
@@ -15,7 +16,7 @@ import type { DirectionClass, MindElixirInstance } from './types/index'
  * 4. generate summary
  * @param mainNode regenerate sublink of the specific main node
  */
-const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
+const linkDiv = function (this: MindElixir, mainNode?: Wrapper) {
   console.time('linkDiv')
 
   const root = this.map.querySelector('me-root') as HTMLElement
@@ -77,7 +78,7 @@ const linkDiv = function (this: MindElixirInstance, mainNode?: Wrapper) {
 // core function of generate subLines
 
 const traverseChildren = function (
-  mei: MindElixirInstance,
+  mei: MindElixir,
   svgContainer: SVGSVGElement,
   branchColor: string,
   wrapper: Wrapper,

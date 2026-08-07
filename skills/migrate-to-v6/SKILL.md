@@ -73,7 +73,18 @@ Update operation listeners as follows:
 + }
 ```
 
-## 5. lite build
+## 5. TypeScript generics (breaking change)
+
+`MindElixirInstance` and `MindElixirCtor` were removed. Use `MindElixir<M>` directly, and pass custom metadata types through related types:
+
+```diff
+- const mind: MindElixirInstance = new MindElixir(options)
++ const mind = new MindElixir<Metadata>(options)
+```
+
+For constructor annotations, use `typeof MindElixir` instead of `MindElixirCtor`.
+
+## 6. lite build
 
 If you reference the lite build file directly:
 

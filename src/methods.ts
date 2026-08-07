@@ -1,4 +1,5 @@
-import type { MindElixirInstance, MindElixirData } from './index'
+import type MindElixir from './index'
+import type { MindElixirData } from './index'
 import linkDiv from './linkDiv'
 import contextMenu from './plugin/contextMenu'
 import keypressInit from './plugin/keypress'
@@ -26,8 +27,8 @@ type NodeOperation = {
 function beforeHook<T extends Operations>(
   fn: OperationMap[T],
   fnName: T
-): (this: MindElixirInstance, ...args: Parameters<OperationMap[T]>) => Promise<void> {
-  return async function (this: MindElixirInstance, ...args: Parameters<OperationMap[T]>) {
+): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<void> {
+  return async function (this: MindElixir, ...args: Parameters<OperationMap[T]>) {
     const hook = this.before[fnName]
     if (hook) {
       const res = await hook.apply(this, args)
@@ -71,7 +72,7 @@ const methods = {
   ...arrow,
   ...summary,
   ...exportImage,
-  init(this: MindElixirInstance, data: MindElixirData) {
+  init(this: MindElixir, data: MindElixirData) {
     data = JSON.parse(JSON.stringify(data))
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
@@ -105,7 +106,7 @@ const methods = {
     this.linkDiv()
     this.toCenter()
   },
-  destroy(this: Partial<MindElixirInstance>) {
+  destroy(this: Partial<MindElixir>) {
     this.disposable!.forEach(fn => fn())
     if (this.el) this.el.innerHTML = ''
     this.el = undefined
@@ -135,7 +136,7 @@ const methods = {
    * @public
    * @param {boolean} enable
    */
-  enableMobileMultiSelect(this: MindElixirInstance, enable: boolean) {
+  enableMobileMultiSelect(this: MindElixir, enable: boolean) {
     this.mobileMultiSelect = enable
   },
 }

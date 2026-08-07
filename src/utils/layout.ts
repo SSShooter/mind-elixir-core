@@ -1,10 +1,11 @@
+import type MindElixir from '../index'
 import { LEFT, RIGHT, SIDE, DOWN } from '../const'
 import type { Children } from '../types/dom'
-import { DirectionClass, type MindElixirInstance, type NodeObj } from '../types/index'
+import { DirectionClass, type NodeObj } from '../types/index'
 import { createMain, shapeTpc } from './dom'
 
 // Set main nodes' direction and invoke layoutChildren()
-export const layout = function (this: MindElixirInstance) {
+export const layout = function (this: MindElixir) {
   console.time('layout')
   this.nodes.innerHTML = ''
   // toggle the top-down layout class on the container
@@ -41,7 +42,7 @@ export const layout = function (this: MindElixirInstance) {
   console.timeEnd('layout')
 }
 
-const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root: HTMLElement) {
+const layoutMainNode = function (mei: MindElixir, data: NodeObj[], root: HTMLElement) {
   // Top-down layout: root on top, all main nodes in a single container below
   if (mei.direction === DOWN) {
     const downPart = createMain(DirectionClass.DOWN)
@@ -83,7 +84,7 @@ const layoutMainNode = function (mei: MindElixirInstance, data: NodeObj[], root:
   mei.nodes.appendChild(mei.labelContainer)
 }
 
-export const layoutChildren = function (mei: MindElixirInstance, data: NodeObj[]) {
+export const layoutChildren = function (mei: MindElixir, data: NodeObj[]) {
   const chldr = document.createElement('div') as unknown as Children
   chldr.className = 'me-children'
   for (let i = 0; i < data.length; i++) {

@@ -1,10 +1,10 @@
+import type MindElixir from './index'
 import { createNodeDragState, handleNodeDragStart, handleNodeDragMove, handleNodeDragEnd, handleNodeDragCancel } from './plugin/nodeDraggable'
 import { handleWheelZoom } from './plugin/keypress'
 import type { Expander, ArrowSvg, Topic, SummarySvg } from './types/dom'
-import type { MindElixirInstance } from './types/index'
 import { getDistance, isTopic, on } from './utils'
 
-export default function (mind: MindElixirInstance) {
+export default function (mind: MindElixir) {
   const { panHelper, container } = mind
   let nodeToDeselect: Topic | null = null
   mind.spacePressed = false

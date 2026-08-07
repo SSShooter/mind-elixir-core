@@ -1,5 +1,6 @@
+import type MindElixir from '../index'
 import type { Topic } from '../types/dom'
-import type { NodeObj, MindElixirInstance, NodeObjExport } from '../types/index'
+import type { NodeObj, NodeObjExport } from '../types/index'
 
 export function encodeHTML(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
@@ -100,7 +101,7 @@ export function generateUUID(): string {
   return (new Date().getTime().toString(16) + Math.random().toString(16).substring(2)).substring(2, 18)
 }
 
-export const generateNewObj = function (this: MindElixirInstance): NodeObjExport {
+export const generateNewObj = function (this: MindElixir): NodeObjExport {
   const id = generateUUID()
   return {
     topic: this.newTopicName,

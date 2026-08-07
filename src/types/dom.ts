@@ -29,8 +29,8 @@ export interface Children extends HTMLElement {
   previousSibling: Parent
 }
 
-export interface Topic extends HTMLElement {
-  nodeObj: NodeObj
+export interface Topic<M = any> extends HTMLElement {
+  nodeObj: NodeObj<M>
   parentNode: Parent
   parentElement: Parent
   offsetParent: Parent

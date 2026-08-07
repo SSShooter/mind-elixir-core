@@ -1,4 +1,4 @@
-import type { MindElixirInstance } from '../types/index'
+import type MindElixir from '../index'
 import { getTranslate } from '../utils/index'
 import side from '../icons/side.svg?raw'
 import left from '../icons/left.svg?raw'
@@ -26,7 +26,7 @@ const createButton = (id: string, name: string) => {
   return button
 }
 
-function createToolBarRBContainer(mind: MindElixirInstance) {
+function createToolBarRBContainer(mind: MindElixir) {
   const toolBarRBContainer = document.createElement('div')
   const fc = createButton('fullscreen', 'full')
   const gc = createButton('toCenter', 'living')
@@ -105,7 +105,7 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
   }
   return toolBarRBContainer
 }
-function createToolBarLTContainer(mind: MindElixirInstance) {
+function createToolBarLTContainer(mind: MindElixir) {
   const toolBarLTContainer = document.createElement('div')
   const l = createButton('tbltl', 'left')
   const r = createButton('tbltr', 'right')
@@ -127,7 +127,7 @@ function createToolBarLTContainer(mind: MindElixirInstance) {
   return toolBarLTContainer
 }
 
-export default function (mind: MindElixirInstance) {
+export default function (mind: MindElixir) {
   mind.container.append(createToolBarRBContainer(mind))
   mind.container.append(createToolBarLTContainer(mind))
 }

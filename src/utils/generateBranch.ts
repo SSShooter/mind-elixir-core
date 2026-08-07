@@ -1,4 +1,4 @@
-import type { MindElixirInstance } from '..'
+import type MindElixir from '../index'
 import { DirectionClass } from '../types/index'
 
 export interface MainLineParams {
@@ -68,7 +68,7 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 
-export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+export function sub(this: MindElixir, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   if (direction === DirectionClass.DOWN) {
     // top-down: from parent bottom center to child top center
     const x1 = pL + pW / 2

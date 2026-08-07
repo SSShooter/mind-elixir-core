@@ -1,5 +1,5 @@
+import type MindElixir from '../index'
 import type { Topic } from '../types/dom'
-import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
 import './contextMenu.css'
 import type { ArrowOptions } from '../arrow'
@@ -17,7 +17,7 @@ export type ContextMenuOption = {
   locale?: LangPack
 }
 
-export default function (mind: MindElixirInstance, option: true | ContextMenuOption) {
+export default function (mind: MindElixir, option: true | ContextMenuOption) {
   const defaultOption = {
     focus: true,
     link: true,
