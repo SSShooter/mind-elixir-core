@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>__TITLE__</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.css" />
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: #ffffff; }
+  /* Headless render target: full-bleed, no chrome. SCST reads the inner map
+     bounding box, so the viewport size does not affect the output crop. */
+  #map { width: 100vw; height: 100vh; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<script type="module">
+import MindElixir from 'https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.js'
+
+// ============================================================
+//  Filled by the render script: the MindElixirData JSON goes here.
+// ============================================================
+const mindmapData = __MINDMAP_DATA__
+// ============================================================
+
+const options = {
+  el: '#map',
+  direction: MindElixir.RIGHT, // MindElixir.LEFT / RIGHT
+  toolBar: false,
+  contextMenu: false,
+  keypress: false,
+  mouseSelectionButton: false,
+}
+
+const mind = new MindElixir(options)
+mind.init(mindmapData)
+
+// Signal readiness after the first two layout passes so headless capture
+// never fires before nodes are positioned.
+requestAnimationFrame(() =>
+  requestAnimationFrame(() => {
+    window.__mind = mind
+    window.__ready = true
+  })
+)
+</script>
+</body>
+</html>

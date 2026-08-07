@@ -1,0 +1,49 @@
+{
+  "nodeData": {
+    "topic": "无头思维导图",
+    "id": "root",
+    "expanded": true,
+    "children": [
+      {
+        "topic": "输入来源",
+        "id": "b1",
+        "expanded": true,
+        "children": [
+          { "topic": "大纲 / Markdown", "id": "b1-1" },
+          { "topic": "结构化 JSON", "id": "b1-2" },
+          { "topic": "会议笔记", "id": "b1-3" }
+        ]
+      },
+      {
+        "topic": "渲染流程",
+        "id": "b2",
+        "expanded": true,
+        "children": [
+          { "topic": "生成独立 HTML", "id": "b2-1" },
+          { "topic": "Playwright 无头加载", "id": "b2-2" },
+          { "topic": "SCST exportImage 直出", "id": "b2-3" }
+        ]
+      },
+      {
+        "topic": "输出",
+        "id": "b3",
+        "expanded": true,
+        "children": [
+          { "topic": "PNG 高清", "id": "b3-1" },
+          { "topic": "JPEG / WEBP", "id": "b3-2" }
+        ]
+      }
+    ]
+  },
+  "direction": 1,
+  "theme": {
+    "name": "Latte",
+    "palette": ["#dd7878", "#ea76cb", "#8839ef", "#40a02b", "#209fb5", "#1e66f5"],
+    "cssVar": {
+      "--main-color": "#444446",
+      "--main-bgcolor": "#ffffff",
+      "--color": "#777",
+      "--bgcolor": "#f6f6f6"
+    }
+  }
+}
