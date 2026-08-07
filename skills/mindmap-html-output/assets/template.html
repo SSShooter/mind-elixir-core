@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>__TITLE__</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.css" />
+<style>
+  html, body { margin: 0; height: 100%; }
+  #map { width: 100vw; height: 100vh; }
+  .toolbar {
+    position: fixed; top: 12px; right: 12px; z-index: 1000;
+    display: flex; gap: 8px; background: rgba(255, 255, 255, .92);
+    padding: 8px 10px; border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  .toolbar button {
+    border: none; background: #4c6ef5; color: #fff; padding: 6px 12px;
+    border-radius: 6px; cursor: pointer; font-size: 13px;
+  }
+  .toolbar button.secondary { background: #868e96; }
+  .toolbar button:hover { opacity: .9; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<div class="toolbar">
+  <button id="btn-png">导出 PNG</button>
+  <button id="btn-svg" class="secondary">导出 SVG</button>
+  <button id="btn-json" class="secondary">保存数据</button>
+  <button id="btn-html" class="secondary">导出 HTML</button>
+</div>
+
+<script type="module">
+import MindElixir from 'https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.js'
+
+// ============================================================
+//  编辑这里：把 __MINDMAP_DATA__ 换成你的 MindElixirData JSON
+//  （由 AI 在生成时填入，无需你手动修改）
+// ============================================================
+const mindmapData = __MINDMAP_DATA__
+// ============================================================
+
+const options = {
+  el: '#map',
+  direction: MindElixir.RIGHT, // MindElixir.LEFT / RIGHT
+  toolBar: true,
+  contextMenu: true,
+  keypress: true,
+  // markdown: (text) => yourMarkdownParser(text), // 可选：支持话题内富文本
+}
+
+const mind = new MindElixir(options)
+mind.init(mindmapData)
+
+// ---------- 导出工具 ----------
+function download(blob, filename) {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+document.getElementById('btn-png').onclick = async () => {
+  const blob = await mind.exportPng() // 内置方法，无需额外依赖
+  if (blob) download(blob, 'mindmap.png')
+}
+
+document.getElementById('btn-svg').onclick = () => {
+  const blob = mind.exportSvg()
+  download(blob, 'mindmap.svg')
+}
+
+document.getElementById('btn-json').onclick = () => {
+  const blob = new Blob([mind.getDataString()], { type: 'application/json' })
+  download(blob, 'mindmap.me.json')
+}
+
+// 用当前（可能被编辑过的）数据重建一个独立的 HTML 文件
+document.getElementById('btn-html').onclick = () => {
+  const dataJson = JSON.stringify(mind.getData(), null, 2)
+  download(new Blob([buildHtml(dataJson)], { type: 'text/html' }), 'mindmap.html')
+}
+
+function buildHtml(dataJson) {
+  return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mind Map</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.css" />
+<style>html,body{margin:0;height:100%}#map{width:100vw;height:100vh}</style>
+</head>
+<body>
+<div id="map"></div>
+<script type="module">
+import MindElixir from 'https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.js'
+const mind = new MindElixir({ el: '#map', direction: MindElixir.RIGHT, toolBar: true, contextMenu: true, keypress: true })
+mind.init(${dataJson})
+<\/script>
+</body>
+</html>`
+}
+</script>
+</body>
+</html>
