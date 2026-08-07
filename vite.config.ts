@@ -19,7 +19,7 @@ export default defineConfig({
   plugins: [
     istanbul({
       include: 'src/*',
-      exclude: ['node_modules', 'test/', 'src/plugin/exportImage.ts'],
+      exclude: ['node_modules', 'test/'],
       extension: ['.ts'],
       requireEnv: true,
     }),

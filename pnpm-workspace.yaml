@@ -2,3 +2,5 @@ packages:
   - '.'
 allowBuilds:
   esbuild: true
+minimumReleaseAgeExclude:
+  - '@mind-elixir/export-mindmap@0.1.9'

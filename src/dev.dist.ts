@@ -9,7 +9,6 @@ const options: Options = {
   // direction: MindElixir.LEFT,
   direction: MindElixir.RIGHT,
   // data: MindElixir.new('new topic'),
-  locale: 'en',
   editable: true,
   contextMenu: {
     focus: true,

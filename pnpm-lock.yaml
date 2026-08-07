@@ -23,6 +23,9 @@ importers:
       '@microsoft/api-extractor':
         specifier: ^7.52.13
         version: 7.52.13(@types/node@24.5.2)
+      '@mind-elixir/export-mindmap':
+        specifier: ^0.1.9
+        version: 0.1.9
       '@playwright/test':
         specifier: ^1.58.0
         version: 1.58.0
@@ -35,9 +38,6 @@ importers:
       '@viselect/vanilla':
         specifier: 3.9.0
         version: 3.9.0
-      '@zumer/snapdom':
-        specifier: ^1.9.11
-        version: 1.9.11
       baseline-browser-mapping:
         specifier: ^2.10.21
         version: 2.10.21
@@ -350,6 +350,9 @@ packages:
   '@microsoft/tsdoc@0.15.1':
     resolution: {integrity: sha512-4aErSrCR/On/e5G2hDP0wjooqDdauzEbIq8hIkIe5pXV0rtWJZvdCEKL0ykZxex+IxIwBp0eGeV48hQN07dXtw==}
 
+  '@mind-elixir/export-mindmap@0.1.9':
+    resolution: {integrity: sha512-qwnEQnNbQHlkRiWVXvJNmeSrOh4b8EYg5uuNVnEyV+PDnvTuVP0lS/ubFg/hZ9xXUr1EtOCyUUKdq1q5CT7oYg==}
+
   '@oxc-project/types@0.142.0':
     resolution: {integrity: sha512-7W+2q5AKQVU36fkaryontrHn3YDt1RyUYXatw9i5H8ocYe2sPKSFB6eS8WNPeRKiN1qAWWZUPm7gwFzJGrccqQ==}
 
@@ -628,10 +631,6 @@ packages:
 
   '@viselect/vanilla@3.9.0':
     resolution: {integrity: sha512-E9eBgoi/crJ0SlZMAc+Yst7nU324LZ5LLvcXjzWEcrfllscdpTml2OLOKHC7O8Bbz19OybSLv6VexxnjlJrLxQ==}
-
-  '@zumer/snapdom@1.9.11':
-    resolution: {integrity: sha512-7yEDRCz9AaksPaKEZxH6BlIZ2tpNN0/gI/8coCYgRIYE1ZIDQ8f5KsMPADtupcdj4t3et97+BP9AQYifGOvYdw==}
-    deprecated: Old versions have known fidelity bugs (text re-wrap, width freezing, KaTeX clipping). Upgrade to ^2.22 — drop-in for any 2.x. https://github.com/zumerlab/snapdom/releases
 
   JSONStream@1.3.5:
     resolution: {integrity: sha512-E+iruNOY8VV9s4JEbe1aNEm6MiszPRr/UfcHMz0TQh1BXSxHK+ASV1R6W4HpjBhSeS+54PIsAMCBmwD06LLsqQ==}
@@ -2273,6 +2272,8 @@ snapshots:
 
   '@microsoft/tsdoc@0.15.1': {}
 
+  '@mind-elixir/export-mindmap@0.1.9': {}
+
   '@oxc-project/types@0.142.0': {}
 
   '@playwright/test@1.58.0':
@@ -2446,8 +2447,6 @@ snapshots:
     optional: true
 
   '@viselect/vanilla@3.9.0': {}
-
-  '@zumer/snapdom@1.9.11': {}
 
   JSONStream@1.3.5:
     dependencies:

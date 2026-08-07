@@ -9,7 +9,7 @@ import type { Operation } from './utils/pubsub'
 import 'katex/dist/katex.min.css'
 import katex from 'katex'
 import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
-import { snapdom } from '@zumer/snapdom'
+import { downloadUrl, exportImage } from '@mind-elixir/export-mindmap'
 import type { Tokens } from 'marked'
 import { marked } from 'marked'
 import { md2html } from 'simple-markdown-to-html'
@@ -230,8 +230,8 @@ mind.bus.addListener('selectSummary', summary => {
 })
 
 const dl2 = async () => {
-  const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture.jpg', backgroundColor: mind.theme.cssVar['--bgcolor'] })
+  const url = await exportImage(mind, 'jpeg', { backgroundColor: mind.theme.cssVar['--bgcolor'], watermarkEnabled: false })
+  await downloadUrl(url, 'my-capture.jpg')
 }
 
 window.downloadPng = dl2

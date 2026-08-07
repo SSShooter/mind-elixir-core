@@ -157,8 +157,6 @@ class MindElixir<M = any> {
   // #region GENERATED members — do not edit by hand; run `npm run gen:members`.
   // Resolved constructor options (defaults are applied in the constructor).
   declare direction: 0 | 1 | 2 | 3
-  declare locale: string
-  declare draggable: boolean
   declare editable: boolean
   declare contextMenu: boolean | ContextMenuOption
   declare toolBar: boolean
@@ -184,8 +182,6 @@ class MindElixir<M = any> {
   declare init: (data: MindElixirData<M>) => Error | undefined
   declare destroy: () => void
   declare enableMobileMultiSelect: (enable: boolean) => void
-  declare exportSvg: (noForeignObject?: boolean, injectCss?: string) => Blob
-  declare exportPng: (noForeignObject?: boolean, injectCss?: string) => Promise<Blob | null>
   declare createSummary: (options?: SummaryOptions) => void
   declare createSummaryFrom: (summary: Omit<Summary, "id">) => void
   declare removeSummary: (id: string) => void

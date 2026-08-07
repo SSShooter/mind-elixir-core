@@ -96,14 +96,6 @@ type PathString = string
 export interface Options<M = any> {
   el: string | HTMLElement
   direction?: 0 | 1 | 2 | 3
-  /**
-   * @deprecated Use `contextMenu.locale` instead.
-   */
-  locale?: string
-  /**
-   * @deprecated Use `editable` instead
-   */
-  draggable?: boolean
   editable?: boolean
   contextMenu?: boolean | ContextMenuOption
   toolBar?: boolean

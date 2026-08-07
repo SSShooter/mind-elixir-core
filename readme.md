@@ -108,7 +108,6 @@ npx skills add ssshooter/mind-elixir-core
   - [Markdown Support](#markdown-support)
   - [Operation Guards](#operation-guards)
 - [Export as a Image](#export-as-a-image)
-  - [Deprecated API](#deprecated-api)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
 - [Who's using](#whos-using)
@@ -345,27 +344,23 @@ let mind = new MindElixir({
 
 ## Export as a Image
 
-Install `@zumer/snapdom`, then:
+Install `@mind-elixir/export-mindmap`, then:
 
 ```typescript
-import { snapdom } from '@zumer/snapdom'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 
 const download = async () => {
-  const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture' })
+  // Download directly as PNG / JPEG / WEBP
+  await downloadImage(mind, 'png')
+
+  // Or get a URL for preview / custom handling
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false }) // pass options like this
 }
 ```
 
+> Note: Exports include a Mind Elixir watermark by default. Pass `{ watermarkEnabled: false }` in the options to disable it.
+
 For other export formats and advanced options, see the [Mind Elixir documentation](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images).
-
-### Deprecated API
-
-> ⚠️ **Deprecated**: The `mind.exportSvg()` method is deprecated and will be removed in a future version.
-
-```typescript
-// DEPRECATED - Do not use in new projects
-const svgData = await mind.exportSvg()
-```
 
 ## Theme
 
