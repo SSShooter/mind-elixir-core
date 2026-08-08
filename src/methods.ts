@@ -69,7 +69,7 @@ const methods = {
   ...(nodeOperationHooked as NodeOperation),
   ...arrow,
   ...summary,
-  init(this: MindElixir, data: MindElixirData) {
+  async init(this: MindElixir, data: MindElixirData) {
     if (this.pluginsInitialized) return
 
     data = JSON.parse(JSON.stringify(data))
@@ -89,9 +89,12 @@ const methods = {
     this.arrows = data.arrows || []
     this.summaries = data.summaries || []
     this.tidyArrow()
+    this.container.style.opacity = '0'
     this.layout()
+    await document.fonts.ready
     this.linkDiv()
     this.toCenter()
+    this.container.style.opacity = ''
 
     this.toolBar && toolBar(this)
     if (import.meta.env.MODE !== 'lite') {
