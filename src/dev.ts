@@ -40,19 +40,25 @@ const options: Options = {
   newTopicName: '子节点',
   // mouseSelectionButton: 2,
   editable: true,
-  markdown: (text: string, obj: (NodeObj & { useMd?: boolean }) | (Arrow & { useMd?: boolean }) | (Summary & { useMd?: boolean })) => {
+  markdown: (text: string) => {
     if (!text) return ''
-    // if (!obj.useMd) return text
     try {
-      // Configure marked renderer to add target="_blank" to links
       const renderer = {
         strong(token: Tokens.Strong) {
-          if (token.raw.startsWith('**')) {
-            return `<strong class="asterisk-emphasis">${token.text}</strong>`
-          } else if (token.raw.startsWith('__')) {
-            return `<strong class="underscore-emphasis">${token.text}</strong>`
+          let color = ''
+          let content = token.text
+          if (token.text.startsWith('%:')) {
+            const text = token.text.slice(2)
+            const colonIndex = text.indexOf(':')
+            if (colonIndex > 0) {
+              color = text.slice(0, colonIndex)
+              content = text.slice(colonIndex + 1)
+            }
           }
-          return `<strong>${token.text}</strong>`
+          if (token.raw.startsWith('__')) {
+            return `<strong class="underscore" style="background-color: ${color};">${content}</strong>`
+          }
+          return `<strong class="asterisk" style="color: ${color};">${content}</strong>`
         },
         link(token: Tokens.Link) {
           const href = token.href || ''
@@ -62,23 +68,27 @@ const options: Options = {
         },
       }
 
-      marked.use({ renderer, gfm: true })
-      let html = marked.parse(text) as string
-      // let html = md2html(text)
-
-      // Process KaTeX math expressions
       // Handle display math ($$...$$)
-      html = html.replace(/\$\$([^$]+)\$\$/g, (_, math) => {
-        return katex.renderToString(math.trim(), { displayMode: true })
+      text = text.replace(/\$\$([^$]+)\$\$/g, (_, math) => {
+        return katex.renderToString(math.trim(), {
+          displayMode: true,
+          output: 'html',
+        })
       })
 
       // Handle inline math ($...$)
-      html = html.replace(/\$([^$]+)\$/g, (_, math) => {
-        return katex.renderToString(math.trim(), { displayMode: false })
+      text = text.replace(/\$([^$]+)\$/g, (_, math) => {
+        return katex.renderToString(math.trim(), {
+          displayMode: false,
+          output: 'html',
+        })
       })
 
-      return html.trim().replace(/\n/g, '')
+      marked.use({ renderer, gfm: true })
+      const html = marked(text) as string
+      return html.trim()
     } catch (error) {
+      console.log('md2html error', error)
       return text
     }
   },
@@ -230,7 +240,10 @@ mind.bus.addListener('selectSummary', summary => {
 })
 
 const dl2 = async () => {
-  const url = await exportImage(mind, 'jpeg', { backgroundColor: mind.theme.cssVar['--bgcolor'], watermarkEnabled: false })
+  const url = await exportImage(mind, 'jpeg', {
+    backgroundColor: mind.theme.cssVar['--bgcolor'],
+    watermarkEnabled: false,
+  })
   await downloadUrl(url, 'my-capture.jpg')
 }
 

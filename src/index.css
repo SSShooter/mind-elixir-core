@@ -443,6 +443,12 @@
     p {
       max-width: 200px;
     }
+    /* KaTeX formulas are `white-space: nowrap` and can never wrap,
+       so expand the label to contain them instead of letting them
+       overflow the label boundary */
+    p:has(.katex) {
+      max-width: none;
+    }
     border-radius: 3px;
     padding: var(--topic-padding);
     &[data-type="arrow"] {
