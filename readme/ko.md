@@ -38,7 +38,7 @@
 
 Mind Elixir는 오픈 소스 JavaScript 마인드맵 코어입니다. 원하는 프론트엔드 프레임워크와 함께 사용할 수 있습니다.
 
-특징:
+特效:
 
 - 경량화
 - 고성능
@@ -52,11 +52,24 @@ Mind Elixir는 오픈 소스 JavaScript 마인드맵 코어입니다. 원하는 
 - 효율적인 단축키
 - CSS 변수로 쉽게 노드 스타일링
 
+## AI로 구축
+
+`npx skills add`를 사용하여 프로젝트에 가이드를 설치합니다:
+
+**통합 가이드**:
+
+```bash
+npx skills add ssshooter/mind-elixir-core
+```
+
+![mind elixir skills](./images/skills.jpg)
+
 <details>
 <summary>목차</summary>
 
 - [지금 시작하기](#지금-시작하기)
   - [플레이그라운드](#플레이그라운드)
+- [AI로 구축](#ai로-구축)
 - [문서](#문서)
 - [사용법](#사용법)
   - [설치](#설치)
@@ -65,13 +78,13 @@ Mind Elixir는 오픈 소스 JavaScript 마인드맵 코어입니다. 원하는 
   - [초기화](#초기화)
   - [데이터 구조](#데이터-구조)
   - [이벤트 처리](#이벤트-처리)
-  - [데이터 내보내기와 가져오기](#데이터-내보내기와-가져오기)
-  - [작업 가드](#작업-가드)
+- [데이터 내보내기와 가져오기](#데이터-내보내기와-가져오기)
+- [Markdown 지원](#markdown-지원)
+- [작업 가드](#작업-가드)
 - [이미지로 내보내기](#이미지로-내보내기)
-  - [방법 1](#방법-1)
-  - [방법 2](#방법-2)
 - [테마](#테마)
 - [단축키](#단축키)
+- [Who's using](#whos-using)
 - [생태계](#생태계)
 - [개발](#개발)
 - [감사의 말](#감사의-말)
@@ -82,8 +95,6 @@ Mind Elixir는 오픈 소스 JavaScript 마인드맵 코어입니다. 원하는 
 ## 지금 시작하기
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
-
-https://mind-elixir.com/
 
 ### 플레이그라운드
 
@@ -107,6 +118,7 @@ npm i mind-elixir -S
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 ```
 
 #### 스크립트 태그
@@ -133,17 +145,16 @@ import MindElixir from 'mind-elixir'
 </style>
 ```
 
-**주요 변경사항** 1.0.0 버전부터 `data`는 `options`가 아닌 `init()`에 전달되어야 합니다.
-
 ```javascript
 import MindElixir from 'mind-elixir'
 import { ko } from 'mind-elixir/i18n'
+import 'mind-elixir/style.css'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // or HTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // default true
+  toolBar: true, // default true
   keypress: true, // default true
   overflowHidden: false, // default false
   mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
@@ -159,16 +170,14 @@ let options = {
         },
       },
     ],
-  },
+  }, // default true
   before: {
-    insertSibling(el, obj) {
-      return true
-    },
-    async addChild(el, obj) {
-      await sleep()
+    insertSibling(type, obj) {
       return true
     },
   },
+  // 사용자 정의 markdown 파서 (선택사항)
+  // markdown: (text) => customMarkdownParser(text), // 자체 markdown 파서 함수 제공
 }
 
 let mind = new MindElixir(options)
@@ -255,6 +264,34 @@ mind.init(data)
 mind.refresh(data)
 ```
 
+### Markdown 지원
+
+Mind Elixir는 사용자 정의 markdown 파싱을 지원합니다:
+
+```javascript
+// markdown 비활성화 (기본값)
+let mind = new MindElixir({
+  // markdown 옵션 생략 - markdown 처리 없음
+})
+
+// 사용자 정의 markdown 파서 사용
+let mind = new MindElixir({
+  markdown: text => {
+    // 사용자 정의 markdown 구현
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`(.*?)`/g, '<code>$1</code>')
+  },
+})
+
+// 모든 markdown 라이브러리 사용 (예: marked, markdown-it 등)
+import { marked } from 'marked'
+let mind = new MindElixir({
+  markdown: text => marked(text),
+})
+```
+
 ### 작업 가드
 
 ```javascript
@@ -281,50 +318,23 @@ let mind = new MindElixir({
 
 ## 이미지로 내보내기
 
-### 방법 1
+`@mind-elixir/export-mindmap`을 설치한 후:
 
 ```typescript
-const mind = {
-  /** mind elixir instance */
-}
-const downloadPng = async () => {
-  const blob = await mind.exportPng() // Get a Blob!
-  if (!blob) return
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'filename.png'
-  a.click()
-  URL.revokeObjectURL(url)
-}
-```
-
-### 방법 2
-
-Install `@ssshooter/modern-screenshot`, then:
-
-```typescript
-import { domToPng } from '@ssshooter/modern-screenshot'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 
 const download = async () => {
-  const dataUrl = await domToPng(mind.nodes, {
-    onCloneNode: node => {
-      const n = node as HTMLDivElement
-      n.style.position = ''
-      n.style.top = ''
-      n.style.left = ''
-      n.style.bottom = ''
-      n.style.right = ''
-    },
-    padding: 300,
-    quality: 1,
-  })
-  const link = document.createElement('a')
-  link.download = 'screenshot.png'
-  link.href = dataUrl
-  link.click()
+  // PNG / JPEG / WEBP로 직접 다운로드
+  await downloadImage(mind, 'png')
+
+  // 미리보기 / 사용자 정의 처리를 위한 URL 가져오기
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false }) // 옵션을 이렇게 전달
 }
 ```
+
+> 참고: 내보내기에는 기본적으로 Mind Elixir 워터마크가 포함됩니다. 옵션에서 `{ watermarkEnabled: false }`를 전달하여 비활성화할 수 있습니다.
+
+기타 내보내기 형식과 고급 옵션은 [Mind Elixir 문서](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images)를 참조하세요.
 
 ## 테마
 
@@ -392,10 +402,18 @@ Be aware that Mind Elixir will not observe the change of `prefers-color-scheme`.
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
-- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
-- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
+- [export-mindmap](https://github.com/mind-elixir/plugins/tree/main/packages/export-mindmap)
+- [mindmapcn](https://github.com/ssshooter/mindmapcn)
 
-PR은 언제나 환영입니다!
+PRs are welcome!
+
+## Who's using
+
+PR을 제출하여 여기에 프로젝트를 추가하세요!
+
+- [Mind Elixir App](https://app.mind-elixir.com/)
+- [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
+- [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
 ## 개발
 

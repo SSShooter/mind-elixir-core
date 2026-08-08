@@ -69,6 +69,18 @@ Mind Elixirは、オープンソースのJavaScriptマインドマップコア�
 
 [v5 破壊的変更](https://github.com/SSShooter/mind-elixir-core/wiki/Breaking-Change#500)
 
+## AIで構築
+
+`npx skills add`を使用してプロジェクトにガイドをインストールします：
+
+**インテグレーションガイド**：
+
+```bash
+npx skills add ssshooter/mind-elixir-core
+```
+
+![mind elixir skills](./images/skills.jpg)
+
 <details>
 <summary>目次</summary>
 
@@ -77,6 +89,7 @@ Mind Elixirは、オープンソースのJavaScriptマインドマップコア�
   - [⚡ **パフォーマンスとアーキテクチャ**](#-パフォーマンスとアーキテクチャ)
   - [🛠️ **コア機能**](#️-コア機能)
   - [📤 **エクスポートとカスタマイゼーション**](#-エクスポートとカスタマイゼーション)
+- [AIで構築](#aiで構築)
 - [デモを試す](#デモを試す)
   - [プレイグラウンド](#プレイグラウンド)
 - [ドキュメント](#ドキュメント)
@@ -91,7 +104,6 @@ Mind Elixirは、オープンソースのJavaScriptマインドマップコア�
   - [Markdown サポート](#markdown-サポート)
   - [操作ガード](#操作ガード)
 - [画像としてエクスポート](#画像としてエクスポート)
-  - [非推奨API](#非推奨api)
 - [テーマ](#テーマ)
 - [ショートカット](#ショートカット)
 - [誰が使っているか](#誰が使っているか)
@@ -105,8 +117,6 @@ Mind Elixirは、オープンソースのJavaScriptマインドマップコア�
 ## デモを試す
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
-
-https://mind-elixir.com/
 
 ### プレイグラウンド
 
@@ -130,6 +140,7 @@ npm i mind-elixir -S
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 ```
 
 #### スクリプトタグ
@@ -156,18 +167,15 @@ CSSファイルに追加：
 </style>
 ```
 
-**重要な変更** バージョン1.0.0以降、`data`は`options`ではなく`init()`に渡す必要があります。
-
 ```javascript
 import MindElixir from 'mind-elixir'
 import { ja } from 'mind-elixir/i18n'
+import 'mind-elixir/style.css'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // またはHTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // デフォルトはtrue
-  contextMenu: true, // デフォルトはtrue
   toolBar: true, // デフォルトはtrue
   keypress: true, // デフォルトはtrue
   overflowHidden: false, // デフォルトはfalse
@@ -178,22 +186,20 @@ let options = {
     link: true,
     extend: [
       {
-        name: 'ノード編集',
+        name: 'Node edit',
         onclick: () => {
-          alert('拡張メニュー')
+          alert('extend menu')
         },
       },
     ],
-  },
+  }, // デフォルトはtrue
   before: {
-    insertSibling(el, obj) {
-      return true
-    },
-    async addChild(el, obj) {
-      await sleep()
+    insertSibling(type, obj) {
       return true
     },
   },
+  // カスタムmarkdownパーサー（オプション）
+  // markdown: (text) => customMarkdownParser(text), // 独自のmarkdownパーサー関数を提供
 }
 
 let mind = new MindElixir(options)
@@ -333,27 +339,23 @@ let mind = new MindElixir({
 
 ## 画像としてエクスポート
 
-`@zumer/snapdom`をインストールし、次に実行します：
+`@mind-elixir/export-mindmap`をインストールし、次に実行します：
 
 ```typescript
-import { snapdom } from '@zumer/snapdom'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 
 const download = async () => {
-  const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture' })
+  // PNG / JPEG / WEBP として直接ダウンロード
+  await downloadImage(mind, 'png')
+
+  // またはプレビュー/カスタム処理用のURLを取得
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false }) // このようにオプションを渡す
 }
 ```
 
+> 注意：デフォルトでエクスポートにはMind Elixirの透かしが含まれます。オプションに `{ watermarkEnabled: false }` を渡すと無効にできます。
+
 他のエクスポート形式と詳細なオプションについては、[Mind Elixirドキュメント](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images)を参照してください。
-
-### 非推奨API
-
-> ⚠️ **非推奨**：`mind.exportSvg()`メソッドは非推奨であり、将来のバージョンで削除される予定です。
-
-```typescript
-// 非推奨 - 新規プロジェクトでは使用しないでください
-const svgData = await mind.exportSvg()
-```
 
 ## テーマ
 
@@ -400,17 +402,21 @@ Mind Elixirは`prefers-color-scheme`の変更を監視しません。スキー�
 
 ## 誰が使っているか
 
-- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
+歓迎：PRを送ってあなたのプロジェクトをここに追加しましょう！
+
+- [Mind Elixir App](https://app.mind-elixir.com/)
+- [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
+- [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
 ## エコシステム
 
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
-- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
-- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
+- [export-mindmap](https://github.com/mind-elixir/plugins/tree/main/packages/export-mindmap)
+- [mindmapcn](https://github.com/ssshooter/mindmapcn)
 
-PRsは大歓迎です！
+PRs are welcome!
 
 ## 開発
 

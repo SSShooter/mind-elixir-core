@@ -69,6 +69,18 @@ Mind elixir es un núcleo de mapas mentales de JavaScript de código abierto. Pu
 
 [v5 Cambios Rupturistas](https://github.com/SSShooter/mind-elixir-core/wiki/Breaking-Change#500)
 
+## Construir con IA
+
+Usa `npx skills add` para instalar guías en tu proyecto:
+
+**Guía de Integración**:
+
+```bash
+npx skills add ssshooter/mind-elixir-core
+```
+
+![mind elixir skills](./images/skills.jpg)
+
 <details>
 <summary>Tabla de Contenidos</summary>
 
@@ -79,6 +91,7 @@ Mind elixir es un núcleo de mapas mentales de JavaScript de código abierto. Pu
   - [📤 **Exportación y Personalización**](#-exportación-y-personalización)
 - [Prueba ahora](#prueba-ahora)
   - [Playground](#playground)
+- [Construir con IA](#construir-con-ia)
 - [Documentación](#documentación)
 - [Uso](#uso)
   - [Instalar](#instalar)
@@ -91,7 +104,6 @@ Mind elixir es un núcleo de mapas mentales de JavaScript de código abierto. Pu
   - [Soporte de Markdown](#soporte-de-markdown)
   - [Guardias de Operación](#guardias-de-operación)
 - [Exportar como Imagen](#exportar-como-imagen)
-  - [API Obsoleta](#api-obsoleta)
 - [Tema](#tema)
 - [Atajos](#atajos)
 - [¿Quién lo está usando?](#quién-lo-está-usando)
@@ -105,8 +117,6 @@ Mind elixir es un núcleo de mapas mentales de JavaScript de código abierto. Pu
 ## Prueba ahora
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
-
-https://mind-elixir.com/
 
 ### Playground
 
@@ -130,6 +140,7 @@ npm i mind-elixir -S
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 ```
 
 #### Etiqueta de script
@@ -156,18 +167,15 @@ Y en tu archivo CSS:
 </style>
 ```
 
-**Cambio Importante** desde la versión 1.0.0, `data` debe ser pasado a `init()`, no `options`.
-
 ```javascript
 import MindElixir from 'mind-elixir'
 import { es } from 'mind-elixir/i18n'
+import 'mind-elixir/style.css'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // o HTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // por defecto true
-  contextMenu: true, // por defecto true
   toolBar: true, // por defecto true
   keypress: true, // por defecto true
   overflowHidden: false, // por defecto false
@@ -178,22 +186,20 @@ let options = {
     link: true,
     extend: [
       {
-        name: 'Editar nodo',
+        name: 'Node edit',
         onclick: () => {
-          alert('menú extendido')
+          alert('extend menu')
         },
       },
     ],
-  },
+  }, // por defecto true
   before: {
-    insertSibling(el, obj) {
-      return true
-    },
-    async addChild(el, obj) {
-      await sleep()
+    insertSibling(type, obj) {
       return true
     },
   },
+  // Analizador markdown personalizado (opcional)
+  // markdown: (text) => customMarkdownParser(text), // proporcione su propia función de análisis markdown
 }
 
 let mind = new MindElixir(options)
@@ -334,27 +340,23 @@ let mind = new MindElixir({
 
 ## Exportar como Imagen
 
-Instala `@zumer/snapdom`, luego:
+Instala `@mind-elixir/export-mindmap`, luego:
 
 ```typescript
-import { snapdom } from '@zumer/snapdom'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 
 const download = async () => {
-  const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture' })
+  // Descargar directamente como PNG / JPEG / WEBP
+  await downloadImage(mind, 'png')
+
+  // O obtener una URL para vista previa / manejo personalizado
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false }) // pase las opciones así
 }
 ```
 
+> Nota: Las exportaciones incluyen una marca de agua de Mind Elixir por defecto. Pase `{ watermarkEnabled: false }` en las opciones para desactivarla.
+
 Para otros formatos de exportación y opciones avanzadas, consulta la [documentación de Mind Elixir](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images).
-
-### API Obsoleta
-
-> ⚠️ **Obsoleto**: El método `mind.exportSvg()` está obsoleto y se eliminará en una versión futura.
-
-```typescript
-// OBSOLETO - No usar en nuevos proyectos
-const svgData = await mind.exportSvg()
-```
 
 ## Tema
 
@@ -401,15 +403,19 @@ Consulta la [Guía de Atajos](https://docs.mind-elixir.com/docs/guides/shortcuts
 
 ## ¿Quién lo está usando?
 
-- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
+¡Bienvenido a enviar un PR para agregar tu proyecto aquí!
+
+- [Mind Elixir App](https://app.mind-elixir.com/)
+- [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
+- [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
 ## Ecosistema
 
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
-- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
-- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
+- [export-mindmap](https://github.com/mind-elixir/plugins/tree/main/packages/export-mindmap)
+- [mindmapcn](https://github.com/ssshooter/mindmapcn)
 
 ¡Las PRs son bienvenidas!
 

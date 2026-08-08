@@ -69,6 +69,18 @@ Mind elixir 是一个开源的 JavaScript 思维导图核心。你可以在任�
 
 [v5 破坏性变更](https://github.com/SSShooter/mind-elixir-core/wiki/Breaking-Change#500)
 
+## 使用 AI 构建
+
+使用 `npx skills add` 将指南安装到你的项目中：
+
+**集成指南**：
+
+```bash
+npx skills add ssshooter/mind-elixir-core
+```
+
+![mind elixir skills](./images/skills.jpg)
+
 <details>
 <summary>目录</summary>
 
@@ -77,6 +89,7 @@ Mind elixir 是一个开源的 JavaScript 思维导图核心。你可以在任�
   - [⚡ **性能与架构**](#-性能与架构)
   - [🛠️ **核心功能**](#️-核心功能)
   - [📤 **导出与定制**](#-导出与定制)
+- [使用 AI 构建](#使用-ai-构建)
 - [立即试用](#立即试用)
   - [演示](#演示)
 - [文档](#文档)
@@ -91,7 +104,6 @@ Mind elixir 是一个开源的 JavaScript 思维导图核心。你可以在任�
   - [Markdown 支持](#markdown-支持)
   - [操作守卫](#操作守卫)
 - [导出为图片](#导出为图片)
-  - [已弃用的 API](#已弃用的-api)
 - [主题](#主题)
 - [快捷键](#快捷键)
 - [谁在使用](#谁在使用)
@@ -105,8 +117,6 @@ Mind elixir 是一个开源的 JavaScript 思维导图核心。你可以在任�
 ## 立即试用
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
-
-https://mind-elixir.com/
 
 ### 演示
 
@@ -130,6 +140,7 @@ npm i mind-elixir -S
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 ```
 
 #### Script 标签
@@ -156,44 +167,39 @@ import MindElixir from 'mind-elixir'
 </style>
 ```
 
-**重大变更** 自 1.0.0 起，`data` 应传递给 `init()`，而不是 `options`。
-
 ```javascript
 import MindElixir from 'mind-elixir'
 import { en } from 'mind-elixir/i18n'
+import 'mind-elixir/style.css'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // 或 HTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // 默认 true
-  contextMenu: true, // 默认 true
   toolBar: true, // 默认 true
   keypress: true, // 默认 true
   overflowHidden: false, // 默认 false
   mouseSelectionButton: 0, // 0 为左键，2 为右键，默认 0
-  contextMenuOption: {
+  contextMenu: {
     locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv]
     focus: true,
     link: true,
     extend: [
       {
-        name: '节点编辑',
+        name: 'Node edit',
         onclick: () => {
-          alert('扩展菜单')
+          alert('extend menu')
         },
       },
     ],
-  },
+  }, // 默认 true
   before: {
-    insertSibling(el, obj) {
-      return true
-    },
-    async addChild(el, obj) {
-      await sleep()
+    insertSibling(type, obj) {
       return true
     },
   },
+  // 自定义 markdown 解析器（可选）
+  // markdown: (text) => customMarkdownParser(text), // 提供你自己的 markdown 解析器函数
 }
 
 let mind = new MindElixir(options)
@@ -334,27 +340,23 @@ let mind = new MindElixir({
 
 ## 导出为图片
 
-安装 `@zumer/snapdom`，然后：
+安装 `@mind-elixir/export-mindmap`，然后：
 
 ```typescript
-import { snapdom } from '@zumer/snapdom'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 
 const download = async () => {
-  const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture' })
+  // 直接下载为 PNG / JPEG / WEBP
+  await downloadImage(mind, 'png')
+
+  // 或获取 URL 用于预览 / 自定义处理
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false }) // 像这样传递选项
 }
 ```
 
+> 注意：导出默认包含 Mind Elixir 水印。在选项中传递 `{ watermarkEnabled: false }` 可禁用它。
+
 有关其他导出格式和高级选项，请参阅 [Mind Elixir 文档](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images)。
-
-### 已弃用的 API
-
-> ⚠️ **已弃用**：`mind.exportSvg()` 方法已弃用，将在未来版本中移除。
-
-```typescript
-// 已弃用 - 请不要在新项目中使用
-const svgData = await mind.exportSvg()
-```
 
 ## 主题
 
@@ -401,17 +403,21 @@ mind.changeTheme({
 
 ## 谁在使用
 
-- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
+欢迎提交 PR 添加你的项目！
+
+- [Mind Elixir App](https://app.mind-elixir.com/)
+- [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
+- [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
 ## 生态系统
 
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
-- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
-- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
+- [export-mindmap](https://github.com/mind-elixir/plugins/tree/main/packages/export-mindmap)
+- [mindmapcn](https://github.com/ssshooter/mindmapcn)
 
-欢迎 PR！
+PRs are welcome!
 
 ## 开发
 

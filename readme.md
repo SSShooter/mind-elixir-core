@@ -407,7 +407,9 @@ See [Shortcuts Guide](https://docs.mind-elixir.com/docs/guides/shortcuts) for de
 
 ## Who's using
 
-- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
+Welcome to submit a PR to add your project here!
+
+- [Mind Elixir App](https://app.mind-elixir.com/)
 - [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
 - [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
@@ -416,8 +418,8 @@ See [Shortcuts Guide](https://docs.mind-elixir.com/docs/guides/shortcuts) for de
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
-- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
-- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
+- [export-mindmap](https://github.com/mind-elixir/plugins/tree/main/packages/export-mindmap)
+- [mindmapcn](https://github.com/ssshooter/mindmapcn)
 
 PRs are welcome!
 

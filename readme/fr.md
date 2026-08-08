@@ -52,11 +52,24 @@ Caractéristiques :
 - Raccourcis efficaces
 - Stylisation facile des nœuds avec les variables CSS
 
+## Construire avec IA
+
+Utilisez `npx skills add` pour installer des guides dans votre projet :
+
+**Guide d'intégration** :
+
+```bash
+npx skills add ssshooter/mind-elixir-core
+```
+
+![mind elixir skills](./images/skills.jpg)
+
 <details>
 <summary>Table des matières</summary>
 
 - [Essayer maintenant](#essayer-maintenant)
   - [Playground](#playground)
+- [Construire avec IA](#construire-avec-ia)
 - [Documentation](#documentation)
 - [Utilisation](#utilisation)
   - [Installation](#installation)
@@ -65,13 +78,13 @@ Caractéristiques :
   - [Initialisation](#initialisation)
   - [Structure des données](#structure-des-données)
   - [Gestion des événements](#gestion-des-événements)
-  - [Export et import des données](#export-et-import-des-données)
-  - [Gardes d'opération](#gardes-dopération)
+- [Export et import des données](#export-et-import-des-données)
+- [Support Markdown](#support-markdown)
+- [Gardes d'opération](#gardes-dopération)
 - [Exporter en image](#exporter-en-image)
-  - [Solution 1](#solution-1)
-  - [Solution 2](#solution-2)
 - [Thème](#thème)
 - [Raccourcis](#raccourcis)
+- [Qui utilise](#qui-utilise)
 - [Écosystème](#écosystème)
 - [Développement](#développement)
 - [Remerciements](#remerciements)
@@ -82,8 +95,6 @@ Caractéristiques :
 ## Essayer maintenant
 
 ![mindelixir](https://raw.githubusercontent.com/ssshooter/mind-elixir-core/master/images/screenshot5_2.jpg)
-
-https://mind-elixir.com/
 
 ### Playground
 
@@ -107,6 +118,7 @@ npm i mind-elixir -S
 
 ```javascript
 import MindElixir from 'mind-elixir'
+import 'mind-elixir/style.css'
 ```
 
 #### Balise script
@@ -133,18 +145,15 @@ Et dans votre fichier CSS :
 </style>
 ```
 
-**Changement majeur** depuis la version 1.0.0, `data` doit être passé à `init()`, et non `options`.
-
 ```javascript
 import MindElixir from 'mind-elixir'
 import { fr } from 'mind-elixir/i18n'
+import 'mind-elixir/style.css'
 import example from 'mind-elixir/dist/example1'
 
 let options = {
   el: '#map', // ou HTMLDivElement
   direction: MindElixir.LEFT,
-  draggable: true, // par défaut true
-  contextMenu: true, // par défaut true
   toolBar: true, // par défaut true
   keypress: true, // par défaut true
   overflowHidden: false, // par défaut false
@@ -155,22 +164,20 @@ let options = {
     link: true,
     extend: [
       {
-        name: 'Édition de nœud',
+        name: 'Node edit',
         onclick: () => {
-          alert('menu étendu')
+          alert('extend menu')
         },
       },
     ],
-  },
+  }, // par défaut true
   before: {
-    insertSibling(el, obj) {
-      return true
-    },
-    async addChild(el, obj) {
-      await sleep()
+    insertSibling(type, obj) {
       return true
     },
   },
+  // Analyseur markdown personnalisé (optionnel)
+  // markdown: (text) => customMarkdownParser(text), // fournissez votre propre fonction d'analyse markdown
 }
 
 let mind = new MindElixir(options)
@@ -257,6 +264,34 @@ mind.init(data)
 mind.refresh(data)
 ```
 
+### Support Markdown
+
+Mind Elixir supporte l'analyse markdown personnalisée :
+
+```javascript
+// Désactiver markdown (par défaut)
+let mind = new MindElixir({
+  // option markdown omise - pas de traitement markdown
+})
+
+// Utiliser un analyseur markdown personnalisé
+let mind = new MindElixir({
+  markdown: text => {
+    // Votre implémentation markdown personnalisée
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/`(.*?)`/g, '<code>$1</code>')
+  },
+})
+
+// Utiliser n'importe quelle bibliothèque markdown (ex. marked, markdown-it, etc.)
+import { marked } from 'marked'
+let mind = new MindElixir({
+  markdown: text => marked(text),
+})
+```
+
 ### Gardes d'opération
 
 ```javascript
@@ -283,50 +318,23 @@ let mind = new MindElixir({
 
 ## Exporter en image
 
-### Solution 1
+Installez `@mind-elixir/export-mindmap`, puis :
 
 ```typescript
-const mind = {
-  /** instance mind elixir */
-}
-const downloadPng = async () => {
-  const blob = await mind.exportPng() // Obtenez un Blob !
-  if (!blob) return
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'filename.png'
-  a.click()
-  URL.revokeObjectURL(url)
-}
-```
-
-### Solution 2
-
-Installer `@ssshooter/modern-screenshot`, puis :
-
-```typescript
-import { domToPng } from '@ssshooter/modern-screenshot'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 
 const download = async () => {
-  const dataUrl = await domToPng(mind.nodes, {
-    onCloneNode: node => {
-      const n = node as HTMLDivElement
-      n.style.position = ''
-      n.style.top = ''
-      n.style.left = ''
-      n.style.bottom = ''
-      n.style.right = ''
-    },
-    padding: 300,
-    quality: 1,
-  })
-  const link = document.createElement('a')
-  link.download = 'screenshot.png'
-  link.href = dataUrl
-  link.click()
+  // Télécharger directement en PNG / JPEG / WEBP
+  await downloadImage(mind, 'png')
+
+  // Ou obtenir une URL pour l'aperçu / traitement personnalisé
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false }) // passez les options comme ceci
 }
 ```
+
+> Note : Les exports incluent par défaut un filigrane Mind Elixir. Passez `{ watermarkEnabled: false }` dans les options pour le désactiver.
+
+Pour d'autres formats d'export et options avancées, consultez la [documentation Mind Elixir](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images).
 
 ## Thème
 
@@ -394,10 +402,18 @@ Soyez conscient que Mind Elixir n'observera pas le changement de `prefers-color-
 - [@mind-elixir/node-menu](https://github.com/ssshooter/node-menu)
 - [@mind-elixir/node-menu-neo](https://github.com/ssshooter/node-menu-neo)
 - [@mind-elixir/export-xmind](https://github.com/ssshooter/export-xmind)
-- [@mind-elixir/export-html](https://github.com/ssshooter/export-html)
-- [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
+- [export-mindmap](https://github.com/mind-elixir/plugins/tree/main/packages/export-mindmap)
+- [mindmapcn](https://github.com/ssshooter/mindmapcn)
 
 Les PRs sont les bienvenues !
+
+## Qui utilise
+
+N'hésitez pas à soumettre un PR pour ajouter votre projet ici !
+
+- [Mind Elixir App](https://app.mind-elixir.com/)
+- [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
+- [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
 ## Développement
 
