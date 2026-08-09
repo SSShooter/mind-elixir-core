@@ -374,6 +374,7 @@
   }
 
   .tags {
+    font-size: 12px;
     direction: ltr;
     span {
       display: inline-block;
@@ -381,11 +382,8 @@
       padding: 2px 4px;
       background: #d6f0f8;
       color: #276f86;
-      margin: 0px;
-      font-size: 12px;
+      margin: 4px 4px 0 0;
       line-height: 1.3em;
-      margin-right: 4px;
-      margin-top: 2px;
     }
   }
   .icons {
