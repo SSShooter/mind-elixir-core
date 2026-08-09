@@ -238,7 +238,7 @@ export const renderSSRHTML = function (
     const topicHtml = `<div class="me-tpc" data-nodeid="${nodeId}"${styleAttr}>${topicContent}</div>`
 
     if (isRoot) {
-      return `<me-root>${topicHtml}</me-root>`
+      return `<div class="me-root">${topicHtml}</div>`
     }
 
     let childrenHtml = ''
@@ -263,7 +263,9 @@ export const renderSSRHTML = function (
   const leftPartHtml = `<div class="me-main ${DirectionClass.LHS}">${leftWrappers}</div>`
   const rightPartHtml = `<div class="me-main ${DirectionClass.RHS}">${rightWrappers}</div>`
 
-  return nodesWrapper(`<me-nodes class="${className}">${leftPartHtml}${rootHtml}${rightPartHtml}</me-nodes>`)
+  const nodesClassName = ['me-nodes', className].filter(Boolean).join(' ')
+
+  return nodesWrapper(`<div class="${nodesClassName}">${leftPartHtml}${rootHtml}${rightPartHtml}</div>`)
 }
 
 /**

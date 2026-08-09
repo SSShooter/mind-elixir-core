@@ -232,7 +232,7 @@ const getCenterDefault = (mei: MindElixir, forceAlignNodes = false) => {
     dy = (container.offsetHeight - nodes.offsetHeight) / 2
     map.style.transformOrigin = `50% 50%`
   } else {
-    const root = map.querySelector('me-root') as HTMLElement
+    const root = map.querySelector('.me-root') as HTMLElement
     const pT = root.offsetTop
     const pL = root.offsetLeft
     const pW = root.offsetWidth

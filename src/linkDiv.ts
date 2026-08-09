@@ -19,7 +19,7 @@ import type { DirectionClass } from './types/index'
 const linkDiv = function (this: MindElixir, mainNode?: Wrapper) {
   console.time('linkDiv')
 
-  const root = this.map.querySelector('me-root') as HTMLElement
+  const root = this.map.querySelector('.me-root') as HTMLElement
   const pT = root.offsetTop
   const pL = root.offsetLeft
   const pW = root.offsetWidth

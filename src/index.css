@@ -76,7 +76,7 @@
   }
 
   /* top-down layout */
-  me-nodes.down {
+  .me-nodes.down {
     flex-direction: column;
     .me-main {
       display: flex;
@@ -143,7 +143,7 @@
     user-select: none;
     width: fit-content; /* 100% width if not set */
     transform: scale(1);
-    me-nodes {
+    .me-nodes {
       position: relative;
       display: flex;
       justify-content: center;
@@ -181,7 +181,7 @@
     display: inline-block;
     vertical-align: middle;
   }
-  me-root {
+  .me-root {
     position: relative;
     margin: 45px 0;
     z-index: 10;

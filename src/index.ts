@@ -179,11 +179,11 @@ class MindElixir<M = any> {
   declare mobileMultiSelect: boolean
 
   // Methods mixed into the prototype via `Object.assign` (see ./methods).
-  declare init: (data: MindElixirData<M>) => Error | undefined
+  declare init: (data: MindElixirData<M>) => Promise<Error | undefined>
   declare destroy: () => void
   declare enableMobileMultiSelect: (enable: boolean) => void
   declare createSummary: (options?: SummaryOptions) => void
-  declare createSummaryFrom: (summary: Omit<Summary, "id">) => void
+  declare createSummaryFrom: (summary: Omit<Summary, 'id'>) => void
   declare removeSummary: (id: string) => void
   declare selectSummary: (el: SummarySvg) => void
   declare unselectSummary: () => void
@@ -193,14 +193,14 @@ class MindElixir<M = any> {
   declare editArrowLabel: (el: ArrowSvg) => void
   declare tidyArrow: () => void
   declare createArrow: (from: Topic<M>, to: Topic<M>, options?: ArrowOptions) => void
-  declare createArrowFrom: (arrow: Omit<Arrow<M>, "id">) => void
+  declare createArrowFrom: (arrow: Omit<Arrow<M>, 'id'>) => void
   declare removeArrow: (linkSvg?: ArrowSvg) => void
   declare selectArrow: (link: ArrowSvg) => void
   declare unselectArrow: () => void
   declare reshapeArrow: (arrow: Arrow<M>, patchData: Partial<Arrow<M>>) => void
   declare rmSubline: (tpc: Topic<M>) => Promise<void>
   declare reshapeNode: (tpc: Topic<M>, patchData: Partial<NodeObj<M>>) => Promise<void>
-  declare insertSibling: (type: "before" | "after", el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void>
+  declare insertSibling: (type: 'before' | 'after', el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void>
   declare insertParent: (el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void>
   declare addChild: (el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void>
   declare copyNodes: (tpcs: Topic<M>[], to: Topic<M>) => Promise<void>
@@ -222,7 +222,7 @@ class MindElixir<M = any> {
   declare getData: () => MindElixirData<M>
   declare enableEdit: () => void
   declare disableEdit: () => void
-  declare scale: (scaleVal: number, offset?: { x: number; y: number; }) => void
+  declare scale: (scaleVal: number, offset?: { x: number; y: number }) => void
   declare scaleFit: () => void
   declare move: (dx: number, dy: number, smooth?: boolean) => boolean
   declare toCenter: () => void
@@ -241,8 +241,8 @@ class MindElixir<M = any> {
   declare layout: () => void
   declare linkDiv: (mainNode?: Wrapper) => void
   declare editTopic: (el: Topic<M>) => void
-  declare createWrapper: (nodeObj: NodeObj<M>, omitChildren?: boolean) => { grp: Wrapper; top: Parent; tpc: Topic<M>; }
-  declare createParent: (nodeObj: NodeObj<M>) => { p: Parent; tpc: Topic<M>; }
+  declare createWrapper: (nodeObj: NodeObj<M>, omitChildren?: boolean) => { grp: Wrapper; top: Parent; tpc: Topic<M> }
+  declare createParent: (nodeObj: NodeObj<M>) => { p: Parent; tpc: Topic<M> }
   declare createChildren: (wrappers: Wrapper[]) => Children
   declare createTopic: (nodeObj: NodeObj<M>) => Topic<M>
   declare findEle: (id: string, el?: HTMLElement) => Topic<M>
@@ -341,7 +341,8 @@ class MindElixir<M = any> {
     this.container.appendChild(this.map)
     this.el.appendChild(this.container)
 
-    this.nodes = document.createElement('me-nodes')
+    this.nodes = document.createElement('div') // map-nodes container
+    this.nodes.className = 'me-nodes'
 
     this.lines = createLinkSvg('lines') // main link container
     this.summarySvg = createLinkSvg('summary') // summary container

@@ -9,12 +9,13 @@ export const layout = function (this: MindElixir) {
   console.time('layout')
   this.nodes.innerHTML = ''
   // toggle the top-down layout class on the container
-  this.nodes.className = this.direction === DOWN ? 'down' : ''
+  this.nodes.classList.toggle('down', this.direction === DOWN)
 
   const tpc = this.createTopic(this.nodeData)
   shapeTpc.call(this, tpc, this.nodeData) // shape root tpc
   tpc.draggable = false
-  const root = document.createElement('me-root')
+  const root = document.createElement('div') // root node container
+  root.className = 'me-root'
   root.appendChild(tpc)
 
   const mainNodes = this.nodeData.children || []

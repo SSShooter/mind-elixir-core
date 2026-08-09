@@ -44,7 +44,7 @@ const selectRootSide = (mei: MindElixir, direction: DirectionClass) => {
   mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
 }
 const selectRoot = (mei: MindElixir) => {
-  mei.selectNode(mei.map.querySelector('me-root>.me-tpc') as Topic)
+  mei.selectNode(mei.map.querySelector('.me-root>.me-tpc') as Topic)
 }
 const selectParent = function (mei: MindElixir, currentNode: Topic) {
   const parent = currentNode.parentElement.parentElement.parentElement.previousSibling

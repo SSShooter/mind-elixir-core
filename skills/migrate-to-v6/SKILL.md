@@ -19,7 +19,7 @@ Inner map elements are now `<div>` elements. Replace tag selectors with class se
 + map.querySelector('.me-tpc')
 ```
 
-The affected elements are `me-main`, `me-wrapper`, `me-parent`, `me-children`, `me-tpc`, and `me-epd`. `me-nodes` and `me-root` are unchanged. For direction checks, use classes such as `.me-main.lhs`, `.me-main.rhs`, and `.me-main.down`.
+The affected elements are `me-main`, `me-wrapper`, `me-parent`, `me-children`, `me-tpc`, `me-epd`, `me-nodes`, and `me-root`. For direction checks, use classes such as `.me-main.lhs`, `.me-main.rhs`, and `.me-main.down`.
 
 ## 2. Copying nodes
 

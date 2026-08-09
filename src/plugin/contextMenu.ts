@@ -88,7 +88,7 @@ export default function (mind: MindElixir, option: true | ContextMenuOption) {
     console.log('showContextMenu', e)
     const target = e.target as HTMLElement
     if (isTopic(target)) {
-      if (target.parentElement!.tagName === 'ME-ROOT') {
+      if (target.parentElement!.classList.contains('me-root')) {
         isRoot = true
       } else {
         isRoot = false
@@ -193,7 +193,7 @@ export default function (mind: MindElixir, option: true | ContextMenuOption) {
         e.preventDefault()
         tips.remove()
         const target = e.target as Topic
-        if (target.parentElement.classList.contains('me-parent') || target.parentElement.tagName === 'ME-ROOT') {
+        if (target.parentElement.classList.contains('me-parent') || target.parentElement.classList.contains('me-root')) {
           mind.createArrow(from, target, options)
         } else {
           console.log('link cancel')

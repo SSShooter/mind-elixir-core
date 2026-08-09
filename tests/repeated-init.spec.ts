@@ -19,14 +19,14 @@ const secondData = {
 test('repeated init is ignored', async ({ page, me }) => {
   await me.init(firstData)
 
-  const result = await page.evaluate((data: typeof secondData) => {
+  const result = await page.evaluate(async (data: typeof secondData) => {
     const mind = (window as any)['#map']
     const countsBefore = {
       toolbars: mind.container.querySelectorAll('.mind-elixir-toolbar').length,
       contextMenus: mind.container.querySelectorAll('.context-menu').length,
       operationListeners: mind.bus.handlers.operation.length,
     }
-    const returnValue = mind.init(data)
+    const returnValue = await mind.init(data)
     const countsAfter = {
       toolbars: mind.container.querySelectorAll('.mind-elixir-toolbar').length,
       contextMenus: mind.container.querySelectorAll('.context-menu').length,
