@@ -35,7 +35,7 @@ export default function (mei: MindElixir) {
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false
-      if (target.className !== 'map-container') {
+      if (target !== mei.container) {
         // prevent context menu or toolbar click clear selection
         return false
       }
