@@ -78,7 +78,15 @@ function createToolBarRBContainer(mind: MindElixir) {
     }
   }
 
-  mind.el.addEventListener('fullscreenchange', handleFullscreenChange)
+  const element = mind.el
+  element.addEventListener('fullscreenchange', handleFullscreenChange)
+  let disposed = false
+  const dispose = () => {
+    if (disposed) return
+    disposed = true
+    element.removeEventListener('fullscreenchange', handleFullscreenChange)
+    fullscreenChangeData = null
+  }
   fc.onclick = () => {
     recordCurrentState()
     if (document.fullscreenElement !== mind.el) {
@@ -103,7 +111,7 @@ function createToolBarRBContainer(mind: MindElixir) {
   zi.onclick = () => {
     mind.scale(mind.scaleVal + mind.scaleSensitivity)
   }
-  return toolBarRBContainer
+  return { element: toolBarRBContainer, dispose }
 }
 function createToolBarLTContainer(mind: MindElixir) {
   const toolBarLTContainer = document.createElement('div')
@@ -128,6 +136,8 @@ function createToolBarLTContainer(mind: MindElixir) {
 }
 
 export default function (mind: MindElixir) {
-  mind.container.append(createToolBarRBContainer(mind))
+  const toolBarRBContainer = createToolBarRBContainer(mind)
+  mind.container.append(toolBarRBContainer.element)
   mind.container.append(createToolBarLTContainer(mind))
+  return toolBarRBContainer.dispose
 }

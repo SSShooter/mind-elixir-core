@@ -96,7 +96,9 @@ const methods = {
     this.toCenter()
     this.container.style.opacity = ''
 
-    this.toolBar && toolBar(this)
+    if (this.toolBar) {
+      this.disposable.push(toolBar(this))
+    }
     if (import.meta.env.MODE !== 'lite') {
       this.keypress && keypressInit(this, this.keypress)
 
@@ -113,7 +115,9 @@ const methods = {
     // A destroyed instance is not reusable: its DOM infrastructure is cleared
     // below, so a later init() must not attempt to initialize it again.
     this.pluginsInitialized = true
-    this.disposable!.forEach(fn => fn())
+    const disposables = this.disposable || []
+    this.disposable = []
+    disposables.forEach(fn => fn())
     if (this.el) this.el.innerHTML = ''
     this.el = undefined
     this.nodeData = undefined

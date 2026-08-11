@@ -16,6 +16,37 @@ const secondData = {
   },
 }
 
+test('destroy removes fullscreen listeners', async ({ page, me }) => {
+  await me.init(firstData)
+
+  const removedListeners = await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    const el = mind.el
+    const originalRemoveEventListener = el.removeEventListener
+    let removed = 0
+    el.removeEventListener = function (type: string, ...args: any[]) {
+      if (type === 'fullscreenchange') removed++
+      return originalRemoveEventListener.call(this, type, ...args)
+    }
+    mind.destroy()
+    mind.destroy()
+    return removed
+  })
+
+  expect(removedListeners).toBe(1)
+})
+
+test('destroy clears the instance DOM', async ({ page, me }) => {
+  await me.init(firstData)
+
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    mind.destroy()
+  })
+
+  await expect(page.locator('#map')).toBeEmpty()
+})
+
 test('repeated init is ignored', async ({ page, me }) => {
   await me.init(firstData)
 
