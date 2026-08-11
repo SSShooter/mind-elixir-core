@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 import { build } from 'vite'
 import strip from '@rollup/plugin-strip'
 
@@ -46,6 +46,16 @@ for (let i = 0; i < buildList.length; i++) {
         plugins: [
           strip({
             include: ['**/*.ts', '**/*.js'],
+            // Strip debug/perf-only logs from published bundles.
+            // Runtime warnings (console.warn/error) are kept intentionally.
+            functions: [
+              'console.log',
+              'console.debug',
+              'console.info',
+              'console.trace',
+              'console.time',
+              'console.timeEnd',
+            ],
           }),
         ],
       },
