@@ -182,12 +182,14 @@ function getIndent(line: string): number {
 
 function parseStyleObject(styleStr: string): NodeObj['style'] | null {
   try {
-    // Try to parse as JSON (supports both {key: value} and {"key": "value"} formats)
-    // Add curly braces if not present
-    const jsonStr = styleStr.trim().startsWith('{') ? styleStr : `{${styleStr}}`
-    return JSON.parse(jsonStr)
+    // Style must be a valid JSON object with double-quoted keys, e.g.
+    // {"color": "#e87a90", "fontSize": "16px"}. The enclosing {...} is required
+    // (the plaintext parser only treats a trailing {...} block as style).
+    return JSON.parse(styleStr)
   } catch {
-    // If JSON parsing fails, return null
+    // Previously a failed parse was silently ignored. Warn so the user knows
+    // why their style did not take effect (keys must be double-quoted JSON).
+    console.warn(`[plaintext] Invalid node style (must be valid JSON), ignored: ${styleStr}`)
     return null
   }
 }
@@ -221,7 +223,9 @@ function parseLine(line: string): ParsedLine {
   let refId: string | undefined
   let style: NodeObj['style'] | undefined
 
-  // Extract style: {"color": "#hex", "fontSize": "16px", "fontFamily": "Arial", ...}
+  // Extract style. Must be valid JSON with double-quoted keys, e.g.
+  // {"color": "#hex", "fontSize": "16px", "fontFamily": "Arial"}. Keys without
+  // quotes are not valid JSON and will be ignored (a warning is logged).
   // We match from the end to avoid matching braces inside MathJax or normal text
   const styleMatch = nodeContent.match(/\s*(\{[^}]+\})\s*$/)
   if (styleMatch) {
