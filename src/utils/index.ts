@@ -98,7 +98,7 @@ export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: numbe
 }
 
 export function generateUUID(): string {
-  return (new Date().getTime().toString(16) + Math.random().toString(16).substring(2)).substring(2, 18)
+  return Date.now().toString(36) + Math.random().toString(36).substring(2, 8)
 }
 
 export const generateNewObj = function (this: MindElixir): NodeObjExport {

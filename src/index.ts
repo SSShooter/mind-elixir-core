@@ -396,7 +396,7 @@ type _OptionsInSync<M> = _Extends<Pick<MindElixir<M>, keyof ResolvedOptions<M>>,
 
 export default MindElixir
 export { LEFT, RIGHT, SIDE, DOWN, THEME, DARK_THEME } // bypass ssr error
-
+export { generateUUID }
 // types
 export type * from './utils/pubsub'
 export type * from './types/index'
