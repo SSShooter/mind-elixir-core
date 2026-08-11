@@ -1,6 +1,6 @@
 import type MindElixir from './index'
 import { deepClone, generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
-import LinkPanHelper from './utils/LinkPanHelper'
+import type { ControlPointDragSource } from './interaction/types'
 import { calculatePrecisePosition, createArrowGroup, createLabel, editSvgText, svgNS } from './utils/svg'
 import type { ArrowSvg, Topic } from './types/dom'
 import type { Uid } from './index'
@@ -550,8 +550,8 @@ const updateArrowHighlight = function (arrow: ArrowSvg) {
 }
 
 const hideLinkController = function (mei: MindElixir) {
-  mei.helper1?.destroy!()
-  mei.helper2?.destroy!()
+  mei.interactionController?.unregisterControlPoint(mei.P2)
+  mei.interactionController?.unregisterControlPoint(mei.P3)
   mei.linkController.style.display = 'none'
   mei.P2.style.display = 'none'
   mei.P3.style.display = 'none'
@@ -583,10 +583,7 @@ const showLinkController = function (mei: MindElixir, linkItem: Arrow, fromData:
   updateControlLine(line1, p1x, p1y, p2x, p2y)
   updateControlLine(line2, p3x, p3y, p4x, p4y)
 
-  mei.helper1 = LinkPanHelper.create(P2)
-  mei.helper2 = LinkPanHelper.create(P3)
-
-  // Capture the pre-drag state so control point dragging can be recorded in operation history
+  // Capture the pre-drag state so control point dragging can be recorded in operation history.
   let dragOrigin = deepClone(linkItem)
   const handleDragEnd = () => {
     bus.fire('operation', {
@@ -597,55 +594,48 @@ const showLinkController = function (mei: MindElixir, linkItem: Arrow, fromData:
     dragOrigin = deepClone(linkItem)
   }
 
-  mei.helper1.init(
-    map,
-    (deltaX, deltaY) => {
-      // recalc key points
-      p2x = p2x + deltaX / mei.scaleVal // scale should keep the latest value
-      p2y = p2y + deltaY / mei.scaleVal
+  const firstControlPoint: ControlPointDragSource = {
+    element: P2,
+    onMove: (deltaX, deltaY) => {
+      p2x += deltaX / mei.scaleVal
+      p2y += deltaY / mei.scaleVal
       const p1 = calcP({ ...fromData, ctrlX: p2x, ctrlY: p2y })
       p1x = p1.x
       p1y = p1.y
 
-      // update dom position
       P2.style.top = p2y + 'px'
       P2.style.left = p2x + 'px'
-
-      // Use extracted common function to update arrow
       updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
       updateControlLine(line1, p1x, p1y, p2x, p2y)
-
       linkItem.delta1!.x = Math.round(p2x - fromData.cx)
       linkItem.delta1!.y = Math.round(p2y - fromData.cy)
-
       bus.fire('updateArrowDelta', linkItem)
     },
-    handleDragEnd
-  )
+    onEnd: handleDragEnd,
+  }
 
-  mei.helper2.init(
-    map,
-    (deltaX, deltaY) => {
-      p3x = p3x + deltaX / mei.scaleVal
-      p3y = p3y + deltaY / mei.scaleVal
+  const secondControlPoint: ControlPointDragSource = {
+    element: P3,
+    onMove: (deltaX, deltaY) => {
+      p3x += deltaX / mei.scaleVal
+      p3y += deltaY / mei.scaleVal
       const p4 = calcP({ ...toData, ctrlX: p3x, ctrlY: p3y })
       p4x = p4.x
       p4y = p4.y
 
       P3.style.top = p3y + 'px'
       P3.style.left = p3x + 'px'
-
-      // Use extracted common function to update arrow
       updateArrowPath(currentArrow, p1x, p1y, p2x, p2y, p3x, p3y, p4x, p4y, linkItem)
       updateControlLine(line2, p3x, p3y, p4x, p4y)
-
       linkItem.delta2!.x = Math.round(p3x - toData.cx)
       linkItem.delta2!.y = Math.round(p3y - toData.cy)
-
       bus.fire('updateArrowDelta', linkItem)
     },
-    handleDragEnd
-  )
+    onEnd: handleDragEnd,
+  }
+
+  mei.interactionController.registerControlPoint(firstControlPoint)
+  mei.interactionController.registerControlPoint(secondControlPoint)
 }
 
 export function renderArrow(this: MindElixir) {

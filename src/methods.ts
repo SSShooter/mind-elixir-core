@@ -3,7 +3,6 @@ import type { MindElixirData } from './index'
 import linkDiv from './linkDiv'
 import contextMenu from './plugin/contextMenu'
 import keypressInit from './plugin/keypress'
-import nodeDraggable from './plugin/nodeDraggable'
 import operationHistory from './plugin/operationHistory'
 import toolBar from './plugin/toolBar'
 import selection from './plugin/selection'
@@ -22,10 +21,7 @@ type NodeOperation = {
   [K in Operations]: ReturnType<typeof beforeHook<K>>
 }
 
-function beforeHook<T extends Operations>(
-  fn: OperationMap[T],
-  fnName: T
-): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<void> {
+function beforeHook<T extends Operations>(fn: OperationMap[T], fnName: T): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<void> {
   return async function (this: MindElixir, ...args: Parameters<OperationMap[T]>) {
     const hook = this.before[fnName]
     if (hook) {
@@ -103,7 +99,6 @@ const methods = {
       this.keypress && keypressInit(this, this.keypress)
 
       selection(this)
-      this.disposable.push(nodeDraggable(this))
       if (this.contextMenu) {
         this.disposable.push(contextMenu(this, this.contextMenu))
       }
@@ -141,6 +136,7 @@ const methods = {
     this.nodes = undefined
     this.selection?.destroy()
     this.selection = undefined
+    this.interactionController = undefined
   },
   /**
    * @public

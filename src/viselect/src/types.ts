@@ -86,6 +86,7 @@ export interface SelectionOptions {
   behaviour: Behaviour
   features: Features
   mindElixirInstance?: any // MindElixir instance for custom scrolling
+  manual?: boolean // Pointer lifecycle is driven by an external interaction controller
 }
 
 export type PartialSelectionOptions = DeepPartial<Omit<SelectionOptions, 'document'>> & {

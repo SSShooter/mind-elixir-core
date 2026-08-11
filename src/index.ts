@@ -23,13 +23,12 @@ import type { Arrow, ArrowOptions } from './arrow'
 import type { Summary, SummaryOptions } from './summary'
 import type { ContextMenuOption } from './plugin/contextMenu'
 import type { MainLineParams, SubLineParams } from './utils/generateBranch'
-import type { LinkPanHelperInstance } from './utils/LinkPanHelper'
 import type { EventMap, Operation } from './utils/pubsub'
 import type SelectionArea from './viselect/src'
 import methods from './methods'
 import { sub, main } from './utils/generateBranch'
 import { version } from '../package.json'
-import { createPanHelper } from './utils/panHelper'
+import type { InteractionController } from './interaction/controller'
 
 // TODO show up animation
 
@@ -123,14 +122,6 @@ class MindElixir<M = any> {
   declare line1: SVGElement
   declare line2: SVGElement
   declare arrowSvg: SVGElement
-  /**
-   * @internal
-   */
-  declare helper1?: LinkPanHelperInstance
-  /**
-   * @internal
-   */
-  declare helper2?: LinkPanHelperInstance
 
   // Services, history and selection (attached during init / by plugins)
   /**
@@ -151,8 +142,7 @@ class MindElixir<M = any> {
    */
   declare clearHistory?: () => void
   declare selection: SelectionArea
-  declare panHelper: ReturnType<typeof createPanHelper>
-  declare ptState?: number
+  declare interactionController: InteractionController
 
   // #region GENERATED members — do not edit by hand; run `npm run gen:members`.
   // Resolved constructor options (defaults are applied in the constructor).
@@ -322,7 +312,6 @@ class MindElixir<M = any> {
     this.tempDirection = null
     this.mobileMultiSelect = mobileMultiSelect ?? false
 
-    this.panHelper = createPanHelper(this)
     this.bus = createBus()
 
     this.container = document.createElement('div') // map container
@@ -365,9 +354,8 @@ class MindElixir<M = any> {
 
     if (this.overflowHidden) {
       this.container.style.overflow = 'hidden'
-    } else {
-      this.disposable.push(initMouseEvent(this))
     }
+    this.disposable.push(initMouseEvent(this))
 
     if (pasteHandler) {
       this.pasteHandler = pasteHandler

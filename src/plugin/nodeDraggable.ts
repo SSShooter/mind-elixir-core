@@ -97,8 +97,8 @@ export function handleNodeDragStart(mind: MindElixir, state: NodeDragState, e: P
   // Don't start drag when space is pressed (map panning mode)
   if (mind.spacePressed) return false
 
-  const target = e.target as Topic
-  if (!target?.classList.contains('me-tpc')) return false
+  const target = (e.target as HTMLElement)?.closest('.me-tpc') as Topic | null
+  if (!target) return false
 
   // Prevent dragging root node
   if (!target.nodeObj.parent) return false
@@ -153,9 +153,6 @@ export function showDragGhost(mind: MindElixir, state: NodeDragState): void {
   for (const node of dragged) {
     node.parentElement.parentElement.style.opacity = '0.5'
   }
-
-  // Clear map drag state
-  mind.panHelper.clear()
 }
 
 export function handleNodeDragMove(mind: MindElixir, state: NodeDragState, e: PointerEvent): void {
@@ -323,12 +320,4 @@ export function handleNodeDragCancel(mind: MindElixir, state: NodeDragState): vo
   state.insertType = null
   state.meet = null
   state.pointerId = null
-}
-
-// Default export for backward compatibility - now returns empty disposable
-// The actual functionality is handled in mouse.ts
-export default function (_mind: MindElixir) {
-  // Node dragging is now handled by pointer events in mouse.ts
-  // This function is kept for backward compatibility but does nothing
-  return () => {}
 }

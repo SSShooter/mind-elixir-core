@@ -86,8 +86,8 @@ export default function (mind: MindElixir, option: true | ContextMenuOption) {
   // Helper function to actually render and position context menu.
   const showMenu = (e: MouseEvent) => {
     console.log('showContextMenu', e)
-    const target = e.target as HTMLElement
-    if (isTopic(target)) {
+    const target = (e.target as HTMLElement)?.closest('.me-tpc') as Topic | null
+    if (target) {
       if (target.parentElement!.classList.contains('me-root')) {
         isRoot = true
       } else {

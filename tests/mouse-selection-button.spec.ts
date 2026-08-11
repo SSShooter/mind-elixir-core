@@ -51,7 +51,7 @@ test.describe('mouseSelectionButton', () => {
     await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
     await expect(page.locator('.me-tpc').filter({ hasText: /^left-1$/ })).toHaveClass(/selected/)
     await expect(page.locator('.context-menu')).toBeHidden()
-    expect(await page.evaluate(() => window['#map'].ptState)).toBe(0)
+    expect(await page.evaluate(() => window['#map'].interactionController.state)).toBe('idle')
   })
 
   test('uses the opposite left button for map panning', async ({ page }) => {
@@ -72,5 +72,25 @@ test.describe('mouseSelectionButton', () => {
     await page.mouse.click(node.x + node.width / 2, node.y + node.height / 2, { button: 'right' })
 
     await expect(page.locator('.context-menu')).toBeVisible()
+  })
+
+  test('cleans the active gesture on pointer cancellation', async ({ page }) => {
+    const container = (await page.locator('.map-container').boundingBox())!
+
+    await page.mouse.move(container.x + 8, container.y + 8)
+    await page.mouse.down({ button: 'left' })
+    await expect(page.evaluate(() => window['#map'].interactionController.state)).resolves.toBe('map-pan')
+
+    await page.locator('.map-container').dispatchEvent('pointercancel', {
+      bubbles: true,
+      pointerId: 1,
+      pointerType: 'mouse',
+      button: 0,
+      clientX: container.x + 8,
+      clientY: container.y + 8,
+    })
+
+    await expect(page.evaluate(() => window['#map'].interactionController.state)).resolves.toBe('idle')
+    await page.mouse.up({ button: 'left' })
   })
 })

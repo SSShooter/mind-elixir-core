@@ -10,6 +10,7 @@ export default function (mei: MindElixir) {
     boundaries: [mei.container],
     container: mei.selectionContainer,
     mindElixirInstance: mei, // 传递 MindElixir 实例
+    manual: true,
     features: {
       touch: false,
       singleTap: {
@@ -28,10 +29,8 @@ export default function (mei: MindElixir) {
     },
   })
     .on('beforestart', ({ event }) => {
-      // console.log('beforestart', mei.ptState)
       if (!mei.editable) return false
       if (mei.spacePressed) return false
-      if (mei.ptState !== 5) return false
       const target = event!.target as HTMLElement
       if (target.id === 'input-box') return false
       if (target.className === 'circle') return false
@@ -91,5 +90,7 @@ export default function (mei: MindElixir) {
         }
       }
     )
+  // Pointer ownership is managed by InteractionController. SelectionArea remains
+  // responsible for hit testing and rendering the selection rectangle only.
   mei.selection = selection
 }

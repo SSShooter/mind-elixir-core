@@ -59,6 +59,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   private _scrollingActive = false
   private _scrollSpeed: Coordinates = { x: 0, y: 0 }
   private _scrollDelta: Coordinates = { x: 0, y: 0 }
+  private readonly _manual: boolean
 
   constructor(opt: PartialSelectionOptions) {
     super()
@@ -72,6 +73,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       boundaries: ['html'],
       container: 'body',
       mindElixirInstance: undefined, // 添加默认值
+      manual: false,
       ...opt,
 
       behaviour: {
@@ -117,6 +119,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     }
 
     const { document, selectionAreaClass, selectionContainerClass } = this._options
+    this._manual = this._options.manual ?? false
     this._area = document.createElement('div')
     this._clippingElement = document.createElement('div')
     this._clippingElement.appendChild(this._area)
@@ -149,7 +152,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       this._redrawSelectionArea()
     })
 
-    this.enable()
+    if (!this._manual) {
+      this.enable()
+    }
   }
 
   _toggleStartEvents(activate = true): void {
@@ -199,9 +204,11 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     this._singleClick = true
     this.clearSelection(false, true)
 
-    on(document, ['pointermove'], this._delayedTapMove, { passive: false })
-    on(document, ['pointerup', 'pointercancel'], this._onTapStop)
-    on(document, 'scroll', this._onScroll)
+    if (!this._manual) {
+      on(document, ['pointermove'], this._delayedTapMove, { passive: false })
+      on(document, ['pointerup', 'pointercancel'], this._onTapStop)
+      on(document, 'scroll', this._onScroll)
+    }
 
     if (features.deselectOnBlur) {
       this._targetBoundaryScrolled = false
@@ -304,7 +311,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
         return
       }
 
-      on(document, ['pointermove'], this._onTapMove, { passive: false })
+      if (!this._manual) {
+        on(document, ['pointermove'], this._onTapMove, { passive: false })
+      }
 
       // Make area element visible
       css(this._area, 'display', 'block')
@@ -682,6 +691,26 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   }
 
   /**
+   * Advance a manually controlled pointer session.
+   */
+  move(evt: PointerEvent): void {
+    if (!this._manual) return
+    if (this._singleClick) {
+      this._delayedTapMove(evt)
+    } else {
+      this._onTapMove(evt)
+    }
+  }
+
+  /**
+   * Finish a manually controlled pointer session.
+   */
+  stop(evt: PointerEvent | null = null): void {
+    if (!this._manual) return
+    this._onTapStop(evt, false)
+  }
+
+  /**
    * Can be used if during a selection elements have been added
    * Will update everything that can be selected
    */
@@ -768,12 +797,16 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   /**
    * Enable selecting elements
    */
-  enable = this._toggleStartEvents
+  enable = () => {
+    if (!this._manual) this._toggleStartEvents(true)
+  }
 
   /**
    * Disable selecting elements
    */
-  disable = this._toggleStartEvents.bind(this, false)
+  disable = () => {
+    if (!this._manual) this._toggleStartEvents(false)
+  }
 
   /**
    * Adds elements to the selection
