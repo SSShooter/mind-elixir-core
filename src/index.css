@@ -438,13 +438,11 @@
     cursor: pointer;
     z-index: 10;
     width: max-content;
-    p {
-      max-width: 200px;
-    }
+    max-width: 200px;
     /* KaTeX formulas are `white-space: nowrap` and can never wrap,
        so expand the label to contain them instead of letting them
        overflow the label boundary */
-    p:has(.katex) {
+    &:has(.katex) {
       max-width: none;
     }
     border-radius: 3px;
