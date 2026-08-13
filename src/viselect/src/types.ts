@@ -25,7 +25,6 @@ export interface SelectionEvent {
 }
 
 export type SelectionEvents = {
-  beforestart: (e: SelectionEvent) => boolean | void
   beforedrag: (e: SelectionEvent) => boolean | void
   start: (e: SelectionEvent) => void
   move: (e: SelectionEvent) => void
@@ -76,6 +75,7 @@ export interface SelectionOptions {
   selectionAreaClass: string
   selectionContainerClass: string | undefined
   container: Quantify<string | HTMLElement>
+  manual: true
 
   document: Document
   selectables: Quantify<string>

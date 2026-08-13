@@ -7,11 +7,7 @@ import { getDistance, isTopic, on } from './utils'
 export default function (mind: MindElixir) {
   const { panHelper, container } = mind
   let nodeToDeselect: Topic | null = null
-  let boxSelectionMoved = false
-  let boxSelectionResetTimer: number | null = null
   let suppressContextMenuUntil = 0
-  let boxSelectionPointerId: number | null = null
-  const boxSelectionStart = { x: 0, y: 0 }
   mind.spacePressed = false
 
   // Double-click detection helper
@@ -223,24 +219,24 @@ export default function (mind: MindElixir) {
     const target = e.target as HTMLElement
     const isSelectionButton = e.button === mind.mouseSelectionButton
 
-    // In right-button selection mode, a left click on blank map space should
-    // clear the current selection before starting the opposite-button pan.
-    if (mind.mouseSelectionButton === 2 && e.button === 0 && e.pointerType === 'mouse' && target === container) {
+    // A blank map tap clears the current selection before panning.
+    const isBlankMapTap =
+      target === container &&
+      (e.pointerType === 'touch' || (mind.mouseSelectionButton === 2 && e.button === 0 && e.pointerType === 'mouse'))
+    if (isBlankMapTap) {
       mind.clearSelection()
     }
 
-    if (mind.editable && target === container && isSelectionButton && e.pointerType === 'mouse') {
-      boxSelectionMoved = false
-      suppressContextMenuUntil = 0
-      boxSelectionStart.x = e.clientX
-      boxSelectionStart.y = e.clientY
-      if (boxSelectionResetTimer !== null) {
-        clearTimeout(boxSelectionResetTimer)
-        boxSelectionResetTimer = null
+    if (mind.editable && !mind.spacePressed && target === container && isSelectionButton && e.pointerType === 'mouse') {
+      if (!e.ctrlKey && !e.metaKey) {
+        mind.clearSelection()
       }
+      suppressContextMenuUntil = 0
       mind.ptState = State.BoxSelect
-      boxSelectionPointerId = e.pointerId
-      container.setPointerCapture(e.pointerId)
+      if (!mind.selection?.start(e)) {
+        mind.ptState = State.Idle
+        return
+      }
       return
     }
 
@@ -305,13 +301,8 @@ export default function (mind: MindElixir) {
         pinchHelper.handlePointerMove(e)
         break
       case State.BoxSelect:
-        if (e.pointerType === 'mouse' && !boxSelectionMoved) {
-          const dx = e.clientX - boxSelectionStart.x
-          const dy = e.clientY - boxSelectionStart.y
-          if (Math.sqrt(dx * dx + dy * dy) > 5) {
-            boxSelectionMoved = true
-            scheduleContextMenuSuppression()
-          }
+        if (e.pointerType === 'mouse') {
+          mind.selection?.move(e)
         }
         break
       case State.DragWait:
@@ -332,6 +323,7 @@ export default function (mind: MindElixir) {
 
   const suppressContextMenuOnce = (e: MouseEvent) => {
     e.preventDefault()
+    e.stopImmediatePropagation()
     window.removeEventListener('contextmenu', suppressContextMenuOnce, true)
   }
 
@@ -348,12 +340,15 @@ export default function (mind: MindElixir) {
 
     const isDragging = nodeDragState.isDragging
     const isPanning = panHelper.moved
-    const wasBoxSelecting = mind.ptState === State.BoxSelect
 
     switch (mind.ptState) {
-      case State.BoxSelect:
-        releaseBoxSelectionPointer()
+      case State.BoxSelect: {
+        const moved = mind.selection?.stop(e) ?? false
+        if (moved && e.button === 2 && e.pointerType === 'mouse') {
+          scheduleContextMenuSuppression()
+        }
         break
+      }
       case State.DragWait:
         longPressHelper.clear()
         panHelper.handlePointerUp(e)
@@ -375,22 +370,6 @@ export default function (mind: MindElixir) {
         break
     }
 
-    if (wasBoxSelecting) {
-      const dx = e.clientX - boxSelectionStart.x
-      const dy = e.clientY - boxSelectionStart.y
-      if (Math.sqrt(dx * dx + dy * dy) > 5) {
-        boxSelectionMoved = true
-        scheduleContextMenuSuppression()
-      }
-    }
-
-    if (wasBoxSelecting && boxSelectionMoved) {
-      suppressContextMenuUntil = Date.now() + 500
-      boxSelectionResetTimer = window.setTimeout(() => {
-        boxSelectionMoved = false
-        boxSelectionResetTimer = null
-      }, 500)
-    }
 
     // Detect and handle double-click
     doubleClickHelper.detect(e, handleDoubleClick)
@@ -408,29 +387,16 @@ export default function (mind: MindElixir) {
     }
   }
 
-  const releaseBoxSelectionPointer = () => {
-    if (boxSelectionPointerId !== null && container.hasPointerCapture(boxSelectionPointerId)) {
-      container.releasePointerCapture(boxSelectionPointerId)
-    }
-    boxSelectionPointerId = null
-  }
-
   const handleInterrupt = () => {
     const wasBoxSelecting = mind.ptState === State.BoxSelect
     pinchHelper.clear()
     if (wasBoxSelecting) {
       mind.selection?.cancel()
     }
-    releaseBoxSelectionPointer()
     longPressHelper.clear()
     panHelper.clear()
     doubleClickHelper.clear()
-    boxSelectionMoved = false
     suppressContextMenuUntil = 0
-    if (boxSelectionResetTimer !== null) {
-      clearTimeout(boxSelectionResetTimer)
-      boxSelectionResetTimer = null
-    }
     if (nodeDragState.isDragging || nodeDragState.pointerId !== null) {
       handleNodeDragCancel(mind, nodeDragState)
     }
@@ -447,7 +413,7 @@ export default function (mind: MindElixir) {
       // On Mac trackpad, a two-finger press immediately fires `contextmenu`.
       // Delay here to wait and see if the user is actually panning or box
       // selecting. A plain right click should still open the context menu.
-      if (mind.panHelper.moved || boxSelectionMoved || Date.now() < suppressContextMenuUntil) return
+      if (mind.panHelper.moved || Date.now() < suppressContextMenuUntil) return
       if (mind.ptState !== State.Idle && mind.ptState !== State.Pan) return
       const target = e.target as HTMLElement
       if (isTopic(target) && !target.classList.contains('selected')) {

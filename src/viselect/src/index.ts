@@ -45,6 +45,8 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   private _targetRect?: DOMRect
   private _selectables: Element[] = []
   private _latestElement?: Element
+  private _pointerTarget?: HTMLElement
+  private _pointerId: number | null = null
 
   // Dynamically constructed area rect
   private _areaLocation: AreaLocation = { y1: 0, x2: 0, y2: 0, x1: 0 }
@@ -71,6 +73,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       startAreas: ['html'],
       boundaries: ['html'],
       container: 'body',
+      manual: true,
       mindElixirInstance: undefined, // 添加默认值
       ...opt,
 
@@ -148,25 +151,16 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       this._emitEvent('move', evt)
       this._redrawSelectionArea()
     })
-
-    this.enable()
   }
 
-  _toggleStartEvents(activate = true): void {
-    const { document } = this._options
-    const fn = activate ? on : off
-
-    fn(document, 'pointerdown', this._onTapStart)
-  }
-
-  _onTapStart(evt: PointerEvent, silent = false): void {
+  _onTapStart(evt: PointerEvent): boolean {
     // console.trace('_onTapStart')
     const { x, y, target } = simplifyEvent(evt)
     const { document, startAreas, boundaries, behaviour, features } = this._options
     const targetBoundingClientRect = target.getBoundingClientRect()
 
     if (!matchesTrigger(evt, behaviour.triggers)) {
-      return
+      return false
     }
 
     // Find start-areas and boundaries
@@ -182,11 +176,7 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     this._targetBoundary = resolvedBoundaries.find(el => evtPath.includes(el))
 
     if (!this._targetElement || !targetStartArea || !this._targetBoundary) {
-      return
-    }
-
-    if (!silent && this._emitEvent('beforestart', evt) === false) {
-      return
+      return false
     }
 
     this._areaLocation = { x1: x, y1: y, x2: 0, y2: 0 }
@@ -197,16 +187,19 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
 
     // To detect single-click
     this._singleClick = true
+    this._pointerTarget = target
+    this._pointerId = evt.pointerId
+    target.setPointerCapture(evt.pointerId)
     this.clearSelection(false, true)
 
-    on(document, ['pointermove'], this._delayedTapMove, { passive: false })
-    on(document, ['pointerup', 'pointercancel'], this._onTapStop)
     on(document, 'scroll', this._onScroll)
 
     if (features.deselectOnBlur) {
       this._targetBoundaryScrolled = false
       on(this._targetBoundary, 'scroll', this._onStartAreaScroll)
     }
+
+    return true
   }
 
   _onSingleTap(evt: PointerEvent): void {
@@ -297,14 +290,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
       (typeof startThreshold === 'object' && abs(x - x1) >= (startThreshold as Coordinates).x) ||
       abs(y - y1) >= (startThreshold as Coordinates).y
     ) {
-      off(document, ['pointermove'], this._delayedTapMove, { passive: false })
-
       if (this._emitEvent('beforedrag', evt) === false) {
-        off(document, ['pointerup', 'pointercancel'], this._onTapStop)
         return
       }
-
-      on(document, ['pointermove'], this._onTapMove, { passive: false })
 
       // Make area element visible
       css(this._area, 'display', 'block')
@@ -542,6 +530,12 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
     const { document, features } = this._options
     const { _singleClick } = this
 
+    if (this._pointerTarget && this._pointerId !== null && this._pointerTarget.hasPointerCapture(this._pointerId)) {
+      this._pointerTarget.releasePointerCapture(this._pointerId)
+    }
+    this._pointerTarget = undefined
+    this._pointerId = null
+
     // Remove event handlers
     off(this._targetElement, 'scroll', this._onStartAreaScroll)
     off(document, ['pointermove'], this._delayedTapMove)
@@ -673,12 +667,38 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
   }
 
   /**
-   * Manually triggers the start of a selection
-   * @param evt A PointerEvent-like object
-   * @param silent If beforestart should be fired
+   * Manually starts a selection gesture. Pointer movement and completion are
+   * driven by the caller.
    */
-  trigger(evt: PointerEvent, silent = true): void {
-    this._onTapStart(evt, silent)
+  start(evt: PointerEvent): boolean {
+    return this._onTapStart(evt)
+  }
+
+  /**
+   * Manually advances a selection gesture.
+   */
+  move(evt: PointerEvent): void {
+    if (this._singleClick) {
+      this._delayedTapMove(evt)
+    } else {
+      this._onTapMove(evt)
+    }
+  }
+
+  /**
+   * Manually completes a selection gesture.
+   */
+  stop(evt: PointerEvent | null, silent = false): boolean {
+    const moved = !this._singleClick
+    this._onTapStop(evt, silent)
+    return moved
+  }
+
+  /**
+   * Manually triggers the start of a selection.
+   */
+  trigger(evt: PointerEvent): boolean {
+    return this._onTapStart(evt)
   }
 
   /**
@@ -760,20 +780,9 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
    */
   destroy(): void {
     this.cancel()
-    this.disable()
     this._clippingElement.remove()
     super.unbindAllListeners()
   }
-
-  /**
-   * Enable selecting elements
-   */
-  enable = this._toggleStartEvents
-
-  /**
-   * Disable selecting elements
-   */
-  disable = this._toggleStartEvents.bind(this, false)
 
   /**
    * Adds elements to the selection

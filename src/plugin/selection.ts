@@ -9,6 +9,7 @@ export default function (mei: MindElixir) {
     selectables: ['.map-container .me-tpc'],
     boundaries: [mei.container],
     container: mei.selectionContainer,
+    manual: true,
     mindElixirInstance: mei, // 传递 MindElixir 实例
     features: {
       touch: false,
@@ -27,69 +28,45 @@ export default function (mei: MindElixir) {
       },
     },
   })
-    .on('beforestart', ({ event }) => {
-      // console.log('beforestart', mei.ptState)
-      if (!mei.editable) return false
-      if (mei.spacePressed) return false
-      if (mei.ptState !== 5) return false
-      const target = event!.target as HTMLElement
-      if (target.id === 'input-box') return false
-      if (target.className === 'circle') return false
-      if (target !== mei.container) {
-        // prevent context menu or toolbar click clear selection
-        return false
-      }
-      if (!(event as MouseEvent).ctrlKey && !(event as MouseEvent).metaKey) {
-        mei.clearSelection()
-      }
-      const selectionAreaElement = selection.getSelectionArea()
-      selectionAreaElement.style.background = '#4f90f22d'
-      selectionAreaElement.style.border = '1px solid #4f90f2'
-      selectionAreaElement.style.borderRadius = '3px'
-      if (selectionAreaElement.parentElement) {
-        selectionAreaElement.parentElement.style.zIndex = '9999'
-      }
-      return true
-    })
-    // .on('beforedrag', ({ event }) => {})
-    .on(
-      'move',
-      ({
-        store: {
-          changed: { added, removed },
-        },
-      }) => {
-        if (added.length > 0 || removed.length > 0) {
-          // console.log('added ', added)
-          // console.log('removed ', removed)
+
+  const selectionAreaElement = selection.getSelectionArea()
+  selectionAreaElement.style.background = '#4f90f22d'
+  selectionAreaElement.style.border = '1px solid #4f90f2'
+  selectionAreaElement.style.borderRadius = '3px'
+
+  selection.on('move', ({
+    store: {
+      changed: { added, removed },
+    },
+  }) => {
+    if (added.length > 0) {
+      const newNodes = (added as Topic[]).filter(el => !mei.currentNodes?.includes(el))
+      if (newNodes.length > 0) {
+        for (const el of newNodes) {
+          el.classList.add('selected')
         }
-        if (added.length > 0) {
-          const newNodes = (added as Topic[]).filter(el => !mei.currentNodes?.includes(el))
-          if (newNodes.length > 0) {
-            for (const el of newNodes) {
-              el.classList.add('selected')
-            }
-            mei.currentNodes = [...(mei.currentNodes || []), ...newNodes]
-            mei.bus.fire(
-              'selectNodes',
-              newNodes.map(el => el.nodeObj)
-            )
-          }
-        }
-        if (removed.length > 0) {
-          const removedNodes = (removed as Topic[]).filter(el => mei.currentNodes?.includes(el))
-          if (removedNodes.length > 0) {
-            for (const el of removedNodes) {
-              el.classList.remove('selected')
-            }
-            mei.currentNodes = (mei.currentNodes || []).filter(el => !removedNodes.includes(el))
-            mei.bus.fire(
-              'unselectNodes',
-              removedNodes.map(el => el.nodeObj)
-            )
-          }
-        }
+        mei.currentNodes = [...(mei.currentNodes || []), ...newNodes]
+        mei.bus.fire(
+          'selectNodes',
+          newNodes.map(el => el.nodeObj)
+        )
       }
-    )
+    }
+
+    if (removed.length > 0) {
+      const removedNodes = (removed as Topic[]).filter(el => mei.currentNodes?.includes(el))
+      if (removedNodes.length > 0) {
+        for (const el of removedNodes) {
+          el.classList.remove('selected')
+        }
+        mei.currentNodes = (mei.currentNodes || []).filter(el => !removedNodes.includes(el))
+        mei.bus.fire(
+          'unselectNodes',
+          removedNodes.map(el => el.nodeObj)
+        )
+      }
+    }
+  })
+
   mei.selection = selection
 }
