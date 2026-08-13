@@ -441,7 +441,7 @@ export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: b
  * @function
  * @instance
  * @name refresh
- * @description Refresh mind map, you can use it after modified `this.nodeData`. Only `nodeData`, `arrows`, `summaries` and `meta` are applied; `data.theme` is ignored, use `changeTheme` to switch theme explicitly.
+ * @description Refresh the mind map after modifying its data. Only `nodeData`, `arrows`, `summaries`, and `meta` are applied. `direction`, `compact`, and `theme` are intentionally ignored; use the corresponding direction methods, `changeCompact`, or `changeTheme` to update them separately.
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */

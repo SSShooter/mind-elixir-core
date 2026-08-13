@@ -3,6 +3,10 @@ import { DARK_THEME, THEME } from '../const'
 import type { Theme } from '../types/index'
 import { main, sub } from './generateBranch'
 
+/**
+ * Change the visual theme independently from `refresh`.
+ * `refresh` intentionally does not apply `data.theme`.
+ */
 export const changeTheme = function (this: MindElixir, theme: Theme, shouldRefresh = true) {
   this.theme = theme as MindElixir['theme']
 
@@ -28,6 +32,10 @@ export const changeTheme = function (this: MindElixir, theme: Theme, shouldRefre
   shouldRefresh && this.refresh()
 }
 
+/**
+ * Change compact layout mode independently from `refresh`.
+ * `refresh` intentionally does not apply `data.compact`.
+ */
 export const changeCompact = function (this: MindElixir, compact: boolean) {
   this.compact = compact
   if (this.theme) {
