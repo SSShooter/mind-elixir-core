@@ -124,6 +124,11 @@ const getWrapper = (tpc: Topic) => tpc.parentElement.parentElement
 const GAP = 12
 
 /**
+ * Vertical offset from the bottom of the nodes to the summary bracket.
+ */
+const BRACKET_OFFSET = 20
+
+/**
  * Rebuild the nesting relationship between summaries with a single traversal
  * of the tree. Returns the summaries ordered so that every summary comes
  * after the ones it encloses, plus the summaries each one directly encloses.
@@ -282,7 +287,7 @@ const drawSummary = function (mei: MindElixir, summary: Summary, inner: Summary[
   const renderedLabel = mei.markdown ? mei.markdown(summaryText, summary) : summaryText
   if (side === DirectionClass.DOWN) {
     // top-down layout: horizontal bracket below the sibling group
-    const y = maxBottom + 10 + push
+    const y = maxBottom + BRACKET_OFFSET + push
     const mid = (startLeft + endRight) / 2
     path = createPath(`M ${startLeft} ${y - 10} c 0 5 5 10 10 10 L ${endRight - 10} ${y} c 5 0 10 -5 10 -10 M ${mid} ${y} v 10`, strokeColor)
     text = createLabel(renderedLabel, mid, y + 20, { anchor: 'middle', color: labelColor, dataType: 'summary', svgId: groupId })
@@ -318,7 +323,7 @@ const drawSummary = function (mei: MindElixir, summary: Summary, inner: Summary[
   const labelH = text.offsetHeight
   let extent: Extent
   if (side === DirectionClass.DOWN) {
-    const y = maxBottom + 10 + push
+    const y = maxBottom + BRACKET_OFFSET + push
     const mid = (startLeft + endRight) / 2
     extent = {
       top: y - 10,
