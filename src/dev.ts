@@ -152,51 +152,55 @@ const data = MindElixir.new('new topic')
 mind.init(example)
 // mind.init(largeMap)
 
-const branchThemes = {
-  markmap: {
-    generateMainBranch: markmapMain,
-    generateSubBranch: markmapSub,
-    cssVar: {
-      '--root-color': mind.theme.cssVar['--main-color'],
-      '--root-bgcolor': 'transparent',
-      '--root-border-color': 'transparent',
-      '--root-radius': '5px',
-      '--main-radius': '5px',
-      '--main-bgcolor': 'transparent',
-      '--main-border': 'transparent',
+function changeTheme() {
+  const branchThemes = {
+    markmap: {
+      generateMainBranch: markmapMain,
+      generateSubBranch: markmapSub,
+      cssVar: {
+        '--root-color': mind.theme.cssVar['--main-color'],
+        '--root-bgcolor': 'transparent',
+        '--root-border-color': 'transparent',
+        '--root-radius': '5px',
+        '--main-radius': '5px',
+        '--main-bgcolor': 'transparent',
+        '--main-border': 'transparent',
+      },
     },
-  },
-  straightUnderline: {
-    generateMainBranch: straightUnderlineMain,
-    generateSubBranch: straightUnderlineSub,
-    cssVar: {
-      '--main-radius': '0',
-      '--main-bgcolor': 'transparent',
-      '--main-border': 'transparent',
+    straightUnderline: {
+      generateMainBranch: straightUnderlineMain,
+      generateSubBranch: straightUnderlineSub,
+      cssVar: {
+        '--main-radius': '0',
+        '--main-bgcolor': 'transparent',
+        '--main-border': 'transparent',
+      },
     },
-  },
-  straight: {
-    generateMainBranch: straightMain,
-    generateSubBranch: straightSub,
-  },
+    straight: {
+      generateMainBranch: straightMain,
+      generateSubBranch: straightSub,
+    },
+  }
+
+  // 动态切换为特定风格，并记录在 meta 中
+  // 注意：必须先设置 dataset.branchStyle 让相关 CSS(dev.css)先生效，
+  // 再 changeTheme 触发 refresh 重算布局和连线，否则连线会按旧节点尺寸绘制而错位
+  mind.container.dataset.branchStyle = 'markmap'
+  mind.changeTheme({
+    ...mind.theme,
+    ...branchThemes.markmap,
+    cssVar: {
+      ...mind.theme.cssVar,
+      ...branchThemes.markmap.cssVar,
+    },
+  })
+  mind.meta = {
+    ...mind.meta,
+    branchStyle: 'markmap',
+  }
 }
 
-// 动态切换为特定风格，并记录在 meta 中
-// 注意：必须先设置 dataset.branchStyle 让相关 CSS(dev.css)先生效，
-// 再 changeTheme 触发 refresh 重算布局和连线，否则连线会按旧节点尺寸绘制而错位
-mind.container.dataset.branchStyle = 'markmap'
-mind.changeTheme({
-  ...mind.theme,
-  ...branchThemes.markmap,
-  cssVar: {
-    ...mind.theme.cssVar,
-    ...branchThemes.markmap.cssVar,
-  },
-})
-mind.meta = {
-  ...mind.meta,
-  branchStyle: 'markmap',
-}
+// changeTheme()
 
 const m2 = new MindElixir({
   el: '#map2',
