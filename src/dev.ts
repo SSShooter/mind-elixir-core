@@ -140,7 +140,7 @@ const options: Options = {
   },
   // scaleMin:0.1
   // alignment: 'nodes',
-  mouseSelectionButton: 2,
+  // mouseSelectionButton: 2,
   // ================= 测试不同的分支样式 =================
   // 现在可以通过 mind.changeBranch 动态切换了！
 }

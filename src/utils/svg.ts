@@ -228,6 +228,8 @@ export const editSvgText = function (mei: MindElixir, textEl: HTMLDivElement, no
     calculatePrecisePosition(textEl)
 
     if ('parent' in node) {
+      // a label size change can shift enclosing summaries, re-render all of them
+      mei.renderSummary()
       mei.bus.fire('operation', {
         name: 'finishEditSummary',
         target: node,

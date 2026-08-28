@@ -1,6 +1,6 @@
 import type MindElixir from './index'
 import type { SummarySvg, Topic } from '.'
-import { DirectionClass } from './types/index'
+import { DirectionClass, type NodeObj } from './types/index'
 import { generateUUID, getOffsetLT, setAttributes } from './utils'
 import { directionOf } from './utils/dom'
 import { createLabel, editSvgText, svgNS } from './utils/svg'
@@ -118,6 +118,72 @@ const createPath = function (d: string, color?: string) {
 const getWrapper = (tpc: Topic) => tpc.parentElement.parentElement
 
 /**
+ * Space between an enclosing summary's bracket and the bracket/label of the
+ * summaries it encloses.
+ */
+const GAP = 12
+
+/**
+ * Rebuild the nesting relationship between summaries with a single traversal
+ * of the tree. Returns the summaries ordered so that every summary comes
+ * after the ones it encloses, plus the summaries each one directly encloses.
+ */
+const buildNesting = function (root: NodeObj, summaries: Summary[]) {
+  if (summaries.length === 0) return { order: [] as Summary[], contained: new Map<string, Summary[]>() }
+  const byParent = new Map<string, Summary[]>()
+  for (const summary of summaries) {
+    const list = byParent.get(summary.parent)
+    if (list) list.push(summary)
+    else byParent.set(summary.parent, [summary])
+  }
+  const nodeById = new Map<string, NodeObj>()
+  const indexInParent = new Map<NodeObj, number>()
+  const order: Summary[] = []
+  const visit = (node: NodeObj) => {
+    nodeById.set(node.id, node)
+    const children = node.children
+    if (children) {
+      for (let i = 0; i < children.length; i++) {
+        indexInParent.set(children[i], i)
+        visit(children[i])
+      }
+    }
+    const list = byParent.get(node.id)
+    if (list) {
+      // inner ranges first so enclosing summaries are drawn after their inner ones
+      list.sort((a, b) => b.start - a.start || a.end - b.end)
+      order.push(...list)
+    }
+  }
+  visit(root)
+  const isContained = (x: Summary, s: Summary) => {
+    const sParent = nodeById.get(s.parent)
+    if (!sParent) return false
+    let node = nodeById.get(x.parent)
+    while (node) {
+      if (node === sParent) return x.start >= s.start && x.end <= s.end
+      if (node.parent === sParent) {
+        const index = indexInParent.get(node)
+        return index !== undefined && index >= s.start && index <= s.end
+      }
+      node = node.parent
+    }
+    return false
+  }
+  const contained = new Map<string, Summary[]>()
+  const processed: Summary[] = []
+  for (const summary of order) {
+    const inner: Summary[] = []
+    for (const previous of processed) {
+      if (isContained(previous, summary)) inner.push(previous)
+    }
+    contained.set(summary.id, inner)
+    processed.push(summary)
+  }
+  return { order, contained }
+}
+
+/**
  * Remove a summary from the data and the DOM without firing any event.
  * Used by the render phase, which must not produce undo history.
  */
@@ -142,7 +208,14 @@ const getDirection = function (mei: MindElixir, { parent, start }: Summary) {
   return side
 }
 
-const drawSummary = function (mei: MindElixir, summary: Summary) {
+interface Extent {
+  top: number
+  right: number
+  bottom: number
+  left: number
+}
+
+const drawSummary = function (mei: MindElixir, summary: Summary, inner: Summary[] = [], extents?: Map<string, Extent>) {
   const { id, label: summaryText, parent, start, end, style } = summary
   const { nodes, theme, summarySvg } = mei
   const parentEl = mei.findEle(parent)
@@ -173,6 +246,33 @@ const drawSummary = function (mei: MindElixir, summary: Summary) {
     if (offsetLeft < left) left = offsetLeft
     if (wrapper.offsetWidth + offsetLeft > right) right = wrapper.offsetWidth + offsetLeft
   }
+  // shift the bracket outward so it doesn't overlap the summaries it encloses
+  // the curve of the bracket extends 10px from the bracket line towards the nodes
+  let push = 0
+  if (inner.length > 0 && extents) {
+    if (side === DirectionClass.DOWN) {
+      let innerBottom = -Infinity
+      for (const s of inner) {
+        const e = extents.get(s.id)
+        if (e && e.bottom > innerBottom) innerBottom = e.bottom
+      }
+      if (innerBottom !== -Infinity) push = Math.max(0, innerBottom - maxBottom + GAP)
+    } else if (side === DirectionClass.LHS) {
+      let innerLeft = Infinity
+      for (const s of inner) {
+        const e = extents.get(s.id)
+        if (e && e.left < innerLeft) innerLeft = e.left
+      }
+      if (innerLeft !== Infinity) push = Math.max(0, left + 10 - innerLeft + GAP)
+    } else {
+      let innerRight = -Infinity
+      for (const s of inner) {
+        const e = extents.get(s.id)
+        if (e && e.right > innerRight) innerRight = e.right
+      }
+      if (innerRight !== -Infinity) push = Math.max(0, innerRight - right + 10 + GAP)
+    }
+  }
   let path
   let text
   const strokeColor = style?.stroke || theme.cssVar['--color']
@@ -182,7 +282,7 @@ const drawSummary = function (mei: MindElixir, summary: Summary) {
   const renderedLabel = mei.markdown ? mei.markdown(summaryText, summary) : summaryText
   if (side === DirectionClass.DOWN) {
     // top-down layout: horizontal bracket below the sibling group
-    const y = maxBottom + 10
+    const y = maxBottom + 10 + push
     const mid = (startLeft + endRight) / 2
     path = createPath(`M ${startLeft} ${y - 10} c 0 5 5 10 10 10 L ${endRight - 10} ${y} c 5 0 10 -5 10 -10 M ${mid} ${y} v 10`, strokeColor)
     text = createLabel(renderedLabel, mid, y + 20, { anchor: 'middle', color: labelColor, dataType: 'summary', svgId: groupId })
@@ -192,11 +292,17 @@ const drawSummary = function (mei: MindElixir, summary: Summary) {
     const bottom = endBottom + offset
     const md = (top + bottom) / 2
     if (side === DirectionClass.LHS) {
-      path = createPath(`M ${left + 10} ${top} c -5 0 -10 5 -10 10 L ${left} ${bottom - 10} c 0 5 5 10 10 10 M ${left} ${md} h -10`, strokeColor)
-      text = createLabel(renderedLabel, left - 20, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
+      path = createPath(
+        `M ${left + 10 - push} ${top} c -5 0 -10 5 -10 10 L ${left - push} ${bottom - 10} c 0 5 5 10 10 10 M ${left - push} ${md} h -10`,
+        strokeColor
+      )
+      text = createLabel(renderedLabel, left - 20 - push, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
     } else {
-      path = createPath(`M ${right - 10} ${top} c 5 0 10 5 10 10 L ${right} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right} ${md} h 10`, strokeColor)
-      text = createLabel(renderedLabel, right + 20, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
+      path = createPath(
+        `M ${right - 10 + push} ${top} c 5 0 10 5 10 10 L ${right + push} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right + push} ${md} h 10`,
+        strokeColor
+      )
+      text = createLabel(renderedLabel, right + 20 + push, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
     }
   }
   const group = creatGroup(groupId)
@@ -207,6 +313,39 @@ const drawSummary = function (mei: MindElixir, summary: Summary) {
   group.summaryObj = summary
   group.labelEl = text // Store reference to label element
   summarySvg.appendChild(group)
+  // record the visual extent (bracket + label) for enclosing summaries
+  const labelW = text.offsetWidth
+  const labelH = text.offsetHeight
+  let extent: Extent
+  if (side === DirectionClass.DOWN) {
+    const y = maxBottom + 10 + push
+    const mid = (startLeft + endRight) / 2
+    extent = {
+      top: y - 10,
+      bottom: y + 20 + labelH / 2,
+      left: Math.min(startLeft, mid - labelW / 2),
+      right: Math.max(endRight, mid + labelW / 2),
+    }
+  } else if (side === DirectionClass.LHS) {
+    const offset = !parentObj.parent ? 0 : 10
+    const md = (startTop + offset + endBottom + offset) / 2
+    extent = {
+      left: left - 20 - push - labelW,
+      right: left - push + 10,
+      top: Math.min(startTop + offset, md - labelH / 2),
+      bottom: Math.max(endBottom + offset, md + labelH / 2),
+    }
+  } else {
+    const offset = !parentObj.parent ? 0 : 10
+    const md = (startTop + offset + endBottom + offset) / 2
+    extent = {
+      left: right + push - 10,
+      right: right + 20 + push + labelW,
+      top: Math.min(startTop + offset, md - labelH / 2),
+      bottom: Math.max(endBottom + offset, md + labelH / 2),
+    }
+  }
+  extents?.set(id, extent)
   return group
 }
 
@@ -215,9 +354,11 @@ export const createSummary = function (this: MindElixir, options: SummaryOptions
   const { currentNodes: nodes, summaries, bus } = this
   const { parent, start, end } = calcRange(nodes)
   const summary = { id: generateUUID(), parent, start, end, label: 'summary', style: options.style }
-  const g = drawSummary(this, summary) as SummarySvg
   summaries.push(summary)
-  this.editSummary(g)
+  // full re-render so enclosing summaries make room for the new one
+  this.renderSummary()
+  const g = this.nodes.querySelector('#s-' + summary.id) as SummarySvg | null
+  if (g) this.editSummary(g)
   bus.fire('operation', {
     name: 'createSummary',
     target: summary,
@@ -228,8 +369,8 @@ export const createSummaryFrom = function (this: MindElixir, summary: Omit<Summa
   // now I know the goodness of overloading
   const id = generateUUID()
   const newSummary = { ...summary, id }
-  drawSummary(this, newSummary)
   this.summaries.push(newSummary)
+  this.renderSummary()
   this.bus.fire('operation', {
     name: 'createSummary',
     target: newSummary,
@@ -239,6 +380,9 @@ export const createSummaryFrom = function (this: MindElixir, summary: Omit<Summa
 export const removeSummary = function (this: MindElixir, id: string) {
   const target = this.summaries.find(summary => summary.id === id)
   if (!target || !detachSummary(this, id)) return
+  // re-render so enclosing summaries pull their brackets/labels back inward
+  // after the removed summary no longer occupies space (nested summary case)
+  this.renderSummary()
   this.bus.fire('operation', {
     name: 'removeSummary',
     target,
@@ -262,14 +406,25 @@ export const unselectSummary = function (this: MindElixir) {
 
 export const renderSummary = function (this: MindElixir) {
   this.summarySvg.innerHTML = ''
+  // remove stale summary labels, keep arrow labels intact
+  this.labelContainer.querySelectorAll('.svg-label[data-type="summary"]').forEach(el => el.remove())
+  if (this.summaries.length === 0) {
+    this.nodes.insertAdjacentElement('beforeend', this.summarySvg)
+    return
+  }
   const staleIds: string[] = []
-  this.summaries.forEach(summary => {
+  const { order, contained } = buildNesting(this.nodeData, this.summaries)
+  const extents = new Map<string, Extent>()
+  // draw innermost summaries first so enclosing ones can account for their extents
+  for (const summary of order) {
     try {
-      if (drawSummary(this, summary) === null) staleIds.push(summary.id)
+      const g = drawSummary(this, summary, contained.get(summary.id) || [], extents)
+      if (g === null) staleIds.push(summary.id)
     } catch (e) {
+      // a collapsed node can't be measured; keep the summary in the data
       console.warn('Node may not be expanded')
     }
-  })
+  }
   // clean up after the iteration, mutating `summaries` inside it would skip summaries
   staleIds.forEach(id => detachSummary(this, id))
   this.nodes.insertAdjacentElement('beforeend', this.summarySvg)
