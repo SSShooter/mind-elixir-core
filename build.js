@@ -17,11 +17,7 @@ const buildList = [
     name: 'example',
     enrty: __dirname + './src/exampleData/1.ts',
   },
-  {
-    name: 'LayoutSsr',
-    enrty: __dirname + './src/utils/layout-ssr.ts',
-  },
-  {
+{
     name: 'PlaintextConverter',
     enrty: __dirname + './src/utils/plaintextConverter.ts',
   },

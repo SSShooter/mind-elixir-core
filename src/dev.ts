@@ -8,7 +8,6 @@ import type { Options, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import 'katex/dist/katex.min.css'
 import katex from 'katex'
-import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
 import { downloadUrl, exportImage } from '@mind-elixir/export-mindmap'
 import type { Tokens } from 'marked'
 import { marked } from 'marked'
@@ -266,8 +265,6 @@ window.destroy = () => {
   // @ts-expect-error remove reference
   window.m = null
 }
-
-document.querySelector('#ssr')!.innerHTML = renderSSRHTML(layoutSSR(window.m.nodeData))
 
 // const convertedData = plaintextToMindElixir(plaintextExample)
 // console.log('convertedData', convertedData)

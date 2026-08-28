@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "6.0.0-next.4",
+  "version": "6.0.0-next.5",
   "type": "module",
   "description": "Mind elixir is a free open source mind map core.",
   "keywords": [
@@ -39,11 +39,7 @@
       "types": "./dist/types/exampleData/1.d.ts",
       "import": "./dist/example.js"
     },
-    "./LayoutSsr": {
-      "types": "./dist/types/utils/LayoutSsr.d.ts",
-      "import": "./dist/LayoutSsr.js"
-    },
-    "./readme.md": "./readme.md",
+"./readme.md": "./readme.md",
     "./package.json": "./package.json",
     "./style": "./dist/MindElixir.css",
     "./style.css": "./dist/MindElixir.css",
