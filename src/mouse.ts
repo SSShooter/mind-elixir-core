@@ -195,6 +195,15 @@ export default function (mind: MindElixir) {
     const target = e.target as HTMLElement
     if (isTopic(target)) {
       mind.selectNode(target as Topic)
+      // On nodes with an image, only a double click on the text area enters
+      // editing; double clicking the image just selects the node.
+      if (target.image) {
+        const rect = target.text.getBoundingClientRect()
+        const { clientX, clientY } = e
+        if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
+          return
+        }
+      }
       mind.beginEdit(target)
       return
     }

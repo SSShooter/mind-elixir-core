@@ -187,8 +187,16 @@ export const editTopic = function (this: MindElixir, el: Topic) {
   // Get the original content from topic
   const originalContent = node.topic
 
-  // Use getOffsetLT to calculate el's offset relative to this.nodes
-  const { offsetLeft, offsetTop } = getOffsetLT(this.nodes, el)
+  // Anchor the input box to the text span (not the whole topic), so on nodes
+  // with an image the box stays at the text position and the image remains
+  // visible while editing.
+  const textEl = el.text
+  const textOffset = getOffsetLT(this.nodes, textEl)
+  const style = getComputedStyle(el)
+  // textOffset already includes el's padding; subtract it so the padded box
+  // renders its text exactly where the original text was.
+  const offsetLeft = textOffset.offsetLeft - parseFloat(style.paddingLeft || '0')
+  const offsetTop = textOffset.offsetTop - parseFloat(style.paddingTop || '0')
 
   // Insert input box into this.nodes instead of el
   this.nodes.appendChild(div)
@@ -196,11 +204,10 @@ export const editTopic = function (this: MindElixir, el: Topic) {
   div.textContent = originalContent
   div.contentEditable = 'plaintext-only'
   div.spellcheck = false
-  const style = getComputedStyle(el)
   div.style.cssText = `
   left: ${offsetLeft}px;
   top: ${offsetTop}px;
-  min-width:${el.offsetWidth - 8}px;
+  min-width:${textEl.offsetWidth - 8}px;
   color:${style.color};
   font-size:${style.fontSize};
   padding:${style.padding};
@@ -209,7 +216,9 @@ export const editTopic = function (this: MindElixir, el: Topic) {
   border: ${style.border};
   border-radius:${style.borderRadius}; `
   if (this.direction === LEFT) div.style.right = '0'
-  el.style.opacity = '0'
+  textEl.style.opacity = '0'
+  // Hide the selection outline while editing; the input box replaces it visually.
+  el.style.outline = 'none'
   selectText(div)
 
   this.bus.fire('operation', {
@@ -239,7 +248,8 @@ export const editTopic = function (this: MindElixir, el: Topic) {
 
   div.addEventListener('blur', () => {
     if (!div) return
-    el.style.opacity = '1'
+    textEl.style.opacity = '1'
+    el.style.outline = ''
     // NOTE: Do not use textContent here. Safari requires innerText to properly map <br> tags to \n line breaks for editable content.
     // Read before remove(): innerText degrades to textContent on detached elements and loses line breaks.
     const inputContent = div.innerText?.trim() || ''
