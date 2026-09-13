@@ -4,6 +4,7 @@ import type MindElixir from '../src'
 interface Window {
   m: MindElixir
   MindElixir: typeof MindElixir
+  Outliner: any
   E: typeof MindElixir.E
   [key: string]: any
 }
@@ -41,6 +42,27 @@ export class MindElixirFixture {
   async getInstance(el = '#map') {
     const instanceHandle = await this.page.evaluateHandle(el => Promise.resolve(window[el] as MindElixir), el)
     return instanceHandle
+  }
+  /** Create a map bound to an outliner — ONE data, TWO views. */
+  async initBoundOutliner(data: MindElixirData, el = '#map', outlineEl = '#outline') {
+    const dataStr = JSON.stringify(data)
+    await this.page.evaluate(
+      async ({ dataStr, el, outlineEl }) => {
+        const MindElixir = window.MindElixir
+        const mind = new MindElixir({
+          el,
+          direction: MindElixir.SIDE,
+          allowUndo: true,
+          keypress: true,
+          editable: true,
+        })
+        // historyStack is created during init — await it before binding
+        await mind.init(JSON.parse(dataStr))
+        window[el] = mind
+        window.outliner = new window.Outliner({ el: outlineEl, mei: mind, fileName: 'outline' })
+      },
+      { dataStr, el, outlineEl }
+    )
   }
   async getData(el = '#map') {
     const data = await this.page.evaluate(el => {

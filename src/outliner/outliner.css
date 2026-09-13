@@ -1,0 +1,235 @@
+/* Outliner — rebuilt from the class names used in Outliner.ts.
+   Visual intent: compact, borderless, no shadows (matches the app's minimal UI). */
+
+.outliner-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--outliner-fg, #1f2328);
+  background: var(--outliner-bg, #fff);
+}
+
+/* ---------- breadcrumb ---------- */
+
+.outliner-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px 2px 8px;
+  font-size: 12px;
+}
+
+.breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+.breadcrumb-item:hover {
+  background: var(--outliner-hover, rgba(0, 0, 0, 0.05));
+}
+
+.breadcrumb-root {
+  color: var(--outliner-muted, #6b7280);
+}
+
+.breadcrumb-segment {
+  display: inline-flex;
+  align-items: center;
+}
+
+.breadcrumb-separator {
+  padding: 0 2px;
+  color: var(--outliner-muted, #b0b6bd);
+}
+
+.breadcrumb-current {
+  cursor: default;
+}
+
+.breadcrumb-current:hover {
+  background: none;
+}
+
+/* ---------- items ---------- */
+
+.outliner-items {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+
+.outline-item-container {
+  position: relative;
+}
+
+.outline-item-vertical-line {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  background: var(--outliner-line, #e5e7eb);
+}
+
+.outline-item-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.outline-item-wrapper.drag-over::before,
+.outline-item-wrapper.drag-over-bottom::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--outliner-accent, #3b82f6);
+}
+
+.outline-item-wrapper.drag-over::before {
+  top: -1px;
+}
+
+.outline-item-wrapper.drag-over-bottom::after {
+  bottom: -1px;
+}
+
+.outline-item-wrapper.drag-over-inside {
+  background: var(--outliner-hover, rgba(59, 130, 246, 0.08));
+}
+
+/* ---------- bullet ---------- */
+
+.outline-item-front {
+  display: flex;
+  align-items: center;
+  height: 22px;
+}
+
+.outline-item-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--outliner-muted, #9aa1a9);
+}
+
+.outline-item-dot-zoomable {
+  cursor: grab;
+}
+
+.outline-item-dot-zoomable:hover {
+  background: var(--outliner-accent, #3b82f6);
+}
+
+/* ---------- topic ---------- */
+
+.outline-item-topic {
+  flex: 1;
+  min-width: 0;
+  padding: 1px 2px;
+  border: none;
+  outline: none;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.outline-item-topic:empty::before {
+  content: '';
+  display: inline-block;
+}
+
+/* ---------- trailing buttons ---------- */
+
+.outline-item-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  height: 22px;
+  opacity: 0;
+}
+
+.outline-item-wrapper:hover .outline-item-btn-group,
+.outline-item-wrapper:focus-within .outline-item-btn-group {
+  opacity: 1;
+}
+
+.outline-item-collapse-btn,
+.outline-item-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  color: var(--outliner-muted, #6b7280);
+  cursor: pointer;
+}
+
+.outline-item-collapse-btn:hover,
+.outline-item-menu-btn:hover {
+  background: var(--outliner-hover, rgba(0, 0, 0, 0.06));
+  color: inherit;
+}
+
+.outline-item-collapse-btn[data-state='hidden'] {
+  visibility: hidden;
+}
+
+/* ---------- context menu ---------- */
+
+.outline-item-menu-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.outline-item-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 20;
+  min-width: 120px;
+  padding: 2px;
+  border: 1px solid var(--outliner-line, #e5e7eb);
+  border-radius: 4px;
+  background: var(--outliner-bg, #fff);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.outline-item-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 3px;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.outline-item-menu-item:hover {
+  background: var(--outliner-hover, rgba(0, 0, 0, 0.06));
+}
+
+.outline-item-menu-item-danger {
+  color: var(--outliner-danger, #dc2626);
+}

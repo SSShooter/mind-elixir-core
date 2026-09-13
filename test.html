@@ -29,9 +29,12 @@
 <body>
   <div id="map"></div>
   <div id="map2"></div>
+  <div id="outline"></div>
   <script type="module">
     import MindElixir from '/src/index.ts'
+    import { Outliner } from '/src/outliner/index.ts'
     window.MindElixir = MindElixir
+    window.Outliner = Outliner
     window.E = MindElixir.E
   </script>
 </body>
