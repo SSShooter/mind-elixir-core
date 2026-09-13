@@ -2,10 +2,16 @@
  * Demo: MindElixir map + Outliner — ONE data, TWO views.
  * The outline binds to `mei` (bound mode): it mirrors mei.nodeData, routes
  * every mutation to the map, and both views undo/redo on the same timeline.
+ *
+ * Topics go through the SAME markdown/KaTeX renderer on both sides, so the
+ * map and the outline stay visually in step too — the demo data's
+ * `# Heading`, `**bold**`, tables and `$$math$$` nodes show it.
  * Open /outliner-demo.html with the vite dev server.
  */
+import 'katex/dist/katex.min.css'
 import MindElixir from './index'
 import example from './exampleData/1'
+import { renderMarkdown } from './dev.markdown'
 import { Outliner } from './outliner'
 
 interface Window {
@@ -19,6 +25,7 @@ async function main() {
     el: '#map',
     newTopicName: '子节点',
     allowUndo: true,
+    markdown: renderMarkdown,
   })
   await mei.init(example)
   window.m = mei
@@ -35,6 +42,9 @@ async function main() {
     mei,
     docName: 'outline',
     fileName: '大纲',
+    // renders the topic as HTML while not editing; focusing swaps back to the
+    // raw markdown so the source stays editable
+    markdown: renderMarkdown,
   })
   window.o = outliner
 

@@ -412,6 +412,58 @@
   text-decoration: underline;
 }
 
+/* Markdown 内容块：UA 默认的块级边距会把一行撑得很高，统一压平 */
+.outline-item-topic p,
+.outline-item-topic ul,
+.outline-item-topic ol,
+.outline-item-topic blockquote,
+.outline-item-topic pre,
+.outline-item-topic table {
+  margin: 0;
+}
+
+.outline-item-topic ul,
+.outline-item-topic ol {
+  padding-left: 1.25rem;
+}
+
+.outline-item-topic code {
+  padding: 0.05em 0.3em;
+  font-size: 0.9em;
+  background-color: var(--rol-border-light);
+  border-radius: 0.25rem;
+}
+
+.outline-item-topic pre {
+  padding: 0.4rem 0.5rem;
+  background-color: var(--rol-border-light);
+  border-radius: 0.375rem;
+  overflow: auto;
+}
+
+.outline-item-topic pre code {
+  padding: 0;
+  background-color: transparent;
+}
+
+.outline-item-topic table {
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+
+.outline-item-topic th,
+.outline-item-topic td {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--rol-border-light);
+}
+
+/* KaTeX display 公式默认是居中的块，会把行撑高 —— 压平进这一行 */
+.outline-item-topic .katex-display {
+  display: inline-block;
+  margin: 0;
+  text-align: left;
+}
+
 /* 图标尺寸：react-outliner 通过 lucide 的 size={14} 控制，这里用 CSS 统一 */
 .outline-item-collapse-btn svg,
 .outline-item-menu-btn svg {
