@@ -46,6 +46,8 @@ export class Outliner {
   private mei: OutlinerMei | null
   /** While true, `rerenderFromMei` skips one render (patch-only topic commits). */
   private suppressSync = false
+  /** Set for the remainder of a tick after a sync request — see `requestSync`. */
+  private syncScheduled = false
   private docName: string
   private readonly: boolean
   private markdown?: (text: string, item: OutlineItem) => string
@@ -104,16 +106,16 @@ export class Outliner {
       // Bound mode: the outliner never pushes its own entries — it re-adopts
       // the live tree on every stack change (map operations, undo, redo and
       // clear all land here)
-      this.disposers.push(this.stack.subscribe(() => this.rerenderFromMei()))
-      // Collapse/expand is a VIEW change: `expandNode` fires the 'expandNode'
-      // event but never touches the history stack, so the subscription above
-      // stays silent. Mirror it explicitly or the outline keeps showing
-      // children the map just folded away.
+      this.disposers.push(this.stack.subscribe(this.requestSync))
+      // Collapse/expand now lands on the shared stack like any other edit, but the
+      // map also fires 'expandNode' — that channel is still needed for SILENT
+      // expands (auto-expanding a collapsed parent before a child is added), which
+      // record nothing on their own. Both channels notify; `requestSync` renders
+      // once per tick instead of twice.
       const bus = this.mei.bus
       if (bus) {
-        const onExpand = () => this.rerenderFromMei()
-        bus.addListener('expandNode', onExpand)
-        this.disposers.push(() => bus.removeListener('expandNode', onExpand))
+        bus.addListener('expandNode', this.requestSync)
+        this.disposers.push(() => bus.removeListener('expandNode', this.requestSync))
       }
     } else {
       // Shared history: restore this document when the stack walks over our entries
@@ -171,6 +173,10 @@ export class Outliner {
       return
     }
     if (saveHistory) {
+      // Same vocabulary as the map: a pure fold reports expandNode / collapseNode,
+      // anything else (topic, style, …) stays a reshapeNode.
+      const isPureFold = patch.topic === undefined && patch.expanded !== undefined
+      const op = isPureFold ? (patch.expanded ? 'expandNode' : 'collapseNode') : 'reshapeNode'
       const ok = this.commit(
         draft => {
           const item = findItemById(draft, id)
@@ -178,7 +184,7 @@ export class Outliner {
           Object.assign(item, patch)
           return draft
         },
-        { op: 'reshapeNode', id }
+        { op, id }
       )
       if (ok) this.render()
       return
@@ -294,6 +300,22 @@ export class Outliner {
   }
 
   /**
+   * Ask for a bound-mode sync. Renders SYNCHRONOUSLY — callers such as
+   * `applyBoundOperation` focus a node right after the map call, which needs the
+   * fresh DOM — but swallows duplicate requests inside one tick, because a single
+   * fold is announced twice (stack push + the map's 'expandNode' event).
+   */
+  private requestSync = (): void => {
+    if (!this.mei || this.suppressSync) return
+    if (this.syncScheduled) return
+    this.syncScheduled = true
+    queueMicrotask(() => {
+      this.syncScheduled = false
+    })
+    this.rerenderFromMei()
+  }
+
+  /**
    * Re-render the outline from the live mei tree. Called on every stack
    * change, so it re-reads `this.items` (undo/redo may have replaced the
    * tree) and drops view state that may point at now-missing nodes.
@@ -375,9 +397,10 @@ export class Outliner {
   private expandBound(id: string, isExpand: boolean): void {
     const el = this.meiEle(id)
     if (!el) return
-    // expandNode fires 'expandNode' and never touches the history stack; the
-    // bus subscription installed in the constructor handles the re-render, so
-    // both this path and map-side folding converge on ONE sync point.
+    // expandNode records a tracked 'operation' AND fires 'expandNode'; the
+    // constructor subscriptions handle re-rendering (once per tick, see
+    // requestSync), so this path and map-side folding behave identically —
+    // including undo, which now covers folds made from either view.
     this.mei!.expandNode(el, isExpand)
   }
 

@@ -34,6 +34,11 @@ const calcCurrentTarget = function (operation: Operation): RestoreMeta['currentT
     case 'moveNodesAfter':
     case 'moveNodesIn':
       return { type: 'nodes', value: operation.target.map(node => node.id) }
+    // Collapse / expand: the target is the folded node (or the root for a
+    // whole-map batch). Restore never selects it — see `restore` below.
+    case 'expandNode':
+    case 'collapseNode':
+      return { type: 'nodes', value: [operation.target.id] }
     default:
       return { type: 'nodes', value: [operation.target.id] }
   }
@@ -80,7 +85,11 @@ export default function (mei: MindElixir) {
     // Deleting on undo / creating on redo means the target is gone — restore
     // the selection that was active before the operation instead.
     const targetRemoved = operation === 'removeNodes' || operation === 'removeSummary' || operation === 'removeArrow'
-    const shouldSelectTarget = (direction === 'undo') === targetRemoved
+    // Folding never touches the selection (an expander click is not a select), so
+    // both directions fall back to the pre-operation selection instead of jumping
+    // the selection onto the node that was folded.
+    const isViewOperation = operation === 'expandNode' || operation === 'collapseNode'
+    const shouldSelectTarget = !isViewOperation && (direction === 'undo') === targetRemoved
 
     if (currentTarget.type === 'nodes') {
       selectNodesByIds(shouldSelectTarget ? currentTarget.value : currentSelected)

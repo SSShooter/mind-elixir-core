@@ -20,9 +20,9 @@
  * ```
  *
  * In bound mode the outline syncs on BOTH channels: the shared history stack
- * (structural edits, undo/redo) and the map's `expandNode` event. Collapsing
- * a node on the map never touches the history stack, so the bus listener is
- * what keeps the two views in step.
+ * (structural edits, undo/redo — collapse/expand now lands here too) and the
+ * map's `expandNode` event, which still covers silent internal expands that
+ * record no entry of their own. Both merge into one render per tick.
  */
 export { Outliner } from './Outliner'
 export { findItemById, findPathToNode } from './operations'

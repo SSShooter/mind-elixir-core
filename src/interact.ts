@@ -2,7 +2,7 @@ import type MindElixir from './index'
 import { DOWN } from './const'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
-import type { MindElixirData, NodeObj } from './types/index'
+import type { ExpandNodeOptions, MindElixirData, NodeObj } from './types/index'
 import { fillParent, getTranslate, setExpand } from './utils/index'
 
 function collectData(instance: MindElixir) {
@@ -363,15 +363,33 @@ export const initDown = function (this: MindElixir) {
   this.bus.fire('changeDirection', this.direction)
 }
 
-export const expandNode = function (this: MindElixir, el: Topic, isExpand?: boolean) {
+/** Any node in the subtree that is not explicitly collapsed. */
+const hasAnyExpanded = (node: NodeObj): boolean => node.expanded !== false || (node.children ?? []).some(hasAnyExpanded)
+
+/**
+ * Would `setExpand` actually move something? Mirrors its walk (level === 0 forces
+ * every descendant closed) so batch calls that change nothing record no history.
+ */
+const wouldExpandChange = (node: NodeObj, target: boolean, level?: number): boolean => {
+  if ((node.expanded !== false) !== target) return true
+  const children = node.children ?? []
+  if (!children.length) return false
+  if (level !== undefined && level <= 0) return children.some(hasAnyExpanded)
+  const nextLevel = level !== undefined ? level - 1 : undefined
+  return children.some(child => wouldExpandChange(child, target, nextLevel))
+}
+
+export const expandNode = function (this: MindElixir, el: Topic, isExpand?: boolean, options?: ExpandNodeOptions) {
   const node = el.nodeObj
-  if (typeof isExpand === 'boolean') {
-    node.expanded = isExpand
-  } else if (node.expanded !== false) {
-    node.expanded = false
-  } else {
-    node.expanded = true
-  }
+  // No children — nothing to fold (no expander is rendered either), so there is
+  // neither DOM work nor history to record. Guards direct API calls on leaves.
+  if (!node.children?.length) return
+  const wasExpanded = node.expanded !== false
+  const expanded = typeof isExpand === 'boolean' ? isExpand : !wasExpanded
+  // Already in the requested state: skip both the DOM work and the history
+  // entry, so a stray click cannot record a step that changes nothing.
+  if (expanded === wasExpanded) return
+  node.expanded = expanded
 
   // Calculate position before expansion
   const expanderRect = el.getBoundingClientRect()
@@ -415,16 +433,29 @@ export const expandNode = function (this: MindElixir, el: Topic, isExpand?: bool
   this.move(driftX, driftY)
 
   this.bus.fire('expandNode', node)
+  // `expanded` is part of the node data (`getData()` exports it), so folding is a
+  // tracked operation like any other edit and must be undoable. `silent` is for
+  // internal callers that already record an operation of their own.
+  if (!options?.silent) {
+    this.bus.fire('operation', {
+      name: expanded ? 'expandNode' : 'collapseNode',
+      target: node,
+    })
+  }
 }
 
-export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: boolean) {
+export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: boolean, options?: ExpandNodeOptions) {
   const node = el.nodeObj
+  const expanded = isExpand ?? !node.expanded
+  // Every level already sits in the requested state — skip both the re-render
+  // and the history entry.
+  if (!wouldExpandChange(node, expanded)) return
   const beforeRect = el.getBoundingClientRect()
   const beforePosition = {
     x: beforeRect.left,
     y: beforeRect.top,
   }
-  setExpand(node, isExpand ?? !node.expanded)
+  setExpand(node, expanded)
   this.refresh()
   const afterRect = this.findEle(node.id).getBoundingClientRect()
   const afterPosition = {
@@ -435,6 +466,17 @@ export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: b
   const driftY = beforePosition.y - afterPosition.y
 
   this.move(driftX, driftY)
+
+  // `refresh()` rebuilds the DOM silently, so the outliner — which mirrors
+  // collapse/expand through this event — has to be told explicitly.
+  this.bus.fire('expandNode', node)
+  if (!options?.silent) {
+    this.bus.fire('operation', {
+      name: expanded ? 'expandNode' : 'collapseNode',
+      target: node,
+      recursive: true,
+    })
+  }
 }
 
 /**

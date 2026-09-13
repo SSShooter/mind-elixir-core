@@ -17,6 +17,7 @@ import type {
   Alignment,
   KeypressOptions,
   Before,
+  ExpandNodeOptions,
 } from './types/index'
 import type { Topic, ArrowSvg, SummarySvg, Wrapper, Parent, Children } from './types/dom'
 import type { Arrow, ArrowOptions } from './arrow'
@@ -240,8 +241,8 @@ class MindElixir<M = any> {
   declare initRight: () => void
   declare initSide: () => void
   declare initDown: () => void
-  declare expandNode: (el: Topic<M>, isExpand?: boolean) => void
-  declare expandNodeAll: (el: Topic<M>, isExpand?: boolean) => void
+  declare expandNode: (el: Topic<M>, isExpand?: boolean, options?: ExpandNodeOptions) => void
+  declare expandNodeAll: (el: Topic<M>, isExpand?: boolean, options?: ExpandNodeOptions) => void
   declare refresh: (data?: MindElixirData<M>) => void
   declare getObjById: (id: string, data: NodeObj<M>) => NodeObj<M> | null
   declare generateNewObj: () => NodeObjExport<M>
