@@ -274,7 +274,9 @@ export const install = function (this: MindElixir, plugin: (instance: MindElixir
  * @function
  * @instance
  * @name focusNode
- * @description Enter focus mode, set the target element as root.
+ * @description Enter focus mode, set the target element as root. Focus mode is a
+ * history boundary: the undo/redo stack is cleared, because the rendered
+ * document changes while `getData()` keeps reporting the whole diagram.
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
@@ -290,13 +292,19 @@ export const focusNode = function (this: MindElixir, el: Topic) {
   }
   this.nodeData = el.nodeObj
   this.initRight()
+  // Focus mode swaps the visible document: the map now renders the focused
+  // subtree while `getData()` keeps reporting the backup tree (see
+  // `collectData`). Entries recorded against the previous view are therefore
+  // not replayable, so drop the stack and re-baseline on the focused document.
+  this.clearHistory?.()
   this.toCenter()
 }
 /**
  * @function
  * @instance
  * @name cancelFocus
- * @description Exit focus mode.
+ * @description Exit focus mode. Restores the pre-focus document and, like
+ * `focusNode`, clears the undo/redo stack.
  * @memberof MapInteraction
  */
 export const cancelFocus = function (this: MindElixir) {
@@ -306,6 +314,10 @@ export const cancelFocus = function (this: MindElixir) {
     this.direction = this.tempDirection
     this.tempDirection = null
     this.refresh()
+    // Restoring the full tree is another document swap — same reasoning as
+    // `focusNode`: undo must not travel across the focus boundary. Cleared
+    // AFTER `refresh()` so the re-baseline snapshot is the restored tree.
+    this.clearHistory?.()
     this.toCenter()
   }
 }

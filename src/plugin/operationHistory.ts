@@ -1,4 +1,5 @@
 import type MindElixir from '../index'
+import type { NodeObj } from '../types/index'
 import type { HistoryDirection, HistoryEntry } from '../utils/historyStack'
 import { HistoryStack } from '../utils/historyStack'
 import type { Operation } from '../utils/pubsub'
@@ -70,11 +71,43 @@ export default function (mei: MindElixir) {
     mei.scrollIntoView(els[els.length - 1])
   }
 
+  /** Depth-first lookup inside a snapshot (the entries are plain clones). */
+  const findById = (node: NodeObj, id: string): NodeObj | null => {
+    if (node.id === id) return node
+    for (const child of node.children ?? []) {
+      const hit = findById(child, id)
+      if (hit) return hit
+    }
+    return null
+  }
+
   const restore = (entry: HistoryEntry, direction: HistoryDirection) => {
     const meta = entry.meta as RestoreMeta | undefined
     // `before` is the state to show on undo, `after` on redo
     const snapshot = direction === 'undo' ? entry.before : entry.after
+    // In focus mode the map renders a subtree while `getData()` keeps reporting
+    // the whole diagram, so refreshing a snapshot verbatim would blow the
+    // focused view back open. Re-anchor instead: the refreshed full tree
+    // becomes `nodeDataBackup` and its focus root the rendered document.
+    // History never crosses a focus boundary (`focusNode` / `cancelFocus`
+    // clear it), so the focus root is guaranteed to exist in the snapshot.
+    const focusRootId = mei.isFocusMode ? mei.nodeData?.id : null
     mei.refresh(snapshot)
+    if (focusRootId) {
+      const full = mei.nodeData
+      const focused = findById(full, focusRootId)
+      if (focused) {
+        mei.nodeDataBackup = full
+        mei.nodeData = focused
+        mei.refresh()
+      } else {
+        // Unreachable in practice — degrade to a consistent non-focus state
+        // rather than leaving `isFocusMode` true over a whole-diagram render.
+        mei.nodeDataBackup = full
+        mei.isFocusMode = false
+        mei.tempDirection = null
+      }
+    }
     // Keep the push baseline in step with what the map now shows. Without this,
     // the next operation would record the pre-undo state as its `before` and
     // undo/redo would drift after a branching edit.
