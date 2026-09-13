@@ -62,9 +62,10 @@ export interface OutlinerMei {
    */
   historyStack?: HistoryStack
   /**
-   * Event bus. Collapse/expand now records a tracked operation (so the shared
-   * stack already announces it) AND fires `expandNode`. The outliner listens to
-   * both and merges them into one render per tick — see `requestSync`.
+   * Event bus. Collapse/expand records a tracked operation (so the shared stack
+   * already announces it) AND fires `expandNode`. The stack channel renders
+   * synchronously while `expandNode` defers, so the pair costs one render
+   * without either notification being dropped — see `scheduleSync`.
    */
   bus?: ReturnType<typeof createBus<EventMap>>
   /** Throws when the node is not rendered (e.g. collapsed in the map). */

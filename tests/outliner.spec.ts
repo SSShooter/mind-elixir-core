@@ -82,6 +82,35 @@ test('Map collapse is undoable and the outline follows', async ({ page }) => {
   await expect(mapTopic(page, 'Child 1')).toBeVisible()
 })
 
+test('Two map operations in one synchronous block both reach the outline', async ({ page }) => {
+  // Both `addChild` calls run inside ONE evaluate(), i.e. one synchronous block,
+  // so both hit the outliner's sync-request path before any microtask can run.
+  // Coalescing those requests must not DROP the second one: nothing else
+  // triggers a sync, so a dropped request leaves the outline permanently stale.
+  await page.evaluate(() => {
+    const mind = window['#map']
+    const branch = mind.findEle('branch1')
+    mind.addChild(branch, { id: 'blockA', topic: 'Block A', children: [] })
+    mind.addChild(branch, { id: 'blockB', topic: 'Block B', children: [] })
+  })
+
+  await expect(outlineTopic(page, 'Block A')).toBeVisible()
+  await expect(outlineTopic(page, 'Block B')).toBeVisible()
+})
+
+test('A node added and then removed in one block leaves no orphan in the outline', async ({ page }) => {
+  await page.evaluate(() => {
+    const mind = window['#map']
+    const branch = mind.findEle('branch1')
+    mind.addChild(branch, { id: 'transient', topic: 'Transient', children: [] })
+    const added = mind.findEle('transient')
+    if (added) mind.removeNodes([added])
+  })
+
+  await expect(outlineTopic(page, 'Transient')).toHaveCount(0)
+  await expect(outlineTopic(page, 'Child 1')).toBeVisible()
+})
+
 test('Outliner collapse is undoable and the map follows', async ({ page }) => {
   const branchRow = page
     .locator('#outline .outline-item-wrapper')
