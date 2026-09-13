@@ -186,7 +186,7 @@
 <body>
   <header class="topbar">
     <h1>MindElixir × Outliner</h1>
-    <span class="hint">一份数据（mei.nodeData），两个视图（导图 / 大纲）—— 任意一侧的编辑都会同步到另一侧，撤销/重做共用同一条时间线</span>
+    <span class="hint">一份数据（mei.nodeData），两个视图（导图 / 大纲）—— 任意一侧的编辑都会同步到另一侧，撤销/重做共用同一条时间线；markdown / KaTeX 也是同一个渲染器（src/dev.markdown.ts），两边显示一致</span>
   </header>
 
   <main class="views">
@@ -195,7 +195,7 @@
       <div id="map"></div>
     </section>
     <section class="pane">
-      <div class="pane-head"><b>大纲</b> — 点击选中 / 回车加同级 / Tab 缩进 / 折叠按钮</div>
+      <div class="pane-head"><b>大纲</b> — 点击选中 / 回车加同级 / Tab 缩进 / 折叠按钮（markdown 只读渲染，聚焦后回到原文）</div>
       <div id="outline"></div>
     </section>
   </main>

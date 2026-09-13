@@ -7,11 +7,9 @@ import largeMap from './exampleData/largeMap'
 import type { Options, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import 'katex/dist/katex.min.css'
-import katex from 'katex'
 import { downloadUrl, exportImage } from '@mind-elixir/export-mindmap'
-import type { Tokens } from 'marked'
-import { marked } from 'marked'
 import { md2html } from 'simple-markdown-to-html'
+import { renderMarkdown } from './dev.markdown'
 import type { Arrow } from './arrow'
 import type { Summary } from './summary'
 import { mindElixirToPlaintext, plaintextExample, plaintextToMindElixir } from './utils/plaintextConverter'
@@ -39,58 +37,8 @@ const options: Options = {
   newTopicName: '子节点',
   // mouseSelectionButton: 2,
   editable: true,
-  markdown: (text: string) => {
-    if (!text) return ''
-    try {
-      const renderer = {
-        strong(token: Tokens.Strong) {
-          let color = ''
-          let content = token.text
-          if (token.text.startsWith('%:')) {
-            const text = token.text.slice(2)
-            const colonIndex = text.indexOf(':')
-            if (colonIndex > 0) {
-              color = text.slice(0, colonIndex)
-              content = text.slice(colonIndex + 1)
-            }
-          }
-          if (token.raw.startsWith('__')) {
-            return `<strong class="underscore" style="background-color: ${color};">${content}</strong>`
-          }
-          return `<strong class="asterisk" style="color: ${color};">${content}</strong>`
-        },
-        link(token: Tokens.Link) {
-          const href = token.href || ''
-          const title = token.title ? ` title="${token.title}"` : ''
-          const text = token.text || ''
-          return `<a href="${href}"${title} target="_blank">${text}</a>`
-        },
-      }
-
-      // Handle display math ($$...$$)
-      text = text.replace(/\$\$([^$]+)\$\$/g, (_, math) => {
-        return katex.renderToString(math.trim(), {
-          displayMode: true,
-          output: 'html',
-        })
-      })
-
-      // Handle inline math ($...$)
-      text = text.replace(/\$([^$]+)\$/g, (_, math) => {
-        return katex.renderToString(math.trim(), {
-          displayMode: false,
-          output: 'html',
-        })
-      })
-
-      marked.use({ renderer, gfm: true })
-      const html = marked(text) as string
-      return html.trim()
-    } catch (error) {
-      console.log('md2html error', error)
-      return text
-    }
-  },
+  // markdown + KaTeX renderer shared with dev.outliner.ts
+  markdown: renderMarkdown,
   // To disable markdown, simply omit the markdown option or set it to undefined
   // if you set contextMenu to false, you should handle contextmenu event by yourself, e.g. preventDefault
   contextMenu: {
