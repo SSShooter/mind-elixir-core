@@ -16,6 +16,11 @@
 - `expandNodeAll` now fires the `expandNode` event, so a bound outliner stays in sync after a recursive expand.
 - Folding a childless node — or re-applying a state a node already has — no longer touches the DOM or the history stack.
 - Bound outliner renders once per tick when the shared stack and the map's `expandNode` event both announce the same fold.
+- Undo inside focus mode no longer re-renders the whole diagram. Restoring a snapshot re-anchors the focused subtree, so `Ctrl+Z` stays in focus and `cancelFocus` restores a backup tree that matches what was on screen.
+
+### Behavior Changes
+
+- `focusNode` and `cancelFocus` clear the undo/redo stack. Focus mode swaps the rendered document (the map shows one subtree while `getData()` keeps reporting the whole diagram), so entries recorded before the switch are not replayable — the focus boundary is now a history boundary in both directions.
 
 ## 5.15.0 - 2026-08-03
 

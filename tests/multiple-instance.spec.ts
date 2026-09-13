@@ -46,5 +46,10 @@ test('Add Child To Data2 Correctly', async ({ page, me }) => {
       topic: 'child3',
     })
   )
-  expect(await page.screenshot()).toMatchSnapshot()
+  // Curved node edges are anti-aliased and drift by a pixel or two between
+  // Chromium builds — a real layout change on this page would move thousands of
+  // pixels, so a small absolute budget keeps the test honest while absorbing
+  // the rendering noise. Do not raise this to a ratio: 1% of a 1280x720 page is
+  // 9000+ pixels and would hide a node going missing.
+  expect(await page.screenshot()).toMatchSnapshot({ maxDiffPixels: 10 })
 })

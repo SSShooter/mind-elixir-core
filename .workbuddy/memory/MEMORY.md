@@ -27,6 +27,17 @@ Curated, long-lived notes. Daily logs live beside this file.
 - `biome check src` has pre-existing format debt — format only the lines you touched
   (compare with a formatted copy in the same directory instead of running `--write`).
 
+## Focus mode (invariants)
+
+- In focus mode `mei.nodeData` IS the focus root (and `fillParent` leaves its `parent`
+  `undefined`), while `getData()` / `collectData` keep reporting `nodeDataBackup` — the whole
+  diagram. So `mei.refresh(snapshot)` inside focus breaks the `nodeData` ⊂ `nodeDataBackup`
+  aliasing that `cancelFocus` relies on; `operationHistory.restore` re-anchors it explicitly
+  (refresh the full snapshot, then re-point `nodeData` at the focus root found inside it).
+- Focus is a history boundary: `focusNode` / `cancelFocus` call `clearHistory()`, so stack
+  entries only ever belong to the current focus view. `clearHistory` must run AFTER
+  `cancelFocus`'s `refresh()`, otherwise the re-baseline snapshot is the focus subtree.
+
 ## Testing notes
 
 - `HistoryStack.undo()` keeps undone entries for redo, so assert undo depth with

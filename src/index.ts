@@ -155,6 +155,9 @@ class MindElixir<M = any> {
    * instance (e.g. after `refresh()`) to prevent users from undoing back into
    * a previously loaded diagram.
    *
+   * Also called automatically by `focusNode` / `cancelFocus`: focus mode swaps
+   * the rendered document, so history from before the switch is not replayable.
+   *
    * Only available when `allowUndo` is `true` (the default).
    */
   declare clearHistory?: () => void
