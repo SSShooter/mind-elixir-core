@@ -30,6 +30,7 @@ import methods from './methods'
 import { sub, main } from './utils/generateBranch'
 import { version } from '../package.json'
 import { createPanHelper } from './utils/panHelper'
+import type { HistoryStack } from './utils/historyStack'
 
 // TODO show up animation
 
@@ -138,7 +139,13 @@ class MindElixir<M = any> {
    */
   declare pluginsInitialized: boolean
   declare bus: ReturnType<typeof createBus<EventMap>>
-  declare history: Operation[]
+  /**
+   * Shared undo/redo journal, created by the operation-history plugin during
+   * `init` (when `allowUndo` is enabled). Pass it to another document — e.g.
+   * an Outliner — so both interleave on ONE undo/redo timeline. Available
+   * after `init` resolves.
+   */
+  declare historyStack?: HistoryStack
   declare undo: () => void
   declare redo: () => void
   /**
@@ -397,7 +404,11 @@ type _OptionsInSync<M> = _Extends<Pick<MindElixir<M>, keyof ResolvedOptions<M>>,
 export default MindElixir
 export { LEFT, RIGHT, SIDE, DOWN, THEME, DARK_THEME } // bypass ssr error
 export { generateUUID }
+export { Outliner } from './outliner'
+export { HistoryStack } from './utils/historyStack'
 // types
 export type * from './utils/pubsub'
 export type * from './types/index'
 export type * from './types/dom'
+export type { OutlineItem, OutlineData, ItemOperation, OutlinerI18n, OutlinerMei, OutlinerOptions } from './outliner'
+export type { HistoryEntry, HistoryDirection, DocRestorer } from './utils/historyStack'
