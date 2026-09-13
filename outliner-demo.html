@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>MindElixir × Outliner — 一份数据，两个视图</title>
+  <style>
+    /* Demo page — 需要 vite dev server：`pnpm dev` 后打开 /outliner-demo.html */
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --line: #e8e8e8;
+      --text: #1f2328;
+      --muted: #8b949e;
+      --soft: #f6f7f8;
+      --accent: #2f6feb;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- 顶栏 ---- */
+    .topbar {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .topbar .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ---- 双视图 ---- */
+    .views {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 0;
+    }
+
+    .pane {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .pane+.pane {
+      border-left: 1px solid var(--line);
+    }
+
+    .pane-head {
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .pane-head b {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    #map,
+    #outline {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    /* ---- 历史检查器 ---- */
+    .history {
+      border-top: 1px solid var(--line);
+    }
+
+    .history-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+    }
+
+    .history-bar button {
+      font: inherit;
+      font-size: 12px;
+      padding: 3px 10px;
+      color: var(--text);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .history-bar button:hover:not(:disabled) {
+      background: var(--soft);
+    }
+
+    .history-bar button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .history-bar .label {
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 2px;
+    }
+
+    #entries {
+      max-height: 30vh;
+      overflow: auto;
+      padding-bottom: 6px;
+    }
+
+    .entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 3px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .entry.applied {
+      color: var(--text);
+    }
+
+    .entry .cursor {
+      width: 12px;
+      flex: none;
+      color: var(--accent);
+    }
+
+    .entry .idx {
+      width: 22px;
+      flex: none;
+      text-align: right;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .entry .doc {
+      flex: none;
+      padding: 1px 6px;
+      font-size: 11px;
+      border-radius: 999px;
+      background: var(--soft);
+      color: var(--muted);
+    }
+
+    .empty {
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <h1>MindElixir × Outliner</h1>
+    <span class="hint">一份数据（mei.nodeData），两个视图（导图 / 大纲）—— 任意一侧的编辑都会同步到另一侧，撤销/重做共用同一条时间线</span>
+  </header>
+
+  <main class="views">
+    <section class="pane">
+      <div class="pane-head"><b>导图</b> — 拖拽 / 双击编辑 / 折叠</div>
+      <div id="map"></div>
+    </section>
+    <section class="pane">
+      <div class="pane-head"><b>大纲</b> — 点击选中 / 回车加同级 / Tab 缩进 / 折叠按钮</div>
+      <div id="outline"></div>
+    </section>
+  </main>
+
+  <footer class="history">
+    <div class="history-bar">
+      <span class="label">历史</span>
+      <button id="btn-undo" disabled>撤销</button>
+      <button id="btn-redo" disabled>重做</button>
+      <button id="btn-clear" disabled>清空</button>
+    </div>
+    <div id="entries"></div>
+  </footer>
+
+  <script type="module" src="/src/dev.outliner.ts"></script>
+</body>
+
+</html>
