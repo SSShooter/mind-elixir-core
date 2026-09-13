@@ -285,6 +285,7 @@
 }
 
 .outline-item-wrapper:hover .outline-item-btn-group,
+.outline-item-wrapper.menu-open .outline-item-btn-group,
 .outline-item-btn-group:has([data-state='collapsed']) {
   opacity: 1;
 }
@@ -328,6 +329,27 @@
   flex-direction: column;
   gap: 1px;
   pointer-events: auto;
+  transform-origin: top left;
+  /* Runs on insertion — the dropdown used to appear in the same frame as a full
+     tree rebuild with no transition at all, which read as a hard pop. */
+  animation: outline-menu-in 0.12s ease-out;
+}
+
+@keyframes outline-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .outline-item-menu-dropdown {
+    animation: none;
+  }
 }
 
 .dark .outline-item-menu-dropdown {

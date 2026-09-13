@@ -21,6 +21,38 @@ import type { ItemOperation, OutlineData, OutlineItem, OutlinerI18n, OutlinerMei
 
 type DropPosition = 'before' | 'inside' | 'after'
 
+/**
+ * One item's DOM, kept alive across renders by {@link Outliner} — the basis of
+ * the incremental renderer. Because the element survives, everything a click
+ * handler needs (the live node, its level, its parent) has to be refreshed on
+ * every sync: reading them from a creation-time closure would go stale the
+ * moment the node is indented or moved.
+ */
+interface ItemView {
+  container: HTMLElement
+  wrapper: HTMLElement
+  /** Only present at level > 0 (renders the tree's vertical guide). */
+  line: HTMLElement | null
+  dot: HTMLElement
+  topic: HTMLElement
+  btnGroup: HTMLElement
+  /** Absent in readonly mode. */
+  menuWrapper: HTMLElement | null
+  menuBtn: HTMLElement | null
+  dropdown: HTMLElement | null
+  /** Mirrors the `menu-open` class so the diff needs no DOM read to skip it. */
+  menuOpen: boolean
+  collapse: HTMLElement
+  /** Topic string currently reflected by `topic`'s markup (render cache key). */
+  topicText: string
+  /** True while `topic` shows raw source because the node is being edited. */
+  topicDirty: boolean
+  item: OutlineItem
+  level: number
+  parentId: string | undefined
+  siblingCount: number
+}
+
 /** `parent` back-references (set by mind-elixir's fillParent) break JSON cloning. */
 const stripParentRefs = (data: unknown): any => JSON.parse(JSON.stringify(data, (k, v) => (k === 'parent' && typeof v !== 'string' ? undefined : v)))
 
@@ -46,8 +78,10 @@ export class Outliner {
   private mei: OutlinerMei | null
   /** While true, `rerenderFromMei` skips one render (patch-only topic commits). */
   private suppressSync = false
-  /** Set for the remainder of a tick after a sync request — see `requestSync`. */
-  private syncScheduled = false
+  /** A deferred sync is owed — see `scheduleSync`. */
+  private syncDirty = false
+  /** A deferred sync flush is already queued for the end of this tick. */
+  private syncQueued = false
   private docName: string
   private readonly: boolean
   private markdown?: (text: string, item: OutlineItem) => string
@@ -59,7 +93,15 @@ export class Outliner {
   private editingId: string | null = null
   private openMenuId: string | null = null
   private draggedId: string | null = null
+  /** Set at dragstart so `dragover` needs neither a DOM scan nor a live lookup. */
+  private draggedContainer: HTMLElement | null = null
   private dropIndicator: { el: HTMLElement; position: DropPosition } | null = null
+  /** id → reused DOM for every CURRENTLY RENDERED node (collapsed subtrees drop out). */
+  private views = new Map<string, ItemView>()
+  /** Ids visited by the render in progress — anything left over gets unmounted. */
+  private seen = new Set<string>()
+  /** Change key for the breadcrumb, which is cheap to skip and expensive to rebuild. */
+  private breadcrumbSig = ''
   private disposers: Array<() => void> = []
 
   constructor(options: OutlinerOptions) {
@@ -110,12 +152,13 @@ export class Outliner {
       // Collapse/expand now lands on the shared stack like any other edit, but the
       // map also fires 'expandNode' — that channel is still needed for SILENT
       // expands (auto-expanding a collapsed parent before a child is added), which
-      // record nothing on their own. Both channels notify; `requestSync` renders
-      // once per tick instead of twice.
+      // record nothing on their own. The stack channel renders synchronously; this
+      // one defers, so the pair costs one render instead of two without either
+      // notification being dropped (see `scheduleSync`).
       const bus = this.mei.bus
       if (bus) {
-        bus.addListener('expandNode', this.requestSync)
-        this.disposers.push(() => bus.removeListener('expandNode', this.requestSync))
+        bus.addListener('expandNode', this.scheduleSync)
+        this.disposers.push(() => bus.removeListener('expandNode', this.scheduleSync))
       }
     } else {
       // Shared history: restore this document when the stack walks over our entries
@@ -132,6 +175,13 @@ export class Outliner {
     this.el.addEventListener('click', this.handleClick)
     this.el.addEventListener('focusin', this.handleFocusIn)
     this.el.addEventListener('focusout', this.handleFocusOut)
+    // Drag & drop is delegated like `click` — one handler for the whole list
+    // instead of three per node (see the region note above the handlers).
+    this.el.addEventListener('dragstart', this.handleDragStart)
+    this.el.addEventListener('dragend', this.handleDragEnd)
+    this.el.addEventListener('dragover', this.handleDragOver)
+    this.el.addEventListener('dragleave', this.handleDragLeave)
+    this.el.addEventListener('drop', this.handleDrop)
 
     this.render()
   }
@@ -229,12 +279,31 @@ export class Outliner {
     this.el.removeEventListener('click', this.handleClick)
     this.el.removeEventListener('focusin', this.handleFocusIn)
     this.el.removeEventListener('focusout', this.handleFocusOut)
+    this.el.removeEventListener('dragstart', this.handleDragStart)
+    this.el.removeEventListener('dragend', this.handleDragEnd)
+    this.el.removeEventListener('dragover', this.handleDragOver)
+    this.el.removeEventListener('dragleave', this.handleDragLeave)
+    this.el.removeEventListener('drop', this.handleDrop)
+    this.views.clear()
+    this.seen.clear()
+    this.dropIndicator = null
+    this.draggedContainer = null
+    // Drop a queued deferred sync so it cannot repopulate the element below
+    this.syncDirty = false
     this.el.innerHTML = ''
   }
 
   focusItem(id: string): void {
     const el = this.itemsEl.querySelector(`[data-outline-item][data-item-id="${CSS.escape(id)}"]`) as HTMLElement | null
-    el?.focus()
+    if (!el) return
+    const alreadyFocused = document.activeElement === el
+    el.focus()
+    // The incremental renderer REUSES the focused element, so no focusin fires and
+    // the caret would stay wherever it was. Every caller of focusItem is a
+    // structural edit that used to end with the caret at the end of the topic
+    // (the old full rebuild always destroyed the element and refocused a fresh
+    // one), so reproduce that position explicitly.
+    if (alreadyFocused) this.placeCaretAtEnd(el)
   }
 
   // #region history
@@ -300,19 +369,45 @@ export class Outliner {
   }
 
   /**
-   * Ask for a bound-mode sync. Renders SYNCHRONOUSLY — callers such as
+   * Ask for a bound-mode sync and RENDER NOW. Callers such as
    * `applyBoundOperation` focus a node right after the map call, which needs the
-   * fresh DOM — but swallows duplicate requests inside one tick, because a single
-   * fold is announced twice (stack push + the map's 'expandNode' event).
+   * fresh DOM, so this channel stays synchronous.
+   *
+   * Renders even if one already ran in this tick, because the notification that
+   * brought us here may describe a NEWER tree than that render saw — see
+   * `scheduleSync` for why the two channels must not share a coalescing window.
    */
   private requestSync = (): void => {
     if (!this.mei || this.suppressSync) return
-    if (this.syncScheduled) return
-    this.syncScheduled = true
-    queueMicrotask(() => {
-      this.syncScheduled = false
-    })
+    this.syncDirty = false
     this.rerenderFromMei()
+  }
+
+  /**
+   * Deferred variant, wired to the map's `expandNode` bus event.
+   *
+   * That event is the only channel reporting a mutation the history stack does
+   * not also announce: a tracked fold fires it and then pushes an entry (which
+   * renders synchronously through `requestSync`), while a SILENT expand —
+   * `addChild` / move-into auto-expanding a collapsed target — fires it with no
+   * entry of its own, the caller's operation acting as the announcement instead.
+   *
+   * So park the request for the end of the tick rather than rendering: if a
+   * synchronous render follows in the same block it already covers this mutation
+   * and clears the flag; if nothing follows, the microtask renders anyway — still
+   * before the browser paints. Renders are never dropped, only coalesced.
+   */
+  private scheduleSync = (): void => {
+    if (!this.mei || this.suppressSync) return
+    this.syncDirty = true
+    if (this.syncQueued) return
+    this.syncQueued = true
+    queueMicrotask(() => {
+      this.syncQueued = false
+      if (!this.syncDirty) return
+      this.syncDirty = false
+      this.rerenderFromMei()
+    })
   }
 
   /**
@@ -398,7 +493,7 @@ export class Outliner {
     const el = this.meiEle(id)
     if (!el) return
     // expandNode records a tracked 'operation' AND fires 'expandNode'; the
-    // constructor subscriptions handle re-rendering (once per tick, see
+    // constructor subscriptions handle re-rendering (the stack channel, see
     // requestSync), so this path and map-side folding behave identically —
     // including undo, which now covers folds made from either view.
     this.mei!.expandNode(el, isExpand)
@@ -538,51 +633,133 @@ export class Outliner {
 
   // #region render
 
+  /**
+   * Bring the DOM in line with the data — WITHOUT tearing it down.
+   *
+   * The old implementation ran `itemsEl.innerHTML = ''` and rebuilt every node
+   * from scratch, at a cost of ~17 elements and ~8 listeners per node on every
+   * call (measured: 6 ms at 341 nodes, 21 ms at 1 365, 94 ms at 5 461). Because
+   * nearly every public method funnelled through here — including opening the
+   * `…` menu — a single-character change re-rendered the whole document.
+   *
+   * Now every node owns a persistent {@link ItemView}: a node whose data did not
+   * change keeps its exact element, its listeners, its focus and its hover
+   * state. Only nodes that actually differ are patched, and only containers that
+   * actually moved are reparented.
+   */
   private render(): void {
     if (this.zoomedId && !findItemById(this.items, this.zoomedId)) this.zoomedId = null
 
-    // Breadcrumb
+    this.renderBreadcrumb()
+
+    // Items — reconcile, don't rebuild.
+    const zoomed = this.zoomedId ? findItemById(this.items, this.zoomedId) : null
+    const displayItems = this.zoomedId ? (zoomed?.children ?? []) : this.items
+    this.seen.clear()
+    let cursor: HTMLElement | null = null
+    for (const item of displayItems) {
+      cursor = this.syncItem(item, 0, this.zoomedId ?? undefined, displayItems.length, this.itemsEl, cursor)
+    }
+    this.unmountUnseen()
+  }
+
+  /**
+   * The breadcrumb holds only a handful of nodes, but rebuilding it means a DOM
+   * teardown plus a fresh listener per segment. Skip it unless the labels moved.
+   */
+  private renderBreadcrumb(): void {
+    const path = this.zoomedId ? (findPathToNode(this.items, this.zoomedId) ?? []) : []
+    const sig = `${this.fileName ?? ''}\u0000${path.map(node => `${node.id}:${node.topic}`).join('\u0000')}`
+    if (sig === this.breadcrumbSig) return
+    this.breadcrumbSig = sig
+
     this.breadcrumbEl.innerHTML = ''
     const home = document.createElement('button')
     home.className = 'breadcrumb-item breadcrumb-root'
     home.innerHTML = `${svgIcon('home')}<span class="breadcrumb-text">${this.escapeText(this.fileName ?? '')}</span>`
     home.addEventListener('click', () => this.zoomTo(null))
     this.breadcrumbEl.appendChild(home)
-    if (this.zoomedId) {
-      const path = findPathToNode(this.items, this.zoomedId) ?? []
-      path.forEach((node, index) => {
-        const segment = document.createElement('span')
-        segment.className = 'breadcrumb-segment'
-        const isLast = index === path.length - 1
-        const label = this.escapeText(node.topic || this.i18n.untitled)
-        if (isLast) {
-          segment.innerHTML = `<span class="breadcrumb-separator">/</span><span class="breadcrumb-item breadcrumb-current">${label}</span>`
-        } else {
-          const btn = document.createElement('button')
-          btn.className = 'breadcrumb-item'
-          btn.innerHTML = label
-          btn.addEventListener('click', () => this.zoomTo(node.id))
-          segment.innerHTML = `<span class="breadcrumb-separator">/</span>`
-          segment.appendChild(btn)
-        }
-        this.breadcrumbEl.appendChild(segment)
-      })
-    }
-
-    // Items
-    this.itemsEl.innerHTML = ''
-    const displayItems = this.zoomedId ? (findItemById(this.items, this.zoomedId)?.children ?? []) : this.items
-    displayItems.forEach(item => this.itemsEl.appendChild(this.buildItem(item, 0, this.zoomedId ?? undefined, displayItems.length)))
+    path.forEach((node, index) => {
+      const segment = document.createElement('span')
+      segment.className = 'breadcrumb-segment'
+      const isLast = index === path.length - 1
+      const label = this.escapeText(node.topic || this.i18n.untitled)
+      if (isLast) {
+        segment.innerHTML = `<span class="breadcrumb-separator">/</span><span class="breadcrumb-item breadcrumb-current">${label}</span>`
+      } else {
+        const btn = document.createElement('button')
+        btn.className = 'breadcrumb-item'
+        btn.innerHTML = label
+        btn.addEventListener('click', () => this.zoomTo(node.id))
+        segment.innerHTML = `<span class="breadcrumb-separator">/</span>`
+        segment.appendChild(btn)
+      }
+      this.breadcrumbEl.appendChild(segment)
+    })
   }
 
-  private buildItem(item: OutlineItem, level: number, parentId: string | undefined, siblingCount: number): HTMLElement {
+  /**
+   * Reconcile one node and its subtree into `parentEl`, placing its container
+   * directly after `cursor` — the previously placed sibling — so keeping
+   * document order costs at most one `insertBefore` per node that moved.
+   *
+   * Returns this node's container, i.e. the cursor for the next sibling.
+   */
+  private syncItem(
+    item: OutlineItem,
+    level: number,
+    parentId: string | undefined,
+    siblingCount: number,
+    parentEl: HTMLElement,
+    cursor: HTMLElement | null
+  ): HTMLElement {
+    let view = this.views.get(item.id)
+    if (view) {
+      this.patchItemView(view, item, level, parentId, siblingCount)
+    } else {
+      view = this.createItemView(item, level, parentId, siblingCount)
+      this.views.set(item.id, view)
+    }
+
+    const expected = cursor ? cursor.nextSibling : parentEl.firstChild
+    if (expected !== view.container) parentEl.insertBefore(view.container, expected)
+    this.seen.add(item.id)
+
+    // A collapsed node's children do not merely hide — they leave the DOM, so
+    // folding a large subtree releases its elements instead of parking them.
+    if (item.expanded !== false) {
+      let childCursor: HTMLElement | null = view.wrapper
+      for (const child of item.children) {
+        childCursor = this.syncItem(child, level + 1, item.id, item.children.length, view.container, childCursor)
+      }
+    }
+    return view.container
+  }
+
+  /** Release the views this render did not visit: deleted nodes, folded subtrees. */
+  private unmountUnseen(): void {
+    for (const [id, view] of this.views) {
+      if (this.seen.has(id)) continue
+      view.container.remove()
+      this.views.delete(id)
+      if (this.openMenuId === id) this.openMenuId = null
+    }
+  }
+
+  /**
+   * Build a node's DOM once. Deliberately listener-free: every interaction is
+   * handled by the delegated handlers on `this.el` (see the events region), which
+   * is what takes the per-node listener count from 8 to 0.
+   */
+  private createItemView(item: OutlineItem, level: number, parentId: string | undefined, siblingCount: number): ItemView {
     const container = document.createElement('div')
     container.className = 'outline-item-container'
     container.dataset.itemId = item.id
     if (this.readonly) container.style.pointerEvents = 'none'
 
+    let line: HTMLElement | null = null
     if (level > 0) {
-      const line = document.createElement('div')
+      line = document.createElement('div')
       line.className = 'outline-item-vertical-line'
       line.style.left = `${level * 24 - 13}px`
       line.style.height = '100%'
@@ -600,24 +777,7 @@ export class Outliner {
     const dot = document.createElement('div')
     dot.className = `outline-item-dot${this.readonly ? '' : ' outline-item-dot-zoomable'}`
     dot.title = this.i18n.zoomInAndDrag
-    if (!this.readonly) {
-      dot.draggable = true
-      dot.addEventListener('click', e => {
-        e.stopPropagation()
-        this.zoomTo(item.id)
-      })
-      dot.addEventListener('dragstart', e => {
-        e.stopPropagation()
-        this.draggedId = item.id
-        e.dataTransfer!.effectAllowed = 'move'
-        container.style.opacity = '0.4'
-      })
-      dot.addEventListener('dragend', () => {
-        this.clearDropIndicator()
-        this.draggedId = null
-        container.style.opacity = ''
-      })
-    }
+    if (!this.readonly) dot.draggable = true
     front.appendChild(dot)
     wrapper.appendChild(front)
 
@@ -631,117 +791,244 @@ export class Outliner {
 
     const btnGroup = document.createElement('div')
     btnGroup.className = 'outline-item-btn-group'
-    if (!this.readonly) btnGroup.appendChild(this.buildMenu(item, level, parentId, siblingCount))
+
+    let menuWrapper: HTMLElement | null = null
+    let menuBtn: HTMLElement | null = null
+    if (!this.readonly) {
+      menuWrapper = document.createElement('div')
+      menuWrapper.className = 'outline-item-menu-wrapper'
+      menuBtn = document.createElement('button')
+      menuBtn.className = 'outline-item-menu-btn'
+      menuBtn.title = this.i18n.menuTitle
+      menuBtn.draggable = false
+      menuBtn.innerHTML = svgIcon('ellipsis', 12)
+      menuWrapper.appendChild(menuBtn)
+      btnGroup.appendChild(menuWrapper)
+    }
+
     const collapse = document.createElement('button')
     collapse.className = 'outline-item-collapse-btn'
     collapse.dataset.state = item.children.length === 0 ? 'hidden' : item.expanded === false ? 'collapsed' : 'expanded'
     collapse.innerHTML = svgIcon(item.expanded === false ? 'chevronRight' : 'chevronDown')
-    collapse.addEventListener('click', e => {
-      e.stopPropagation()
-      this.updateItem(item.id, { expanded: item.expanded === false ? true : false })
-    })
     btnGroup.appendChild(collapse)
     wrapper.appendChild(btnGroup)
 
-    if (!this.readonly) this.bindDrop(wrapper, item)
-
-    if (item.expanded !== false) {
-      item.children.forEach(child => container.appendChild(this.buildItem(child, level + 1, item.id, item.children.length)))
+    return {
+      container,
+      wrapper,
+      line,
+      dot,
+      topic,
+      btnGroup,
+      menuWrapper,
+      menuBtn,
+      dropdown: null,
+      menuOpen: false,
+      collapse,
+      topicText: item.topic,
+      topicDirty: false,
+      item,
+      level,
+      parentId,
+      siblingCount,
     }
-    return container
   }
 
-  private buildMenu(item: OutlineItem, level: number, parentId: string | undefined, siblingCount: number): HTMLElement {
-    const menuWrapper = document.createElement('div')
-    menuWrapper.className = 'outline-item-menu-wrapper'
-    const btn = document.createElement('button')
-    btn.className = 'outline-item-menu-btn'
-    btn.title = this.i18n.menuTitle
-    btn.draggable = false
-    btn.innerHTML = svgIcon('ellipsis', 12)
-    btn.addEventListener('click', e => {
-      e.stopPropagation()
-      this.openMenuId = this.openMenuId === item.id ? null : item.id
-      this.render()
-    })
-    menuWrapper.appendChild(btn)
+  /** Update only what actually changed. This is the hot path now. */
+  private patchItemView(view: ItemView, item: OutlineItem, level: number, parentId: string | undefined, siblingCount: number): void {
+    const levelChanged = view.level !== level
+    // Refresh the live refs FIRST — delegated handlers read these, never closures.
+    view.item = item
+    view.level = level
+    view.parentId = parentId
+    view.siblingCount = siblingCount
 
-    if (this.openMenuId === item.id) {
-      const dropdown = document.createElement('div')
-      dropdown.className = 'outline-item-menu-dropdown'
-      const addItem = (label: string, icon: string, danger: boolean, fn: () => void) => {
-        const menuItem = document.createElement('button')
-        menuItem.className = `outline-item-menu-item${danger ? ' outline-item-menu-item-danger' : ''}`
-        menuItem.innerHTML = `${svgIcon(icon, 12)}<span>${label}</span>`
-        menuItem.addEventListener('mousedown', e => e.stopPropagation())
-        menuItem.addEventListener('click', e => {
-          e.stopPropagation()
-          fn()
-        })
-        dropdown.appendChild(menuItem)
-      }
-      addItem(this.i18n.outdent, 'arrowLeft', false, () => {
-        this.openMenuId = null
-        this.applyOperation({ type: 'outdent', id: item.id, parentId, shouldFocusCurrent: true, topic: item.topic })
-      })
-      addItem(this.i18n.indent, 'arrowRight', false, () => {
-        this.openMenuId = null
-        this.applyOperation({ type: 'indent', id: item.id, parentId, shouldFocusCurrent: true, topic: item.topic })
-      })
-      if (level > 0 || siblingCount > 1) {
-        addItem(this.i18n.delete, 'trash', true, () => {
-          this.openMenuId = null
-          this.deleteItem(item.id, parentId)
-        })
-      }
-      menuWrapper.appendChild(dropdown)
+    if (levelChanged) {
+      view.wrapper.style.marginLeft = `${level * 24}px`
+      if (view.line) view.line.style.left = `${level * 24 - 13}px`
     }
-    return menuWrapper
+
+    // Never clobber the source text while the user is typing in it; the dirty
+    // flag is what restores the rendered markup once editing ends. This check is
+    // also why opening a menu no longer re-runs markdown/KaTeX over every node.
+    if (this.editingId !== item.id && (view.topicDirty || view.topicText !== item.topic)) {
+      this.writeTopicHtml(view.topic, item.topic, item)
+      view.topicText = item.topic
+      view.topicDirty = false
+    }
+
+    const state = item.children.length === 0 ? 'hidden' : item.expanded === false ? 'collapsed' : 'expanded'
+    if (view.collapse.dataset.state !== state) {
+      view.collapse.dataset.state = state
+      view.collapse.innerHTML = svgIcon(item.expanded === false ? 'chevronRight' : 'chevronDown')
+    }
+
+    this.syncDropdown(view)
   }
 
-  /** Bind before/inside/after drop detection on one wrapper (original per-item behavior). */
-  private bindDrop(wrapper: HTMLElement, item: OutlineItem): void {
-    const clearOwn = () => {
+  /**
+   * The `…` dropdown is derived state: it exists iff `openMenuId` names this
+   * node. `setOpenMenu` drives it directly and a render re-syncs it — so opening
+   * a menu no longer costs a whole-document rebuild.
+   */
+  private syncDropdown(view: ItemView): void {
+    const shouldOpen = !!view.menuWrapper && this.openMenuId === view.item.id
+    if (shouldOpen && !view.dropdown) {
+      view.dropdown = this.createDropdown(view)
+      view.menuWrapper!.appendChild(view.dropdown)
+    } else if (!shouldOpen && view.dropdown) {
+      view.dropdown.remove()
+      view.dropdown = null
+    }
+    // Keeps the button group visible while the menu is open, independent of hover.
+    if (view.menuOpen !== shouldOpen) {
+      view.wrapper.classList.toggle('menu-open', shouldOpen)
+      view.menuOpen = shouldOpen
+    }
+  }
+
+  /**
+   * Entries carry a `data-action` rather than a closure: a closure captured at
+   * build time would go stale the moment the node is indented or moved, and on
+   * a reused element it never gets rebuilt.
+   */
+  private createDropdown(view: ItemView): HTMLElement {
+    const dropdown = document.createElement('div')
+    dropdown.className = 'outline-item-menu-dropdown'
+    const addItem = (label: string, icon: string, action: string, danger = false) => {
+      const menuItem = document.createElement('button')
+      menuItem.className = `outline-item-menu-item${danger ? ' outline-item-menu-item-danger' : ''}`
+      menuItem.dataset.action = action
+      menuItem.innerHTML = `${svgIcon(icon, 12)}<span>${label}</span>`
+      dropdown.appendChild(menuItem)
+    }
+    addItem(this.i18n.outdent, 'arrowLeft', 'outdent')
+    addItem(this.i18n.indent, 'arrowRight', 'indent')
+    if (view.level > 0 || view.siblingCount > 1) addItem(this.i18n.delete, 'trash', 'delete', true)
+    return dropdown
+  }
+
+  private toggleMenu(id: string): void {
+    this.setOpenMenu(this.openMenuId === id ? null : id)
+  }
+
+  /**
+   * Open the menu for `id`, or close it with `null`. Touches ONLY the two nodes
+   * involved — no render, no breadcrumb, no per-node work.
+   */
+  private setOpenMenu(id: string | null): void {
+    const previousId = this.openMenuId
+    if (previousId === id) return
+    this.openMenuId = id
+    if (previousId) {
+      const previous = this.views.get(previousId)
+      if (previous) this.syncDropdown(previous)
+    }
+    if (id) {
+      const view = this.views.get(id)
+      if (view) this.syncDropdown(view)
+    }
+  }
+
+  private runMenuAction(action: string): void {
+    const id = this.openMenuId
+    if (!id) return
+    const view = this.views.get(id)
+    if (!view) return
+    const { item, level, parentId, siblingCount } = view
+    this.setOpenMenu(null)
+    if (action === 'outdent') {
+      this.applyOperation({ type: 'outdent', id: item.id, parentId, shouldFocusCurrent: true, topic: item.topic })
+    } else if (action === 'indent') {
+      this.applyOperation({ type: 'indent', id: item.id, parentId, shouldFocusCurrent: true, topic: item.topic })
+    } else if (action === 'delete' && (level > 0 || siblingCount > 1)) {
+      this.deleteItem(item.id, parentId)
+    }
+  }
+
+  // #endregion
+
+  // #region drag & drop (delegated)
+  //
+  // These used to be bound per node (3 on every wrapper), i.e. 3N listeners
+  // created and thrown away on every render. One listener on `this.el` now
+  // serves the whole list, and `dragstart` caches the source container so
+  // `dragover` — which fires several times per frame — needs no DOM scan.
+
+  private handleDragStart = (e: DragEvent): void => {
+    const t = e.target as HTMLElement
+    if (!t.closest?.('.outline-item-dot')) return
+    const container = t.closest<HTMLElement>('.outline-item-container')
+    const id = container?.dataset.itemId
+    if (!container || !id) return
+    e.stopPropagation()
+    this.draggedId = id
+    this.draggedContainer = container
+    if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move'
+    container.style.opacity = '0.4'
+  }
+
+  private handleDragEnd = (): void => {
+    this.clearDropIndicator()
+    this.draggedId = null
+    if (this.draggedContainer) {
+      this.draggedContainer.style.opacity = ''
+      this.draggedContainer = null
+    }
+  }
+
+  private handleDragOver = (e: DragEvent): void => {
+    const wrapper = (e.target as HTMLElement).closest?.('.outline-item-wrapper') as HTMLElement | null
+    if (!wrapper) return
+    e.stopPropagation()
+    e.preventDefault()
+    const clearOwn = () => wrapper.classList.remove('drag-over', 'drag-over-bottom', 'drag-over-inside')
+
+    const view = this.views.get(wrapper.dataset.itemId ?? '')
+    if (!view || !this.draggedId || this.draggedId === view.item.id) {
+      clearOwn()
+      return
+    }
+    // The target must not sit inside the dragged node's own subtree
+    const targetContainer = wrapper.closest<HTMLElement>('.outline-item-container')
+    if (!this.draggedContainer || !targetContainer || this.draggedContainer.contains(targetContainer)) {
+      clearOwn()
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'none'
+      return
+    }
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move'
+
+    const rect = wrapper.getBoundingClientRect()
+    const relativeY = e.clientY - rect.top
+    const position: DropPosition = relativeY < rect.height * 0.25 ? 'before' : relativeY > rect.height * 0.75 ? 'after' : 'inside'
+    // Same edge of the same row: leave the indicator alone rather than thrashing
+    // classes (and a style recalc) on every single dragover tick.
+    if (this.dropIndicator?.el === wrapper && this.dropIndicator.position === position) return
+    this.clearDropIndicator()
+    wrapper.classList.add(position === 'before' ? 'drag-over' : position === 'after' ? 'drag-over-bottom' : 'drag-over-inside')
+    this.dropIndicator = { el: wrapper, position }
+  }
+
+  private handleDragLeave = (e: DragEvent): void => {
+    const wrapper = (e.target as HTMLElement).closest?.('.outline-item-wrapper') as HTMLElement | null
+    if (!wrapper) return
+    e.stopPropagation()
+    if (!wrapper.contains(e.relatedTarget as Node)) {
       wrapper.classList.remove('drag-over', 'drag-over-bottom', 'drag-over-inside')
     }
-    wrapper.addEventListener('dragover', e => {
-      e.stopPropagation()
-      e.preventDefault()
-      if (!this.draggedId || this.draggedId === item.id) {
-        clearOwn()
-        return
-      }
-      // Target must not be inside the dragged item's subtree (DOM check, as the original)
-      const draggedEl = this.itemsEl.querySelector(`[data-item-id="${CSS.escape(this.draggedId)}"]`)
-      const draggedContainer = draggedEl?.closest('.outline-item-container')
-      const targetContainer = wrapper.closest('.outline-item-container')
-      if (!draggedContainer || !targetContainer || draggedContainer.contains(targetContainer)) {
-        clearOwn()
-        if (e.dataTransfer) e.dataTransfer.dropEffect = 'none'
-        return
-      }
-      if (e.dataTransfer) e.dataTransfer.dropEffect = 'move'
-      const rect = wrapper.getBoundingClientRect()
-      const relativeY = e.clientY - rect.top
-      const position: DropPosition = relativeY < rect.height * 0.25 ? 'before' : relativeY > rect.height * 0.75 ? 'after' : 'inside'
-      this.clearDropIndicator()
-      wrapper.classList.add(position === 'before' ? 'drag-over' : position === 'after' ? 'drag-over-bottom' : 'drag-over-inside')
-      this.dropIndicator = { el: wrapper, position }
-    })
-    wrapper.addEventListener('dragleave', e => {
-      e.stopPropagation()
-      if (!wrapper.contains(e.relatedTarget as Node)) clearOwn()
-    })
-    wrapper.addEventListener('drop', e => {
-      e.preventDefault()
-      e.stopPropagation()
-      const position = this.dropIndicator?.el === wrapper ? this.dropIndicator.position : null
-      this.clearDropIndicator()
-      const draggedId = this.draggedId
-      if (draggedId && draggedId !== item.id && position) {
-        this.applyOperation({ type: 'moveTo', id: draggedId, draggedId, targetId: item.id, dropPosition: position, shouldFocusCurrent: true })
-      }
-    })
+  }
+
+  private handleDrop = (e: DragEvent): void => {
+    const wrapper = (e.target as HTMLElement).closest?.('.outline-item-wrapper') as HTMLElement | null
+    if (!wrapper) return
+    e.preventDefault()
+    e.stopPropagation()
+    const position = this.dropIndicator?.el === wrapper ? this.dropIndicator.position : null
+    this.clearDropIndicator()
+    const view = this.views.get(wrapper.dataset.itemId ?? '')
+    const draggedId = this.draggedId
+    if (!view || !draggedId || draggedId === view.item.id || !position) return
+    this.applyOperation({ type: 'moveTo', id: draggedId, draggedId, targetId: view.item.id, dropPosition: position, shouldFocusCurrent: true })
   }
 
   private clearDropIndicator(): void {
@@ -792,13 +1079,30 @@ export class Outliner {
     const item = findItemById(this.items, id)
     if (!item) return
     this.editingId = id
+    // Swap the rendered markup back to raw source so it stays editable, and mark
+    // the view dirty so a later sync restores the rendered form.
     el.textContent = item.topic
+    const view = this.views.get(id)
+    if (view) view.topicDirty = true
+    this.placeCaretAtEnd(el)
+  }
+
+  /** Move the caret to the end of `el`'s contents. */
+  private placeCaretAtEnd(el: HTMLElement): void {
     const range = document.createRange()
     range.selectNodeContents(el)
     range.collapse(false)
     const selection = window.getSelection()
     selection?.removeAllRanges()
     selection?.addRange(range)
+  }
+
+  /** Remember that `view.topic` already shows `topic`'s rendered markup. */
+  private markTopicClean(id: string, topic: string): void {
+    const view = this.views.get(id)
+    if (!view) return
+    view.topicText = topic
+    view.topicDirty = false
   }
 
   private handleFocusOut = (e: FocusEvent): void => {
@@ -815,6 +1119,7 @@ export class Outliner {
       if (item && item.topic !== text) this.setNodeTopicBound(id, text)
       const updated = findItemById(this.items, id)
       if (updated) this.writeTopicHtml(el, updated.topic, updated)
+      this.markTopicClean(id, updated?.topic ?? text)
       return
     }
     // Single history entry for the topic edit; patch only this element so a
@@ -828,6 +1133,7 @@ export class Outliner {
     )
     const item = findItemById(this.items, id)
     if (item) this.writeTopicHtml(el, item.topic, item)
+    this.markTopicClean(id, item?.topic ?? text)
   }
 
   private handleTopicKeydown = (e: KeyboardEvent): void => {
@@ -910,21 +1216,52 @@ export class Outliner {
     }
   }
 
+  /**
+   * Single click router for the whole list. Every node interaction used to be its
+   * own listener — 5 per node, recreated on every render — which both cost time
+   * and made "read the current value" depend on a closure that the incremental
+   * renderer deliberately keeps alive.
+   */
   private handleClick = (e: MouseEvent): void => {
     const t = e.target as HTMLElement
-    if (t.closest('.outline-item-dot') || t.closest('.breadcrumb-item')) return
-    // Clicking elsewhere closes an open menu without a full re-render
-    if (this.openMenuId) {
-      this.openMenuId = null
-      this.itemsEl.querySelector('.outline-item-menu-dropdown')?.remove()
+    if (!t.closest || t.closest('.breadcrumb-item')) return
+
+    const id = t.closest<HTMLElement>('.outline-item-container')?.dataset.itemId
+
+    const menuItem = t.closest<HTMLElement>('.outline-item-menu-item')
+    if (menuItem) {
+      e.stopPropagation()
+      this.runMenuAction(menuItem.dataset.action ?? '')
+      return
     }
+
+    if (t.closest('.outline-item-menu-btn')) {
+      e.stopPropagation()
+      if (id) this.toggleMenu(id)
+      return
+    }
+
+    if (t.closest('.outline-item-collapse-btn')) {
+      e.stopPropagation()
+      const view = id ? this.views.get(id) : undefined
+      if (view) this.updateItem(id!, { expanded: view.item.expanded === false })
+      return
+    }
+
+    if (t.closest('.outline-item-dot')) {
+      e.stopPropagation()
+      if (id) this.zoomTo(id)
+      return
+    }
+
+    // Clicking anywhere else closes an open menu without a full re-render
+    this.setOpenMenu(null)
   }
 
   private handleDocumentMousedown = (e: MouseEvent): void => {
     if (!this.openMenuId) return
     if ((e.target as HTMLElement).closest?.('.outline-item-menu-wrapper')) return
-    this.openMenuId = null
-    this.itemsEl.querySelector('.outline-item-menu-dropdown')?.remove()
+    this.setOpenMenu(null)
   }
 
   /**
@@ -971,7 +1308,12 @@ export class Outliner {
   // #endregion
 
   private zoomTo(id: string | null): void {
+    // Zooming usually takes the menu's node out of the rendered set, so close it
+    // explicitly rather than leaving `openMenuId` pointing at an unmounted view.
+    this.setOpenMenu(null)
     this.zoomedId = id
+    // This render is newer than anything a pending deferred sync could produce
+    this.syncDirty = false
     this.render()
   }
 

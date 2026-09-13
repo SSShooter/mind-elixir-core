@@ -10,6 +10,20 @@ const paths: Record<string, string> = {
     '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/>',
 }
 
+const template = (name: keyof typeof paths, size: number) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths[name] ?? ''}</svg>`
+
+/** Rendered markup is identical for a given (name, size) — cache it. `render()`
+ *  asks for these once per node, so rebuilding the string every time is pure
+ *  waste (and a fresh `innerHTML` assignment makes the browser re-parse the SVG). */
+const cache = new Map<string, string>()
+
 export function svgIcon(name: keyof typeof paths, size = 16): string {
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths[name] ?? ''}</svg>`
+  const key = `${name}:${size}`
+  let markup = cache.get(key)
+  if (markup === undefined) {
+    markup = template(name, size)
+    cache.set(key, markup)
+  }
+  return markup
 }

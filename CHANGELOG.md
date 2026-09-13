@@ -15,12 +15,18 @@
 
 - `expandNodeAll` now fires the `expandNode` event, so a bound outliner stays in sync after a recursive expand.
 - Folding a childless node — or re-applying a state a node already has — no longer touches the DOM or the history stack.
-- Bound outliner renders once per tick when the shared stack and the map's `expandNode` event both announce the same fold.
+- A bound outliner no longer drops a sync when several map operations land in the same synchronous block. Notifications arriving from the shared stack are applied immediately, while the ones from the map's `expandNode` event are coalesced to the end of the tick — so neither channel can be swallowed. Before this, a second programmatic `addChild` in one block left the outline permanently stale; a single fold still costs exactly one render.
+- The `…` item menu no longer flickers on open. Its button group is revealed by the item's open state instead of `:hover`, which the previous re-render destroyed on every toggle.
 - Undo inside focus mode no longer re-renders the whole diagram. Restoring a snapshot re-anchors the focused subtree, so `Ctrl+Z` stays in focus and `cancelFocus` restores a backup tree that matches what was on screen.
 
 ### Behavior Changes
 
 - `focusNode` and `cancelFocus` clear the undo/redo stack. Focus mode swaps the rendered document (the map shows one subtree while `getData()` keeps reporting the whole diagram), so entries recorded before the switch are not replayable — the focus boundary is now a history boundary in both directions.
+
+### Refactors
+
+- Outliner rendering is a keyed reconciliation instead of a full rebuild. Each rendered node keeps a persistent view, so a node whose data did not change keeps its DOM element, listeners, focus and hover state, and a collapsed subtree releases its DOM rather than parking it. Re-rendering the outline at 5 461 nodes went from 94 ms to ~1 ms, and an idle re-render at 1 365 nodes from 21 ms to 0.3 ms.
+- The outliner no longer binds listeners per node (8 → 0); clicks and drag & drop are delegated to the container. Opening the `…` menu touches only the nodes involved instead of re-rendering the document, and no longer re-runs markdown/KaTeX over every topic.
 
 ## 5.15.0 - 2026-08-03
 
