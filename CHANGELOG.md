@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+### Breaking Changes
+
+- `expandNode` and `expandNodeAll` now emit a tracked operation. `expanded` lives in the node data, so folding is undoable like any other edit: an expander click, `Ctrl/Cmd` + click (recursive) and the `Ctrl+K` whole-map folds each record one entry. Hosts that call these methods as pure view operations should pass `{ silent: true }`.
+
+### Features
+
+- Collapse / expand lands on the shared undo timeline. `Ctrl+Z` restores the previous fold state, and folds made from the outliner and from the map share one timeline.
+- `expandNode(el, isExpand?, options?)` and `expandNodeAll(el, isExpand?, options?)` accept `{ silent: true }` to skip the history entry. Used internally when a collapsed parent is auto-expanded before a child is added or a node is moved in, so ONE undo restores the whole gesture.
+
+### Bug Fixes
+
+- `expandNodeAll` now fires the `expandNode` event, so a bound outliner stays in sync after a recursive expand.
+- Folding a childless node — or re-applying a state a node already has — no longer touches the DOM or the history stack.
+- Bound outliner renders once per tick when the shared stack and the map's `expandNode` event both announce the same fold.
+
 ## 5.15.0 - 2026-08-03
 
 ### Breaking Changes

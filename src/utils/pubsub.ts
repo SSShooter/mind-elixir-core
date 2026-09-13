@@ -25,12 +25,25 @@ export type NodeOperation =
 
 export type SummaryOperation = OperationBase<'createSummary' | 'removeSummary' | 'finishEditSummary', Summary>
 
-export type ArrowOperation = OperationBase<'createArrow' | 'removeArrow' | 'finishEditArrowLabel', Arrow>
+export type ArrowOperation =
+  | OperationBase<'createArrow' | 'removeArrow' | 'finishEditArrowLabel', Arrow>
   | (OperationBase<'reshapeArrow', Arrow> & {
       origin: Arrow
     })
 
-export type Operation = NodeOperation | SummaryOperation | ArrowOperation
+/**
+ * Collapse / expand of a node. `expanded` lives in the node data, so folding is
+ * a document change like any other and lands on the undo timeline. `recursive`
+ * and `level` describe the batch entry points (`expandNodeAll`, Ctrl+K) that
+ * touch descendants too.
+ */
+export type ExpandOperation = OperationBase<'expandNode' | 'collapseNode', NodeObj> & {
+  recursive?: boolean
+  /** Depth limit passed to the recursive walk. `undefined` means every level. */
+  level?: number
+}
+
+export type Operation = NodeOperation | SummaryOperation | ArrowOperation | ExpandOperation
 export type OperationType = Operation['name']
 
 /** Data mutation events such as node, arrow and summary operations. */

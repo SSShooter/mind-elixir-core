@@ -40,7 +40,9 @@ const addChildFunc = function (mei: MindElixir, tpc: Topic, node?: NodeObj) {
   if (!tpc) return null
   const nodeObj = tpc.nodeObj
   if (nodeObj.expanded === false) {
-    mei.expandNode(tpc, true)
+    // silent: this expand is part of the addChild below — let THAT operation own
+    // the history entry so one undo removes the child and re-folds the parent.
+    mei.expandNode(tpc, true, { silent: true })
     // dom had resetted
     tpc = mei.findEle(nodeObj.id) as Topic
   }
@@ -248,7 +250,9 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
 
   // Handle 'in' type: expand node if collapsed
   if (type === 'in' && toObj.expanded === false) {
-    mei.expandNode(to, true) // rerender
+    // silent: the move below records the operation, so one undo restores both the
+    // old position and the collapsed state of the destination.
+    mei.expandNode(to, true, { silent: true }) // rerender
     to = mei.findEle(toObj.id) as Topic
     toObj = to.nodeObj
   }

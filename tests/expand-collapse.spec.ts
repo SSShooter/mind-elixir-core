@@ -1,6 +1,18 @@
+import type { Page } from '@playwright/test'
 import { test, expect } from './mind-elixir-test'
 
 const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
+/**
+ * Undo depth: how many entries are applied (the stack keeps undone entries
+ * around for redo, so `getEntries().length` would not drop after an undo).
+ */
+const historySize = (page: Page) =>
+  page.evaluate(() => (window as any)['#map'].historyStack.currentIndex)
+
+/** The fold toggle next to a topic (`data-nodeid` carries the `me` element prefix). */
+const expanderOf = (page: Page, id: string) =>
+  page.locator(`.me-tpc[data-nodeid="me${id}"]`).locator('..').locator('.me-epd')
 
 const data = {
   nodeData: {
@@ -183,3 +195,74 @@ test('Expand state persistence after layout refresh', async ({ page, me }) => {
   await expect(page.getByText('Child 3', { exact: true })).toBeVisible()
   await expect(page.getByText('Child 4', { exact: true })).toBeVisible()
 })
+
+// #region fold on the undo timeline
+
+test('Collapse is undoable', async ({ page }) => {
+  const before = await historySize(page)
+  await expanderOf(page, 'branch1').click()
+  await expect(page.getByText('Child 1', { exact: true })).not.toBeVisible()
+  expect(await historySize(page)).toBe(before + 1)
+
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(page.getByText('Child 1', { exact: true })).toBeVisible()
+  await expect(page.getByText('Child 2', { exact: true })).toBeVisible()
+  expect(await historySize(page)).toBe(before)
+})
+
+test('Expand is undoable and redoable', async ({ page }) => {
+  await expanderOf(page, 'branch2').click()
+  await expect(page.getByText('Child 3', { exact: true })).toBeVisible()
+
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(page.getByText('Child 3', { exact: true })).not.toBeVisible()
+
+  await page.keyboard.press(`${modifier}+y`)
+  await expect(page.getByText('Child 3', { exact: true })).toBeVisible()
+})
+
+test('Recursive expand is ONE entry and undoes in one step', async ({ page }) => {
+  const branch1 = expanderOf(page, 'branch1')
+  await branch1.click()
+  await expect(page.getByText('Grandchild 1', { exact: true })).not.toBeVisible()
+  const afterCollapse = await historySize(page)
+
+  await page.keyboard.down(modifier)
+  await branch1.click()
+  await page.keyboard.up(modifier)
+  await expect(page.getByText('Grandchild 1', { exact: true })).toBeVisible()
+  expect(await historySize(page)).toBe(afterCollapse + 1)
+
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(page.getByText('Grandchild 1', { exact: true })).not.toBeVisible()
+})
+
+test('Folding a childless node records nothing', async ({ page }) => {
+  const before = await historySize(page)
+  // Leaves render no expander button, so go through the API instead.
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    mind.expandNode(mind.findEle('child5'), false)
+    mind.expandNodeAll(mind.findEle('child5'))
+  })
+  expect(await historySize(page)).toBe(before)
+})
+
+test('Moving into a collapsed parent folds it back with ONE undo', async ({ page, me }) => {
+  const before = await historySize(page)
+  await page.getByText('Child 5', { exact: true }).hover({ force: true })
+  await page.mouse.down()
+  await me.dragOver('Branch 2', 'in')
+  await page.mouse.up()
+
+  // The destination auto-expands, but the move owns the only history entry
+  await expect(page.getByText('Child 3', { exact: true })).toBeVisible()
+  expect(await historySize(page)).toBe(before + 1)
+
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(page.getByText('Child 3', { exact: true })).not.toBeVisible()
+  const branch3Children = page.locator('.me-tpc[data-nodeid="mebranch3"]').locator('..').locator('..').locator('.me-children')
+  await expect(branch3Children.getByText('Child 5', { exact: true })).toBeVisible()
+})
+
+// #endregion fold on the undo timeline

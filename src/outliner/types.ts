@@ -1,4 +1,4 @@
-import type { NodeObj } from '../types/index'
+import type { ExpandNodeOptions, NodeObj } from '../types/index'
 import type { Topic } from '../types/dom'
 import type { EventMap } from '../utils/pubsub'
 import type { createBus } from '../utils/pubsub'
@@ -62,9 +62,9 @@ export interface OutlinerMei {
    */
   historyStack?: HistoryStack
   /**
-   * Event bus. Collapse/expand fires `expandNode` WITHOUT touching the history
-   * stack, so the outliner must listen here to mirror map-side folding. The
-   * listener is optional-safe: a minimal stub without `bus` still works.
+   * Event bus. Collapse/expand now records a tracked operation (so the shared
+   * stack already announces it) AND fires `expandNode`. The outliner listens to
+   * both and merges them into one render per tick — see `requestSync`.
    */
   bus?: ReturnType<typeof createBus<EventMap>>
   /** Throws when the node is not rendered (e.g. collapsed in the map). */
@@ -79,7 +79,8 @@ export interface OutlinerMei {
   moveNodesAfter(from: Topic[], to: Topic): unknown
   /** Tracked topic/style change — fires the 'reshapeNode' operation event. */
   reshapeNode(el: Topic, patchData: Partial<NodeObj>): unknown
-  expandNode(el: Topic, isExpand?: boolean): unknown
+  /** Tracked collapse/expand — fires the 'expandNode' operation event unless `silent`. */
+  expandNode(el: Topic, isExpand?: boolean, options?: ExpandNodeOptions): unknown
 }
 
 export interface OutlinerOptions {

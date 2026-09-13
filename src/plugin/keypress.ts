@@ -157,19 +157,27 @@ export default function (mind: MindElixir, options: boolean | KeypressOptions) {
       return
     }
     let handled = true
+    // Doubles as "did a fold happen": null means this key is not ours, so no
+    // operation may be recorded.
+    let expanded: boolean | null = null
+    let level: number | undefined
     if (e.key === '0') {
       // Ctrl+K+Ctrl+0: Collapse all nodes
+      expanded = false
       for (const node of nodeData.children) {
         setExpand(node, false)
       }
     } else if (e.key === '=') {
       // Ctrl+K+Ctrl+1: Expand all nodes
+      expanded = true
       for (const node of nodeData.children) {
         setExpand(node, true)
       }
     } else if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+      expanded = true
+      level = Number(e.key) - 1
       for (const node of nodeData.children) {
-        setExpand(node, true, Number(e.key) - 1)
+        setExpand(node, true, level)
       }
     } else {
       handled = false
@@ -177,6 +185,16 @@ export default function (mind: MindElixir, options: boolean | KeypressOptions) {
     if (handled) {
       mind.refresh()
       mind.toCenter()
+      // ONE history entry for the whole batch — `expanded` is part of the node
+      // data, so a whole-map fold must be undoable like any other edit.
+      if (expanded !== null) {
+        mind.bus.fire('operation', {
+          name: expanded ? 'expandNode' : 'collapseNode',
+          target: nodeData,
+          recursive: true,
+          level,
+        })
+      }
     }
     cleanupCtrlK()
   }

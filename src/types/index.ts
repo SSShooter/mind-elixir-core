@@ -219,6 +219,21 @@ export interface NodeObj<M = any> {
 export type NodeObjExport<M = any> = Omit<NodeObj<M>, 'parent'>
 
 /**
+ * Options for {@link MindElixir.expandNode} and {@link MindElixir.expandNodeAll}.
+ *
+ * @public
+ */
+export interface ExpandNodeOptions {
+  /**
+   * Skip the tracked `operation` event, so this collapse/expand does not become
+   * its own undo step. Use it when the caller already records an operation —
+   * e.g. auto-expanding a collapsed parent right before adding a child — so ONE
+   * undo restores the whole gesture.
+   */
+  silent?: boolean
+}
+
+/**
  * The exported data of MindElixir
  *
  * @public
