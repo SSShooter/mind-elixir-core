@@ -1,235 +1,426 @@
-/* Outliner — rebuilt from the class names used in Outliner.ts.
-   Visual intent: compact, borderless, no shadows (matches the app's minimal UI). */
+/* Outliner — ported from react-outliner (`src/components/OutlineItem.css`).
+   Kept verbatim: variable names (`--rol-*`), spacing, drag indicators, droplet
+   positions and the dropdown shadow, so the outline matches the original.
+   Only the icon sizing rules at the bottom are added (react-outliner rendered
+   lucide icons at size 14 via props; here the markup is plain SVG). */
 
+:root {
+  /* 主题色变量 - 重新设计颜色分配 */
+  --rol-primary-color: #3b35ab;
+  --rol-danger-color: #ef4444;
+  --rol-header-color: #433f96;
+  --rol-text-disabled: #9ca3af;
+  --rol-border-light: #f3f4f6;
+  --rol-drag-indicator: #e1dcff;
+  --rol-text-color: #1f2937; /* 普通文字颜色 */
+  --rol-bg-color: transparent; /* 背景颜色 */
+  --rol-drag-indicator-10: color-mix(
+    in srgb,
+    var(--rol-drag-indicator) 10%,
+    transparent
+  );
+  --rol-drag-indicator-30: color-mix(
+    in srgb,
+    var(--rol-drag-indicator) 30%,
+    transparent
+  );
+}
+
+.dark {
+  /* 暗黑模式颜色变量 */
+  --rol-primary-color: #6b9ff3;
+  --rol-danger-color: #f87171;
+  --rol-header-color: #2563eb;
+  --rol-text-disabled: #6b7280;
+  --rol-border-light: #374151;
+  --rol-drag-indicator: #2563eb;
+  --rol-text-color: #f9fafb; /* 暗黑模式普通文字颜色 */
+  --rol-bg-color: transparent; /* 暗黑模式背景颜色 */
+  --rol-drag-indicator-10: color-mix(
+    in srgb,
+    var(--rol-drag-indicator) 10%,
+    transparent
+  );
+  --rol-drag-indicator-30: color-mix(
+    in srgb,
+    var(--rol-drag-indicator) 30%,
+    transparent
+  );
+}
+
+/* Outliner 容器样式 */
 .outliner-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--outliner-fg, #1f2328);
-  background: var(--outliner-bg, #fff);
+  padding: 1.5rem;
+  background-color: var(--rol-bg-color);
+  color: var(--rol-text-color);
 }
-
-/* ---------- breadcrumb ---------- */
-
-.outliner-breadcrumb {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2px;
-  padding: 4px 2px 8px;
-  font-size: 12px;
-}
-
-.breadcrumb-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 4px;
-  border: none;
-  border-radius: 3px;
-  background: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-.breadcrumb-item:hover {
-  background: var(--outliner-hover, rgba(0, 0, 0, 0.05));
-}
-
-.breadcrumb-root {
-  color: var(--outliner-muted, #6b7280);
-}
-
-.breadcrumb-segment {
-  display: inline-flex;
-  align-items: center;
-}
-
-.breadcrumb-separator {
-  padding: 0 2px;
-  color: var(--outliner-muted, #b0b6bd);
-}
-
-.breadcrumb-current {
-  cursor: default;
-}
-
-.breadcrumb-current:hover {
-  background: none;
-}
-
-/* ---------- items ---------- */
 
 .outliner-items {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 1.25rem;
 }
 
 .outline-item-container {
   position: relative;
+  transition: opacity 0.2s;
 }
 
-.outline-item-vertical-line {
-  position: absolute;
-  top: 0;
-  width: 1px;
-  background: var(--outliner-line, #e5e7eb);
-}
-
-.outline-item-wrapper {
+.outline-item-wrapper.drag-over {
   position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 2px;
-  padding: 1px 4px;
-  border-radius: 3px;
 }
 
-.outline-item-wrapper.drag-over::before,
+.outline-item-wrapper.drag-over::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 2px;
+  background-color: var(--rol-drag-indicator);
+  z-index: 10;
+}
+
 .outline-item-wrapper.drag-over-bottom::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
+  bottom: 0;
   height: 2px;
-  background: var(--outliner-accent, #3b82f6);
-}
-
-.outline-item-wrapper.drag-over::before {
-  top: -1px;
-}
-
-.outline-item-wrapper.drag-over-bottom::after {
-  bottom: -1px;
+  background-color: var(--rol-drag-indicator);
+  z-index: 10;
 }
 
 .outline-item-wrapper.drag-over-inside {
-  background: var(--outliner-hover, rgba(59, 130, 246, 0.08));
+  background-color: var(--rol-drag-indicator-10);
+  box-shadow: 0 0 0 2px var(--rol-drag-indicator-30);
 }
 
-/* ---------- bullet ---------- */
+.outline-item-vertical-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-left: 2px solid var(--rol-border-light);
+}
 
-.outline-item-front {
+.outline-item-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  position: relative;
+}
+
+/* react-outliner relied on Tailwind's preflight to neutralise the UA button
+   styles (`border-width: 0`, `padding: 0`, transparent background, no native
+   appearance). mind-elixir ships no preflight, so without this reset the
+   collapse button renders as a bordered grey square with a 0-width content box
+   — the chevron gets clipped away. Reset the icon buttons explicitly.
+   Declared before the rules below so their own properties still win. */
+.outline-item-collapse-btn,
+.outline-item-menu-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  background-color: transparent;
+  background-image: none;
+}
+
+.outline-item-collapse-btn {
+  width: 1rem;
+  height: 1rem;
   display: flex;
   align-items: center;
-  height: 22px;
+  justify-content: center;
+  border-radius: 0.25rem;
+  pointer-events: none;
+  transition: background-color 0.2s;
+}
+.outline-item-collapse-btn[data-state='hidden'] {
+  display: none;
 }
 
-.outline-item-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--outliner-muted, #9aa1a9);
+.outline-item-collapse-btn[data-state='expanded'] {
+  pointer-events: auto;
 }
 
-.outline-item-dot-zoomable {
-  cursor: grab;
+.outline-item-collapse-btn[data-state='collapsed'] {
+  pointer-events: auto;
+  background-color: var(--rol-drag-indicator);
 }
 
-.outline-item-dot-zoomable:hover {
-  background: var(--outliner-accent, #3b82f6);
+.outline-item-wrapper:hover .outline-item-collapse-btn[data-state='expanded'] {
+  background-color: var(--rol-drag-indicator);
 }
 
-/* ---------- topic ---------- */
+.outline-item-collapse-btn:hover {
+  background-color: var(--rol-drag-indicator);
+}
+
+.outline-item-front {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
 
 .outline-item-topic {
   flex: 1;
-  min-width: 0;
-  padding: 1px 2px;
-  border: none;
+  cursor: text;
+  padding: 0.125rem 0;
   outline: none;
-  word-break: break-word;
-  white-space: pre-wrap;
 }
 
-.outline-item-topic:empty::before {
-  content: '';
-  display: inline-block;
+.outline-item-dot {
+  position: absolute;
+  top: 15px;
+  left: 9px;
+  width: 0.4rem;
+  height: 0.4rem;
+  background-color: var(--rol-primary-color);
+  border-radius: 9999px;
+  flex-shrink: 0;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
 
-/* ---------- trailing buttons ---------- */
-
-.outline-item-btn-group {
-  display: flex;
-  align-items: center;
-  gap: 1px;
-  height: 22px;
-  opacity: 0;
-}
-
-.outline-item-wrapper:hover .outline-item-btn-group,
-.outline-item-wrapper:focus-within .outline-item-btn-group {
-  opacity: 1;
-}
-
-.outline-item-collapse-btn,
-.outline-item-menu-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  padding: 0;
-  border: none;
-  border-radius: 3px;
-  background: none;
-  color: var(--outliner-muted, #6b7280);
+.outline-item-dot-zoomable {
   cursor: pointer;
 }
 
-.outline-item-collapse-btn:hover,
-.outline-item-menu-btn:hover {
-  background: var(--outliner-hover, rgba(0, 0, 0, 0.06));
-  color: inherit;
+.outline-item-dot-zoomable:hover {
+  transform: scale(1.5);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rol-primary-color) 25%, transparent);
 }
 
-.outline-item-collapse-btn[data-state='hidden'] {
-  visibility: hidden;
+/* 面包屑导航 */
+.outliner-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+  padding: 0 0.25rem 0.75rem;
+  font-size: 0.825rem;
+  flex-wrap: wrap;
 }
 
-/* ---------- context menu ---------- */
+.breadcrumb-segment {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.breadcrumb-separator {
+  color: var(--rol-text-disabled);
+  padding: 0 0.125rem;
+  user-select: none;
+}
+
+.breadcrumb-item {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  color: var(--rol-text-disabled);
+  font-size: 0.825rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: color 0.15s, background-color 0.15s;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.breadcrumb-item:hover {
+  color: var(--rol-primary-color);
+  background-color: color-mix(in srgb, var(--rol-primary-color) 10%, transparent);
+}
+
+.breadcrumb-root {
+  flex-shrink: 0;
+  color: var(--rol-text-disabled);
+}
+
+.breadcrumb-current {
+  cursor: default;
+  color: var(--rol-text-color);
+  font-weight: 500;
+}
+
+.breadcrumb-current:hover {
+  color: var(--rol-text-color);
+  background-color: transparent;
+}
+
+.breadcrumb-icon {
+  flex-shrink: 0;
+}
+
+.breadcrumb-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.outline-item-btn-group {
+  position: absolute;
+  left: -39px;
+  top: 10px;
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.outline-item-wrapper:hover .outline-item-btn-group,
+.outline-item-btn-group:has([data-state='collapsed']) {
+  opacity: 1;
+}
 
 .outline-item-menu-wrapper {
   position: relative;
-  display: inline-flex;
+}
+
+.outline-item-menu-btn {
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  padding: 0;
+  transition: background-color 0.2s;
+  color: var(--rol-text-color);
+  pointer-events: auto;
+}
+
+.outline-item-wrapper:hover .outline-item-menu-btn {
+  background-color: var(--rol-drag-indicator);
 }
 
 .outline-item-menu-dropdown {
   position: absolute;
-  top: 100%;
-  right: 0;
-  z-index: 20;
-  min-width: 120px;
-  padding: 2px;
-  border: 1px solid var(--outliner-line, #e5e7eb);
-  border-radius: 4px;
-  background: var(--outliner-bg, #fff);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  top: calc(100% + 4px);
+  left: 0;
+  background-color: #ffffff;
+  border: 1px solid var(--rol-border-light);
+  border-radius: 0.375rem;
+  padding: 0.25rem;
+  z-index: 100;
+  min-width: 110px;
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  pointer-events: auto;
+}
+
+.dark .outline-item-menu-dropdown {
+  background-color: #1f2937;
 }
 
 .outline-item-menu-item {
   display: flex;
   align-items: center;
-  gap: 6px;
-  width: 100%;
-  padding: 4px 6px;
+  gap: 0.4rem;
+  padding: 0.3rem 0.5rem;
   border: none;
-  border-radius: 3px;
   background: none;
-  font: inherit;
-  color: inherit;
-  text-align: left;
   cursor: pointer;
+  border-radius: 0.25rem;
+  width: 100%;
+  text-align: left;
+  font-size: 0.8rem;
+  color: var(--rol-text-color);
+  transition: background-color 0.15s;
 }
 
 .outline-item-menu-item:hover {
-  background: var(--outliner-hover, rgba(0, 0, 0, 0.06));
+  background-color: var(--rol-border-light);
 }
 
 .outline-item-menu-item-danger {
-  color: var(--outliner-danger, #dc2626);
+  color: var(--rol-danger-color);
+}
+
+/* Markdown 标题样式 */
+.outline-item-topic h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--rol-header-color);
+}
+
+.outline-item-topic h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--rol-header-color);
+}
+
+.outline-item-topic h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--rol-header-color);
+}
+
+.outline-item-topic h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--rol-header-color);
+}
+
+.outline-item-topic h5 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--rol-header-color);
+}
+
+.outline-item-topic h6 {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0.1rem 0;
+  color: var(--rol-header-color);
+  font-style: italic;
+}
+
+.outline-item-topic strong,
+.outline-item-topic em {
+  color: var(--rol-primary-color);
+}
+
+.outline-item-topic a {
+  color: var(--rol-primary-color);
+  text-decoration: none;
+}
+
+.outline-item-topic a:hover {
+  color: var(--rol-primary-color);
+  text-decoration: underline;
+}
+
+/* 图标尺寸：react-outliner 通过 lucide 的 size={14} 控制，这里用 CSS 统一 */
+.outline-item-collapse-btn svg,
+.outline-item-menu-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.breadcrumb-item svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
