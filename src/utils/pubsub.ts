@@ -5,6 +5,7 @@ import type { NodeObj } from '../types/index'
 type OperationBase<Name extends string, Target> = {
   name: Name
   target: Target
+  silent?: boolean
 }
 
 export type NodeOperation =
@@ -65,7 +66,6 @@ export type SelectionEventMap = {
 
 /** Viewport and map state events. */
 export type ViewportEventMap = {
-  expandNode: (node: NodeObj) => void
   changeDirection: (direction: number) => void
   scale: (scale: number) => void
   move: (data: { dx: number; dy: number }) => void

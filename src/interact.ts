@@ -441,16 +441,14 @@ export const expandNode = function (this: MindElixir, el: Topic, isExpand?: bool
 
   this.move(driftX, driftY)
 
-  this.bus.fire('expandNode', node)
   // `expanded` is part of the node data (`getData()` exports it), so folding is a
   // tracked operation like any other edit and must be undoable. `silent` is for
   // internal callers that already record an operation of their own.
-  if (!options?.silent) {
-    this.bus.fire('operation', {
-      name: expanded ? 'expandNode' : 'collapseNode',
-      target: node,
-    })
-  }
+  this.bus.fire('operation', {
+    name: expanded ? 'expandNode' : 'collapseNode',
+    target: node,
+    silent: options?.silent,
+  })
 }
 
 export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: boolean, options?: ExpandNodeOptions) {
@@ -476,16 +474,12 @@ export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: b
 
   this.move(driftX, driftY)
 
-  // `refresh()` rebuilds the DOM silently, so the outliner — which mirrors
-  // collapse/expand through this event — has to be told explicitly.
-  this.bus.fire('expandNode', node)
-  if (!options?.silent) {
-    this.bus.fire('operation', {
-      name: expanded ? 'expandNode' : 'collapseNode',
-      target: node,
-      recursive: true,
-    })
-  }
+  this.bus.fire('operation', {
+    name: expanded ? 'expandNode' : 'collapseNode',
+    target: node,
+    recursive: true,
+    silent: options?.silent,
+  })
 }
 
 /**

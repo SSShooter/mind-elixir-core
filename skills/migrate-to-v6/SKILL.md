@@ -94,3 +94,23 @@ If you reference the lite build file directly:
 ```
 
 The `mind-elixir/lite` import remains unchanged.
+
+## 7. `expandNode` bus event removed (breaking change)
+
+The standalone `expandNode` event on `mind.bus` was removed. Folding and expanding are data mutations and are now reported exclusively through the `operation` event with name `'expandNode'` or `'collapseNode'`:
+
+```diff
+- mind.bus.addListener('expandNode', node => {
+-   console.log('expandNode: ', node)
+- })
++ mind.bus.addListener('operation', op => {
++   if (op.name === 'expandNode' || op.name === 'collapseNode') {
++     console.log('node: ', op.target)
++     console.log('silent: ', op.silent)
++   }
++ })
+```
+
+- `operation.target` is the folded `NodeObj`.
+- `operation.silent` is `true` if the fold was an internal silent expand (e.g. auto-expanding a collapsed parent before adding a child) or called with `{ silent: true }`. Silent operations do not create entries on the undo stack.
+

@@ -238,7 +238,7 @@ focused subtree until you cancel. Nothing to wire up.
 - **The root node is a row too.** A 3-level document with 4 nodes renders 5 rows.
 - **The constructor clears `el`** — do not put an outline in a container you also render into.
 - **`destroy()` in framework teardown.** It unsubscribes the `document`-level keydown listener and
-  the map's `expandNode` listener, so a removed component leaves nothing behind.
+  the map's bus listeners, so a removed component leaves nothing behind.
 - One outline per `mei` is the intended shape; extra outlines are allowed but each owns its own DOM.
 
 ### React

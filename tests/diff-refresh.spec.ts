@@ -77,7 +77,7 @@ test('diffRefresh is observably equivalent to refresh', async ({ page, me }) => 
     slow.diffRefresh = undefined
 
     const counters: Record<string, Record<string, number>> = { fast: {}, slow: {} }
-    const EVENTS = ['refresh', 'expandNode', 'selectNodes', 'unselectNodes', 'linkDiv', 'operation']
+    const EVENTS = ['refresh', 'selectNodes', 'unselectNodes', 'linkDiv', 'operation']
     for (const name of EVENTS) {
       counters.fast[name] = 0
       counters.slow[name] = 0

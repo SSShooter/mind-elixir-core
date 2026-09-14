@@ -182,7 +182,7 @@ export default function (mei: MindElixir) {
   mei.clearHistory = clearHistory
 
   const handleOperation = function (operation: Operation) {
-    if (operation.name === 'beginEdit') return
+    if (operation.name === 'beginEdit' || operation.silent) return
     const after = mei.getData()
     stack.push(DOC, currentSnapshot, after, {
       operation: operation.name,

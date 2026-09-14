@@ -5,6 +5,7 @@
 ### Breaking Changes
 
 - `expandNode` and `expandNodeAll` now emit a tracked operation. `expanded` lives in the node data, so folding is undoable like any other edit: an expander click, `Ctrl/Cmd` + click (recursive) and the `Ctrl+K` whole-map folds each record one entry. Hosts that call these methods as pure view operations should pass `{ silent: true }`.
+- The standalone `expandNode` bus event was removed from `ViewportEventMap`. All expand and collapse actions are now announced through the `operation` event with name `'expandNode'` or `'collapseNode'` (`operation.target` is the `NodeObj`). Silent actions (such as internal auto-expands or calls with `{ silent: true }`) carry `silent: true` on the operation and skip the undo stack.
 
 ### Features
 
@@ -15,9 +16,9 @@
 
 ### Bug Fixes
 
-- `expandNodeAll` now fires the `expandNode` event, so a bound outliner stays in sync after a recursive expand.
+- `expandNodeAll` now fires the `expandNode` operation event, so a bound outliner stays in sync after a recursive expand.
 - Folding a childless node — or re-applying a state a node already has — no longer touches the DOM or the history stack.
-- A bound outliner no longer drops a sync when several map operations land in the same synchronous block. Notifications arriving from the shared stack are applied immediately, while the ones from the map's `expandNode` event are coalesced to the end of the tick — so neither channel can be swallowed. Before this, a second programmatic `addChild` in one block left the outline permanently stale; a single fold still costs exactly one render.
+- A bound outliner no longer drops a sync when several map operations land in the same synchronous block. Notifications arriving from the shared stack are applied immediately, while the ones from silent operations on the bus are coalesced to the end of the tick — so neither channel can be swallowed. Before this, a second programmatic `addChild` in one block left the outline permanently stale; a single fold still costs exactly one render.
 - The `…` item menu no longer flickers on open. Its button group is revealed by the item's open state instead of `:hover`, which the previous re-render destroyed on every toggle.
 - `Ctrl+Z` with the focus inside the map no longer steps the timeline twice when an outliner is bound. The outliner handled the shortcut at document level without noticing the map handles the same keys on its own container, so one keystroke undid two entries.
 - Undo inside focus mode no longer re-renders the whole diagram. Restoring a snapshot re-anchors the focused subtree, so `Ctrl+Z` stays in focus and `cancelFocus` restores a backup tree that matches what was on screen.

@@ -767,10 +767,10 @@ export const applyTreeOps = function (mei: MindElixir, ops: TreeOp[]): boolean {
       node.expanded = patch.expanded as boolean | undefined
       if (!changed) continue
 
-      // Deliberately no `expandNode` fire. A bound outliner learns about a restore
+      // Deliberately no `operation` fire. A bound outliner learns about a restore
       // through the history stack it shares with the map — "map operations, undo,
-      // redo and clear all land here" (`Outliner.ts:151`); its `expandNode`
-      // listener is there for SILENT expands, which record nothing on their own.
+      // redo and clear all land here" (`Outliner.ts:168`); its silent `operation`
+      // listener is there for silent expands, which record nothing on their own.
       // `refresh` fires nothing at this point either, and inventing a signal here
       // would be a deviation from the path this one claims to be
       // indistinguishable from. Measured both ways: the outliner spec (7/7) and

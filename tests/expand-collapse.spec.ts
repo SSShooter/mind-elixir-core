@@ -265,4 +265,40 @@ test('Moving into a collapsed parent folds it back with ONE undo', async ({ page
   await expect(branch3Children.getByText('Child 5', { exact: true })).toBeVisible()
 })
 
+test('expandNode fires operation event with silent flag and does not grow history when silent', async ({ page }) => {
+  const operations: any[] = []
+  await page.exposeFunction('logOp', (op: any) => operations.push(op))
+
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    mind.bus.addListener('operation', (op: any) => {
+      ;(window as any).logOp({ name: op.name, id: op.target?.id, silent: op.silent, recursive: op.recursive })
+    })
+  })
+
+  const before = await historySize(page)
+
+  // Expand with silent: true
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    mind.expandNode(mind.findEle('branch2'), true, { silent: true })
+  })
+
+  // History size must NOT increase
+  expect(await historySize(page)).toBe(before)
+  expect(operations).toEqual([
+    { name: 'expandNode', id: 'branch2', silent: true, recursive: undefined },
+  ])
+
+  // Normal collapse without silent
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    mind.expandNode(mind.findEle('branch2'), false)
+  })
+
+  expect(await historySize(page)).toBe(before + 1)
+  expect(operations.length).toBe(2)
+  expect(operations[1]).toEqual({ name: 'collapseNode', id: 'branch2', silent: undefined, recursive: undefined })
+})
+
 // #endregion fold on the undo timeline
