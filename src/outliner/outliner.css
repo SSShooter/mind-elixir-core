@@ -156,7 +156,13 @@
   background-color: var(--rol-drag-indicator);
 }
 
-.outline-item-wrapper:hover .outline-item-collapse-btn[data-state='expanded'] {
+/* The row's controls are painted by the same rule that reveals them — see the
+   comment on the button-group reveal below. Revealing the group without painting
+   its buttons left a touch screen with two bare glyphs: the tap focuses, the
+   focus survives the markup swap, but `:hover` (which paints the surface) does
+   not, so the background only showed up from the second tap on. */
+.outline-item-wrapper:hover .outline-item-collapse-btn[data-state='expanded'],
+.outline-item-wrapper:focus-within .outline-item-collapse-btn[data-state='expanded'] {
   background-color: var(--rol-drag-indicator);
 }
 
@@ -284,7 +290,18 @@
   transition: opacity 0.2s;
 }
 
+/* The row's control cluster is driven by the item's own state, never by `:hover`
+   alone — reveal *and* paint. A touch screen has no hover: the tap that focuses a
+   topic does set `:hover`, but focusing swaps the topic's markup
+   (`handleFocusIn`) and that replacement drops the hover again. So a hover-only
+   rule flashes on the first tap and only sticks on the second one, when the topic
+   is already focused and nothing is replaced. `:focus-within` covers the tap (and
+   Tab) and survives the swap; `:hover` still serves a pointing device, and
+   `menu-open` keeps the group up while its dropdown is open. The two button
+   surfaces (`…` and the chevron above) pair their background with this rule for
+   the same reason — visible but unpainted looks broken. */
 .outline-item-wrapper:hover .outline-item-btn-group,
+.outline-item-wrapper:focus-within .outline-item-btn-group,
 .outline-item-wrapper.menu-open .outline-item-btn-group,
 .outline-item-btn-group:has([data-state='collapsed']) {
   opacity: 1;
@@ -310,7 +327,9 @@
   pointer-events: auto;
 }
 
-.outline-item-wrapper:hover .outline-item-menu-btn {
+/* Painted alongside the reveal: see the comment on the button-group rule below. */
+.outline-item-wrapper:hover .outline-item-menu-btn,
+.outline-item-wrapper:focus-within .outline-item-menu-btn {
   background-color: var(--rol-drag-indicator);
 }
 
