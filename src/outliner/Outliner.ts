@@ -190,9 +190,12 @@ export class Outliner {
   }
 
   /**
-   * A detached snapshot of what the outline currently shows, with the map's
-   * `parent` back-references stripped — `mei.stringifyData` is mind-elixir's own
-   * serializer, so this is the same shape `mei.getData()` produces.
+   * A detached snapshot of what the outline currently shows: a bare `NodeObj`
+   * tree, with the map's `parent` back-references stripped — `mei.stringifyData`
+   * is mind-elixir's own serializer, so this is byte-for-byte
+   * `mei.getData().nodeData` while the outline is not zoomed. Note the
+   * difference from `mei.getData()` itself, which returns the whole document
+   * (`nodeData`, `arrows`, `summaries`, `direction`, `theme`, `compact`).
    *
    * In focus mode the outline renders the focused subtree while `getData()`
    * reports the whole diagram, so this follows the OUTLINE's root.
