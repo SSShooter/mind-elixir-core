@@ -18,15 +18,27 @@
 - A bound outliner no longer drops a sync when several map operations land in the same synchronous block. Notifications arriving from the shared stack are applied immediately, while the ones from the map's `expandNode` event are coalesced to the end of the tick — so neither channel can be swallowed. Before this, a second programmatic `addChild` in one block left the outline permanently stale; a single fold still costs exactly one render.
 - The `…` item menu no longer flickers on open. Its button group is revealed by the item's open state instead of `:hover`, which the previous re-render destroyed on every toggle.
 - Undo inside focus mode no longer re-renders the whole diagram. Restoring a snapshot re-anchors the focused subtree, so `Ctrl+Z` stays in focus and `cancelFocus` restores a backup tree that matches what was on screen.
+- Loading a new document with `refresh(data)` no longer leaves the previous view behind. Swapping documents while a node was focused kept the focus backup tree alive, so `getData()` kept reporting the old diagram and the first `Ctrl+Z` rolled the new data back entirely.
+- The undo baseline is re-anchored on `refresh(data)`. Hosts no longer have to call `clearHistory()` by hand for the first `Ctrl+Z` after a document swap to make sense.
+- `init()` no longer throws a `TypeError` when the instance is destroyed while it awaits `document.fonts.ready` — a fast mount/unmount (React StrictMode) used to end in an unhandled rejection.
+- `destroy()` releases what it used to keep: the focus backup tree, the undo stack, the pan helper, the arrow helpers and the dragged-node list stayed reachable, holding detached DOM and the whole data tree out of reach of the garbage collector.
+- `reshapeNode` no longer hands the `operation` event an `origin` that already equals the new state. The style merge mutated the before-snapshot in place, so listeners doing diffing or rollback saw a no-op.
+- Removing a node whose parent pointer and sibling array had drifted apart no longer deletes the last sibling (`splice(-1, 1)`).
+- `removeListener` drops every registration of a handler. Forward iteration skipped the entry that slid into the removed slot, so a handler registered twice kept one registration alive.
+- `createSummary` with an unusable selection — nothing selected, the root node, or nodes from different main topics — is a no-op instead of throwing. The guard tested `currentNodes` for truthiness while it is `[]` when empty, so the range calculation threw straight out of the context-menu handler and the selection was never cleared afterwards.
 
 ### Behavior Changes
 
 - `focusNode` and `cancelFocus` clear the undo/redo stack. Focus mode swaps the rendered document (the map shows one subtree while `getData()` keeps reporting the whole diagram), so entries recorded before the switch are not replayable — the focus boundary is now a history boundary in both directions.
+- `refresh(data)` leaves focus mode and fires a new `refresh` event once the data is in place, so listeners can re-baseline their own state.
+- Plaintext export escapes `\` and line breaks. A topic holding a newline (Shift+Enter) used to round-trip as two nodes — and when the second line landed at indent 0 it synthesized an extra root, adding a whole level to the tree. Export now writes `\\` and `\n`; import restores both.
 
 ### Refactors
 
 - Outliner rendering is a keyed reconciliation instead of a full rebuild. Each rendered node keeps a persistent view, so a node whose data did not change keeps its DOM element, listeners, focus and hover state, and a collapsed subtree releases its DOM rather than parking it. Re-rendering the outline at 5 461 nodes went from 94 ms to ~1 ms, and an idle re-render at 1 365 nodes from 21 ms to 0.3 ms.
 - The outliner no longer binds listeners per node (8 → 0); clicks and drag & drop are delegated to the container. Opening the `…` menu touches only the nodes involved instead of re-rendering the document, and no longer re-runs markdown/KaTeX over every topic.
+- Link rendering reads layout once and writes once. `linkDiv` used to interleave `offsetWidth` / `offsetHeight` reads with DOM writes for every node, forcing one synchronous layout per node — exactly as many reflows as the map had nodes. All geometry is now measured before anything is written, and the sub-lines sharing a stroke are merged into a single `<path>` (a handful of elements instead of one per line). At 5 461 nodes `linkDiv` went from 124 ms to 9.6 ms, editing a topic from 116 ms to 10.5 ms, and `refresh` from 210 ms to 102 ms; forced reflows dropped from 5 461 to 1.
+- Moving several nodes no longer re-walks the whole tree once per node.
 
 ## 5.15.0 - 2026-08-03
 

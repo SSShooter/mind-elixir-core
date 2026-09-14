@@ -150,14 +150,63 @@ Start vite on 23334 with the Bash tool `run_in_background: true` (`nohup … &` 
 shell exits). The Playwright script must live in the **project root** — ESM ignores
 `NODE_PATH` and cannot resolve `@playwright/test` from `/tmp`.
 
+## 编辑提交与 DOM 拆卸（2026-09-14，最终决定：**不修**）
+
+- **内联编辑只在 `blur` 时提交**（`editTopic` 改主题、`editSvgText` 改摘要/箭头标签），而
+  `layout()` 用 `nodes.innerHTML = ''` 拆 DOM。**移除聚焦元素是否派发 `blur` 是引擎相关的**：
+  纯 DOM 探针实测 **Chromium 派发 1 次**（**同步**，在 `innerHTML=''` 赋值**执行过程中**，
+  派发时元素仍 `isConnected` 且 `innerText` 换行完好），**Firefox 派发 0 次**。
+- **但缺陷是「可达但没人走到」**，所以 B8 决定**不修**（曾实现过 `commitPendingEdit` + `InlineEditor.commitEdit`，
+  已整体回退）。理由：`layout()` 唯一上游是 `refresh()`，能在编辑中触达它的入口**全是程序化/宿主驱动** ——
+  `refresh(data)`、`initLeft/Right/Side/Down`、`changeTheme`/`changeCompact`、`undo`/`redo`、`focusNode`/`cancelFocus`。
+  鼠标点击会先失焦提交。宿主若确需在编辑中重渲染，自行承担；调用前 `el.blur()` 是可靠手段。
+- `Ctrl+Z` 为什么不可达：两处内联编辑的 keydown **首行无条件** `e.stopPropagation()`
+  （`dom.ts:245`、`svg.ts:198`），而 undo/redo 监听挂在 `mei.container`
+  （`operationHistory.ts:207`，冒泡阶段）→ 事件到不了。
+- **判断"路径是否可达"必须实测，且要带阳性对照**：探针同时验证「编辑中按 `Ctrl+Z` → `undo`/`refresh`
+  调用 0 次」与「光标在容器上按 `Ctrl+Z` → 1 次」，否则探针自身坏了也会"通过"（本仓踩过）。
+- **机制区分，别混**：`el.blur()` **显式调用**在所有引擎都会派发 blur；引擎分歧只出现在
+  "元素被移出文档导致的**隐式** blur"。所以别把"依赖移除触发 blur"当兜底，也别把显式 `blur()` 当不可靠。
+- outliner 对"编辑中 `Ctrl+Z`"是**显式处理**的（`Outliner.ts:1279-1295`）：先 `execCommand('undo')` 回退输入，
+  无效则 `active.blur()` **提交**再 `stack.undo()`。那里**可达**（它用 `document.activeElement` 判断，
+  没走 `stopPropagation`），所以必须有。**别照搬到地图侧 —— 先确认可达性。**
+- `#input-box` 是主题框与 SVG 标签框**共用**的 id，且都挂在 `this.nodes` 下。
+- `Bus.removeListener` 使用**倒序**遍历删除（正序会跳过滑入该位的项）。`destroy()` 不需要提交编辑
+  （随后就把 `nodeData` 置 `undefined`）。
+- **summary 的方法没有 async 包装**：`beforeHook` 只包装 `nodeOperation` 的导出
+  （`methods.ts:47-52`），`summary` 是 `...summary` 原样展开。所以 `calcRange` 曾经的 `throw`
+  是**同步**抛出（不是 unhandled rejection）。现改为返回 `null` 表示「无可摘要区间」
+  （0 选中 / 根节点 / 跨主节点选区），`createSummary` 据此 no-op。
+- `createSummary` 的 `if (!this.currentNodes)` 对空数组恒不生效（初始化是 `[]` 不是 null）。
+  上下文菜单 `contextMenu.ts:206-210` 在 `createSummary()` 之后才 `unselectNodes` —— 抛异常会让
+  **选区永远清不掉**。
+
 ## Testing notes
 
+- 跑套件前先确认基线：全量 **161 个测试**（chromium 单 project），正常约 15–20 秒。
+- **新增回归测试必须证明它会失败**：`cp` 备份 → `git checkout -- <file>`（或摘掉守卫行）→ 跑 → 恢复备份。
+  若"未修复时也通过"，很可能**改动根本没被执行**（例如只注掉了调用点却以为在验证实现）——
+  用一个必抛的探针确认代码路径确实跑到了。
+- **纯引擎问题不需要应用页面**：`page.goto('about:blank')` + `page.evaluate` 跑原生 DOM 探针，
+  可隔离构建/加载干扰，也适合跨引擎对照。别把单引擎结论写成"浏览器普遍行为"。
+- Firefox 探针：需 `MOZ_DISABLE_CONTENT_SANDBOX=1 MOZ_DISABLE_RDD_SANDBOX=1 MOZ_DISABLE_GMP_SANDBOX=1
+  MOZ_DISABLE_GPU_SANDBOX=1`（否则 `sandbox_init() failed: Operation not permitted`）；
+  且 Firefox **加载不了本仓 Vite 的 ESM**（响应缺 MIME 头）→ 只能做引擎级验证，应用级用例跑不通。
+  做法：临时取消 `playwright.config.ts` 里 firefox project 的注释，跑完**记得还原**。
+  `window.MindElixir` 来自 test.html 的 `type="module"` 脚本，Firefox 里需要 `waitForFunction` 等就绪。
 - `HistoryStack.undo()` keeps undone entries for redo, so assert undo depth with
   `historyStack.currentIndex`, never `getEntries().length`.
 - In bound-outliner specs `page.getByText(...)` matches both views — scope locators with
   `page.locator('#map')` / `page.locator('#outline')`.
 - Screenshot failures of ~1 pixel (e.g. `multiple-instance.spec.ts`) are rendering
   environment drift, not regressions; do not update snapshots without asking.
+
+## CHANGELOG 约定
+
+`## Unreleased` 段要**随手记**，不要攒着。宿主可见的行为变更必须进
+Breaking / Features / Bug Fixes / Behavior Changes / Refactors 之一 —— 例如
+`refresh(data)` 会退出 focus 并 fire `refresh`、plaintext 导出转义变化、`destroy()` 释放面扩大，
+都属"用户能感知"，漏记就是漏记（2026-09-14 一次性补了整轮）。
 
 ## Plaintext 转换器
 
@@ -184,4 +233,3 @@ shell exits). The Playwright script must live in the **project root** — ESM ig
   会误判为全过（实际 91 passed + 58 failed）。用 `--list` 取总数核对，或重定向到文件再 grep `failed`。
 - `test-results/` 堆积 >50 个文件时，Playwright 启动前的清理会被 safe-delete shim 拦下，
   **整个套件无法启动**。解决：`mv test-results /tmp/xxx` 移走，不要删除。
-- 跑套件前先确认基线：全量 149 个测试（chromium 单 project），正常约 20 秒。

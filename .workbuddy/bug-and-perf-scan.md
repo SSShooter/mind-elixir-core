@@ -1,6 +1,8 @@
 # mind-elixir-core 缺陷与性能扫描报告
 
 扫描时间：2026-09-13 · 分支工作区 `mind-elixir-core` (v6.0.0-next.5) · 全部结论已回溯源码行号核验
+**2026-09-14 补充一轮**：修掉剩余的 B9/B12 + 补 B10 测试 + 补齐 CHANGELOG，并**用实测订正了原稿两处错误机制描述**（B8、B12）。套件 155 → 161。
+**B8 经可达性核验后决定不修**（正常交互不可达，详见 B8 节）；原稿对它的机制描述是错的，已实测订正并保留记录。
 
 ---
 
@@ -188,27 +190,77 @@ if (origin.style && patchData.style) patchData.style = Object.assign(origin.styl
 而编辑时 Shift+Enter 会保留换行（`src/utils/dom.ts:234-236`）。回读时第二行没有 `-` 前缀，被当成**新节点**（缩进为 0 时还会额外合成一个 root）。
 复现：输入 "a"+Shift+Enter+"b" → 导出 → 重新导入。
 
-### B8【中】编辑中执行 `layout()` → 编辑内容静默丢失
-`src/utils/dom.ts:249-274` 依赖 `blur` 提交；而 `layout()`（`layout.ts:10`）用 `nodes.innerHTML=''` 直接移除输入框，浏览器**不会**为被移除的聚焦元素派发 `blur` → 输入内容被丢弃。
-反向：若 DOM 已重建后 blur，`node`/`el` 是游离对象，写入不生效，还会推入一条 `before === after` 的空历史项（表现为「按了一次 undo 什么都没发生」）。
+### B8【不修｜2026-09-14 决定：正常交互不可达，机制描述已订正】编辑中执行 `layout()` → 编辑内容静默丢失
+`src/utils/dom.ts` 依赖 `blur` 提交；`layout()`（`layout.ts:10`）用 `nodes.innerHTML=''` 移除输入框。
 
-### B9【低】`removeListener` 重复 handler 漏删
-`src/utils/pubsub.ts:115-119`：`splice(i, 1)` 后未回退索引，同一 handler 注册多次时只删掉第一个。
+**初稿的机制描述是错的**（"浏览器不会为被移除的聚焦元素派发 blur"）。用纯 DOM 探针（`about:blank`，无应用代码）实测：
 
-### B10【低】`indexOf` 返回 -1 时删错兄弟
+| 引擎 | 移除聚焦元素的祖先后 `blur` 派发次数 | 派发时机 | 派发时元素是否仍在文档中 | `innerText` |
+|---|---|---|---|---|
+| Chromium | **1** | **同步**，在 `innerHTML=''` 赋值**过程中** | **是**（赋值返回后才 `isConnected=false`） | `"a\nb"` 换行完好 |
+| Firefox | **0** | — | — | — |
+
+即：**Chromium 会派发，Firefox 不会**。所以这个缺陷是**真实存在的，但只在 Firefox 上发生**——Chromium 上初稿描述的丢内容是假的。
+（Firefox 在本机沙箱里加载不了 Vite 模块的 ESM，故只做了引擎级 DOM 验证，没有端到端应用级验证。）
+
+机制上还要区分两种 blur：`el.blur()` **显式调用**在所有引擎都会派发；引擎分歧只出现在"元素被移出文档导致的**隐式** blur"。
+
+**可达性核验（决定不修的依据）**——`layout()` 唯一上游是 `refresh()`，能在**编辑中**触达它的入口全部是程序化/宿主驱动：
+
+| 入口 | 键盘可达？ | 原因 |
+|---|---|---|
+| `refresh(data)`、`initLeft/Right/Side/Down`、`changeTheme`、`changeCompact`、`focusNode`/`cancelFocus` | 否 | 均为公开 API，正常交互不产出这类调用 |
+| `undo` / `redo`（`Ctrl+Z`） | **否** | 两处内联编辑 keydown 首行**无条件** `stopPropagation()`（`dom.ts:245`、`svg.ts:198`），而 undo 监听挂在 `mei.container`（`operationHistory.ts:207`，冒泡阶段），事件到不了 |
+
+探针实测（**带阳性对照**，避免"探针瞎通过"）：编辑中按 `Ctrl+Z` → `undo`/`refresh` 调用数 **0**，编辑框仍开、文本原样；
+光标不在编辑器上按同一快捷键 → **1**。另：鼠标点击其它区域会先失焦提交。
+
+**结论：只有宿主主动在用户编辑中重渲染（`refresh(data)`、切方向、换主题、调 undo）才会遇到，且仅 Firefox 丢文本。**
+按"宿主自身选择、自行承担"处理，不加自动防御。宿主若确需在编辑中重渲染，应在调用前自行让输入框失焦
+（`el.blur()` 是显式调用，各引擎都可靠）。
+
+**一个对照，说明本仓确实有"先提交再拆卸"的约定**：outliner 对"编辑中 `Ctrl+Z`"是**显式处理**的
+（`Outliner.ts:1279-1295`）——先 `execCommand('undo')` 回退输入，若无效则 `active.blur()` **提交**、再 `stack.undo()`。
+区别在于它可达（outliner 用 `document.activeElement` 判断，没有 `stopPropagation`），所以那里必须有；地图这边被 `stopPropagation` 挡住了，所以不必有。
+
+**附带观察（既有行为，非本轮改动）**：Chromium 上那个隐式 `blur` 会在 `nodes.innerHTML=''` 执行**过程中**触发一次提交，
+其间的 `this.linkDiv()` 跑在**即将被销毁的旧树**上（实测派发时元素仍连着，不是初稿说的"空树"），属一次多余重排；
+随后 `refresh()` 又会再 `linkDiv()` 一次。未处理。
+
+**初稿的"反向"描述也不成立**：`blur` 在元素移除时（Chromium）于移除动作之内派发，`el`/`node` 仍有效；
+实测 `finishEdit` 恰好触发 **1 次**，历史里没有 `before === after` 的空记录。
+
+### B9【低｜已修复】`removeListener` 重复 handler 漏删
+`src/utils/pubsub.ts:124-128`：`splice(i, 1)` 后 `i++` 跳过滑入该位的 handler，同一 handler 注册多次时只删掉第一个。
+改为**倒序**遍历删除全部同源注册。
+
+### B10【低｜已修复，回归测试已补】`indexOf` 返回 -1 时删错兄弟
 `src/utils/objectManipulation.ts:12`：`siblings.splice(index, 1)`，当 `parent` 指针与 `children` 不同步导致 `index === -1` 时，会删掉**最后一个**兄弟节点。
+已加 `if (index === -1) return siblings.length` 守卫；现已补测试 `tests/object-manipulation.spec.ts`，并确认**摘掉守卫即失败**。
 
 ### B11【低】配置 `before` 钩子后所有操作变异步
-`src/methods.ts:29-36`：`return async function`，有钩子时 `await hook.apply` → 操作延后到微任务。连按 Enter/Tab 会以「当前选中节点已变」后的顺序执行，与快照时序不再确定。
+`src/methods.ts:29-36`：`return async function`，有钩子时 `await hook.apply` → 操作延后到微任务。连按 Enter/Tab 会以「当前选中节点已变」后的顺序执行，与快照时序不再确定。**未修**（设计取舍，改动面大）。
 
-### B12【低】摘要创建对空选区/根节点直接抛异常
-`src/summary.ts:49-59` `calcRange` 内 `throw`，`:358` 的 `if (!this.currentNodes) return` 判断恒为真（空数组）。异常发生在 async 包装里 → 变成 unhandled rejection，静默失败。
+### B12【低｜已修复，定性经实测订正】摘要创建对空选区/根节点直接抛异常
+`src/summary.ts` `calcRange` 内的 3 处 `throw`；`createSummary` 的 `if (!this.currentNodes) return` 对空数组恒不生效。
+
+**初稿说"异常发生在 async 包装里 → 变成 unhandled rejection"是错的**：`beforeHook` 只包装 `nodeOperation` 的导出
+（`methods.ts:47-52`），`summary` 是原样 `...summary` 展开的，所以 `createSummary` 是**同步**的。
+实测（HEAD 版本）报的是 `page.evaluate: Error: No selected node.` / `Can not select root node.` —— **同步抛出**。
+真实次生后果：上下文菜单的 `summary.onclick`（`contextMenu.ts:206-210`）在 `createSummary()` 之后才 `unselectNodes`，
+抛出后那行永远执行不到，**选区不会被清掉**。
+
+**修复**：`calcRange` 改为返回 `null` 表示"没有可摘要的区间"（0 个选中 / 根节点 / 跨主节点选区），
+`createSummary` 据此静默返回。
+
 
 ---
 
 ## 四、建议修复顺序
 
 1. ~~**P0-1 + P0-2**~~ **已完成**（见「一之二」）：5k 节点下单次编辑 116 ms → 20.1 ms，重排 5461 → 2。
+   （注：P0-2 是**症状消除**，非结构改动——`setNodeTopic` 仍调全图 `linkDiv()`。但该方法是外部 API，
+   编辑提交每次失焦才走一次，非逐键，故不再做增量连线更新，理由见「五」末尾。）
 2. ~~**P1-4 建 id 索引**~~ **已降级**：复核为冷路径，收益极低，不做了。
 3. **B1**：摘要清理属有意设计，撤销可恢复；若要改，建议让 `detachSummary` 发一个通知事件（而非改成收缩区间——那是产品决策）。
 4. ~~**B2/B3**~~ **已修复**（见下）。
@@ -221,18 +273,23 @@ if (origin.style && patchData.style) patchData.style = Object.assign(origin.styl
    `contextMenu.ts` 的 2 处 `console.log`）。**未动** `src/viselect/src/index.ts:810` 的
    `console.trace('select', ...)`——那是 vendored 代码，改了会跟上游分叉。
 
-### 新增的永久回归测试（6 个，共 155 个）
+### 新增的永久回归测试（套件 149 → 161，两轮共 12 条）
 
-修复时用的都是临时探针（已删），所以补了常驻测试，并**逐个确认在 HEAD 上会失败**：
+修复时用的都是临时探针（已删），所以补了常驻测试，并**逐个确认去掉修复即失败**：
 
-| 测试 | 位置 |
-|---|---|
-| `origin` 保留编辑前样式 / 重复 patch 不累积 | 新文件 `tests/reshape-node.spec.ts`（`reshapeNode` 原本零覆盖） |
-| 主题含换行的往返 / 反斜杠不被吞 | `tests/plaintext-parser.spec.ts` |
-| 焦点模式下载入新文档不再返回旧备份树 | `tests/focus-history.spec.ts` |
-| `refresh(data)` 不显式 `clearHistory()` 也能正确定基线 | `tests/clear-history.spec.ts` |
+| 测试 | 位置 | 去掉修复后是否失败 |
+|---|---|---|
+| `origin` 保留编辑前样式 / 重复 patch 不累积 | `tests/reshape-node.spec.ts`（`reshapeNode` 原本零覆盖） | 是（2 条） |
+| 主题含换行的往返 / 反斜杠不被吞 | `tests/plaintext-parser.spec.ts` | 是 |
+| 焦点模式下载入新文档不再返回旧备份树 | `tests/focus-history.spec.ts` | 是 |
+| `refresh(data)` 不显式 `clearHistory()` 也能正确定基线 | `tests/clear-history.spec.ts` | 是 |
+| `removeNodeObj` 父指针漂移不删最后一个兄弟 / 正常删除 | `tests/object-manipulation.spec.ts` | 是（摘掉守卫后失败，第 2 条为特征固化） |
+| `removeListener` 删净同源注册 / 无 handler 清空列表 | `tests/pubsub.spec.ts` | 是（第 1 条） |
+| `createSummary` 空选区 / 根节点 / 跨主节点均为 no-op | `tests/summary.spec.ts` | 是（2 条，报 `No selected node.` / `Can not select root node.`） |
 
-对照结果：这 6 个在 HEAD 上**全部失败**（6 failed / 8 passed），修复后全部通过。
+对照结果：上一轮新增的 6 条在 HEAD 上全部失败（6 failed / 8 passed）。本轮新增的 6 条中，
+**4 条确认为缺陷复现**（B9 一条、B12 两条、B10 一条），另 2 条为特征固化。
+> B8 原本另有 4 条 `tests/edit-teardown.spec.ts`，已随「B8 不修」的决定一并移除 —— 见 B8 节的可达性核验。
 
 ### 本轮已落地的代码改动
 
@@ -242,15 +299,40 @@ if (origin.style && patchData.style) patchData.style = Object.assign(origin.styl
 | `src/nodeOperation.ts` | `reshapeNode` 样式合并改为 `Object.assign({}, origin.style, patchData.style)` |
 | `src/methods.ts` | `init()` 在 `await document.fonts.ready` 后加 `if (!this.container) return` 守卫 |
 | `src/interact.ts` | `refresh(data)` 载入新文档时退出 focus 模式并 fire `refresh` |
-| `src/utils/pubsub.ts` | 新增 `DocumentEventMap.refresh` 并纳入 `EventMap` |
+| `src/utils/pubsub.ts` | 新增 `DocumentEventMap.refresh` 并纳入 `EventMap`；`removeListener` 改倒序遍历（B9） |
 | `src/plugin/operationHistory.ts` | 监听 `refresh` 重设基线；`restore` 用 `restoring` 抑制；焦点重定位后补 `isFocusMode = true` |
 | `src/methods.ts` | `destroy()` 补 `root/summarySvg/labelContainer/dragged/nodeDataBackup/meta/panHelper/helper1/helper2/historyStack`，并调 `helper1/helper2?.destroy?.()` |
 | `src/utils/mindElixirToPlaintext.ts` | 新增 `escapeTopic`，导出时转义 `\` 与换行 |
 | `src/utils/plaintextToMindElixir.ts` | 解析时 `unescapeTopic` 还原 |
 | `src/interact.ts` / `src/plugin/contextMenu.ts` | 移除 3 处 `console.trace` + 2 处 `console.log` |
-| `tests/*` | 新增 6 个回归测试（详见下表），`reshapeNode` 从零覆盖起步 |
+| `src/utils/objectManipulation.ts` | `removeNodeObj` 的 `index === -1` 守卫（B10） |
+| `src/summary.ts` | `calcRange` 由 `throw` 改为返回 `null`；`createSummary` 据此 no-op（B12） |
+| `CHANGELOG.md` | 补齐 `## Unreleased`：本轮全部用户可见变更（原先一条都没记） |
+| `tests/*` | 新增 6 个测试（详见上表） |
 
-全部通过 `tsc --noEmit`、全量套件 **155/155**。`methods.ts` 的 biome 报错是**既有格式债务**（HEAD 版本同样报），按项目惯例未改动未触及的行。
+全部通过 `tsc --noEmit`、全量套件 **161/161**。`methods.ts` 的 biome 报错是**既有格式债务**（HEAD 版本同样报），按项目惯例未改动未触及的行。
+
+---
+
+## 五、剩余未完成事项（2026-09-14 逐条回溯源码核验）
+
+commit `42f1ee6` 已落在 `origin/feat/outliner`，工作区干净。**以下几项本轮未做。**
+
+| # | 事项 | 状态 | 说明 |
+|---|---|---|---|
+| 1 | **CHANGELOG 未记账** | 缺口（唯一"该做没做"） | `## Unreleased` 段没有本轮任何一条：`linkDiv` 性能重构、B2–B7 修复。其中 `refresh(data)` 现在会**退出 focus 模式并 fire `refresh` 事件**、plaintext 导出开始转义 `\` 与换行、`destroy()` 释放面扩大 —— 都是宿主可见的行为变更，按本仓惯例应进 CHANGELOG。 |
+| 2 | **B8** 编辑中 `layout()` → 编辑内容静默丢失 | **不修（2026-09-14 决定）** | 缺陷真实但**仅 Firefox**，且正常交互不可达 —— 能触达 `layout()` 的入口全是程序化/宿主驱动，`Ctrl+Z` 被编辑框的 `stopPropagation()` 挡住（探针带阳性对照实测，见 B8 节）。按"宿主自身选择、自行承担"处理；宿主若确需在编辑中重渲染，调用前自行 `el.blur()`。 |
+| 3 | **B1** 摘要静默删除 | 待产品决策 | 代码注释明示为有意设计（"let the caller decide"）。不建议擅自改成"收缩区间"；最小可选动作是 `detachSummary` 时 fire 一个通知事件。 |
+| 4 | **B11** 配置 `before` 钩子后所有操作变异步 | 未修 ·【低】 | `methods.ts:27-37` 的 `async` 包装仍在。属设计取舍，改动面大。 |
+| 5 | **P1-1 / P1-3 / P2** | 未修（架构性） | `layout()` 无 diff；`summary.ts:413` / `arrow.ts:651` 仍 `innerHTML=''` 全量重建且 `findEle` 属性选择器全树扫描；`pointermove`/`wheel` 无 rAF 节流；`buildNesting` O(S²×depth)。报告未将其列为必做项。 |
+| 6 | Firefox 的端到端验证 | 环境受限 | 跨引擎结论只在**引擎级 DOM 探针**上取得（Chromium 派发 `blur` / Firefox 不派发）；应用页面在 Firefox 里加载不了 Vite 的 ESM（响应缺 MIME 头，本机沙箱所致），因此没有跑通应用级用例。若要在 CI 上锁住，需先解决该环境问题。 |
+
+> **2026-09-14 追加处理**：上表原有的 B9、B12 与「B10 缺测试」三项已落地；**B8 经可达性核验后决定不修**。
+> B8/B12 的**机制描述在原稿里是错的**，已用实测订正（B8 仅 Firefox 且 Chromium 是在元素仍连着时**同步**派发；
+> B12 是同步抛出而非 unhandled rejection）。B8 的错描述一度写进过代码注释与 CHANGELOG，已随"不修"决定一并清除。
+>
+> 另：`setNodeTopic`（`nodeOperation.ts:339`）内部**零调用**，全库只有外部 API 会走到它；编辑提交走的是 `utils/dom.ts` 的失焦路径。所以"改一个字 = 全图重绘"实际是**每次提交（失焦）一次**，不是逐键一次 —— P0-2 的结构性残留比报告初判轻得多，10.5 ms 可接受，不建议再做增量连线更新。
+
 
 ---
 
