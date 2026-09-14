@@ -207,3 +207,35 @@ test('Backspace removes a node whose topic was emptied, and never the root', asy
   expect(nodeData.id).toBe('root')
   expect(nodeData.children[0].children.map((c: any) => c.topic)).toEqual(['Child 2'])
 })
+
+test('Silent expandNode from map still syncs the outline', async ({ page }) => {
+  const expander = page.locator('.me-tpc[data-nodeid="mebranch1"]').locator('..').locator('.me-epd')
+  await expander.click()
+  await expect(outlineTopic(page, 'Child 1')).toHaveCount(0)
+
+  await page.evaluate(() => {
+    const mind = window['#map']
+    mind.expandNode(mind.findEle('branch1'), true, { silent: true })
+  })
+
+  await expect(outlineTopic(page, 'Child 1')).toBeVisible()
+})
+
+test('Adding child to a collapsed parent auto-expands and syncs outline with single undo', async ({ page }) => {
+  const expander = page.locator('.me-tpc[data-nodeid="mebranch1"]').locator('..').locator('.me-epd')
+  await expander.click()
+  await expect(outlineTopic(page, 'Child 1')).toHaveCount(0)
+
+  await page.evaluate(() => {
+    const mind = window['#map']
+    mind.addChild(mind.findEle('branch1'), { id: 'newKid', topic: 'New Kid', children: [] })
+  })
+
+  await expect(outlineTopic(page, 'New Kid')).toBeVisible()
+  await expect(outlineTopic(page, 'Child 1')).toBeVisible()
+
+  await page.locator('#map .me-tpc[data-nodeid="meroot"]').click()
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(outlineTopic(page, 'New Kid')).toHaveCount(0)
+  await expect(outlineTopic(page, 'Child 1')).toHaveCount(0)
+})

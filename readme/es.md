@@ -265,10 +265,6 @@ mind.bus.addListener('operation', operation => {
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
 })
-
-mind.bus.addListener('expandNode', node => {
-  console.log('expandNode: ', node)
-})
 ```
 
 ### Exportación e Importación de Datos

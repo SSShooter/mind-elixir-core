@@ -31,7 +31,7 @@
  *
  * The outline syncs on BOTH of the map's channels: the shared journal
  * (structural edits, undo/redo — collapse/expand lands there too) and the map's
- * `expandNode` event, which still covers silent internal expands that record no
+ * `operation` event, which covers silent internal operations that record no
  * entry of their own. Both merge into one render per tick.
  */
 export { Outliner } from './Outliner'

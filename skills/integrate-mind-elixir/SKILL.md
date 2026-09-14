@@ -163,9 +163,9 @@ mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
 })
 
-// Listen to node expansion
-mind.bus.addListener('expandNode', node => {
-  console.log('expandNode: ', node)
+// Listen to data operations (including node add, remove, expandNode, collapseNode)
+mind.bus.addListener('operation', operation => {
+  console.log(operation)
 })
 ```
 

@@ -7,6 +7,7 @@ import type { HistoryStack } from '../utils/historyStack'
 import { svgIcon } from './icons'
 import { defaultI18n } from './types'
 import type { ItemOperation, OutlinerI18n, OutlinerOptions } from './types'
+import type { Operation } from '../utils/pubsub'
 
 type DropPosition = 'before' | 'inside' | 'after'
 
@@ -81,8 +82,8 @@ const ensureChildren = (node: LiveNode): void => {
  * ```
  *
  * Sync runs on BOTH of the map's channels: the shared journal (structural edits,
- * undo/redo — collapse/expand lands there too) and the map's `expandNode` event,
- * which covers silent internal expands that record no entry of their own. Both
+ * undo/redo — collapse/expand lands there too) and the map's `operation` event,
+ * which covers silent internal operations that record no entry of their own. Both
  * merge into one render per tick.
  *
  * A node that the map does not render — i.e. inside a collapsed branch — has no
@@ -166,14 +167,16 @@ export class Outliner {
     // The outline pushes no entries of its own — every journal change (a map
     // operation, undo, redo, clear) makes it re-adopt the live tree.
     this.disposers.push(this.history.subscribe(this.requestSync))
-    // Collapse/expand lands on the shared journal like any other edit, but the
-    // map also fires 'expandNode' — that channel is still needed for SILENT
-    // expands (auto-expanding a collapsed parent before a child is added), which
+    // Collapse/expand lands on the shared journal like any other edit, but silent
+    // operations (auto-expanding a collapsed parent before a child is added)
     // record nothing on their own. The journal channel renders synchronously;
     // this one defers, so the pair costs one render instead of two without
     // either notification being dropped (see `scheduleSync`).
-    this.mei.bus.addListener('expandNode', this.scheduleSync)
-    this.disposers.push(() => this.mei.bus.removeListener('expandNode', this.scheduleSync))
+    const handleOperation = (op: Operation) => {
+      if (op.silent) this.scheduleSync()
+    }
+    this.mei.bus.addListener('operation', handleOperation)
+    this.disposers.push(() => this.mei.bus.removeListener('operation', handleOperation))
     // Undo/redo while the focus is anywhere - see the containment guard in the
     // handler for why the map's own shortcut must not be handled twice.
     document.addEventListener('keydown', this.handleGlobalKeydown)
@@ -338,7 +341,7 @@ export class Outliner {
 
   // #endregion
 
-  // #region sync (the map's journal + its expandNode event)
+  // #region sync (the map's journal + silent operations)
 
   /**
    * Ask for a sync and RENDER NOW. Callers such as `applyOperation` focus a node
@@ -356,13 +359,13 @@ export class Outliner {
   }
 
   /**
-   * Deferred variant, wired to the map's `expandNode` bus event.
+   * Deferred variant, wired to silent map operations on the bus.
    *
-   * That event is the only channel reporting a mutation the journal does not
-   * also announce: a tracked fold fires it and then pushes an entry (which
-   * renders synchronously through `requestSync`), while a SILENT expand —
-   * `addChild` / move-into auto-expanding a collapsed target — fires it with no
-   * entry of its own, the caller's operation acting as the announcement instead.
+   * That channel reports mutations the journal does not announce: a tracked fold
+   * pushes an entry (which renders synchronously through `requestSync`), while a
+   * SILENT expand — `addChild` / move-into auto-expanding a collapsed target —
+   * fires `operation` with `silent: true` and no history entry of its own, the
+   * caller's operation acting as the announcement instead.
    *
    * So park the request for the end of the tick rather than rendering: if a
    * synchronous render follows in the same block it already covers this mutation
@@ -436,10 +439,10 @@ export class Outliner {
   private expandBound(id: string, isExpand: boolean): void {
     const el = this.meiEle(id)
     if (!el) return
-    // expandNode records a tracked 'operation' AND fires 'expandNode'; the
-    // constructor subscriptions handle re-rendering (the journal channel, see
-    // `requestSync`), so this path and map-side folding behave identically —
-    // including undo, which covers folds made from either view.
+    // expandNode records a tracked 'operation'; the constructor subscriptions
+    // handle re-rendering (the journal channel, see `requestSync`), so this
+    // path and map-side folding behave identically — including undo, which
+    // covers folds made from either view.
     this.mei.expandNode(el, isExpand)
   }
 
