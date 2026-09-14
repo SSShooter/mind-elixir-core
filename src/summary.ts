@@ -46,11 +46,16 @@ export interface Summary {
 }
 
 const calcRange = function (nodes: Topic[]) {
-  if (nodes.length === 0) throw new Error('No selected node.')
+  // Returns `null` when the selection has no summarizable range: nothing
+  // selected, a root node, or nodes whose closest common parent IS the root
+  // (summaries live inside one main topic). The caller decides what to do —
+  // these used to be `throw`s, and every caller is a UI action, so the error
+  // only ever surfaced as an uncaught console error.
+  if (nodes.length === 0) return null
   if (nodes.length === 1) {
     const obj = nodes[0].nodeObj
     const parent = nodes[0].nodeObj.parent
-    if (!parent) throw new Error('Can not select root node.')
+    if (!parent) return null
     const i = parent.children!.findIndex(child => obj === child)
     return {
       parent: parent.id,
@@ -83,12 +88,12 @@ const calcRange = function (nodes: Topic[]) {
       }
     }
   }
-  if (!index) throw new Error('Can not select root node.')
+  if (!index) return null
   const range = parentChains.map(chain => chain[index - 1].index as number).sort((a, b) => a - b)
   const min = range[0] || 0
   const max = range[range.length - 1] || 0
   const parent = parentChains[0][index - 1].node
-  if (!parent.parent) throw new Error('Please select nodes in the same main topic.')
+  if (!parent.parent) return null
 
   return {
     parent: parent.id,
@@ -355,9 +360,12 @@ const drawSummary = function (mei: MindElixir, summary: Summary, inner: Summary[
 }
 
 export const createSummary = function (this: MindElixir, options: SummaryOptions = {}) {
-  if (!this.currentNodes) return
   const { currentNodes: nodes, summaries, bus } = this
-  const { parent, start, end } = calcRange(nodes)
+  // `currentNodes` is `[]` (not null) when nothing is selected, so the range —
+  // not the array — decides whether there is anything to summarize.
+  const range = calcRange(nodes)
+  if (!range) return
+  const { parent, start, end } = range
   const summary = { id: generateUUID(), parent, start, end, label: 'summary', style: options.style }
   summaries.push(summary)
   // full re-render so enclosing summaries make room for the new one

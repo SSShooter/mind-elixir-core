@@ -121,9 +121,12 @@ export function createBus<T extends Record<string, (...args: any[]) => void> = E
       if (!handler) {
         handlers.length = 0
       } else if (handlers.length) {
-        for (let i = 0; i < handlers.length; i++) {
+        // Walk backwards: removing an entry while iterating forwards skips the
+        // handler that slides into its place, so a doubly-registered handler
+        // kept one registration behind.
+        for (let i = handlers.length - 1; i >= 0; i--) {
           if (handlers[i] === handler) {
-            this.handlers[type].splice(i, 1)
+            handlers.splice(i, 1)
           }
         }
       }
