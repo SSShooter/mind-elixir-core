@@ -39,10 +39,15 @@
       "types": "./dist/types/exampleData/1.d.ts",
       "import": "./dist/example.js"
     },
-"./readme.md": "./readme.md",
+    "./readme.md": "./readme.md",
     "./package.json": "./package.json",
     "./style": "./dist/MindElixir.css",
     "./style.css": "./dist/MindElixir.css",
+    "./outliner": {
+      "types": "./dist/types/outliner/index.d.ts",
+      "import": "./dist/Outliner.js"
+    },
+    "./outliner/style.css": "./dist/Outliner.css",
     "./plaintextConverter": {
       "types": "./dist/types/utils/plaintextConverter.d.ts",
       "import": "./dist/PlaintextConverter.js"

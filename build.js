@@ -14,6 +14,14 @@ const buildList = [
     mode: 'lite',
   },
   {
+    // Standalone bundle for the outliner, so a host that only needs the outline
+    // view can pull it in without loading the map: `import { Outliner } from
+    // 'mind-elixir/outliner'`. `index.ts` still re-exports it (it is part of the
+    // main API surface), so both entry points stay available.
+    name: 'Outliner',
+    enrty: __dirname + './src/outliner/index.ts',
+  },
+  {
     name: 'example',
     enrty: __dirname + './src/exampleData/1.ts',
   },
