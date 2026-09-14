@@ -5,7 +5,7 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
 
 ## Environment
 - `pnpm` needs the nvm PATH: `PATH=/Users/darksouls/.nvm/versions/node/v24.20.0/bin:$PATH pnpm …`
-- Green = **four** checks: `playwright test` (183 tests, ~16 s) + `tsc --noEmit -p tsconfig.json` +
+- Green = **four** checks: `playwright test` (187 tests, ~17 s) + `tsc --noEmit -p tsconfig.json` +
   `tsc -p tsconfig.type-test.json` (public API; first tsc skips it) + `pnpm build`. Public members
   in `src/index.ts` need a line in `tests/generic-instance.type-test.ts`. Playwright config boots
   its own dev server on 23334 — a hand-started one poisons the run (`pgrep -fl vite` first).
@@ -37,6 +37,14 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
   sync, `expandNode` = deferred). `.outline-item-front` 1 rem spacer is load-bearing.
   `outliner.getData()` = bare `NodeObj`; `readonly` kills row pointer events, not breadcrumb.
   Guide: `skills/integrate-outliner/SKILL.md`.
+- **Outliner row controls** (fixed 09-14, two rounds): the row's control cluster is never driven by
+  `:hover` alone — **three** rules carry a `:focus-within` twin: the group's `opacity` reveal, and the
+  `…` button's + chevron's `background-color` paint (revealing without painting leaves bare glyphs).
+  Touch has no persistent hover, and the tap that focuses a topic replaces its markup
+  (`handleFocusIn`), which drops the hover the same tap set → first tap flashed, second tap worked.
+  Focus is the touch-safe signal. No row-level background exists in the library at all
+  (wrapper/topic transparent in idle, hover AND focus) — a "whole row has no highlight" report is
+  host CSS, not ours.
 - **Outliner IME guard** (fixed 09-14, simplified same day): `handleTopicKeydown` early-returns on
   `e.isComposing || e.keyCode === 229`, plus — only for `Enter`/`Escape` — when
   `compositionJustEnded` (true until the end of the compositionend task, cleared by a 0 ms timer;
@@ -65,6 +73,11 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
   the test empties the topic → address rows by `[data-item-id]`.
 - Synthetic `KeyboardEvent` always reports `isComposing: false` — convenient for replaying Safari's
   IME ordering. Pure engine questions: `about:blank` + `page.evaluate`.
+- Playwright `touchscreen.tap` (Chromium AND WebKit) also synthesizes mouse events → hover is set
+  and kept, so touch-only bugs about hover do NOT reproduce in emulation. Test the contract instead:
+  click to focus, `page.mouse.move(0,0)` to park the pointer, then assert the computed style.
+  `:hover`-driven visibility anywhere is a touch bug candidate. WebKit came from
+  `pnpm exec playwright install webkit` (only chromium shipped by default).
 
 ## Conventions
 - Keep `CHANGELOG.md`'s `## Unreleased` current. Changing `refresh`: `restore()` calls it too —

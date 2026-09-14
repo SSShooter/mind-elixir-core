@@ -239,3 +239,32 @@ test('Adding child to a collapsed parent auto-expands and syncs outline with sin
   await expect(outlineTopic(page, 'New Kid')).toHaveCount(0)
   await expect(outlineTopic(page, 'Child 1')).toHaveCount(0)
 })
+
+// A touch screen has no hover: the tap that focuses a topic is what has to bring
+// its control cluster up, and the cluster has to survive the markup swap focusing
+// performs. Driving it from `:hover` alone made the first tap a one-frame flash —
+// the tap set the hover, the swap dropped it again — so the cluster only stuck
+// from the second tap on, when the topic was already focused and nothing was
+// replaced. Reveal and paint are two separate rules, and they have to move
+// together: leaving the background on `:hover` shows the bare glyphs on the first
+// tap and only fills them in on the second. The assertions pin both, and pin that
+// the reveal stays scoped to the focused item instead of lighting every row up.
+test('Focusing an item reveals and paints its controls without hover', async ({ page }) => {
+  const inRow = (id: string, sel: string) =>
+    page.locator(`#outline .outline-item-wrapper[data-item-id="${id}"] ${sel}`)
+  const transparent = 'rgba(0, 0, 0, 0)'
+
+  await page.locator('#outline .outline-item-topic[data-item-id="branch1"]').click()
+  // Park the pointer away from the row: the focus stays, the hover does not
+  await page.mouse.move(0, 0)
+
+  await expect(inRow('branch1', '.outline-item-btn-group')).toHaveCSS('opacity', '1')
+  // The `…` button and the chevron are what the group is made of, and their
+  // surface is a separate `:hover` rule — 225, 220, 255 is `--rol-drag-indicator`
+  await expect(inRow('branch1', '.outline-item-menu-btn')).not.toHaveCSS('background-color', transparent)
+  await expect(inRow('branch1', '.outline-item-collapse-btn')).not.toHaveCSS('background-color', transparent)
+
+  // Untouched rows stay quiet — neither revealed nor painted
+  await expect(inRow('root', '.outline-item-btn-group')).toHaveCSS('opacity', '0')
+  await expect(inRow('root', '.outline-item-menu-btn')).toHaveCSS('background-color', transparent)
+})
