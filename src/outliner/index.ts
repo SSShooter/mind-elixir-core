@@ -1,30 +1,23 @@
 /**
- * Pure-JS outliner, refactored from react-outliner.
+ * The outliner — a second view of ONE MindElixir document.
  *
- * Bind to a mind-elixir instance — ONE data, TWO views. The outline renders
- * `mei.nodeData` in place (live reference, no clone), routes every mutation
- * to the map, and both views share the same undo/redo timeline:
+ * The outline renders `mei.nodeData` in place and routes every mutation back to
+ * the map through the map's own node operations, so the map and the outline are
+ * two views of the same tree and share the same undo/redo journal:
  *
  * ```ts
  * import MindElixir, { Outliner } from 'mind-elixir'
  * const mei = new MindElixir({ el: '#map', allowUndo: true })
  * await mei.init(data)
- * // `history` is inferred from mei.historyStack — no need to pass it
+ * // `mei` supplies both the data and the history — nothing else is passed
  * const outliner = new Outliner({ el: '#outline', mei })
  * ```
  *
- * Or run standalone on its own dataset (private history stack by default):
- *
- * ```ts
- * const outliner = new Outliner({ el: '#outline', data: outline })
- * ```
- *
- * In bound mode the outline syncs on BOTH channels: the shared history stack
- * (structural edits, undo/redo — collapse/expand now lands here too) and the
- * map's `expandNode` event, which still covers silent internal expands that
- * record no entry of their own. Both merge into one render per tick.
+ * The outline syncs on BOTH of the map's channels: the shared journal
+ * (structural edits, undo/redo — collapse/expand lands there too) and the map's
+ * `expandNode` event, which still covers silent internal expands that record no
+ * entry of their own. Both merge into one render per tick.
  */
 export { Outliner } from './Outliner'
-export { findItemById, findPathToNode } from './operations'
 export { defaultI18n } from './types'
-export type { OutlineItem, OutlineData, ItemOperation, OutlinerI18n, OutlinerMei, OutlinerOptions } from './types'
+export type { ItemOperation, OutlinerI18n, OutlinerOptions } from './types'

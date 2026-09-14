@@ -1,7 +1,7 @@
 /**
  * Demo: MindElixir map + Outliner — ONE data, TWO views.
- * The outline binds to `mei` (bound mode): it mirrors mei.nodeData, routes
- * every mutation to the map, and both views undo/redo on the same timeline.
+ * The outline binds to `mei`: it renders mei.nodeData, routes every mutation to
+ * the map, and both views undo/redo on the map's own journal.
  *
  * Topics go through the SAME markdown/KaTeX renderer on both sides, so the
  * map and the outline stay visually in step too — the demo data's
@@ -30,17 +30,16 @@ async function main() {
   await mei.init(example)
   window.m = mei
 
-  // 历史检查器要读同一个栈；绑定模式下 Outliner 已默认用 mei.historyStack，
-  // 这里取它（allowUndo:true 才有），缺则直接报错
+  // 历史检查器要读同一个栈；Outliner 自己不再持有历史，直接取 mei 的那条
+  // （allowUndo:true 才有），缺则说明初始化没完成
   if (!mei.historyStack) throw new Error('historyStack not ready — allowUndo must be true and init resolved')
   const stack = mei.historyStack
 
-  // 绑定一行就够：传 `mei` 后，大纲自动镜像 mei.nodeData（一份数据两个视图），
-  // 并默认挂上 mei.historyStack 同一条 undo/redo 时间线——两边操作都可回滚
+  // 绑定一行就够：传 `mei` 后，大纲直接渲染 mei.nodeData（一份数据两个视图），
+  // 并用 mei.historyStack 同一条 undo/redo 时间线——两边操作都可回滚
   const outliner = new Outliner({
     el: '#outline',
     mei,
-    docName: 'outline',
     fileName: '大纲',
     // renders the topic as HTML while not editing; focusing swaps back to the
     // raw markdown so the source stays editable

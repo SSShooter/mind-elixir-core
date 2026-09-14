@@ -1,25 +1,23 @@
 import './outliner.css'
-import { HistoryStack } from '../utils/historyStack'
-import type { HistoryDirection, HistoryEntry } from '../utils/historyStack'
+import type MindElixir from '../index'
 import type { NodeObj } from '../types/index'
 import type { Topic } from '../types/dom'
-import { generateUUID } from '../utils/index'
-import {
-  addSiblingBeforeOperation,
-  addSiblingOperation,
-  findItemById,
-  findPathToNode,
-  indentOperation,
-  moveDownOperation,
-  moveToOperation,
-  moveUpOperation,
-  outdentOperation,
-} from './operations'
+import { generateUUID, getObjById } from '../utils/index'
+import type { HistoryStack } from '../utils/historyStack'
 import { svgIcon } from './icons'
 import { defaultI18n } from './types'
-import type { ItemOperation, OutlineData, OutlineItem, OutlinerI18n, OutlinerMei, OutlinerOptions } from './types'
+import type { ItemOperation, OutlinerI18n, OutlinerOptions } from './types'
 
 type DropPosition = 'before' | 'inside' | 'after'
+
+/**
+ * The outline's view of the map's tree: `children` is always an array.
+ *
+ * `NodeObj.children` is optional, but every walk below reads it unconditionally
+ * (`for (const child of item.children)`), so {@link ensureChildren} fills the
+ * holes once per tree and every accessor hands the filled shape back.
+ */
+type LiveNode = NodeObj & { children: LiveNode[] }
 
 /**
  * One item's DOM, kept alive across renders by {@link Outliner} — the basis of
@@ -47,47 +45,71 @@ interface ItemView {
   topicText: string
   /** True while `topic` shows raw source because the node is being edited. */
   topicDirty: boolean
-  item: OutlineItem
+  item: LiveNode
   level: number
   parentId: string | undefined
   siblingCount: number
 }
 
-/** `parent` back-references (set by mind-elixir's fillParent) break JSON cloning. */
-const stripParentRefs = (data: unknown): any => JSON.parse(JSON.stringify(data, (k, v) => (k === 'parent' && typeof v !== 'string' ? undefined : v)))
+/**
+ * Give every node a `children` array, in place.
+ *
+ * The map owns the tree, so this is the one write the outline performs on it —
+ * a shape normalisation it needs to walk the tree the same way for rendering and
+ * for the breadcrumb. Idempotent: after the first pass over a tree, a repeat
+ * costs one traversal and nothing else.
+ */
+const ensureChildren = (node: LiveNode): void => {
+  if (!node.children) node.children = []
+  node.children.forEach(ensureChildren)
+}
 
 /**
- * A dependency-free outliner (React-free refactor of react-outliner).
+ * A mind-elixir outliner — ONE document, TWO views.
  *
- * Two modes:
- * - **Standalone**: owns its `data`, commits every mutation as one history
- *   entry `{ before, after }` on a {@link HistoryStack}.
- * - **Bound** (`options.mei`): ONE data, TWO views — the outline renders
- *   `mei.nodeData` in place (live reference, no clone) and routes every
- *   mutation to the map, whose 'operation' events feed the shared stack. The
- *   outline re-renders on every stack change, so edits from either side and
- *   undo/redo stay consistent across both views.
+ * The outline renders `mei.nodeData` in place (same reference, no clone), routes
+ * every mutation to the map through the map's own node operations, and re-reads
+ * the tree whenever the map's undo/redo journal moves. It therefore owns **no
+ * data and no history of its own**: an edit made in the outline is a map edit, a
+ * `Ctrl+Z` from either view walks one timeline, and a change made on the map —
+ * including one made programmatically — shows up here.
+ *
+ * ```ts
+ * const mei = new MindElixir({ el: '#map', allowUndo: true })
+ * await mei.init(data)
+ * const outliner = new Outliner({ el: '#outline', mei })
+ * ```
+ *
+ * Sync runs on BOTH of the map's channels: the shared journal (structural edits,
+ * undo/redo — collapse/expand lands there too) and the map's `expandNode` event,
+ * which covers silent internal expands that record no entry of their own. Both
+ * merge into one render per tick.
+ *
+ * A node that the map does not render — i.e. inside a collapsed branch — has no
+ * element to operate on, so outline gestures on it are no-ops; unfolding the
+ * branch in the map makes it work again. That is mind-elixir's own API shape:
+ * every node operation takes a `Topic` element, not a `NodeObj`.
  */
 export class Outliner {
   private el: HTMLElement
   private breadcrumbEl: HTMLElement
   private itemsEl: HTMLElement
-  /** The outline root(s). In bound mode this IS `[mei.nodeData]` — same reference, see bindToLiveTree. */
-  private items: OutlineItem[] = []
-  private stack: HistoryStack
-  private mei: OutlinerMei | null
-  /** While true, `rerenderFromMei` skips one render (patch-only topic commits). */
+  /** The map's live root (`mei.nodeData`), never a copy — assigned by {@link bindRoot}. */
+  private root!: LiveNode
+  /** The map's journal (`mei.historyStack`). The outline subscribes to it and pushes nothing. */
+  private readonly history: HistoryStack
+  private readonly mei: MindElixir
+  /** While true, a sync skips its render (patch-only topic commits). */
   private suppressSync = false
   /** A deferred sync is owed — see `scheduleSync`. */
   private syncDirty = false
   /** A deferred sync flush is already queued for the end of this tick. */
   private syncQueued = false
-  private docName: string
   private readonly: boolean
-  private markdown?: (text: string, item: OutlineItem) => string
+  private markdown?: (markdown: string, obj: NodeObj) => string
   private i18n: OutlinerI18n
   private fileName?: string
-  private onChange?: (data: OutlineItem[]) => void
+  private onChange?: (data: NodeObj) => void
 
   private zoomedId: string | null = null
   private editingId: string | null = null
@@ -109,30 +131,19 @@ export class Outliner {
     if (!el) throw new Error('Outliner: el is not a valid element')
     this.el = el
     this.el.innerHTML = ''
+    this.mei = options.mei
+    // Refuse to render the map's document without the map's journal: an outline
+    // running on a private stack would look identical until the first Ctrl+Z.
+    if (!this.mei.historyStack) {
+      throw new Error('Outliner: mei.historyStack is missing — create the MindElixir instance with `allowUndo: true` and await `init`')
+    }
+    this.history = this.mei.historyStack
     this.readonly = options.readonly ?? false
     this.markdown = options.markdown
     this.i18n = { ...defaultI18n, ...options.i18n }
     this.fileName = options.fileName
     this.onChange = options.onChange
-    this.docName = options.docName ?? 'outliner'
-    this.mei = options.mei ?? null
-    if (this.mei) {
-      // Bound mode: the map owns the data; the outline renders the LIVE tree
-      // (no clone — see bindToLiveTree). The history stack MUST be mei's own —
-      // the outline subscribes to it and re-syncs on every map operation, so
-      // a different stack would silently break two-way sync. Default to
-      // mei.historyStack when the caller doesn't pass one explicitly.
-      if (!options.history && !this.mei.historyStack) {
-        throw new Error('Outliner: bound mode requires mei.historyStack — create the MindElixir instance with `allowUndo: true` and await `init`')
-      }
-      this.stack = options.history ?? this.mei.historyStack!
-      this.bindToLiveTree()
-    } else {
-      // Standalone: own data, own (or shared) history stack
-      this.stack = options.history ?? new HistoryStack()
-      if (!options.data) throw new Error('Outliner: either `data` or `mei` is required')
-      this.items = Outliner.normalize(options.data)
-    }
+    this.bindRoot()
 
     this.breadcrumbEl = document.createElement('div')
     this.breadcrumbEl.className = 'outliner-breadcrumb'
@@ -144,27 +155,19 @@ export class Outliner {
     container.appendChild(this.itemsEl)
     this.el.appendChild(container)
 
-    if (this.mei) {
-      // Bound mode: the outliner never pushes its own entries — it re-adopts
-      // the live tree on every stack change (map operations, undo, redo and
-      // clear all land here)
-      this.disposers.push(this.stack.subscribe(this.requestSync))
-      // Collapse/expand now lands on the shared stack like any other edit, but the
-      // map also fires 'expandNode' — that channel is still needed for SILENT
-      // expands (auto-expanding a collapsed parent before a child is added), which
-      // record nothing on their own. The stack channel renders synchronously; this
-      // one defers, so the pair costs one render instead of two without either
-      // notification being dropped (see `scheduleSync`).
-      const bus = this.mei.bus
-      if (bus) {
-        bus.addListener('expandNode', this.scheduleSync)
-        this.disposers.push(() => bus.removeListener('expandNode', this.scheduleSync))
-      }
-    } else {
-      // Shared history: restore this document when the stack walks over our entries
-      this.disposers.push(this.stack.register(this.docName, this.restore))
-    }
-    // Global undo/redo shortcut (contenteditable-aware, see handler)
+    // The outline pushes no entries of its own — every journal change (a map
+    // operation, undo, redo, clear) makes it re-adopt the live tree.
+    this.disposers.push(this.history.subscribe(this.requestSync))
+    // Collapse/expand lands on the shared journal like any other edit, but the
+    // map also fires 'expandNode' — that channel is still needed for SILENT
+    // expands (auto-expanding a collapsed parent before a child is added), which
+    // record nothing on their own. The journal channel renders synchronously;
+    // this one defers, so the pair costs one render instead of two without
+    // either notification being dropped (see `scheduleSync`).
+    this.mei.bus.addListener('expandNode', this.scheduleSync)
+    this.disposers.push(() => this.mei.bus.removeListener('expandNode', this.scheduleSync))
+    // Undo/redo while the focus is anywhere - see the containment guard in the
+    // handler for why the map's own shortcut must not be handled twice.
     document.addEventListener('keydown', this.handleGlobalKeydown)
     this.disposers.push(() => document.removeEventListener('keydown', this.handleGlobalKeydown))
     // Close an open item menu on any outside mousedown
@@ -187,88 +190,24 @@ export class Outliner {
   }
 
   /**
-   * Deep-clone + ensure every node has a `children` array.
-   * `parent` back-references (set by mind-elixir's fillParent) break JSON
-   * cloning — dropped here, same as mind-elixir's own `stringifyData`.
+   * A detached snapshot of what the outline currently shows, with the map's
+   * `parent` back-references stripped — `mei.stringifyData` is mind-elixir's own
+   * serializer, so this is the same shape `mei.getData()` produces.
+   *
+   * In focus mode the outline renders the focused subtree while `getData()`
+   * reports the whole diagram, so this follows the OUTLINE's root.
    */
-  static normalize(data: OutlineData[]): OutlineItem[] {
-    const clone = stripParentRefs(data) as OutlineItem[]
-    const ensure = (item: OutlineItem): OutlineItem => {
-      item.children = (item.children ?? []).map(ensure)
-      return item
-    }
-    return clone.map(ensure)
+  getData(): NodeObj {
+    return JSON.parse(this.mei.stringifyData(this.root)) as NodeObj
   }
 
-  getData(): OutlineItem[] {
-    // stripParentRefs: in bound mode `items` IS the live mei tree (parent refs)
-    return stripParentRefs(this.items) as OutlineItem[]
-  }
-
-  /** Replace the whole dataset (no history entry — mirrors `mei.refresh`). */
-  refresh(data: OutlineData[]): void {
-    if (this.mei) throw new Error('Outliner: refresh() is not available in bound mode — the data is owned by MindElixir')
-    this.items = Outliner.normalize(data)
-    if (this.zoomedId && !findItemById(this.items, this.zoomedId)) this.zoomedId = null
-    this.editingId = null
-    this.render()
-    this.emitChange()
-  }
-
-  /** Programmatically set a partial update; `saveHistory = false` skips the undo timeline. */
-  updateItem(id: string, patch: Partial<OutlineItem>, saveHistory = true): void {
-    if (this.mei) {
-      if (patch.topic !== undefined) this.setNodeTopicBound(id, patch.topic)
-      if (patch.expanded !== undefined) this.expandBound(id, patch.expanded)
-      return
-    }
-    if (saveHistory) {
-      // Same vocabulary as the map: a pure fold reports expandNode / collapseNode,
-      // anything else (topic, style, …) stays a reshapeNode.
-      const isPureFold = patch.topic === undefined && patch.expanded !== undefined
-      const op = isPureFold ? (patch.expanded ? 'expandNode' : 'collapseNode') : 'reshapeNode'
-      const ok = this.commit(
-        draft => {
-          const item = findItemById(draft, id)
-          if (!item) return null
-          Object.assign(item, patch)
-          return draft
-        },
-        { op, id }
-      )
-      if (ok) this.render()
-      return
-    }
-    const item = findItemById(this.items, id)
-    if (!item) return
-    Object.assign(item, patch)
-    this.render()
-  }
-
-  /** Insert an empty child under `id` and focus it. */
+  /** Insert an empty child under `id` in the map and focus it in the outline. */
   addChild(id: string): void {
-    if (this.mei) {
-      const el = this.meiEle(id)
-      if (!el) return
-      this.flushEditingText()
-      const newId = generateUUID()
-      this.mei.addChild(el, { id: newId, topic: '', children: [] } as NodeObj)
-      this.focusItem(newId)
-      return
-    }
+    const el = this.meiEle(id)
+    if (!el) return
+    this.flushEditingText()
     const newId = generateUUID()
-    const ok = this.commit(
-      draft => {
-        const parent = findItemById(draft, id)
-        if (!parent) return null
-        parent.children.push({ id: newId, topic: '', children: [] })
-        if (parent.expanded === false) parent.expanded = true
-        return draft
-      },
-      { op: 'addChild', id }
-    )
-    if (!ok) return
-    this.render()
+    this.mei.addChild(el, { id: newId, topic: '', children: [] })
     this.focusItem(newId)
   }
 
@@ -276,6 +215,7 @@ export class Outliner {
     this.disposers.forEach(fn => fn())
     this.disposers = []
     this.el.removeEventListener('keydown', this.handleTopicKeydown)
+    this.el.removeEventListener('keydown', this.handleGlobalKeydown)
     this.el.removeEventListener('click', this.handleClick)
     this.el.removeEventListener('focusin', this.handleFocusIn)
     this.el.removeEventListener('focusout', this.handleFocusOut)
@@ -306,79 +246,96 @@ export class Outliner {
     if (alreadyFocused) this.placeCaretAtEnd(el)
   }
 
-  // #region history
-
-  private restore = (entry: HistoryEntry<OutlineItem[]>, direction: HistoryDirection): void => {
-    this.items = JSON.parse(JSON.stringify(direction === 'undo' ? entry.before : entry.after))
-    if (this.zoomedId && !findItemById(this.items, this.zoomedId)) this.zoomedId = null
-    this.editingId = null
-    this.openMenuId = null
-    this.render()
-    this.emitChange()
-  }
+  // #region the live tree (the map owns it; the outline only reads it)
 
   /**
-   * Run `mutator` on a working clone; if it produces a real change, record ONE
-   * history entry (before/after snapshots) and swap in the new data.
-   * Returns false when readonly / no-op (no entry pushed).
-   */
-  private commit(mutator: (draft: OutlineItem[]) => OutlineItem[] | null, meta?: any): boolean {
-    if (this.readonly) return false
-    const before = this.getData()
-    const draft = JSON.parse(JSON.stringify(this.items)) as OutlineItem[]
-    const next = mutator(draft)
-    if (!next) return false
-    if (JSON.stringify(next) === JSON.stringify(before)) return false
-    this.items = next
-    this.stack.push(this.docName, before, this.getData(), meta)
-    this.emitChange()
-    return true
-  }
-
-  private emitChange(): void {
-    this.onChange?.(this.getData())
-  }
-
-  // #endregion
-
-  // #region bound mode (mei binding — one data, two views)
-
-  /**
-   * Point `this.items` at the live `mei.nodeData` root and normalise it in
-   * place — no clone, the map owns the data.
+   * Point `this.root` at the live `mei.nodeData` and normalise it in place — no
+   * clone, the map owns the data.
    *
-   * Between `mei.refresh` calls (undo/redo) this is the same reference, so
-   * the assignment is a no-op; only a swapped tree re-points it.
-   *
-   * The recursion is the real work: `NodeObj.children` is optional and a
-   * leaf may carry `undefined`, but every rendering/ops helper here treats
-   * the tree as `OutlineItem[]` and walks `children` unconditionally. Fill
-   * the holes once per tree — idempotent, so calling it repeatedly is free
-   * after the first pass.
+   * Between `refresh` calls (undo/redo) this is the same reference, so the
+   * assignment is a no-op and only the `ensureChildren` pass runs; a swapped
+   * tree — a new document, or the subtree focus mode installs — re-points it.
    */
-  private bindToLiveTree(): void {
-    const nodeData = this.mei!.nodeData as unknown as OutlineItem
-    if (this.items?.[0] !== nodeData) {
-      this.items = [nodeData]
-    }
-    const ensureChildren = (node: OutlineItem): void => {
-      if (!node.children) node.children = []
-      node.children.forEach(ensureChildren)
-    }
+  private bindRoot(): void {
+    const nodeData = this.mei.nodeData as LiveNode
+    if (this.root !== nodeData) this.root = nodeData
     ensureChildren(nodeData)
   }
 
   /**
-   * Ask for a bound-mode sync and RENDER NOW. Callers such as
-   * `applyBoundOperation` focus a node right after the map call, which needs the
-   * fresh DOM, so this channel stays synchronous.
+   * Look a node up with the map's own depth-first search. The outline keeps
+   * neither a copy of the tree nor an index over it.
+   */
+  private byId(id: string): LiveNode | null {
+    return getObjById(id, this.root) as LiveNode | null
+  }
+
+  private isRoot(id: string): boolean {
+    return this.root.id === id
+  }
+
+  private parentOf(id: string): LiveNode | null {
+    return (this.byId(id)?.parent as LiveNode | undefined) ?? null
+  }
+
+  /**
+   * The previous sibling, straight off the map's `parent` back-references (kept
+   * current by mind-elixir's `fillParent`) instead of a second tree walk.
+   */
+  private prevSiblingOf(id: string): LiveNode | null {
+    const node = this.byId(id)
+    const siblings = node?.parent?.children as LiveNode[] | undefined
+    if (!node || !siblings) return null
+    const index = siblings.indexOf(node)
+    return index > 0 ? siblings[index - 1] : null
+  }
+
+  /**
+   * Root-to-node path for the breadcrumb, walked upwards through `parent`.
+   *
+   * It stops at the rendered document root: in focus mode `mei.nodeData` is a
+   * subtree whose `parent` still points into the map's backup tree, and the
+   * breadcrumb must not show segments above what is on screen.
+   */
+  private pathTo(id: string): Array<{ id: string; topic: string }> {
+    const path: Array<{ id: string; topic: string }> = []
+    let node: LiveNode | null = this.byId(id)
+    while (node) {
+      path.unshift({ id: node.id, topic: node.topic })
+      if (node.id === this.root.id) break
+      node = (node.parent as LiveNode | undefined) ?? null
+    }
+    return path
+  }
+
+  /**
+   * The node's element in the map. Null when the map does not render it — a node
+   * inside a collapsed branch has no DOM, and every mind-elixir operation takes an
+   * element, so such a node simply cannot be acted on from the outline.
+   */
+  private meiEle(id: string): Topic | null {
+    try {
+      return this.mei.findEle(id)
+    } catch {
+      return null
+    }
+  }
+
+  // #endregion
+
+  // #region sync (the map's journal + its expandNode event)
+
+  /**
+   * Ask for a sync and RENDER NOW. Callers such as `applyOperation` focus a node
+   * right after the map call, which needs the fresh DOM, so this channel stays
+   * synchronous.
    *
    * Renders even if one already ran in this tick, because the notification that
    * brought us here may describe a NEWER tree than that render saw — see
    * `scheduleSync` for why the two channels must not share a coalescing window.
    */
   private requestSync = (): void => {
-    if (!this.mei || this.suppressSync) return
+    if (this.suppressSync) return
     this.syncDirty = false
     this.rerenderFromMei()
   }
@@ -386,8 +343,8 @@ export class Outliner {
   /**
    * Deferred variant, wired to the map's `expandNode` bus event.
    *
-   * That event is the only channel reporting a mutation the history stack does
-   * not also announce: a tracked fold fires it and then pushes an entry (which
+   * That event is the only channel reporting a mutation the journal does not
+   * also announce: a tracked fold fires it and then pushes an entry (which
    * renders synchronously through `requestSync`), while a SILENT expand —
    * `addChild` / move-into auto-expanding a collapsed target — fires it with no
    * entry of its own, the caller's operation acting as the announcement instead.
@@ -398,7 +355,7 @@ export class Outliner {
    * before the browser paints. Renders are never dropped, only coalesced.
    */
   private scheduleSync = (): void => {
-    if (!this.mei || this.suppressSync) return
+    if (this.suppressSync) return
     this.syncDirty = true
     if (this.syncQueued) return
     this.syncQueued = true
@@ -411,64 +368,37 @@ export class Outliner {
   }
 
   /**
-   * Re-render the outline from the live mei tree. Called on every stack
-   * change, so it re-reads `this.items` (undo/redo may have replaced the
-   * tree) and drops view state that may point at now-missing nodes.
+   * Re-render the outline from the live map tree. Called on every journal
+   * change, so it re-reads `this.root` (undo/redo may have swapped the tree) and
+   * drops view state that may point at now-missing nodes.
    */
   private rerenderFromMei(): void {
-    if (!this.mei || this.suppressSync) return
-    this.bindToLiveTree()
-    if (this.zoomedId && !findItemById(this.items, this.zoomedId)) this.zoomedId = null
+    if (this.suppressSync) return
+    this.bindRoot()
+    if (this.zoomedId && !this.byId(this.zoomedId)) this.zoomedId = null
     this.editingId = null
     this.openMenuId = null
     this.render()
     this.emitChange()
   }
 
-  /** Resolve a node's map element; null when the node is not rendered (collapsed). */
-  private meiEle(id: string): Topic | null {
-    if (!this.mei) return null
-    try {
-      return this.mei.findEle(id) as Topic
-    } catch {
-      return null
-    }
+  private emitChange(): void {
+    this.onChange?.(this.getData())
   }
 
-  private isRoot(id: string): boolean {
-    return this.mei !== null && this.items[0]?.id === id
-  }
+  // #endregion
 
-  /** The node's parent in the (live) tree (null for the root). */
-  private mirrorParent(id: string): OutlineItem | null {
-    const find = (list: OutlineItem[]): OutlineItem | null => {
-      for (const item of list) {
-        if (item.children.some(child => child.id === id)) return item
-        const found = find(item.children)
-        if (found) return found
-      }
-      return null
-    }
-    return find(this.items)
-  }
-
-  private mirrorPrevSibling(id: string): OutlineItem | null {
-    const parent = this.mirrorParent(id)
-    if (!parent) return null
-    const index = parent.children.findIndex(child => child.id === id)
-    if (index <= 0) return null
-    return parent.children[index - 1]
-  }
+  // #region operations (each one is a call into the map)
 
   /**
-   * Flush unsaved typing (from the outline editor) into the live tree via
+   * Flush unsaved typing (from the outline editor) into the map via
    * `reshapeNode` so a following structural move cannot lose it. Skipped when
-   * the text is unchanged (reshapeNode would push a no-op history entry).
+   * the text is unchanged (reshapeNode would push a no-op journal entry).
    */
   private flushEditingText(): void {
     const editing = this.liveEditingText()
     if (!editing) return
-    const item = findItemById(this.items, editing.id)
+    const item = this.byId(editing.id)
     if (item && item.topic !== editing.text) this.setNodeTopicBound(editing.id, editing.text)
   }
 
@@ -476,14 +406,13 @@ export class Outliner {
     const el = this.meiEle(id)
     if (!el) return
     // reshapeNode (not setNodeTopic) — it fires the tracked 'reshapeNode'
-    // operation so the edit lands on the shared undo timeline, and writes the
-    // live tree node directly (this.items IS mei.nodeData — no mirror patch).
+    // operation so the edit lands on the shared journal, and writes the live
+    // tree node directly (this.root IS mei.nodeData — no mirror patch).
     // Patch-only display: suppress the sync re-render (same rationale as
-    // standalone focus-out — a full render would swallow the click that
-    // caused the blur).
+    // focus-out — a full render would swallow the click that caused the blur).
     this.suppressSync = true
     try {
-      this.mei!.reshapeNode(el, { topic })
+      this.mei.reshapeNode(el, { topic })
     } finally {
       this.suppressSync = false
     }
@@ -493,106 +422,73 @@ export class Outliner {
     const el = this.meiEle(id)
     if (!el) return
     // expandNode records a tracked 'operation' AND fires 'expandNode'; the
-    // constructor subscriptions handle re-rendering (the stack channel, see
-    // requestSync), so this path and map-side folding behave identically —
-    // including undo, which now covers folds made from either view.
-    this.mei!.expandNode(el, isExpand)
+    // constructor subscriptions handle re-rendering (the journal channel, see
+    // `requestSync`), so this path and map-side folding behave identically —
+    // including undo, which covers folds made from either view.
+    this.mei.expandNode(el, isExpand)
   }
 
-  /** Bound twin of {@link applyOperation}: route the op to the map. */
-  private applyBoundOperation(op: ItemOperation): void {
-    if (this.isRoot(op.id) || (op.type === 'moveTo' && this.isRoot(op.draggedId!))) return
+  /**
+   * Route ONE outline gesture to the map.
+   *
+   * Every case is a call into mind-elixir's own node operations: the outline
+   * never touches the tree, and the operation the map fires is what records the
+   * journal entry that brings us back here through `requestSync`.
+   */
+  private applyOperation(op: ItemOperation): void {
+    if (this.readonly) return
+    // The root has no mind-map equivalent for any of these gestures: no parent to
+    // outdent into, no sibling to swap with.
+    if (this.isRoot(op.id)) return
     this.flushEditingText()
     const el = this.meiEle(op.id)
+    // Not rendered in the map (collapsed branch) → nothing to act on.
     if (!el) return
     const newId = op.type === 'addSibling' || op.type === 'addSiblingBefore' ? generateUUID() : null
-    const node = newId ? ({ id: newId, topic: op.newNodeContent ?? '', children: [] } as NodeObj) : undefined
+    const node = newId ? ({ id: newId, topic: op.newNodeContent ?? '', children: [] } satisfies NodeObj) : undefined
     switch (op.type) {
       case 'addSibling':
-        this.mei!.insertSibling('after', el, node)
+        this.mei.insertSibling('after', el, node)
         break
       case 'addSiblingBefore':
-        this.mei!.insertSibling('before', el, node)
+        this.mei.insertSibling('before', el, node)
         break
       case 'indent': {
-        const prev = this.mirrorPrevSibling(op.id)
-        const prevEle = prev ? this.meiEle(prev.id) : null
-        if (prevEle) this.mei!.moveNodesIn([el], prevEle)
+        const prev = this.prevSiblingOf(op.id)
+        const prevEl = prev ? this.meiEle(prev.id) : null
+        if (prevEl) this.mei.moveNodesIn([el], prevEl)
         break
       }
       case 'outdent': {
         // Outdenting a root child has no mind-map equivalent (would leave the tree)
-        const parent = this.mirrorParent(op.id)
+        const parent = this.parentOf(op.id)
         const parentEle = parent && !this.isRoot(parent.id) ? this.meiEle(parent.id) : null
-        if (parentEle) this.mei!.moveNodesAfter([el], parentEle)
+        if (parentEle) this.mei.moveNodesAfter([el], parentEle)
         break
       }
       case 'moveUp':
-        this.mei!.moveUpNode(el)
+        this.mei.moveUpNode(el)
         break
       case 'moveDown':
-        this.mei!.moveDownNode(el)
+        this.mei.moveDownNode(el)
         break
       case 'moveTo': {
         const targetEle = op.targetId ? this.meiEle(op.targetId) : null
         if (!targetEle || (this.isRoot(op.targetId!) && op.dropPosition !== 'inside')) break
-        if (op.dropPosition === 'before') this.mei!.moveNodesBefore([el], targetEle)
-        else if (op.dropPosition === 'after') this.mei!.moveNodesAfter([el], targetEle)
-        else this.mei!.moveNodesIn([el], targetEle)
+        if (op.dropPosition === 'before') this.mei.moveNodesBefore([el], targetEle)
+        else if (op.dropPosition === 'after') this.mei.moveNodesAfter([el], targetEle)
+        else this.mei.moveNodesIn([el], targetEle)
         break
       }
     }
-    // The mei call fired its 'operation' → stack push → rerenderFromMei
+    // The map call fired its operation → journal push → rerenderFromMei
     if (newId) this.focusItem(newId)
     else if (op.shouldFocusCurrent) this.focusItem(op.id)
   }
 
-  // #endregion
-
-  // #region operations
-
-  private applyOperation(op: ItemOperation): void {
-    if (this.readonly) return
-    if (this.mei) {
-      this.applyBoundOperation(op)
-      return
-    }
-    const editing = this.liveEditingText()
-    const newId = op.type === 'addSibling' || op.type === 'addSiblingBefore' ? generateUUID() : null
-    const ok = this.commit(
-      draft => {
-        // Fold unsaved typing of ANOTHER node into the same entry so it is not lost
-        if (editing && editing.id !== op.id) this.setTopicInDraft(draft, editing.id, editing.text)
-        switch (op.type) {
-          case 'addSibling':
-            return addSiblingOperation(draft, op.id, op.parentId, { id: newId!, topic: op.newNodeContent ?? '', children: [] })
-          case 'addSiblingBefore':
-            return addSiblingBeforeOperation(draft, op.id, op.parentId, { id: newId!, topic: '', children: [] })
-          case 'indent':
-            return indentOperation(draft, op.id, op.parentId, op.topic)
-          case 'outdent':
-            if (!op.parentId) return null
-            return outdentOperation(draft, op.id, op.parentId, op.topic ?? '')
-          case 'moveUp':
-            return moveUpOperation(draft, op.id, op.parentId)
-          case 'moveDown':
-            return moveDownOperation(draft, op.id, op.parentId)
-          case 'moveTo': {
-            if (!op.draggedId || !op.targetId || !op.dropPosition) return null
-            return moveToOperation(draft, op.draggedId, op.targetId, op.dropPosition)
-          }
-        }
-      },
-      { op: op.type, id: op.id }
-    )
-    if (!ok) return
-    this.render()
-    if (newId) this.focusItem(newId)
-    else if (op.shouldFocusCurrent) this.focusItem(op.id)
-  }
-
-  private deleteItem(id: string, parentId?: string): void {
-    if (this.isRoot(id)) return
+  /** Remove a node and its subtree from the map (never the document root). */
+  private deleteItem(id: string): void {
+    if (this.readonly || this.isRoot(id)) return
     // Pick the focus target from DOM order BEFORE deletion
     const currentEl = this.getTopicEl(id)
     let nextFocusId: string | null = null
@@ -600,32 +496,12 @@ export class Outliner {
       const all = Array.from(this.itemsEl.querySelectorAll<HTMLElement>('[data-outline-item]'))
       const index = all.indexOf(currentEl)
       if (index > 0) nextFocusId = all[index - 1].getAttribute('data-item-id')
-      else if (parentId) nextFocusId = parentId
+      else nextFocusId = this.parentOf(id)?.id ?? null
     }
-    if (this.mei) {
-      this.flushEditingText()
-      const el = this.meiEle(id)
-      if (!el) return
-      this.mei.removeNodes([el])
-      if (nextFocusId) this.focusItem(nextFocusId)
-      return
-    }
-    const ok = this.commit(
-      draft => {
-        const remove = (list: OutlineItem[]): OutlineItem[] =>
-          list
-            .map(item => {
-              if (item.id === id) return null
-              if (item.children.length) return { ...item, children: remove(item.children) }
-              return item
-            })
-            .filter(item => item !== null) as OutlineItem[]
-        return remove(draft)
-      },
-      { op: 'removeNodes', id }
-    )
-    if (!ok) return
-    this.render()
+    this.flushEditingText()
+    const el = this.meiEle(id)
+    if (!el) return
+    this.mei.removeNodes([el])
     if (nextFocusId) this.focusItem(nextFocusId)
   }
 
@@ -648,13 +524,13 @@ export class Outliner {
    * actually moved are reparented.
    */
   private render(): void {
-    if (this.zoomedId && !findItemById(this.items, this.zoomedId)) this.zoomedId = null
+    if (this.zoomedId && !this.byId(this.zoomedId)) this.zoomedId = null
 
     this.renderBreadcrumb()
 
     // Items — reconcile, don't rebuild.
-    const zoomed = this.zoomedId ? findItemById(this.items, this.zoomedId) : null
-    const displayItems = this.zoomedId ? (zoomed?.children ?? []) : this.items
+    const zoomed = this.zoomedId ? this.byId(this.zoomedId) : null
+    const displayItems: LiveNode[] = zoomed ? zoomed.children : [this.root]
     this.seen.clear()
     let cursor: HTMLElement | null = null
     for (const item of displayItems) {
@@ -668,7 +544,7 @@ export class Outliner {
    * teardown plus a fresh listener per segment. Skip it unless the labels moved.
    */
   private renderBreadcrumb(): void {
-    const path = this.zoomedId ? (findPathToNode(this.items, this.zoomedId) ?? []) : []
+    const path = this.zoomedId ? this.pathTo(this.zoomedId) : []
     const sig = `${this.fileName ?? ''}\u0000${path.map(node => `${node.id}:${node.topic}`).join('\u0000')}`
     if (sig === this.breadcrumbSig) return
     this.breadcrumbSig = sig
@@ -706,7 +582,7 @@ export class Outliner {
    * Returns this node's container, i.e. the cursor for the next sibling.
    */
   private syncItem(
-    item: OutlineItem,
+    item: LiveNode,
     level: number,
     parentId: string | undefined,
     siblingCount: number,
@@ -751,7 +627,7 @@ export class Outliner {
    * handled by the delegated handlers on `this.el` (see the events region), which
    * is what takes the per-node listener count from 8 to 0.
    */
-  private createItemView(item: OutlineItem, level: number, parentId: string | undefined, siblingCount: number): ItemView {
+  private createItemView(item: LiveNode, level: number, parentId: string | undefined, siblingCount: number): ItemView {
     const container = document.createElement('div')
     container.className = 'outline-item-container'
     container.dataset.itemId = item.id
@@ -835,7 +711,7 @@ export class Outliner {
   }
 
   /** Update only what actually changed. This is the hot path now. */
-  private patchItemView(view: ItemView, item: OutlineItem, level: number, parentId: string | undefined, siblingCount: number): void {
+  private patchItemView(view: ItemView, item: LiveNode, level: number, parentId: string | undefined, siblingCount: number): void {
     const levelChanged = view.level !== level
     // Refresh the live refs FIRST — delegated handlers read these, never closures.
     view.item = item
@@ -935,14 +811,14 @@ export class Outliner {
     if (!id) return
     const view = this.views.get(id)
     if (!view) return
-    const { item, level, parentId, siblingCount } = view
+    const { item, level, siblingCount } = view
     this.setOpenMenu(null)
     if (action === 'outdent') {
-      this.applyOperation({ type: 'outdent', id: item.id, parentId, shouldFocusCurrent: true, topic: item.topic })
+      this.applyOperation({ type: 'outdent', id: item.id, shouldFocusCurrent: true })
     } else if (action === 'indent') {
-      this.applyOperation({ type: 'indent', id: item.id, parentId, shouldFocusCurrent: true, topic: item.topic })
+      this.applyOperation({ type: 'indent', id: item.id, shouldFocusCurrent: true })
     } else if (action === 'delete' && (level > 0 || siblingCount > 1)) {
-      this.deleteItem(item.id, parentId)
+      this.deleteItem(item.id)
     }
   }
 
@@ -1028,7 +904,7 @@ export class Outliner {
     const view = this.views.get(wrapper.dataset.itemId ?? '')
     const draggedId = this.draggedId
     if (!view || !draggedId || draggedId === view.item.id || !position) return
-    this.applyOperation({ type: 'moveTo', id: draggedId, draggedId, targetId: view.item.id, dropPosition: position, shouldFocusCurrent: true })
+    this.applyOperation({ type: 'moveTo', id: draggedId, targetId: view.item.id, dropPosition: position, shouldFocusCurrent: true })
   }
 
   private clearDropIndicator(): void {
@@ -1038,7 +914,7 @@ export class Outliner {
     }
   }
 
-  private writeTopicHtml(el: HTMLElement, text: string, item: OutlineItem): void {
+  private writeTopicHtml(el: HTMLElement, text: string, item: LiveNode): void {
     if (this.markdown) {
       el.innerHTML = this.markdown(text, item)
     } else {
@@ -1067,16 +943,11 @@ export class Outliner {
     return { id: this.editingId, text: el.textContent ?? '' }
   }
 
-  private setTopicInDraft(draft: OutlineItem[], id: string, topic: string): void {
-    const item = findItemById(draft, id)
-    if (item) item.topic = topic
-  }
-
   private handleFocusIn = (e: FocusEvent): void => {
     const el = e.target as HTMLElement
     if (!el.matches?.('[data-outline-item]')) return
     const id = el.getAttribute('data-item-id')!
-    const item = findItemById(this.items, id)
+    const item = this.byId(id)
     if (!item) return
     this.editingId = id
     // Swap the rendered markup back to raw source so it stays editable, and mark
@@ -1112,28 +983,13 @@ export class Outliner {
     if (this.editingId !== id) return
     this.editingId = null
     const text = el.textContent ?? ''
-    if (this.mei) {
-      // Route to the map; patch only this element so a following click (menu,
-      // other item) is not swallowed by the sync re-render
-      const item = findItemById(this.items, id)
-      if (item && item.topic !== text) this.setNodeTopicBound(id, text)
-      const updated = findItemById(this.items, id)
-      if (updated) this.writeTopicHtml(el, updated.topic, updated)
-      this.markTopicClean(id, updated?.topic ?? text)
-      return
-    }
-    // Single history entry for the topic edit; patch only this element so a
-    // following click (menu, other item) is not swallowed by a full re-render
-    this.commit(
-      draft => {
-        this.setTopicInDraft(draft, id, text)
-        return draft
-      },
-      { op: 'finishEdit', id }
-    )
-    const item = findItemById(this.items, id)
-    if (item) this.writeTopicHtml(el, item.topic, item)
-    this.markTopicClean(id, item?.topic ?? text)
+    // Route to the map; patch only this element so a following click (menu,
+    // other item) is not swallowed by the sync re-render
+    const item = this.byId(id)
+    if (item && item.topic !== text) this.setNodeTopicBound(id, text)
+    const updated = this.byId(id)
+    if (updated) this.writeTopicHtml(el, updated.topic, updated)
+    this.markTopicClean(id, updated?.topic ?? text)
   }
 
   private handleTopicKeydown = (e: KeyboardEvent): void => {
@@ -1142,14 +998,13 @@ export class Outliner {
     if (!el || this.readonly) return
     const id = el.getAttribute('data-item-id')!
     const topic = el.textContent?.trim()
-    const parentId = this.findParentId(id)
 
     if (e.key === 'ArrowUp' && e.altKey) {
       e.preventDefault()
-      this.applyOperation({ type: 'moveUp', id, parentId, shouldFocusCurrent: true })
+      this.applyOperation({ type: 'moveUp', id, shouldFocusCurrent: true })
     } else if (e.key === 'ArrowDown' && e.altKey) {
       e.preventDefault()
-      this.applyOperation({ type: 'moveDown', id, parentId, shouldFocusCurrent: true })
+      this.applyOperation({ type: 'moveDown', id, shouldFocusCurrent: true })
     } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
       e.preventDefault()
       const all = Array.from(this.itemsEl.querySelectorAll<HTMLElement>('[data-outline-item]'))
@@ -1163,7 +1018,7 @@ export class Outliner {
     } else if (e.key === 'Enter') {
       e.preventDefault()
       if (e.shiftKey) {
-        this.applyOperation({ type: 'addSiblingBefore', id, parentId, shouldFocusNew: true })
+        this.applyOperation({ type: 'addSiblingBefore', id })
         return
       }
       const fullText = el.textContent ?? ''
@@ -1179,40 +1034,28 @@ export class Outliner {
       const textBefore = fullText.substring(0, cursorPosition)
       const textAfter = fullText.substring(cursorPosition)
       if (textBefore.trim() === '' && textAfter.trim() === '') {
-        this.applyOperation({ type: 'outdent', id, parentId, shouldFocusCurrent: true, topic: '' })
+        this.applyOperation({ type: 'outdent', id, shouldFocusCurrent: true })
       } else if (textAfter.trim() !== '') {
-        if (this.mei) {
-          const meiEl = this.meiEle(id)
-          if (meiEl) {
-            const newId = generateUUID()
-            const item = findItemById(this.items, id)
-            if (textBefore !== (item?.topic ?? '')) this.setNodeTopicBound(id, textBefore)
-            this.mei.insertSibling('after', meiEl, { id: newId, topic: textAfter, children: [] } as NodeObj)
-            this.focusItem(newId)
-          }
-          return
-        }
-        // Split at cursor into two nodes — one history entry
+        // Split at the cursor: patch this node's topic on the map, then insert
+        // the tail as a new sibling.
+        const meiEl = this.meiEle(id)
+        if (!meiEl) return
         const newId = generateUUID()
-        const ok = this.commit(
-          draft => {
-            this.setTopicInDraft(draft, id, textBefore)
-            return addSiblingOperation(draft, id, parentId, { id: newId, topic: textAfter, children: [] })
-          },
-          { op: 'addSibling', id }
-        )
-        if (!ok) return
-        this.render()
+        const item = this.byId(id)
+        if (textBefore !== (item?.topic ?? '')) this.setNodeTopicBound(id, textBefore)
+        this.mei.insertSibling('after', meiEl, { id: newId, topic: textAfter, children: [] })
         this.focusItem(newId)
       } else {
-        this.applyOperation({ type: 'addSibling', id, parentId, shouldFocusNew: true })
+        this.applyOperation({ type: 'addSibling', id })
       }
     } else if (e.key === 'Tab') {
       e.preventDefault()
-      this.applyOperation({ type: e.shiftKey ? 'outdent' : 'indent', id, parentId, shouldFocusCurrent: true, topic })
-    } else if (e.key === 'Backspace' && topic === '' && this.findDepth(id) > 1) {
+      this.applyOperation({ type: e.shiftKey ? 'outdent' : 'indent', id, shouldFocusCurrent: true })
+    } else if (e.key === 'Backspace' && topic === '' && !this.isRoot(id)) {
+      // `deleteItem` refuses the document root anyway; the check keeps the
+      // keystroke from being swallowed for a no-op.
       e.preventDefault()
-      this.deleteItem(id, parentId)
+      this.deleteItem(id)
     }
   }
 
@@ -1244,7 +1087,9 @@ export class Outliner {
     if (t.closest('.outline-item-collapse-btn')) {
       e.stopPropagation()
       const view = id ? this.views.get(id) : undefined
-      if (view) this.updateItem(id!, { expanded: view.item.expanded === false })
+      // `expanded: undefined` means expanded (the map's own default), so only an
+      // explicit `false` flips this click into an expand.
+      if (view) this.expandBound(view.item.id, view.item.expanded === false)
       return
     }
 
@@ -1265,11 +1110,20 @@ export class Outliner {
   }
 
   /**
-   * Global Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z. While a topic is being edited the
-   * browser's native contenteditable undo runs first; only when it is
-   * exhausted do we fall through to the shared history stack.
+   * Global Ctrl+Z / Ctrl+Y / Ctrl+Shift+Z — one journal for both views.
+   *
+   * The map binds the same shortcut on `mei.container` (see
+   * `plugin/operationHistory`), so a keypress whose focus sits there is already
+   * handled: matching it here as well would undo twice per keystroke. Everything
+   * else — the focus in an outline topic, on an outline button, or nowhere in
+   * particular — ends at `mei.undo` / `mei.redo`, i.e. the SAME journal. The
+   * outline never keeps a stack of its own to step through.
+   *
+   * While a topic is being edited the browser's native contenteditable undo runs
+   * first; only when it is exhausted do we step the journal.
    */
   private handleGlobalKeydown = (e: KeyboardEvent): void => {
+    if (this.mei.container?.contains(e.target as Node)) return
     const active = document.activeElement as HTMLElement | null
     const isContentEditable = !!active && (active.getAttribute('contenteditable') === 'true' || active.isContentEditable)
     const isInputElement = !!active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')
@@ -1288,7 +1142,7 @@ export class Outliner {
         const newContent = active.textContent || ''
         if (!undoResult || currentContent === newContent) {
           active.blur()
-          this.stack.undo()
+          this.mei.undo()
         }
       }, 0)
       return
@@ -1298,10 +1152,10 @@ export class Outliner {
 
     if (isModifier && key === 'z' && !e.shiftKey) {
       e.preventDefault()
-      this.stack.undo()
+      this.mei.undo()
     } else if (isModifier && (key === 'y' || (key === 'z' && e.shiftKey))) {
       e.preventDefault()
-      this.stack.redo()
+      this.mei.redo()
     }
   }
 
@@ -1315,14 +1169,5 @@ export class Outliner {
     // This render is newer than anything a pending deferred sync could produce
     this.syncDirty = false
     this.render()
-  }
-
-  private findParentId(id: string): string | undefined {
-    const path = findPathToNode(this.items, id)
-    return path && path.length > 1 ? path[path.length - 2].id : (this.zoomedId ?? undefined)
-  }
-
-  private findDepth(id: string): number {
-    return findPathToNode(this.items, id)?.length ?? 1
   }
 }

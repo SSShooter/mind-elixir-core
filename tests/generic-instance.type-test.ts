@@ -1,5 +1,5 @@
-import MindElixir from '../src'
-import type { MindElixirData, NodeObj, Options } from '../src'
+import MindElixir, { Outliner } from '../src'
+import type { MindElixirData, NodeObj, Options, OutlinerOptions } from '../src'
 
 type Metadata = {
   refId: string
@@ -22,8 +22,16 @@ const child: NodeObj<Metadata> | undefined = result.nodeData.children?.[0]
 // user's project. The argument type proves the generic flows through.
 const patched: boolean = mind.diffRefresh(data)
 
+// The outliner binds to an INSTANCE, not to a dataset: `mei` supplies both the
+// tree it renders and the journal it syncs against, so `el` and `mei` are the
+// whole option set. A `data`/`history` pair no longer exists to be passed.
+const outlinerOptions: OutlinerOptions = { el: '#outline', mei: mind }
+const outliner = new Outliner(outlinerOptions)
+const outlineRoot: NodeObj = outliner.getData()
+
 void options
 void initialized
 void metadata
 void child
 void patched
+void outlineRoot
