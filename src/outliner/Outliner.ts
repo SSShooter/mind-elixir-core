@@ -113,6 +113,14 @@ export class Outliner {
 
   private zoomedId: string | null = null
   private editingId: string | null = null
+  /**
+   * True until the end of the task in which compositionend fired. Safari fires
+   * compositionend BEFORE the Enter/Esc that confirms the candidate, so those
+   * keydowns arrive with `isComposing === false` — without this flag they would
+   * run the structural keymap. Cleared by a 0 ms timer, so any keydown in a
+   * LATER task is an ordinary command.
+   */
+  private compositionJustEnded = false
   private openMenuId: string | null = null
   private draggedId: string | null = null
   /** Set at dragstart so `dragover` needs neither a DOM scan nor a live lookup. */
@@ -175,6 +183,10 @@ export class Outliner {
     this.disposers.push(() => document.removeEventListener('mousedown', this.handleDocumentMousedown))
 
     this.el.addEventListener('keydown', this.handleTopicKeydown)
+    // The Enter that confirms an IME candidate must not run the structural
+    // keymap — see the guard at the top of `handleTopicKeydown`.
+    this.el.addEventListener('compositionend', this.handleCompositionEnd)
+    this.disposers.push(() => this.el.removeEventListener('compositionend', this.handleCompositionEnd))
     this.el.addEventListener('click', this.handleClick)
     this.el.addEventListener('focusin', this.handleFocusIn)
     this.el.addEventListener('focusout', this.handleFocusOut)
@@ -995,8 +1007,27 @@ export class Outliner {
     this.markTopicClean(id, updated?.topic ?? text)
   }
 
+  /**
+   * The Enter/Esc that dismissed the candidate window is still in flight when
+   * this fires — Chrome reports it with `isComposing: true`, Safari (which
+   * ends the composition first) with `false`. Swallowing those two keys until
+   * the end of this task covers both orderings without delaying anything.
+   */
+  private handleCompositionEnd = (): void => {
+    this.compositionJustEnded = true
+    setTimeout(() => {
+      this.compositionJustEnded = false
+    }, 0)
+  }
+
   private handleTopicKeydown = (e: KeyboardEvent): void => {
-    if (e.isComposing) return
+    // IME guard: `isComposing` + keyCode 229 cover the keydowns fired DURING a
+    // composition (both engines report them). The flag covers Safari's extra
+    // keydown AFTER compositionend. Only Enter/Esc are swallowed there — those
+    // are the keys that can dismiss the candidate window — so a late timer can
+    // never eat an ordinary keystroke.
+    if (e.isComposing || e.keyCode === 229) return
+    if (this.compositionJustEnded && (e.key === 'Enter' || e.key === 'Escape')) return
     const el = (e.target as HTMLElement).closest?.('[data-outline-item]') as HTMLElement | null
     if (!el || this.readonly) return
     const id = el.getAttribute('data-item-id')!
