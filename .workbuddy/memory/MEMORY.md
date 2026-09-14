@@ -58,6 +58,12 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
   for live state. Two sync channels must NOT share a window: journal push → `requestSync` (sync),
   map `expandNode` → `scheduleSync`. 17 DOM elements/node — the `.outline-item-front` 1 rem spacer
   is load-bearing.
+- Outliner API facts (probed on `dist/` 09-14): constructing before `await init` — or with
+  `allowUndo: false` — throws on the missing `historyStack`. `outliner.getData()` is a **bare
+  `NodeObj`**, byte-identical to `mei.getData().nodeData` when not zoomed, while `mei.getData()` is
+  the document wrapper. Following the map's focus mode is automatic. `readonly: true` kills the row's
+  pointer events (menu/drag/edit) but not the breadcrumb. User-facing guide:
+  `skills/integrate-outliner/SKILL.md` (the `skills/` folder is what `npx skills add` publishes).
 
 ## diffRefresh (undo/redo patch path, shipped 09-14)
 A second entry point beside `refresh` (untouched, authoritative). `src/utils/treePatch.ts` +
@@ -77,6 +83,13 @@ contract: log 09-14.
   **and the next undo rolls it back**. Use `reshapeNode` instead (as the outliner's
   `setNodeTopicBound` does).
 - `moveNodeObj` gives a stale `direction` to a node moved *into* a main node.
+- **Outliner `onChange` misses in-outline renames** (found 09-14 while documenting). It rides on the
+  sync render, and `setNodeTopicBound` wraps `reshapeNode` in `suppressSync` (so a full render cannot
+  swallow the click that caused the blur) — so a topic edited in the outline lands in the map and the
+  journal (`reshapeNode` entry, `Ctrl+Z` works) but never calls `onChange`. Structural gestures,
+  undo/redo and map-side edits all fire it. Complete signal: `mei.historyStack.subscribe`. The option's
+  JSDoc ("after every change that reached the outline") reads as intent the code does not meet —
+  reported, not silently reworded.
 
 ## Editing / DOM teardown — decided 不修 (09-14)
 Implicit blur from removing the focused element is engine-dependent (Chromium sync, Firefox not);
