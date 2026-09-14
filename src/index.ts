@@ -161,6 +161,17 @@ class MindElixir<M = any> {
    * Only available when `allowUndo` is `true` (the default).
    */
   declare clearHistory?: () => void
+  /**
+   * Install a document like {@link refresh} does, but apply only the difference
+   * — unchanged nodes keep their element, listeners and measured size, and the
+   * map is never re-laid-out from scratch. Installed by default; returns `false`
+   * (after falling back to `refresh`) for changes that cannot be expressed
+   * locally. See `plugin/diffRefresh`.
+   *
+   * `refresh` itself is untouched — this is an additional entry point beside it,
+   * aimed at undo/redo and progressive (streaming) output.
+   */
+  declare diffRefresh: (data: MindElixirData<M>) => boolean
   declare selection: SelectionArea
   declare panHelper: ReturnType<typeof createPanHelper>
   declare ptState?: number

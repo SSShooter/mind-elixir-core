@@ -2,6 +2,7 @@ import type MindElixir from './index'
 import type { MindElixirData } from './index'
 import linkDiv from './linkDiv'
 import contextMenu from './plugin/contextMenu'
+import diffRefresh from './plugin/diffRefresh'
 import keypressInit from './plugin/keypress'
 import nodeDraggable from './plugin/nodeDraggable'
 import operationHistory from './plugin/operationHistory'
@@ -108,6 +109,9 @@ const methods = {
       if (this.contextMenu) {
         this.disposable.push(contextMenu(this, this.contextMenu))
       }
+      // Must come before `operationHistory`: `restore()` uses `mei.diffRefresh`
+      // when it is available, and reads it at call time.
+      diffRefresh(this)
       this.allowUndo && this.disposable.push(operationHistory(this))
     }
     this.pluginsInitialized = true

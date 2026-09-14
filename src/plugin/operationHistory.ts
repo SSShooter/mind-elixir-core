@@ -107,7 +107,12 @@ export default function (mei: MindElixir) {
     // otherwise trigger (it would clone the whole tree for nothing) and
     // re-anchor focus explicitly below.
     restoring = true
-    mei.refresh(snapshot)
+    // `diffRefresh` is `refresh` minus the rebuild: it patches the live tree in
+    // place and mirrors every side effect of `refresh(data)` (selection, focus
+    // reset, the `refresh` event, the deep clone of the input). It falls back to
+    // `refresh` itself for changes it cannot express locally, so this is a fast
+    // path, not a second behaviour to reason about.
+    mei.diffRefresh ? mei.diffRefresh(snapshot) : mei.refresh(snapshot)
     restoring = false
     if (focusRootId) {
       const full = mei.nodeData
