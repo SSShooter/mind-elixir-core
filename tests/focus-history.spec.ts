@@ -138,3 +138,24 @@ test('Focus mode - undoing inside focus keeps the whole diagram in step', async 
   await expect(page.getByText('New Node', { exact: true })).toHaveCount(0)
   expect(await historyIndex(page)).toBe(0)
 })
+
+test('Loading a new document while focused drops the stale backup tree', async ({ page }) => {
+  await page.evaluate(() => {
+    const m: any = (window as any)['#map']
+    m.focusNode(m.findEle('branch1'))
+  })
+  expect(await page.evaluate(() => (window as any)['#map'].isFocusMode)).toBe(true)
+
+  await page.evaluate(() => {
+    const m: any = (window as any)['#map']
+    m.refresh({ nodeData: { id: 'root2', topic: 'Replaced', children: [{ id: 'z', topic: 'Z' }] } })
+  })
+
+  // While focused `getData()` reports `nodeDataBackup`; without leaving focus
+  // the brand new document would be shadowed by the pre-refresh tree.
+  expect(await page.evaluate(() => (window as any)['#map'].isFocusMode)).toBe(false)
+  expect(await page.evaluate(() => (window as any)['#map'].getData().nodeData.topic)).toBe('Replaced')
+  expect(
+    await page.evaluate(() => (window as any)['#map'].getData().nodeData.children.map((c: any) => c.topic))
+  ).toEqual(['Z'])
+})

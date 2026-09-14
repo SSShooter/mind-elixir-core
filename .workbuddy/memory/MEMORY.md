@@ -94,6 +94,62 @@ Cost is now the O(n) diff walk (~0.0022 ms/node), not DOM writes. The `…` menu
 outliner drag & drop have **no suite coverage** — re-run the functional probe after
 touching either. Tooling + pitfalls: `mind-elixir-perf-probe` skill.
 
+## Map renderer — linkDiv, fixed 2026-09-13 (was the bottleneck)
+
+Two-step fix. Measured via CDP `Performance.getMetrics` (`LayoutCount` delta) around `m.linkDiv()`.
+**Original → final** (same script, same environment):
+
+| nodes | `linkDiv()` | `setNodeTopic` (1 node!) | `refresh()` | forced reflows |
+|---|---|---|---|---|
+| 341 | 2.4 → **0.8** ms | 3.2 → **0.8** ms | 9.9 → 7.2 ms | 341 → **1** |
+| 1,365 | 16.8 → **2.3** ms | 16.0 → **2.5** ms | 35.4 → 30.0 ms | 1,365 → **2** |
+| 5,461 | 124.2 → **9.6** ms | 116.0 → **10.5** ms | 210.5 → 101.6 ms | 5,461 → **1** |
+
+Browser time in layout: 56.92 → **0.07 ms**. Step 1 = two-phase read/write (124.2 → 19.8);
+step 2 = merge sublinks into one `<path>` (19.8 → 9.6).
+
+### Where the remaining 9.6 ms goes (profiled, don't guess)
+At 5,492 nodes: geometry reads **7.2 ms** (35%) · creating paths **in the live document**
+**6.2 ms** (30%) · `borderColor` writes 1.1 ms · path strings 1.1 ms · svg teardown 0 ms.
+- **Trap**: the same "create paths" work measures 2.0 ms in a *detached* svg but **6.2 ms**
+  attached — style resolution dominates. Always benchmark in a live container.
+- **Not worth it**: reusing path elements and only updating `d` saves just 2.5 ms (12%), and
+  would need an element pool plus invalidation logic. Skip.
+- No single hotspot remains; going faster needs a different renderer (canvas) — a rewrite.
+
+Browser time in layout: 56.92 → **0.77 ms** (74×). Scaling is now ~linear (nodes ×16, time ×18);
+previously it was ×52 (superlinear — every forced reflow costs more as the DOM grows).
+
+### Invariants when touching `linkDiv`
+- **Three phases, and the order is load-bearing**: Phase 0 swaps in fresh empty
+  `<svg class="subLines">` per main node → Phase 1 reads ALL geometry with zero writes →
+  Phase 2 writes everything via `DocumentFragment`.
+- **Why Phase 0 must stay**: `createWrapper` (`utils/dom.ts:117-132`) only appends
+  `.me-children` when the node has children AND is expanded. The old code appended the
+  sublink `<svg>` immediately before `traverseChildren`, so a childless main wrapper had
+  that empty svg at `children[1]` and the walk read `children.length === 0` and returned —
+  an **implicit contract, not intentional**. Deferring the append makes `children[1]`
+  `undefined` → `Cannot read properties of undefined (reading 'children')` → 58 tests fail.
+- **Why splitting reads/writes is safe**: `.lines` / `.subLines` are `position: absolute`
+  (`index.css:268-278`), so attaching or filling them never reflows the node tree;
+  Phase 1 therefore measures exactly what the interleaved version measured. Proven by
+  149/149 (incl. screenshot snapshots).
+- `containerHeight/Width` is a loop invariant — keep it hoisted.
+
+### Still open on the map side
+- `linkDiv(mainNode)` is **not** a real partial update: the main branch still runs for every
+  main node, only sublink traversal is skipped.
+- No id→node index anywhere (`index.ts:329` has `// this.parentMap = {}` commented out), so
+  `getObjById` (`utils/index.ts:11`) and `tidyArrow` (`arrow.ts:676`) are full-tree DFS.
+- `exampleData/largeMap.ts` is only ~320 nodes — it cannot reproduce any of this.
+
+Full findings (perf + bugs, with verified line numbers): `.workbuddy/bug-and-perf-scan.md`.
+
+### Measuring it again
+Start vite on 23334 with the Bash tool `run_in_background: true` (`nohup … &` dies when the
+shell exits). The Playwright script must live in the **project root** — ESM ignores
+`NODE_PATH` and cannot resolve `@playwright/test` from `/tmp`.
+
 ## Testing notes
 
 - `HistoryStack.undo()` keeps undone entries for redo, so assert undo depth with
@@ -102,3 +158,30 @@ touching either. Tooling + pitfalls: `mind-elixir-perf-probe` skill.
   `page.locator('#map')` / `page.locator('#outline')`.
 - Screenshot failures of ~1 pixel (e.g. `multiple-instance.spec.ts`) are rendering
   environment drift, not regressions; do not update snapshots without asking.
+
+## Plaintext 转换器
+
+- 主题**可以含换行**（编辑时 Shift+Enter 保留，`utils/dom.ts:234-236`），而换行正是 plaintext 的
+  记录分隔符。raw 写出会让后半段落到缩进 0 被判为顶层节点 → 触发「多顶层节点合成 root」→ 整棵树多一层。
+- 现用对称转义：导出 `escapeTopic`（`\`→`\\`、换行→`\n`），解析 `unescapeTopic` 还原。往返无损。
+- 想在浏览器里直接试转换器：Playwright 里 `await import('/src/utils/plaintextConverter.ts')`
+  （vite dev 直接提供转译后的 ESM）。
+
+## destroy / refresh 的隐式依赖（改前先看）
+
+- `restore()`（`operationHistory.ts:95`）撤销时**也**调 `mei.refresh(snapshot)`。
+  所以在 `refresh` 里无条件 `clearHistory()` 会每次 undo 清空历史栈；无条件重置 focus 又会
+  破坏 restore 的「refresh 后重新锚定焦点」。现已改为：`refresh(data)` 重置 focus、
+  `restore` 显式补 `isFocusMode = true`；历史基线走 `refresh` 事件且用 `restoring` 标志抑制
+  （`getData()` 是完整 JSON 深拷贝，不抑制等于每次 undo 多一轮全树克隆）。
+- `destroy(this: Partial<MindElixir>)` —— Partial 让 `panHelper` 这类非可选字段也能安全置空。
+- `helper1/helper2` 的 pointer 监听器只在 `hideLinkController`（`arrow.ts:553`）里拆，
+  destroy 必须自己调 `?.destroy?.()`。
+
+## Playwright 排错（踩过两次）
+
+- `playwright test --reporter=line | tail -40` 会**截掉失败计数行**，只看到末尾的 "91 passed"
+  会误判为全过（实际 91 passed + 58 failed）。用 `--list` 取总数核对，或重定向到文件再 grep `failed`。
+- `test-results/` 堆积 >50 个文件时，Playwright 启动前的清理会被 safe-delete shim 拦下，
+  **整个套件无法启动**。解决：`mv test-results /tmp/xxx` 移走，不要删除。
+- 跑套件前先确认基线：全量 149 个测试（chromium 单 project），正常约 20 秒。

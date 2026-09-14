@@ -54,6 +54,17 @@ export default function (mei: MindElixir) {
   let currentSelectedNodes: string[] = []
   /** State matching the stack's current position — `before` for the next push. */
   let currentSnapshot = mei.getData()
+  /** True while `restore` is driving `refresh` — see `handleRefresh`. */
+  let restoring = false
+
+  // `refresh(data)` installs a brand new document, so the next push must start
+  // from it instead of the pre-refresh state. Re-baseline WITHOUT dropping the
+  // stack: unlike `focusNode`/`cancelFocus` this is not a view swap, and
+  // `stack.clear()` here would wipe the entries `restore` is walking.
+  const handleRefresh = function () {
+    if (restoring) return
+    currentSnapshot = mei.getData()
+  }
 
   const selectNodesByIds = (ids: string[]) => {
     const els: ReturnType<MindElixir['findEle']>[] = []
@@ -92,13 +103,19 @@ export default function (mei: MindElixir) {
     // History never crosses a focus boundary (`focusNode` / `cancelFocus`
     // clear it), so the focus root is guaranteed to exist in the snapshot.
     const focusRootId = mei.isFocusMode ? mei.nodeData?.id : null
+    // `refresh(data)` resets focus mode, so suppress the re-baseline it would
+    // otherwise trigger (it would clone the whole tree for nothing) and
+    // re-anchor focus explicitly below.
+    restoring = true
     mei.refresh(snapshot)
+    restoring = false
     if (focusRootId) {
       const full = mei.nodeData
       const focused = findById(full, focusRootId)
       if (focused) {
         mei.nodeDataBackup = full
         mei.nodeData = focused
+        mei.isFocusMode = true
         mei.refresh()
       } else {
         // Unreachable in practice — degrade to a consistent non-focus state
@@ -183,6 +200,7 @@ export default function (mei: MindElixir) {
     currentSelectedNodes = mei.currentNodes.map(n => n.nodeObj.id)
   }
   mei.bus.addListener('operation', handleOperation)
+  mei.bus.addListener('refresh', handleRefresh)
   mei.bus.addListener('selectNodes', handleSelectNodes)
   // 反选（如 Ctrl+点击）只会 fire unselectNodes，也需同步选中状态，避免记录陈旧的 currentSelected
   mei.bus.addListener('unselectNodes', handleSelectNodes)
@@ -191,6 +209,7 @@ export default function (mei: MindElixir) {
   return () => {
     stack.clear()
     mei.bus.removeListener('operation', handleOperation)
+    mei.bus.removeListener('refresh', handleRefresh)
     mei.bus.removeListener('selectNodes', handleSelectNodes)
     mei.bus.removeListener('unselectNodes', handleSelectNodes)
     mei.container.removeEventListener('keydown', handleKeyDown)

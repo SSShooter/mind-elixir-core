@@ -1,5 +1,6 @@
 import { test, expect } from './mind-elixir-test'
 import { plaintextToMindElixir, type NodePlaintextMeta } from '../src/utils/plaintextToMindElixir'
+import { mindElixirToPlaintext } from '../src/utils/mindElixirToPlaintext'
 
 test('Parse plaintext with MathJax and styles', () => {
   const plaintext = [
@@ -41,4 +42,34 @@ test('Parse plaintext with MathJax and styles', () => {
   // Edge case
   expect(children[5].topic).toBe('Edge case {2a} is not style')
   expect(children[5].style).toBeUndefined()
+})
+
+test('A topic containing a line break survives the round-trip', () => {
+  // Shift+Enter keeps line breaks inside a topic, but a newline is also this
+  // format's record separator — writing it raw turns the remainder into a
+  // top-level line, which then triggers the synthetic-root path and shifts the
+  // whole tree down one level.
+  const data = {
+    nodeData: {
+      id: 'root',
+      topic: 'root',
+      children: [
+        { id: 'a', topic: 'first\nsecond' },
+        { id: 'b', topic: 'plain' },
+      ],
+    },
+  }
+
+  const plaintext = mindElixirToPlaintext(data as any)
+  expect(plaintext).not.toContain('first\nsecond')
+
+  const back = plaintextToMindElixir(plaintext)
+  expect(back.nodeData.topic).toBe('root')
+  expect(back.nodeData.children?.map(c => c.topic)).toEqual(['first\nsecond', 'plain'])
+})
+
+test('Backslashes are not swallowed by the escaping', () => {
+  const plaintext = ['- root', '  - path\\\\to\\\\file', '  - tail\\nslash'].join('\n')
+  const result = plaintextToMindElixir(plaintext)
+  expect(result.nodeData.children?.map(c => c.topic)).toEqual(['path\\to\\file', 'tail\nslash'])
 })

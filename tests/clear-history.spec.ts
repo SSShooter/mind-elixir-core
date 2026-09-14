@@ -105,3 +105,22 @@ test('clearHistory - first undo baseline is the refreshed diagram state', async 
   await expect(me.getByText('Child B')).toBeVisible()
   await expect(me.getByText('Diagram B')).toBeVisible()
 })
+
+test('refresh(data) re-baselines even without an explicit clearHistory', async ({ page, me }) => {
+  // Deliberately no `clearHistory()` here: loading a document is a boundary of
+  // its own, so the first undo must not travel back into Diagram A.
+  await page.evaluate((data: typeof diagramB) => {
+    const mind = (window as any)['#map']
+    mind.refresh(data)
+  }, diagramB)
+
+  await me.click('Child B')
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Enter')
+  await expect(me.getByText('New Node')).toBeVisible()
+
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(me.getByText('New Node')).toBeHidden()
+  await expect(me.getByText('Diagram B')).toBeVisible()
+  await expect(me.getByText('Diagram A')).toBeHidden()
+})

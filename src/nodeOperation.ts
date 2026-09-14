@@ -24,7 +24,10 @@ export const reshapeNode = function (this: MindElixir, tpc: Topic, patchData: Pa
   const origin = deepClone(nodeObj)
   // merge styles
   if (origin.style && patchData.style) {
-    patchData.style = Object.assign(origin.style, patchData.style)
+    // Merge into a NEW object: `origin` is the "before" snapshot handed to the
+    // `operation` event, so mutating it in place would make origin.style and
+    // nodeObj.style the same object and the snapshot would show the new style.
+    patchData.style = Object.assign({}, origin.style, patchData.style)
   }
   const newObj = Object.assign(nodeObj, patchData)
   shapeTpc.call(this, tpc, newObj)
@@ -265,8 +268,10 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
 
   for (const f of from) {
     const obj = f.nodeObj
+    // `moveNodeObj` only reads the destination's parent pointer, and a node
+    // that has not been moved yet still has a valid one — so one walk after the
+    // loop is enough instead of one full-tree `fillParent` per moved node.
     moveNodeObj(type, obj, toObj)
-    fillParent(mei.nodeData)
 
     if (type === 'in') {
       // For 'in' type: move as child
@@ -285,6 +290,9 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
       toWrp.insertAdjacentElement(typeMap[type], fromWrp)
     }
   }
+
+  // Re-anchor every parent pointer once, now that the tree has settled
+  fillParent(mei.nodeData)
 
   // When nodes are moved away, the original parent node may become childless
   // In this case, we need to clean up the related DOM structure:
