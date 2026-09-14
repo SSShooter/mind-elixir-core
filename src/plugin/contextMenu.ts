@@ -85,7 +85,6 @@ export default function (mind: MindElixir, option: true | ContextMenuOption) {
   let isRoot = true
   // Helper function to actually render and position context menu.
   const showMenu = (e: MouseEvent) => {
-    console.log('showContextMenu', e)
     const target = e.target as HTMLElement
     if (isTopic(target)) {
       if (target.parentElement!.classList.contains('me-root')) {
@@ -195,8 +194,6 @@ export default function (mind: MindElixir, option: true | ContextMenuOption) {
         const target = e.target as Topic
         if (target.parentElement.classList.contains('me-parent') || target.parentElement.classList.contains('me-root')) {
           mind.createArrow(from, target, options)
-        } else {
-          console.log('link cancel')
         }
       },
       {

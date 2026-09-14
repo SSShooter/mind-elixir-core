@@ -42,7 +42,6 @@ export const scrollIntoView = function (this: MindElixir, el: HTMLElement, force
 
 export const selectNode = function (this: MindElixir, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   // selectNode clears all selected nodes by default
-  console.trace('selectNode')
   this.clearSelection()
   this.scrollIntoView(tpc)
   this.selection?.select(tpc)
@@ -52,7 +51,6 @@ export const selectNode = function (this: MindElixir, tpc: Topic, isNewNode?: bo
 }
 
 export const selectNodes = function (this: MindElixir, tpcs: Topic[]): void {
-  console.trace('selectNodes')
   // update currentNodes in selection.ts to keep sync with SelectionArea cache
   this.selection?.select(tpcs)
 }
@@ -63,7 +61,6 @@ export const unselectNodes = function (this: MindElixir, tpcs: Topic[]) {
 }
 
 export const clearSelection = function (this: MindElixir) {
-  console.trace('clearSelection')
   this.unselectNodes(this.currentNodes)
   this.unselectSummary()
   this.unselectArrow()
@@ -509,6 +506,14 @@ export const refresh = function (this: MindElixir, data?: MindElixirData) {
     if (data.meta) {
       this.meta = data.meta
     }
+    // A new document replaces whatever focus mode was showing. While focused,
+    // `getData()` reports `nodeDataBackup` (see `collectData`), which would
+    // still be the pre-refresh tree. `initLeft/Right/Side/Down` call
+    // `refresh()` with no data and must keep the focused view intact —
+    // `focusNode` renders through `initRight()` right after entering focus.
+    this.isFocusMode = false
+    this.nodeDataBackup = this.nodeData
+    this.bus.fire('refresh')
   }
   fillParent(this.nodeData)
   // create dom element for every node

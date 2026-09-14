@@ -9,6 +9,9 @@ const getSibling = (obj: NodeObj): { siblings: NodeObj[] | undefined; index: num
 export function removeNodeObj(obj: NodeObj) {
   const { siblings, index } = getSibling(obj)
   if (siblings === undefined) return 0
+  // `indexOf` returns -1 when the parent pointer and the children array have
+  // drifted apart; `splice(-1, 1)` would then silently drop the LAST sibling.
+  if (index === -1) return siblings.length
   siblings.splice(index, 1)
   return siblings.length
 }

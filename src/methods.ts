@@ -22,10 +22,7 @@ type NodeOperation = {
   [K in Operations]: ReturnType<typeof beforeHook<K>>
 }
 
-function beforeHook<T extends Operations>(
-  fn: OperationMap[T],
-  fnName: T
-): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<void> {
+function beforeHook<T extends Operations>(fn: OperationMap[T], fnName: T): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<void> {
   return async function (this: MindElixir, ...args: Parameters<OperationMap[T]>) {
     const hook = this.before[fnName]
     if (hook) {
@@ -92,6 +89,10 @@ const methods = {
     this.container.style.opacity = '0'
     this.layout()
     await document.fonts.ready
+    // `destroy()` may have run while we were waiting (StrictMode double-invoke,
+    // fast mount/unmount). It nulls `container` and the DOM infrastructure, so
+    // bail out instead of throwing an unhandled rejection.
+    if (!this.container) return
     this.linkDiv()
     this.toCenter()
     this.container.style.opacity = ''
@@ -118,6 +119,10 @@ const methods = {
     const disposables = this.disposable || []
     this.disposable = []
     disposables.forEach(fn => fn())
+    // The link controllers keep pointer listeners on the map; they are only
+    // torn down by `hideLinkController`, which never runs on this path.
+    this.helper1?.destroy?.()
+    this.helper2?.destroy?.()
     if (this.el) this.el.innerHTML = ''
     this.el = undefined
     this.nodeData = undefined
@@ -139,6 +144,18 @@ const methods = {
     this.line1 = undefined
     this.line2 = undefined
     this.nodes = undefined
+    this.root = undefined
+    this.summarySvg = undefined
+    this.labelContainer = undefined
+    // Everything below holds onto the diagram itself or the whole instance, so
+    // leaving any of them behind keeps detached DOM and full data trees alive.
+    this.dragged = null
+    this.nodeDataBackup = undefined
+    this.meta = undefined
+    this.panHelper = undefined
+    this.helper1 = undefined
+    this.helper2 = undefined
+    this.historyStack = undefined
     this.selection?.destroy()
     this.selection = undefined
   },

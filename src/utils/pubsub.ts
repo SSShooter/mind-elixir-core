@@ -83,13 +83,22 @@ export type ContextMenuEventMap = {
   showContextMenu: (event: MouseEvent) => void
 }
 
+/** Document lifecycle events. */
+export type DocumentEventMap = {
+  /**
+   * A new document was installed through `refresh(data)`.
+   * Fired after the data is in place; listeners may re-baseline their own state.
+   */
+  refresh: () => void
+}
+
 /**
  * Events emitted by a MindElixir instance.
  *
  * The intersections keep the existing bus API compatible while grouping event
  * names by responsibility for maintainers and generated type declarations.
  */
-export type EventMap = OperationEventMap & SelectionEventMap & ViewportEventMap & RenderEventMap & ContextMenuEventMap
+export type EventMap = OperationEventMap & SelectionEventMap & ViewportEventMap & RenderEventMap & ContextMenuEventMap & DocumentEventMap
 
 export function createBus<T extends Record<string, (...args: any[]) => void> = EventMap>() {
   return {

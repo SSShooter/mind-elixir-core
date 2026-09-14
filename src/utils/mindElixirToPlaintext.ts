@@ -25,6 +25,9 @@ class PtTree {
  * @param data - The MindElixirData object to convert
  * @returns Plaintext string
  */
+/** Escape `\` and line breaks so a topic survives the line-based format. */
+export const escapeTopic = (topic: string): string => topic.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n')
+
 export function mindElixirToPlaintext(data: MindElixirData): string {
   const { nodeData, arrows = [], summaries = [] } = data
 
@@ -93,7 +96,10 @@ export function mindElixirToPlaintext(data: MindElixirData): string {
 
     // Node itself
     const meta = tree.node.metadata as NodePlaintextMeta | undefined
-    const parts = [tree.node.topic]
+    // A topic is allowed to contain line breaks (Shift+Enter while editing),
+    // but a newline is also this format's record separator — writing it raw
+    // would make the remainder a sibling line and corrupt the hierarchy.
+    const parts = [escapeTopic(tree.node.topic)]
 
     const refId = meta?.refId ?? (referencedIds.has(tree.node.id) ? tree.node.id : undefined)
     if (refId) parts.push(`[^${refId}]`)

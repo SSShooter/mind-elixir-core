@@ -194,6 +194,9 @@ function parseStyleObject(styleStr: string): NodeObj['style'] | null {
   }
 }
 
+/** Inverse of `escapeTopic`: restore escaped line breaks and backslashes. */
+const unescapeTopic = (topic: string): string => topic.replace(/\\(n|\\)/g, (_match, ch) => (ch === 'n' ? '\n' : '\\'))
+
 function parseLine(line: string): ParsedLine {
   const trimmed = line.trim()
 
@@ -244,10 +247,12 @@ function parseLine(line: string): ParsedLine {
     nodeContent = nodeContent.substring(0, nodeContent.length - refMatch[0].length).trim()
   }
 
+  const topic = unescapeTopic(nodeContent)
+
   return {
     type: 'node',
-    topic: nodeContent,
-    content: nodeContent,
+    topic,
+    content: topic,
     refId,
     style,
   }
