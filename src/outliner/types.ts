@@ -1,35 +1,24 @@
-import type { ExpandNodeOptions, NodeObj } from '../types/index'
-import type { Topic } from '../types/dom'
-import type { EventMap } from '../utils/pubsub'
-import type { createBus } from '../utils/pubsub'
-import type { HistoryStack } from '../utils/historyStack'
+import type MindElixir from '../index'
+import type { NodeObj } from '../types/index'
 
-export interface OutlineItem {
-  id: string
-  topic: string
-  children: OutlineItem[]
-  expanded?: boolean
-}
-
-/** Loose input shape — `children` is normalized to `[]` on init. */
-export interface OutlineData {
-  id: string
-  topic: string
-  children?: OutlineData[]
-  expanded?: boolean
-}
-
+/**
+ * One gesture the outline asks the map to perform.
+ *
+ * The payload carries only what the gesture itself needs to know: the tree it
+ * applies to belongs to MindElixir, and the outline holds no clone of it. The
+ * `id` is always the node the gesture is *about* — for a drag & drop that is
+ * the dragged node.
+ */
 export interface ItemOperation {
   type: 'addSibling' | 'indent' | 'outdent' | 'moveUp' | 'moveDown' | 'addSiblingBefore' | 'moveTo'
   id: string
-  parentId?: string
-  shouldFocusNew?: boolean
+  /** Focus the node again after the gesture — the row is reused, so focus has to be re-placed. */
   shouldFocusCurrent?: boolean
-  topic?: string
+  /** Topic of the node the gesture creates (`addSibling` / `addSiblingBefore` / the split path). */
   newNodeContent?: string
-  // For drag and drop operations
-  draggedId?: string
+  /** `moveTo` only: the drop target. */
   targetId?: string
+  /** `moveTo` only: where the dragged node lands relative to `targetId`. */
   dropPosition?: 'before' | 'after' | 'inside'
 }
 
@@ -38,78 +27,42 @@ export interface OutlinerI18n {
   outdent: string
   indent: string
   delete: string
-  zoomIn: string
   untitled: string
-  dragToMove: string
   zoomInAndDrag: string
-}
-
-/**
- * Minimal structural surface of a MindElixir instance used by bound mode.
- * `MindElixir` satisfies this — the outliner stays dependency-free (no runtime import).
- *
- * In bound mode the outliner owns NO data: `nodeData` is the single source of
- * truth and every mutation is routed through these methods, so the map and the
- * outline are two views of ONE document and undo/redo works from both sides.
- */
-export interface OutlinerMei {
-  nodeData: NodeObj
-  /**
-   * Shared undo/redo timeline. Present only when the MindElixir instance was
-   * created with `allowUndo: true` and `init` has resolved. In bound mode the
-   * outliner defaults its `history` to this stack, so outline and map stay on
-   * ONE timeline. Absent → bound mode is impossible (constructor throws).
-   */
-  historyStack?: HistoryStack
-  /**
-   * Event bus. Collapse/expand records a tracked operation (so the shared stack
-   * already announces it) AND fires `expandNode`. The stack channel renders
-   * synchronously while `expandNode` defers, so the pair costs one render
-   * without either notification being dropped — see `scheduleSync`.
-   */
-  bus?: ReturnType<typeof createBus<EventMap>>
-  /** Throws when the node is not rendered (e.g. collapsed in the map). */
-  findEle(id: string): Topic
-  addChild(el?: Topic, node?: NodeObj): unknown
-  insertSibling(type: 'before' | 'after', el?: Topic, node?: NodeObj): unknown
-  removeNodes(tpcs: Topic[]): unknown
-  moveUpNode(el?: Topic): unknown
-  moveDownNode(el?: Topic): unknown
-  moveNodesIn(from: Topic[], to: Topic): unknown
-  moveNodesBefore(from: Topic[], to: Topic): unknown
-  moveNodesAfter(from: Topic[], to: Topic): unknown
-  /** Tracked topic/style change — fires the 'reshapeNode' operation event. */
-  reshapeNode(el: Topic, patchData: Partial<NodeObj>): unknown
-  /** Tracked collapse/expand — fires the 'expandNode' operation event unless `silent`. */
-  expandNode(el: Topic, isExpand?: boolean, options?: ExpandNodeOptions): unknown
 }
 
 export interface OutlinerOptions {
   /** Container element or selector. The outliner takes over its content. */
   el: HTMLElement | string
   /**
-   * Bind to a MindElixir instance — ONE data, TWO views. The outline mirrors
-   * `mei.nodeData`, every mutation is routed to the map (which fires history
-   * operations), and the outline re-syncs via the shared stack. `data` is then
-   * ignored.
+   * The MindElixir instance that owns the document — **required**, and the only
+   * thing the outline is bound to. It supplies both halves of the binding:
+   *
+   * - the **data** (`mei.nodeData`), rendered BY REFERENCE: the outline keeps no
+   *   copy and every mutation is routed back through the map's own operations,
+   *   so the map and the outline are two views of ONE document;
+   * - the **history** (`mei.historyStack`), the map's undo/redo journal. The
+   *   outline pushes nothing onto it — it re-adopts the live tree whenever the
+   *   timeline moves, which is what makes edits from either view undoable from
+   *   either view.
+   *
+   * The instance must be created with `allowUndo: true` and awaited through
+   * `init`: the constructor throws without a stack, since a private one is
+   * exactly the drift this binding exists to prevent.
    */
-  mei?: OutlinerMei
-  /** Standalone dataset. Required unless `mei` is given. */
-  data?: OutlineData[]
-  /**
-   * Share an existing HistoryStack — e.g. `mei.historyStack` — so outline
-   * operations and mind-map operations interleave on ONE undo/redo timeline.
-   * Omit to let the outliner run on its own private stack.
-   */
-  history?: HistoryStack
-  /** Document name used in the shared stack. Distinct outliners on one stack need distinct names. */
-  docName?: string
+  mei: MindElixir
   readonly?: boolean
-  /** Render the topic as HTML when not editing (e.g. a markdown renderer). */
-  markdown?: (text: string, item: OutlineItem) => string
+  /**
+   * Render a topic as HTML while it is not being edited — pass the map's own
+   * renderer (`new MindElixir({ markdown })`) and both views show the same thing.
+   * Focusing an item swaps back to the raw source, so it stays editable.
+   */
+  markdown?: (markdown: string, obj: NodeObj) => string
+  /** Label of the breadcrumb root. */
   fileName?: string
   i18n?: Partial<OutlinerI18n>
-  onChange?: (data: OutlineItem[]) => void
+  /** Called with a detached snapshot after every change that reached the outline. */
+  onChange?: (data: NodeObj) => void
 }
 
 export const defaultI18n: OutlinerI18n = {
@@ -117,8 +70,6 @@ export const defaultI18n: OutlinerI18n = {
   outdent: '取消缩进',
   indent: '缩进',
   delete: '删除',
-  zoomIn: '点击进入',
   untitled: '(无标题)',
-  dragToMove: '拖拽移动',
   zoomInAndDrag: '点击进入 / 拖拽移动',
 }
