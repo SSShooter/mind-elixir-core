@@ -9,7 +9,7 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
 - Tests: `… node_modules/.bin/playwright test <specs> --reporter=line`. The config boots its own dev
   server on 23334; a hand-started one there poisons the run (`reuseExistingServer: true`) → check
   `pgrep -fl vite` before believing a mass `ERR_CONNECTION_REFUSED` failure.
-- Green = **four** checks: `playwright test` (180 tests, ~20 s) + `tsc --noEmit -p tsconfig.json` +
+- Green = **four** checks: `playwright test` (181 tests, ~15 s) + `tsc --noEmit -p tsconfig.json` +
   `tsc -p tsconfig.type-test.json` (public API surface, separate tsconfig — the first tsc skips it)
   + `pnpm build`. A public member declared in `src/index.ts` needs a line in
   `tests/generic-instance.type-test.ts` too. `playwright test` itself needs `pnpm` on the PATH (its
@@ -17,6 +17,22 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
 - BSD `grep`: `\|` alternation silently matches nothing → use `grep -E`. `biome format` silently
   skips `tests/`, and `--write` on a *directory* also reflows `outliner.css` → point it at `.ts`
   files. `test-results/` past ~50 files blocks the suite → `mv` it away, never delete.
+- `expand-collapse.spec.ts:213` ("Expand is undoable and redoable") occasionally fails in a full
+  parallel run and passes solo → re-run before calling it a regression.
+
+## Packaging
+- `build.js` → one self-contained Vite lib build per entry, `emptyOutDir` only on `i === 0`, so a new
+  entry appended later never wipes the earlier outputs. CSS is extracted per entry
+  (`Outliner` → `dist/Outliner.js` + `dist/Outliner.css`); types come from `tsc` into `dist/types`.
+- The outliner ships BOTH ways: `mind-elixir` re-exports it, and `mind-elixir/outliner` +
+  `mind-elixir/outliner/style.css` are its own entry. Duplication is the accepted pattern here
+  (`i18n.js` does the same). The standalone bundle stays clean because `Outliner.ts` only reaches
+  `utils/index` (pure helpers) and takes the core as `import type` — verify with
+  `grep -c "map-canvas\|map-container" dist/Outliner.js` (= 0).
+- Verify a **packaging** change against `dist/`, not `src/`: node static server over the repo root +
+  Chromium, `import '/dist/MindElixir.js'` and `/dist/Outliner.js`, then assert computed styles (with
+  a no-stylesheet negative control), rendered row count (the ROOT node is a row too) and that
+  `mei.undo()` moves the outline. Script kept at `/tmp/verify-outliner-build.mjs` (log 09-14).
 
 ## Codegen
 - Touching mixed-in methods (`methods.ts`, `interact.ts`) or `Options` → `node gen-members.js` then
