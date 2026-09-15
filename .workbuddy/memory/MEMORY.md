@@ -5,7 +5,7 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
 
 ## Environment
 - `pnpm` needs the nvm PATH: `PATH=/Users/darksouls/.nvm/versions/node/v24.20.0/bin:$PATH pnpm …`
-- Green = **four** checks: `playwright test` (188 tests, ~17 s) + `tsc --noEmit -p tsconfig.json` +
+- Green = **four** checks: `playwright test` (189 tests, ~17 s) + `tsc --noEmit -p tsconfig.json` +
   `tsc -p tsconfig.type-test.json` (public API; first tsc skips it) + `pnpm build`. Public members
   in `src/index.ts` need a line in `tests/generic-instance.type-test.ts`. Playwright config boots
   its own dev server on 23334 — a hand-started one poisons the run (`pgrep -fl vite` first).
@@ -37,15 +37,25 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
   sync, `expandNode` = deferred). `.outline-item-front` 1 rem spacer is load-bearing.
   `outliner.getData()` = bare `NodeObj`; `readonly` kills row pointer events, not breadcrumb.
   Guide: `skills/integrate-outliner/SKILL.md`.
-- **Outliner row controls** (fixed 09-14, two rounds): the row's control cluster is never driven by
-  `:hover` alone — **three** rules carry a `:focus-within` twin: the group's `opacity` reveal, and the
-  `…` button's + chevron's `background-color` paint (revealing without painting leaves bare glyphs).
-  Touch has no persistent hover, and the tap that focuses a topic replaces its markup
-  (`handleFocusIn`), which drops the hover the same tap set → first tap flashed, second tap worked.
-  Focus is the touch-safe signal. No row-level background exists in the library at all
-  (wrapper/topic transparent in idle, hover AND focus) — a "whole row has no highlight" report is
-  host CSS, not ours. No Tailwind preflight here → **every** icon button must declare its own
-  `cursor`; `…` did, the chevron didn't (fixed 09-15) — check new controls for the same gap.
+- **Outliner row controls** (fixed 09-14, two rounds; mechanism rewritten 09-15): the row's control
+  cluster is never driven by `:hover` alone — **three** signals: `:hover`, `:focus-within` (the
+  touch-safe one), `.menu-open`. Touch has no persistent hover, and the tap that focuses a topic
+  replaces its markup (`handleFocusIn`), which drops the hover the same tap set → first tap flashed,
+  second tap worked. Reveal *and* paint must answer to the same signals: a control that is visible
+  but unpainted reads as a stray glyph, not as a button. No row-level background exists in the
+  library at all (wrapper/topic transparent in idle, hover AND focus) — a "whole row has no
+  highlight" report is host CSS, not ours. No Tailwind preflight here → **every** icon button must
+  declare its own `cursor`; `…` did, the chevron didn't (fixed 09-15) — check new controls for the
+  same gap.
+  **The state lives on the row as `--row-control-opacity`** (0 at rest, 1 on the three signals);
+  every control consumes it via `opacity: var(--row-control-opacity)`. A *folded* chevron is the one
+  exception and says so in its own `[data-state='collapsed']` rule (`opacity: 1` + the painted
+  surface + `pointer-events: auto`), which is what keeps it up at rest and keeps `…` down — the
+  `…` used to ride on the same arm and showed as a bare, unpainted glyph beside an already blue
+  chevron (fixed 09-15). Anything else added to the cluster needs the same decision: follow the
+  state, or opt out explicitly. This replaced a group-level `opacity` + `:has()` + `:not()` chain
+  (no `:has()` left in `outliner.css`; the group holds geometry only). Proven equivalent in
+  chromium + webkit, 9 states × 88 rows, by `mind-elixir-parity-harness/scripts/probe-row-control-parity.mjs`.
 - **Outliner IME guard** (fixed 09-14, simplified same day): `handleTopicKeydown` early-returns on
   `e.isComposing || e.keyCode === 229`, plus — only for `Enter`/`Escape` — when
   `compositionJustEnded` (true until the end of the compositionend task, cleared by a 0 ms timer;
@@ -66,8 +76,16 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
 - Outliner `onChange` misses in-outline renames (`setNodeTopicBound` suppresses the sync it rides
   on). Complete signal: `mei.historyStack.subscribe`. JSDoc overstates — reported, not reworded.
 - Mid-edit DOM teardown blur: decided 不修. Judge reachability first; give probes a positive control.
+- `expandNode(el, false)` on the **root** throws `Cannot set properties of undefined (setting
+  'expanded')`: `interact.ts` grabs `parent.children[1]` as the expander, and the root's parent has
+  no `.me-epd`. Reachable only from the API / the outliner's root-row chevron (the map renders no
+  root expander). Verified 09-15 with `mind.findEle(rootId)`; nested nodes are fine.
 
 ## Testing traps
+- Row-control visibility is asserted as **effective** opacity (`tests/outliner.spec.ts`'s
+  `expectVisibleOpacity`, product down the ancestor chain + `expect.poll` for the 200 ms fade), never
+  as the cluster's own `opacity` — where the fade physically sits is a mechanism detail. Don't
+  re-pin it; a group-level assertion silently rots the moment the mechanism moves.
 - New regression tests must **fail** without the fix (negative control), incl. refactors.
 - `undo()` keeps entries for redo → assert depth via `currentIndex`. Scope locators `#map`/`#outline`.
 - `hasText` is case-insensitive substring ("Child 1" matches "Grandchild 1"); it stops matching when
@@ -83,4 +101,8 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
 ## Conventions
 - Keep `CHANGELOG.md`'s `## Unreleased` current. Changing `refresh`: `restore()` calls it too —
   baseline updates go through the `refresh` event with a `restoring` flag.
+- 行控件的可见性**留在 CSS 里**（`:hover`/`:focus-within`/`menu-open`/折叠状态即浏览器自己的状态）。
+  「改用 JS 控制会不会更快」已实测为否（inline style 一样触发失效重算，还多出事件派发 +
+  行元素按 key 复用导致的重推导入侵）：1365 行下 hover 单次 recalc 0.2 ms、script 0.5 vs 4.1 ms,
+  见 `mind-elixir-perf-probe/scripts/probe-css-vs-js-control.mjs` 与 09-15 日志。要简化就读 perChild 版。
 - Touching mixed-in methods or `Options` → `node gen-members.js` then format `src/index.ts`.
