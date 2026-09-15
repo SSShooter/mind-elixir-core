@@ -119,7 +119,10 @@
    appearance). mind-elixir ships no preflight, so without this reset the
    collapse button renders as a bordered grey square with a 0-width content box
    — the chevron gets clipped away. Reset the icon buttons explicitly.
-   Declared before the rules below so their own properties still win. */
+   Declared before the rules below so their own properties still win.
+   The same gap cost the chevron its cursor: preflight is also what painted a
+   `button` as clickable, so every icon button here has to declare its own
+   `cursor` or inherit the plain arrow. `…` did, the chevron did not. */
 .outline-item-collapse-btn,
 .outline-item-menu-btn {
   appearance: none;
@@ -141,6 +144,10 @@
   justify-content: center;
   border-radius: 0.25rem;
   pointer-events: none;
+  /* Inert in the `hidden` state, since `pointer-events: none` keeps it out of the
+     hit test; the expanded/collapsed states below turn events back on and this is
+     what they inherit. */
+  cursor: pointer;
   transition: background-color 0.2s;
 }
 .outline-item-collapse-btn[data-state='hidden'] {
