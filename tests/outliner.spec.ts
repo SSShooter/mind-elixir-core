@@ -268,3 +268,40 @@ test('Focusing an item reveals and paints its controls without hover', async ({ 
   await expect(inRow('root', '.outline-item-btn-group')).toHaveCSS('opacity', '0')
   await expect(inRow('root', '.outline-item-menu-btn')).toHaveCSS('background-color', transparent)
 })
+
+// The chevron is a button and has to say so. Its hand cursor used to come from
+// Tailwind's preflight in react-outliner — this library ships no preflight, so the
+// reset that neutralises the UA button styling has to restore the cursor too.
+// `…` sits right next to it and declared its own, which is what made the chevron's
+// plain arrow look like an oversight rather than a decision.
+test('The collapse chevron shows a clickable cursor', async ({ page }) => {
+  const inRow = (id: string, sel: string) =>
+    page.locator(`#outline .outline-item-wrapper[data-item-id="${id}"] ${sel}`)
+  const chevron = inRow('branch1', '.outline-item-collapse-btn')
+
+  // Only a branch with children is live: `hidden` takes the button out of the hit test
+  await expect(chevron).toHaveAttribute('data-state', 'expanded')
+  await expect(chevron).toHaveCSS('cursor', 'pointer')
+
+  // The cursor the user sees belongs to the element under the pointer, not to the
+  // button in the abstract — hover the row, land on the chevron, read it back.
+  await inRow('branch1', '.outline-item-topic').hover()
+  const box = (await chevron.boundingBox())!
+  const x = box.x + box.width / 2
+  const y = box.y + box.height / 2
+  await page.mouse.move(x, y)
+  const hit = await page.evaluate(
+    ({ x, y }: { x: number; y: number }) => {
+      const el = document.elementFromPoint(x, y) as HTMLElement | null
+      return el
+        ? { cursor: getComputedStyle(el).cursor, onChevron: !!el.closest('.outline-item-collapse-btn') }
+        : null
+    },
+    { x, y },
+  )
+  expect(hit?.onChevron).toBe(true)
+  expect(hit?.cursor).toBe('pointer')
+
+  // The row's other control agrees — the contrast that was missing
+  await expect(inRow('branch1', '.outline-item-menu-btn')).toHaveCSS('cursor', 'pointer')
+})

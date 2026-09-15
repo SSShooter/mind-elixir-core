@@ -5,7 +5,7 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
 
 ## Environment
 - `pnpm` needs the nvm PATH: `PATH=/Users/darksouls/.nvm/versions/node/v24.20.0/bin:$PATH pnpm …`
-- Green = **four** checks: `playwright test` (187 tests, ~17 s) + `tsc --noEmit -p tsconfig.json` +
+- Green = **four** checks: `playwright test` (188 tests, ~17 s) + `tsc --noEmit -p tsconfig.json` +
   `tsc -p tsconfig.type-test.json` (public API; first tsc skips it) + `pnpm build`. Public members
   in `src/index.ts` need a line in `tests/generic-instance.type-test.ts`. Playwright config boots
   its own dev server on 23334 — a hand-started one poisons the run (`pgrep -fl vite` first).
@@ -44,7 +44,8 @@ Deliberately short — injected every session. Deep detail lives in the `20xx-xx
   (`handleFocusIn`), which drops the hover the same tap set → first tap flashed, second tap worked.
   Focus is the touch-safe signal. No row-level background exists in the library at all
   (wrapper/topic transparent in idle, hover AND focus) — a "whole row has no highlight" report is
-  host CSS, not ours.
+  host CSS, not ours. No Tailwind preflight here → **every** icon button must declare its own
+  `cursor`; `…` did, the chevron didn't (fixed 09-15) — check new controls for the same gap.
 - **Outliner IME guard** (fixed 09-14, simplified same day): `handleTopicKeydown` early-returns on
   `e.isComposing || e.keyCode === 229`, plus — only for `Enter`/`Escape` — when
   `compositionJustEnded` (true until the end of the compositionend task, cleared by a 0 ms timer;
