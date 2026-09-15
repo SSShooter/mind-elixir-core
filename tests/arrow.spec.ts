@@ -721,3 +721,35 @@ test('Arrow style application to all elements', async ({ page, me }) => {
   const label = page.locator('.svg-label[data-type="arrow"]').first()
   await expect(label).toHaveCSS('color', 'rgb(255, 165, 0)')
 })
+
+test('Undo of a control point drag keeps the arrow selected', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+
+  await page.evaluate(async instance => {
+    instance.createArrow(instance.findEle('left-child-1'), instance.findEle('right-child-1'))
+  }, instanceHandle)
+
+  // Select the arrow the way a user does, then drag its P2 control point — the
+  // drag is what fires `reshapeArrow` and records the history entry.
+  await page.locator('svg g[data-linkid]').click({ force: true })
+  const p2 = page.locator('.circle').first()
+  const box = (await p2.boundingBox())!
+  await p2.hover()
+  await page.mouse.down()
+  await page.mouse.move(box.x + 60, box.y + 40)
+  await page.mouse.up()
+
+  await page.keyboard.press(`${modifier}+z`)
+
+  // The undone step has to leave the arrow selected — highlight, control points,
+  // `currentArrow` — instead of silently reshaping the curve with nothing on
+  // screen saying which link moved.
+  await expect(page.locator('svg g[data-linkid] .arrow-highlight')).toBeVisible()
+  await expect(page.locator('.circle').first()).toBeVisible()
+  await expect(page.locator('.linkcontroller')).toBeVisible()
+  const selected = await page.evaluate(async instance => ({
+    currentArrow: instance.currentArrow?.dataset.linkid ?? null,
+    linkId: instance.arrows[0].id,
+  }), instanceHandle)
+  expect(selected.currentArrow).toBe(selected.linkId)
+})

@@ -144,17 +144,28 @@ export default function (mei: MindElixir) {
     // both directions fall back to the pre-operation selection instead of jumping
     // the selection onto the node that was folded.
     const isViewOperation = operation === 'expandNode' || operation === 'collapseNode'
-    const shouldSelectTarget = !isViewOperation && (direction === 'undo') === targetRemoved
+    // An arrow or a summary is never part of the node selection: picking one
+    // calls `clearSelection`, so `currentSelected` is `[]` by then. Falling back
+    // to it after undoing a reshape / a label edit therefore highlights nothing
+    // at all, and the user cannot see which link the step touched. Keep the
+    // target selected in both directions instead — the group lookup below is
+    // what decides reachability, and it fails exactly when the restored state no
+    // longer holds the target (an arrow the undone step created, or one the redo
+    // removes), at which point the `currentSelected` fallback is the right answer.
+    const isLinkTarget = currentTarget.type !== 'nodes'
+    const shouldSelectTarget = !isViewOperation && (isLinkTarget || (direction === 'undo') === targetRemoved)
 
     if (currentTarget.type === 'nodes') {
       selectNodesByIds(shouldSelectTarget ? currentTarget.value : currentSelected)
       return
     }
 
-    // summary / arrow: resolve the group element by its id prefix
+    // summary / arrow: resolve the group element by its id prefix, inside this
+    // instance's node container. Ids are only unique within one map, so a
+    // document-wide lookup crosses instances when a host renders two maps.
     const prefix = currentTarget.type === 'summary' ? 's-' : 'a-'
     if (shouldSelectTarget) {
-      const group = document.querySelector<SVGElement>(`#${CSS.escape(prefix + currentTarget.value)}`)
+      const group = mei.nodes.querySelector<SVGElement>(`#${CSS.escape(prefix + currentTarget.value)}`)
       if (group) {
         if (currentTarget.type === 'summary') mei.selectSummary(group as any)
         else mei.selectArrow(group as any)
