@@ -1,4 +1,6 @@
 .map-container {
+  --me-md-accent: var(--selected);
+  --me-md-heading: var(--selected);
   p {
     margin: 0; /* remove markdown block margin */
   }

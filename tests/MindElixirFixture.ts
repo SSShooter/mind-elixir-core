@@ -6,6 +6,7 @@ interface Window {
   MindElixir: typeof MindElixir
   Outliner: any
   E: typeof MindElixir.E
+  renderMarkdown: (text: string) => string
   [key: string]: any
 }
 declare let window: Window
@@ -44,10 +45,10 @@ export class MindElixirFixture {
     return instanceHandle
   }
   /** Create a map bound to an outliner — ONE data, TWO views. */
-  async initBoundOutliner(data: MindElixirData, el = '#map', outlineEl = '#outline') {
+  async initBoundOutliner(data: MindElixirData, el = '#map', outlineEl = '#outline', markdown = false) {
     const dataStr = JSON.stringify(data)
     await this.page.evaluate(
-      async ({ dataStr, el, outlineEl }) => {
+      async ({ dataStr, el, outlineEl, markdown }) => {
         const MindElixir = window.MindElixir
         const mind = new MindElixir({
           el,
@@ -55,13 +56,19 @@ export class MindElixirFixture {
           allowUndo: true,
           keypress: true,
           editable: true,
+          ...(markdown ? { markdown: window.renderMarkdown } : {}),
         })
         // historyStack is created during init — await it before binding
         await mind.init(JSON.parse(dataStr))
         window[el] = mind
-        window.outliner = new window.Outliner({ el: outlineEl, mei: mind, fileName: 'outline' })
+        window.outliner = new window.Outliner({
+          el: outlineEl,
+          mei: mind,
+          fileName: 'outline',
+          ...(markdown ? { markdown: window.renderMarkdown } : {}),
+        })
       },
-      { dataStr, el, outlineEl }
+      { dataStr, el, outlineEl, markdown }
     )
   }
   async getData(el = '#map') {

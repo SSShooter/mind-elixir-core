@@ -50,6 +50,8 @@
 
 /* Outliner 容器样式 */
 .outliner-container {
+  --me-md-accent: var(--rol-primary-color);
+  --me-md-heading: var(--rol-header-color);
   padding: 1.5rem;
   background-color: var(--rol-bg-color);
   color: var(--rol-text-color);
@@ -421,58 +423,12 @@
   color: var(--rol-danger-color);
 }
 
-/* Markdown 标题样式 */
-.outline-item-topic h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--rol-header-color);
-}
-
-.outline-item-topic h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--rol-header-color);
-}
-
-.outline-item-topic h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--rol-header-color);
-}
-
-.outline-item-topic h4 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--rol-header-color);
-}
-
-.outline-item-topic h5 {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--rol-header-color);
-}
-
-.outline-item-topic h6 {
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin: 0.1rem 0;
-  color: var(--rol-header-color);
-  font-style: italic;
-}
-
-.outline-item-topic strong,
-.outline-item-topic em {
+.outline-item-topic strong {
   color: var(--rol-primary-color);
 }
 
 .outline-item-topic a {
-  color: var(--rol-primary-color);
   text-decoration: none;
-}
-
-.outline-item-topic a:hover {
-  color: var(--rol-primary-color);
-  text-decoration: underline;
 }
 
 /* Markdown 内容块：UA 默认的块级边距会把一行撑得很高，统一压平 */
