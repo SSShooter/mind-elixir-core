@@ -30,6 +30,19 @@ const data = {
 const outlineTopic = (page: any, text: string) => page.locator('#outline .outline-item-topic', { hasText: new RegExp(`^${text}$`) })
 const mapTopic = (page: any, text: string) => page.locator('#map').getByText(text, { exact: true })
 
+// What the user actually sees. `opacity` is not transitive through `getComputedStyle`, so the
+// product down the ancestor chain is the only honest reading — and the row controls are exactly
+// where that matters: whether the fade sits on the cluster or on each control is a mechanism
+// detail these tests should not pin. Wrap in `expect.poll`: the reveal is a 200 ms transition.
+const visibleOpacity = (locator: any) =>
+  locator.evaluate((el: HTMLElement) => {
+    let o = 1
+    for (let n: HTMLElement | null = el; n; n = n.parentElement) o *= Number.parseFloat(getComputedStyle(n).opacity) || 0
+    return o
+  })
+
+const expectVisibleOpacity = (locator: any, value: number) => expect.poll(() => visibleOpacity(locator), { timeout: 3000 }).toBe(value)
+
 test.beforeEach(async ({ me }) => {
   await me.initBoundOutliner(data)
 })
@@ -258,14 +271,16 @@ test('Focusing an item reveals and paints its controls without hover', async ({ 
   // Park the pointer away from the row: the focus stays, the hover does not
   await page.mouse.move(0, 0)
 
-  await expect(inRow('branch1', '.outline-item-btn-group')).toHaveCSS('opacity', '1')
+  await expectVisibleOpacity(inRow('branch1', '.outline-item-collapse-btn'), 1)
+  await expectVisibleOpacity(inRow('branch1', '.outline-item-menu-wrapper'), 1)
   // The `…` button and the chevron are what the group is made of, and their
   // surface is a separate `:hover` rule — 225, 220, 255 is `--rol-drag-indicator`
   await expect(inRow('branch1', '.outline-item-menu-btn')).not.toHaveCSS('background-color', transparent)
   await expect(inRow('branch1', '.outline-item-collapse-btn')).not.toHaveCSS('background-color', transparent)
 
   // Untouched rows stay quiet — neither revealed nor painted
-  await expect(inRow('root', '.outline-item-btn-group')).toHaveCSS('opacity', '0')
+  await expectVisibleOpacity(inRow('root', '.outline-item-collapse-btn'), 0)
+  await expectVisibleOpacity(inRow('root', '.outline-item-menu-wrapper'), 0)
   await expect(inRow('root', '.outline-item-menu-btn')).toHaveCSS('background-color', transparent)
 })
 
@@ -304,4 +319,36 @@ test('The collapse chevron shows a clickable cursor', async ({ page }) => {
 
   // The row's other control agrees — the contrast that was missing
   await expect(inRow('branch1', '.outline-item-menu-btn')).toHaveCSS('cursor', 'pointer')
+})
+
+// A folded row keeps its chevron up at rest: the fold state is what advertises the
+// hidden subtree, so that arm of the reveal has to stay. The `…` was riding on it,
+// and since its surface is painted by `:hover` / `:focus-within` only, a collapsed
+// row that was neither showed a bare glyph beside an already blue chevron. Only the
+// chevron answers to the fold state now; `…` keeps the three signals every other row
+// uses. The fold is driven from the map so the row is left neither hovered nor
+// focused — that is the state the report was about.
+test('A folded row keeps its chevron and drops the `…` while at rest', async ({ page }) => {
+  const inRow = (id: string, sel: string) =>
+    page.locator(`#outline .outline-item-wrapper[data-item-id="${id}"] ${sel}`)
+  const transparent = 'rgba(0, 0, 0, 0)'
+
+  await page.evaluate(() => {
+    const mind = window['#map']
+    mind.expandNode(mind.findEle('branch1'), false)
+  })
+  await expect(outlineTopic(page, 'Child 1')).toHaveCount(0)
+  await page.mouse.move(0, 0)
+
+  // The chevron alone holds the cluster up, revealed *and* painted
+  await expect(inRow('branch1', '.outline-item-collapse-btn')).toHaveAttribute('data-state', 'collapsed')
+  await expectVisibleOpacity(inRow('branch1', '.outline-item-collapse-btn'), 1)
+  await expect(inRow('branch1', '.outline-item-collapse-btn')).not.toHaveCSS('background-color', transparent)
+
+  // … while the `…` stays down
+  await expectVisibleOpacity(inRow('branch1', '.outline-item-menu-wrapper'), 0)
+
+  // Hovering brings it back, exactly as it does on an expanded row
+  await inRow('branch1', '.outline-item-topic').hover()
+  await expectVisibleOpacity(inRow('branch1', '.outline-item-menu-wrapper'), 1)
 })
