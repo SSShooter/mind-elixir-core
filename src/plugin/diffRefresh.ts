@@ -1,7 +1,7 @@
 import type MindElixir from '../index'
 import { SIDE } from '../const'
 import type { MindElixirData } from '../types/index'
-import { applyTreeOps, diffTree } from '../utils/treePatch'
+import { applyTreeOps, diffTree, sameValue } from '../utils/treePatch'
 
 /**
  * `diffRefresh` — install a new document like `refresh(data)`, but only touch
@@ -72,16 +72,24 @@ export default function (mei: MindElixir) {
     this.bus.fire('refresh')
     // 4. `arrows` / `summaries` / `meta` live outside the node tree: replacing
     //    them wholesale is O(links) rather than O(nodes), so they are not worth
-    //    diffing. `meta` is truthy-guarded to match `refresh` exactly.
-    this.arrows = target.arrows || []
-    this.summaries = target.summaries || []
+    //    diffing. They are worth *comparing* though — an arrow-only edit (a
+    //    control point drag, a label edit, `reshapeArrow`) or a summary-only one
+    //    leaves `nodeData` untouched, so the op list comes back empty, and an
+    //    empty op list means "no node to patch", not "nothing to redraw". `meta`
+    //    is truthy-guarded to match `refresh` exactly.
+    const linksChanged = !sameValue(this.arrows, target.arrows) || !sameValue(this.summaries, target.summaries)
+    if (linksChanged) {
+      this.arrows = target.arrows || []
+      this.summaries = target.summaries || []
+    }
     if (target.meta) {
       this.meta = target.meta
     }
 
     // 5.-7. `fillParent` + redraw. `applyTreeOps` patches the tree and redraws
-    //    whenever it applied something, exactly like `refresh` does.
-    applyTreeOps(this, ops)
+    //    whenever it applied something or the link layer was replaced, exactly
+    //    like `refresh` does.
+    applyTreeOps(this, ops, linksChanged)
     return true
   }
 }

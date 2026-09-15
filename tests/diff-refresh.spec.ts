@@ -77,7 +77,20 @@ test('diffRefresh is observably equivalent to refresh', async ({ page, me }) => 
     slow.diffRefresh = undefined
 
     const counters: Record<string, Record<string, number>> = { fast: {}, slow: {} }
-    const EVENTS = ['refresh', 'selectNodes', 'unselectNodes', 'linkDiv', 'operation']
+    const EVENTS = [
+      'refresh',
+      'selectNodes',
+      'unselectNodes',
+      // `restore` re-selects the target of the step it just replayed, arrows and
+      // summaries included, so the link selection is part of what the two paths
+      // have to agree on.
+      'selectArrow',
+      'unselectArrow',
+      'selectSummary',
+      'unselectSummary',
+      'linkDiv',
+      'operation',
+    ]
     for (const name of EVENTS) {
       counters.fast[name] = 0
       counters.slow[name] = 0
@@ -86,17 +99,35 @@ test('diffRefresh is observably equivalent to refresh', async ({ page, me }) => 
     }
 
     const svgInner = (m: any, cls: string) => (m.map.querySelector(`svg.${cls}`)?.innerHTML ?? '')
-    const snapshot = (m: any) =>
-      JSON.stringify({
-        data: m.getData(),
-        nodes: m.map.querySelector('.me-nodes')!.innerHTML,
-        lines: svgInner(m, 'lines'),
-        summaries: svgInner(m, 'summary'),
-        arrows: svgInner(m, 'topiclinks'),
-        labels: m.map.querySelector('.label-container')!.innerHTML,
-        transform: m.map.style.transform,
-        selected: (m.currentNodes || []).map((n: any) => n.nodeObj.id),
-      })
+    // Selecting an arrow mounts the bezier controller inside `.me-nodes`, and
+    // `layout()`'s rebuild drops it again on the next `refresh` — so once an
+    // arrow has been selected, the two paths hold those three elements in
+    // different places. They are `display: none` either way and are never read
+    // back through the DOM (the instance keeps its own references), so where
+    // they happen to sit is normalized out rather than pinned.
+    const stripController = (html: string) =>
+      html.replace(/<svg class="linkcontroller"[\s\S]*?<\/svg>|<div class="circle"[^>]*><\/div>/g, '')
+    const snapshot = (m: any) => {
+      // Summaries get a generated id per instance, so the two maps never agree on
+      // it — and an id is not what is being compared. Every id this instance
+      // generated is folded to a placeholder. (`s1` comes from the fixture.)
+      const generated = (m.summaries || []).map((s: any) => s.id).filter((id: string) => id !== 's1')
+      return generated
+        .reduce((text: string, id: string) => text.split(id).join('#generated#'), JSON.stringify({
+          data: m.getData(),
+          nodes: stripController(m.map.querySelector('.me-nodes')!.innerHTML),
+          lines: svgInner(m, 'lines'),
+          summaries: svgInner(m, 'summary'),
+          arrows: svgInner(m, 'topiclinks'),
+          labels: m.map.querySelector('.label-container')!.innerHTML,
+          transform: m.map.style.transform,
+          selected: (m.currentNodes || []).map((n: any) => n.nodeObj.id),
+          // The link selection is not in `currentNodes`, and it is what makes a
+          // replayed arrow / summary step visible on screen.
+          selectedArrow: m.currentArrow?.arrowObj?.id ?? null,
+          selectedSummary: m.currentSummary?.summaryObj?.id ?? null,
+        }))
+    }
 
     const mismatches: string[] = []
     let firstDiff: { where: string; fast: any; slow: any } | null = null
@@ -168,6 +199,23 @@ test('diffRefresh is observably equivalent to refresh', async ({ page, me }) => 
       // destination's side, so this is a `direction` change: the diff must refuse
       // it and hand the whole document to `refresh`.
       ['moveNodesBefore a main node across sides', m => m.moveNodesBefore([m.findEle('m2')], m.findEle('m3'))],
+      // ---- link layer: nothing inside `nodeData` moves ----------------------
+      // Arrows and summaries live outside the node tree, so these ops diff to an
+      // EMPTY op list. That is the case where "there is nothing to patch" must
+      // not be read as "there is nothing to redraw": the drawn curve / bracket /
+      // label is the whole visible result of the operation.
+      ['reshapeArrow control point', m => m.reshapeArrow(m.arrows[0], { delta1: { x: 150, y: 80 } })],
+      ['reshapeArrow label + style', m => m.reshapeArrow(m.arrows[0], { label: 'A1 relabelled', style: { stroke: '#ff0066' } })],
+      [
+        'createSummaryFrom',
+        // `createSummary()` would also start an inline label edit, and two
+        // instances share one `document.activeElement`: the second one's
+        // `selectText` blurs the first one's input box mid-compare. The
+        // data+render path is what this harness is about, so the summary is
+        // created without entering edit mode.
+        m => m.createSummaryFrom({ parent: 'm3', start: 3, end: 3, label: 'generated' }),
+      ],
+      ['removeSummary', m => m.removeSummary(m.summaries[0].id)],
     ]
 
     // Baseline parity: both instances must already be indistinguishable before

@@ -148,11 +148,14 @@ const preorderOf = (root: NodeObj): string[] => {
 
 /**
  * Shallow-with-one-level-recursion equality, used to decide whether a field
- * needs an `update`. Reference equality first (free, and the common case for
- * scalars), then a structural compare for the object-valued fields. A false
- * negative only costs an `update` that writes the value it already had.
+ * needs an `update`, and — since arrows and summaries are not diffed — whether
+ * the link layer `diffRefresh` installs is any different from the one already
+ * rendered. Reference equality first (free, and the common case for scalars),
+ * then a structural compare for the object-valued fields. A false negative only
+ * costs an `update` that writes the value it already had, or a redraw of an
+ * unchanged link layer.
  */
-const sameValue = (a: unknown, b: unknown): boolean => {
+export const sameValue = (a: unknown, b: unknown): boolean => {
   if (a === b) return true
   if (a === null || b === null || a === undefined || b === undefined) return false
   if (typeof a !== 'object' || typeof b !== 'object') return false
@@ -614,8 +617,12 @@ const pruneEmptyParent = (tpc: Topic, dom: Map<string, Topic>) => {
  * Data and DOM are indexed separately. A node hidden inside a collapsed ancestor
  * has no element but its data still has to move; looking nodes up through the
  * DOM alone would silently drop every op that targeted one.
+ *
+ * `redraw` forces the line/arrow/summary layer to be rebuilt even when the op
+ * list is empty — the caller uses it when it replaced link data (arrows,
+ * summaries) that `diffTree` cannot see.
  */
-export const applyTreeOps = function (mei: MindElixir, ops: TreeOp[]): boolean {
+export const applyTreeOps = function (mei: MindElixir, ops: TreeOp[], redraw = false): boolean {
   for (const op of ops) if (op.type === 'resync') return false
   const root = mei.nodeData
   if (!root) return false
@@ -782,9 +789,10 @@ export const applyTreeOps = function (mei: MindElixir, ops: TreeOp[]): boolean {
   }
 
   fillParents(root, undefined)
-  // Redraw whenever anything was applied — same trigger as `refresh`, so the two
-  // paths stay observably identical. An empty op list means the document already
-  // matched, and then there is nothing to draw.
-  if (ops.length) mei.linkDiv()
+  // Redraw whenever the tree was patched — same trigger as `refresh`, so the two
+  // paths stay observably identical — or when the caller says the link layer
+  // changed. An empty op list only means the *node* tree already matched; the
+  // arrows above it may still be waiting for a repaint.
+  if (ops.length || redraw) mei.linkDiv()
   return true
 }
