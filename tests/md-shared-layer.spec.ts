@@ -4,7 +4,10 @@ const data = {
   nodeData: {
     topic: 'root',
     id: 'root',
-    children: [{ id: 'md', topic: '# Big\n\n*em* __hi__ **star**' }],
+    children: [
+      { id: 'md', topic: '# Big\n\n*em* __hi__ **star**' },
+      { id: 'math', topic: 'Fourier: $$F(\\omega) = 1$$' },
+    ],
   },
 }
 
@@ -82,6 +85,22 @@ test('__emphasis__ renders the same highlight in both views', async ({ page }) =
 
   expect(map).toBe('rgba(255, 235, 59, 0.25)')
   expect(outline).toBe(map)
+})
+
+test('$$ keeps KaTeX’s display block, re-anchored to the outline row', async ({ page }) => {
+  // The block belongs to katex.min.css; a view may trim its margins and re-anchor
+  // the line, but display math must never collapse into an inline run.
+  const style = (selector: string, prop: string) =>
+    page.locator(selector).first().evaluate((el: HTMLElement, prop) => getComputedStyle(el).getPropertyValue(prop), prop)
+
+  expect(await style(`${mapTopic} .katex-display`, 'display')).toBe('block')
+  expect(await style(`${outlineTopic} .katex-display`, 'display')).toBe('block')
+
+  // An outline row has no content width to centre within — the topic is `flex: 1`, so
+  // KaTeX's centring would park the formula wherever the panel width puts it. Both
+  // wrappers need the override: KaTeX declares the centring on `.katex-display > .katex`.
+  expect(await style(`${outlineTopic} .katex-display`, 'text-align')).toBe('left')
+  expect(await style(`${outlineTopic} .katex-display > .katex`, 'text-align')).toBe('left')
 })
 
 test('The type scale is one rule set, not two', async ({ page }) => {
