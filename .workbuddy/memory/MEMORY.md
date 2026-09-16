@@ -61,6 +61,13 @@ Detail: `topics/styles-md-layer.md`. Must not be forgotten:
   `dist/Outliner.css` has **zero** md rules, so the standalone outliner entry no longer styles md; a host
   on that path must also load `mind-elixir/style.css`. Reverting is one line, byte-identical.
 - Pin `grep -c map-container dist/Outliner.css` = 0; the shared file may never name a view.
+- Third-party boxes are not ours to redefine: `.katex-display`'s `display: block` is `katex.min.css`'s.
+  Trim its margins, never its block-ness — the outline's `inline-block` (added 09-13, removed 09-16 after
+  the user spotted `$$` inline in the outline while the map showed a block) is the cautionary tale.
+  The outline also re-anchors the line **left** (`text-align` on BOTH `.katex-display` and its inner
+  `.katex`, or it is a dead declaration): the row is `flex: 1`, so KaTeX's centring would place the
+  formula by panel width (193px @1400 → 0px @620), while the map's shrink-to-fit node centres by ≤28px.
+  Guard: `tests/md-shared-layer.spec.ts`; `test.html` loads `katex/dist/katex.min.css` for it.
 
 ## Library quirks (found, NOT fixed — out of scope)
 - `setNodeTopic` fires no `operation` → use `reshapeNode`. `moveNodeObj` gives a stale `direction` into

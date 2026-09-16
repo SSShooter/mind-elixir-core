@@ -476,11 +476,15 @@
   border: 1px solid var(--rol-border-light);
 }
 
-/* KaTeX display 公式默认是居中的块，会把行撑高 —— 压平进这一行 */
-.outline-item-topic .katex-display {
-  display: inline-block;
-  margin: 0;
+/* KaTeX display 公式：块级独占一行、贴大纲行的左边缘；居中由 .katex-display>.katex 声明，压同一层 */
+.outline-item-topic .katex-display,
+.outline-item-topic .katex-display > .katex {
   text-align: left;
+}
+
+.outline-item-topic .katex-display {
+  display: block;
+  margin: 0;
 }
 
 /* 图标尺寸：react-outliner 通过 lucide 的 size={14} 控制，这里用 CSS 统一 */
