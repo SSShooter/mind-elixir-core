@@ -68,7 +68,7 @@ let options = {
   overflowHidden: false, // default false
   mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
   contextMenu: {
-    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv]
+    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv,ar]
     focus: true,
     link: true,
     extend: [

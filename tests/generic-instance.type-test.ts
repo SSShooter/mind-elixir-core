@@ -22,6 +22,12 @@ const child: NodeObj<Metadata> | undefined = result.nodeData.children?.[0]
 // user's project. The argument type proves the generic flows through.
 const patched: boolean = mind.diffRefresh(data)
 
+// `rtl` is a resolved option, like `compact`: the constructor applies the
+// default, so the instance member is `boolean` rather than `boolean | undefined`,
+// while `Options` keeps it optional. Guards both halves of the declaration.
+const rtl: boolean = mind.rtl
+const rtlOption: boolean | undefined = options.rtl
+
 // The outliner binds to an INSTANCE, not to a dataset: `mei` supplies both the
 // tree it renders and the journal it syncs against, so `el` and `mei` are the
 // whole option set. A `data`/`history` pair no longer exists to be passed.
@@ -34,4 +40,6 @@ void initialized
 void metadata
 void child
 void patched
+void rtl
+void rtlOption
 void outlineRoot

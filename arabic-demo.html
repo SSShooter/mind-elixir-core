@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>MindElixir × العربية — rtl 对照</title>
+  <style>
+    /* Demo page — 需要 vite dev server：`pnpm dev` 后打开 /arabic-demo.html */
+    *,
+    ::before,
+    ::after {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --line: #e8e8e8;
+      --text: #1f2328;
+      --muted: #8b949e;
+      --accent: #2f6feb;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font: 13px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Microsoft YaHei", "Geeza Pro", "SF Arabic", "Noto Sans Arabic", sans-serif;
+      color: var(--text);
+      background: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- 顶栏 ---- */
+    .topbar {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .topbar .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ---- 双视口 ---- */
+    .views {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 0;
+    }
+
+    .pane {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+    }
+
+    .pane+.pane {
+      border-left: 1px solid var(--line);
+    }
+
+    .pane-head {
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pane-head b {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pane-head code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: #f6f7f8;
+      color: var(--accent);
+    }
+
+    #map-ltr,
+    #map-rtl {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* ---- 看这几处 ---- */
+    .checks {
+      border-top: 1px solid var(--line);
+      padding: 8px 12px 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .checks b {
+      color: var(--text);
+    }
+
+    .checks ol {
+      margin: 6px 0 0;
+      padding-left: 18px;
+      columns: 2;
+      column-gap: 24px;
+    }
+
+    .checks li {
+      margin-bottom: 3px;
+      break-inside: avoid;
+    }
+
+    .ar {
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    /* 行内阿拉伯语片段：方向交给 bidi 算法，标点落位才看得准 */
+    .checks .sample {
+      unicode-bidi: plaintext;
+    }
+
+    .checks .caveat {
+      margin: 8px 0 0;
+      padding-top: 7px;
+      border-top: 1px dashed var(--line);
+      max-width: 96ch;
+      line-height: 1.6;
+    }
+
+    .checks .caveat strong {
+      color: var(--text);
+    }
+
+    .checks .caveat code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      padding: 1px 4px;
+      border-radius: 4px;
+      background: #f6f7f8;
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <h1>MindElixir × <span class="ar">العربية</span></h1>
+    <span class="hint">同一份阿拉伯语数据喂给两个实例，唯一差别是 <code>rtl</code>。这个页面刻意不挂 markdown
+      渲染器，让对照只反映文本方向本身</span>
+  </header>
+
+  <main class="views">
+    <section class="pane">
+      <div class="pane-head"><b>rtl: false</b>（默认）— 句尾的 <code>!</code> 贴右边缘，多行按左边缘对齐</div>
+      <div id="map-ltr"></div>
+    </section>
+    <section class="pane">
+      <div class="pane-head"><b>rtl: true</b> — 句尾的 <code>!</code> 贴左边缘，多行按右边缘对齐</div>
+      <div id="map-rtl"></div>
+    </section>
+  </main>
+
+  <footer class="checks">
+    <b>看这几处</b>
+    <ol>
+      <li>最上方的根节点 —— 句尾 <code>!</code> 贴在框的哪一边</li>
+      <li><span class="sample ar">مرحبا بالعالم!</span> —— 同一判别式的另一个样本</li>
+      <li>两行的那颗节点 —— 两行按左边缘还是右边缘对齐</li>
+      <li><span class="sample ar">١٢٣٤٥٦٧٨٩٠</span> —— 数字与阿拉伯语混排时的顺序</li>
+      <li><span class="sample">Mind Elixir</span> 夹在阿语句中 —— 拉丁词保持自己的方向</li>
+      <li>双击节点编辑 —— 编辑框里的段落方向与光标落点</li>
+      <li>右键菜单 / 工具栏 tooltip —— 已切成阿拉伯语文案，快捷键仍读 LTR</li>
+      <li>🔗 图标与标签 —— 与文字的间距翻到了另一侧</li>
+      <li>标签行 —— 三个标签从哪一头开始读，也就是哪个标签在最靠近文字的一侧</li>
+      <li><span class="sample ar">مرحبا!</span> 这样带句尾标点的标签 —— 标点落在词的哪一侧</li>
+    </ol>
+    <p class="caveat">
+      没变的地方也是结论：纯阿拉伯语句子（两端都没有中立字符）在两种模式下长得一样 ——
+      节点框是收缩到文字宽度的，段落对齐没有余量可挪；而一串阿拉伯字符本来就会被 bidi
+      算法在 LTR 段落里排成从右到左。判别式必须用尾部的<strong>中立</strong>字符（<code>!</code>
+      <code>?</code> <code>.</code>）；阿拉伯语问号 <code>؟</code> 是强 RTL 字符，两种模式下都随句走，看不出差别。
+    </p>
+  </footer>
+
+  <script type="module" src="/src/dev.arabic.ts"></script>
+</body>
+
+</html>

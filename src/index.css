@@ -448,4 +448,53 @@
       background-color: var(--main-bgcolor-transparent);
     }
   }
+
+  /* RTL text mode: `rtl: true` puts the `rtl` class on the container, and this
+     block is the whole override set — every rule above stays as written, so an
+     LTR map is untouched. Text direction only; where the main branches are
+     placed is a separate axis (`direction` / `.lhs` / `.rhs`). */
+  &.rtl {
+    /* every surface that holds user- or locale-supplied text */
+    .me-tpc,
+    #input-box,
+    .svg-label,
+    .mind-elixir-ghost,
+    .context-menu .menu-list li,
+    .tips {
+      direction: rtl;
+    }
+    /* the shortcut hint is a Latin binding: it keeps reading LTR, and it
+       belongs on the leading edge now instead of the trailing one */
+    .context-menu .menu-list li span:last-child {
+      float: left;
+    }
+    .context-menu .key {
+      direction: ltr;
+    }
+    /* the icon/hyperlink blocks sit after the text in logical order, so their
+       gap moves to the right side. What is inside them is a separate question —
+       see the tag row and the icon note below. */
+    .hyper-link {
+      margin-left: 0;
+      margin-right: 0.3em;
+    }
+    .icons {
+      margin-left: 0;
+      margin-right: 5px;
+    }
+    /* A tag is text: both the characters inside it and the order of the row are
+       read, so the row follows the paragraph and starts at the leading (right)
+       edge. The base sheet pins `.tags` to `ltr`, which hangs the row off the
+       trailing edge while the topic sits on the right. */
+    .tags {
+      direction: rtl;
+      /* mirror of the base `margin: 4px 4px 0 0` — the separating gap moves to
+         the chip's other side, so the leftover 4px stays at the row's end */
+      span {
+        margin: 4px 0 0 4px;
+      }
+    }
+    /* `.icons` is the opposite case: a set of symbols carries no reading order,
+       so it keeps the base `direction: ltr` and only its offset flips. */
+  }
 }

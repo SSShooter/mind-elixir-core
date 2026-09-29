@@ -96,6 +96,17 @@ type PathString = string
 export interface Options<M = any> {
   el: string | HTMLElement
   direction?: 0 | 1 | 2 | 3
+  /**
+   * Right-to-left text mode, for languages written right to left (Arabic,
+   * Hebrew, Persian, Urdu). Adds an `rtl` class to the map container, which
+   * switches node topics, the topic editor and the labels to `direction: rtl`
+   * and flips the offsets that are otherwise pinned to the left.
+   *
+   * This is TEXT direction only — it does not mirror the layout. Where the main
+   * branches are placed is a separate axis, see {@link Options.direction}.
+   * @default false
+   */
+  rtl?: boolean
   editable?: boolean
   contextMenu?: boolean | ContextMenuOption
   toolBar?: boolean

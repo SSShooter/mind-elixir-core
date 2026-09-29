@@ -77,6 +77,14 @@ Detail: `topics/styles-md-layer.md`. Must not be forgotten:
 - Mid-edit DOM teardown blur: 不修. Judge reachability first; give probes a positive control.
 - `expandNode(el, false)` on the **root** throws (`interact.ts` takes `parent.children[1]` as the
   expander); reachable only from the API / the outliner's root-row chevron. Nested nodes are fine.
+- **RTL / 阿拉伯语：靠 `Options.rtl: true`**（2026-09-29 实现）。它在容器上加 `rtl` class，
+  `index.css` 里 `&.rtl { ... }` 那一整段就是全部覆盖——**只在文本方向这一轴**，不镜像布局，
+  与 `direction`（布局方向 0/1/2/3）无关，别混。`rtl` **不进 `LangPack`**（决策已定，理由见
+  `topics/rtl.md`：`LangPack` 进实例的唯一通道是 `contextMenu.locale`）；`i18n.ts` 有官方
+  `ar` 包（第 19 个，纯文案、无 `rtl` 字段）。**翻不翻的判据是「这块东西是不是文字」**：
+  `.tags`（内容与顺序都被读）连方向一起翻、并镜像它的 `span` margin；`.icons` 只翻外距。
+  覆盖层、三个易错点、判别式（尾部必须是**中立**
+  字符，阿拉伯语问号 `؟` 不行）与对照 demo（`arabic-demo.html` + `src/dev.arabic.ts`）见 `topics/rtl.md`。
 
 ## Conventions
 - **注释只写代码在做什么，不写「这次改了什么、为什么这么改」。** 不要用注释留改动说明，也不要为一次
