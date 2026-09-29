@@ -179,6 +179,7 @@ class MindElixir<M = any> {
   // #region GENERATED members — do not edit by hand; run `npm run gen:members`.
   // Resolved constructor options (defaults are applied in the constructor).
   declare direction: 0 | 1 | 2 | 3
+  declare rtl: boolean
   declare editable: boolean
   declare contextMenu: boolean | ContextMenuOption
   declare toolBar: boolean
@@ -279,6 +280,7 @@ class MindElixir<M = any> {
   constructor({
     el,
     direction,
+    rtl,
     editable,
     contextMenu,
     toolBar,
@@ -324,6 +326,7 @@ class MindElixir<M = any> {
     this.keypress = keypress ?? true
     this.mouseSelectionButton = mouseSelectionButton ?? 0
     this.direction = direction ?? 1
+    this.rtl = rtl ?? false
     this.editable = editable ?? true
     this.allowUndo = allowUndo ?? true
     this.scaleSensitivity = scaleSensitivity ?? 0.1
@@ -350,7 +353,7 @@ class MindElixir<M = any> {
     this.container = document.createElement('div') // map container
     this.selectionContainer = selectionContainer || this.container
 
-    this.container.className = 'map-container'
+    this.container.className = this.rtl ? 'map-container rtl' : 'map-container'
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     this.theme = (theme || (mediaQuery.matches ? DARK_THEME : THEME)) as ResolvedTheme<M>

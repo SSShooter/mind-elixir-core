@@ -269,3 +269,18 @@ export const sv: LangPack = {
   clickTips: 'Klicka på målnoden',
   summary: 'Sammanfattning',
 }
+
+export const ar: LangPack = {
+  addChild: 'إضافة عقدة فرعية',
+  addParent: 'إضافة عقدة أصل',
+  addSibling: 'إضافة عقدة شقيقة',
+  removeNode: 'حذف العقدة',
+  focus: 'وضع التركيز',
+  cancelFocus: 'إلغاء وضع التركيز',
+  moveUp: 'نقل لأعلى',
+  moveDown: 'نقل لأسفل',
+  link: 'ربط',
+  linkBidirectional: 'ربط ثنائي الاتجاه',
+  clickTips: 'يرجى النقر على العقدة الهدف',
+  summary: 'ملخّص',
+}
