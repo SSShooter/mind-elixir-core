@@ -62,6 +62,13 @@
 并监听 `resize`。入口用**官方**的 `ar` 包（`import { ar } from './i18n'`）配 `contextMenu.locale`，
 方向仍由 `Options.rtl` 单独给 —— 为什么是两条轴，见下。
 
+## 面向使用者的文档
+`skills/rtl-text/SKILL.md`（2026-09-29 新增）—— 与 `integrate-mind-elixir` /
+`customize-markdown` 并列的**本仓** skill（面向宿主/集成方，英文 + 编号章节）。
+注意两个 skills 目录别混：`skills/` 是本仓的集成文档，`~/.workbuddy/skills/` 是开发流程 skill
+（如 `mind-elixir-add-option-css-layer`，讲**怎么改**这个库，不是怎么用）。
+上面这些覆盖面 / 未覆盖面 / `؟` 判别式的坑都在里面写成了使用者视角，**改 rtl 行为时两处都要同步**。
+
 ## `rtl` 为什么留在 `Options`（2026-09-29 定，别再搬一次）
 考虑过放进 `LangPack`（「语言决定方向」语义更顺，宿主一份对象同时给出文案与方向）。放弃的原因：
 **`LangPack` 进实例的唯一通道是 `contextMenu.locale`**。所以要么让容器 class 读
