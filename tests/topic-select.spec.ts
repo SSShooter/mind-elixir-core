@@ -64,6 +64,22 @@ test('Select Sibling', async ({ page, me }) => {
   await expect(page.locator('.selected')).toHaveText('child1')
 })
 
+test('Multi-select navigation anchors on the last-selected node', async ({ page, me }) => {
+  // SIDE layout alternates main nodes: middle1 lands on the left, middle2 on
+  // the right — so child1 and child3 sit on opposite sides.
+  await me.click('child3') // give the container keyboard focus
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    const pick = (id: string) => mind.map.querySelector(`[data-nodeid="me${id}"]`)
+    mind.selectNodes([pick('child1'), pick('child3')])
+  })
+  // child3 was selected first, so the currentNodes tail — the anchor — is
+  // child1 on the LEFT side. ArrowRight walks toward the root and lands on
+  // middle1; anchoring on the head (child3, right side) would be a no-op.
+  await page.keyboard.press('ArrowRight')
+  await expect(page.locator('.selected')).toHaveText('middle1')
+})
+
 test('Parent Child', async ({ page, me }) => {
   await me.click('child1')
   await page.keyboard.press('ArrowRight')

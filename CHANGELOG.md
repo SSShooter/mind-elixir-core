@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+- Arrow-key navigation with a multi-selection anchors on the last-selected node in every direction. `ArrowLeft`/`ArrowRight` used to anchor on the first node of the selection while `ArrowUp`/`ArrowDown` used the last one, so the two axes could step away from different starting points of the same selection.
 - `expandNodeAll` now fires the `expandNode` operation event, so a bound outliner stays in sync after a recursive expand.
 - Folding a childless node — or re-applying a state a node already has — no longer touches the DOM or the history stack.
 - A bound outliner no longer drops a sync when several map operations land in the same synchronous block. Notifications arriving from the shared stack are applied immediately, while the ones from silent operations on the bus are coalesced to the end of the tick — so neither channel can be swallowed. Before this, a second programmatic `addChild` in one block left the outline permanently stale; a single fold still costs exactly one render.
