@@ -38,6 +38,13 @@ const applyScaleDelta = (mei: MindElixir, scaleDelta: number, offset?: ZoomOffse
   mei.scale(mei.scaleVal + scaleDelta, offset)
 }
 
+// Arrow-key navigation anchors on the last-clicked node; returns null when
+// nothing is selected or the selection cache is gone.
+const currentAnchor = (mei: MindElixir): Topic | null => {
+  const nodes = mei.currentNodes
+  return nodes && nodes.length > 0 ? nodes[nodes.length - 1] : null
+}
+
 const selectRootSide = (mei: MindElixir, direction: DirectionClass) => {
   const tpcs = mei.map.querySelectorAll(`.${direction}>.me-wrapper>.me-parent>.me-tpc`)
   if (tpcs.length === 0) return
@@ -61,7 +68,7 @@ const selectFirstChild = function (mei: MindElixir, currentNode: Topic) {
   }
 }
 const handleLeftRight = function (mei: MindElixir, direction: DirectionClass) {
-  const current = mei.currentNode || mei.currentNodes?.[0]
+  const current = currentAnchor(mei)
   if (!current) return
   const nodeObj = current.nodeObj
   const main = current.offsetParent.offsetParent.parentElement
@@ -78,7 +85,7 @@ const handleLeftRight = function (mei: MindElixir, direction: DirectionClass) {
   }
 }
 const handlePrevNext = function (mei: MindElixir, direction: 'previous' | 'next') {
-  const current = mei.currentNode
+  const current = currentAnchor(mei)
   if (!current) return
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) return
@@ -230,7 +237,7 @@ export default function (mind: MindElixir, options: boolean | KeypressOptions) {
       } else if (e.metaKey || e.ctrlKey) {
         return mind.initSide()
       } else if (mind.direction === 3) {
-        const current = mind.currentNode || mind.currentNodes?.[0]
+        const current = currentAnchor(mind)
         if (current) selectDownParent(mind, current)
       } else {
         handlePrevNext(mind, 'previous')
@@ -240,7 +247,7 @@ export default function (mind: MindElixir, options: boolean | KeypressOptions) {
       if (e.altKey) {
         mind.moveDownNode()
       } else if (mind.direction === 3) {
-        const current = mind.currentNode || mind.currentNodes?.[0]
+        const current = currentAnchor(mind)
         if (current) selectDownChild(mind, current)
       } else {
         handlePrevNext(mind, 'next')
