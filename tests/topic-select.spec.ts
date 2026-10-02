@@ -148,6 +148,32 @@ test('Sibling boundary crosses into the neighbouring branch', async ({ page }) =
   await expect(page.locator('.selected')).toHaveText('m3')
 })
 
+test('Boundary navigation on a lone selection fires no selection events', async ({ page, me }) => {
+  // child4 is the last child of the only right-side branch: ArrowDown is a
+  // boundary press. A lone node re-selecting itself would fire a pointless
+  // unselect/select event pair on every press — it must be a true no-op.
+  await me.click('child4')
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    ;(window as any).events = []
+    mind.bus.addListener('selectNodes', () => (window as any).events.push('selectNodes'))
+    mind.bus.addListener('unselectNodes', () => (window as any).events.push('unselectNodes'))
+  })
+  await page.keyboard.press('ArrowDown')
+  await expect(page.locator('.me-tpc.selected')).toHaveText('child4')
+  expect(await page.evaluate(() => (window as any).events)).toEqual([])
+
+  // A multi-selection still collapses to the anchor at the boundary.
+  await page.evaluate(() => {
+    const mind = (window as any)['#map']
+    const pick = (id: string) => mind.map.querySelector(`[data-nodeid="me${id}"]`)
+    mind.selectNodes([pick('child3'), pick('child4')])
+  })
+  await page.keyboard.press('ArrowDown')
+  await expect(page.locator('.me-tpc.selected')).toHaveText('child4')
+  expect(await page.evaluate(() => (window as any).events)).toContain('selectNodes')
+})
+
 test('Parent Child', async ({ page, me }) => {
   await me.click('child1')
   await page.keyboard.press('ArrowRight')
