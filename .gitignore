@@ -2,6 +2,7 @@
 node_modules
 dist
 doc
+.workbuddy
 .nyc_output
 coverage
 api
