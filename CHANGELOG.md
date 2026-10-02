@@ -17,6 +17,8 @@
 
 ### Bug Fixes
 
+- `ArrowLeft`/`ArrowRight` no longer depend on the CSS positioning chain to tell which side a node is on — the side comes from the node's own DOM ancestry (`closest('.me-main')`), so restyling a wrapper cannot silently break navigation.
+- A lone selection pressing an arrow key at the boundary of the map is a true no-op: no deselect/reselect pair, no bus events. A multi-selection still collapses to the anchor.
 - Arrow-key navigation with a multi-selection anchors on the last-selected node in every direction. `ArrowLeft`/`ArrowRight` used to anchor on the first node of the selection while `ArrowUp`/`ArrowDown` used the last one, so the two axes could step away from different starting points of the same selection.
 - `expandNodeAll` now fires the `expandNode` operation event, so a bound outliner stays in sync after a recursive expand.
 - Folding a childless node — or re-applying a state a node already has — no longer touches the DOM or the history stack.

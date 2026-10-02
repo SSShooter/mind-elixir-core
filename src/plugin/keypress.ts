@@ -4,6 +4,7 @@ import type { Topic } from '../types/dom'
 import type { KeypressOptions, NodeObj } from '../types/index'
 import { DirectionClass } from '../types/index'
 import { setExpand, unionTopics } from '../utils'
+import { directionOf } from '../utils/dom'
 
 const COPY_MAGIC = 'MIND-ELIXIR-WAIT-COPY'
 const WHEEL_ZOOM_LINE_HEIGHT = 40
@@ -71,10 +72,9 @@ const handleLeftRight = function (mei: MindElixir, direction: DirectionClass) {
   const current = currentAnchor(mei)
   if (!current) return
   const nodeObj = current.nodeObj
-  const main = current.offsetParent.offsetParent.parentElement
   if (!nodeObj.parent) {
     selectRootSide(mei, direction)
-  } else if (main.classList.contains(direction)) {
+  } else if (directionOf(current.closest('.me-main')!) === direction) {
     selectFirstChild(mei, current)
   } else {
     if (!nodeObj.parent?.parent) {
@@ -123,8 +123,12 @@ const handlePrevNext = function (mei: MindElixir, direction: 'previous' | 'next'
       mei.selectNode(cousin)
       return
     }
-    // handle multiple nodes including last node
-    mei.selectNode(current)
+    // Nowhere to go: keep the anchor. Only re-select when a multi-selection
+    // has to collapse — a lone node re-selecting itself would fire a pointless
+    // unselect/select event pair on every boundary keypress.
+    if (mei.currentNodes && mei.currentNodes.length !== 1) {
+      mei.selectNode(current)
+    }
   }
 }
 // top-down layout: Up selects parent, Down selects first child
