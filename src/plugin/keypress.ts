@@ -84,6 +84,30 @@ const handleLeftRight = function (mei: MindElixir, direction: DirectionClass) {
     }
   }
 }
+// At the end of a sibling run the adjacent node lives in the nearest
+// neighbouring branch on the same side: walk up until an ancestor has a
+// sibling in `direction`, then enter that branch at its outermost child —
+// its first child for `next`, its last child for `previous`; the branch node
+// itself when it has no rendered children. Returns null when no branch exists.
+const boundaryBranch = (wrapper: Element, direction: 'previous' | 'next'): Topic | null => {
+  const s = direction === 'next' ? 'nextElementSibling' : 'previousElementSibling'
+  const pos = direction === 'next' ? 'firstElementChild' : 'lastElementChild'
+  let node: Element | null = wrapper
+  while (node) {
+    const branch = node[s]
+    if (branch) {
+      const chldr = branch.children[1] // .me-children, absent when collapsed or childless
+      const edge = chldr ? (chldr[pos] as HTMLElement | null) : null
+      const entry = edge || branch // child wrappers and the branch share one shape: wrapper > me-parent > me-tpc
+      return (entry.firstElementChild?.firstElementChild as Topic) || null
+    }
+    // step up: wrapper -> its .me-children/.me-main container -> ancestor wrapper
+    const container: Element | null = node.parentElement
+    if (!container || container.classList.contains('me-main')) return null
+    node = container.parentElement
+  }
+  return null
+}
 const handlePrevNext = function (mei: MindElixir, direction: 'previous' | 'next') {
   const current = currentAnchor(mei)
   if (!current) return
@@ -94,6 +118,11 @@ const handlePrevNext = function (mei: MindElixir, direction: 'previous' | 'next'
   if (sibling) {
     mei.selectNode(sibling.firstChild.firstChild)
   } else {
+    const cousin = boundaryBranch(current.parentElement.parentElement, direction)
+    if (cousin) {
+      mei.selectNode(cousin)
+      return
+    }
     // handle multiple nodes including last node
     mei.selectNode(current)
   }
