@@ -4,7 +4,7 @@ import type { MindElixirData } from '../index'
  * An Arabic (RTL) dataset.
  *
  * Every topic is a case that only reads correctly under a right-to-left
- * paragraph direction. Open `/arabic-demo.html` to see the same data twice:
+ * paragraph direction. Open `/demos/arabic.html` to see the same data twice:
  * `rtl: false` (default) on the left, `rtl: true` on the right.
  *   - a trailing ASCII neutral (`!` below) hugs the LEFT edge of the sentence
  *     under RTL, the RIGHT edge under LTR

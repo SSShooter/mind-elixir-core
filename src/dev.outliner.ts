@@ -6,7 +6,7 @@
  * Topics go through the SAME markdown/KaTeX renderer on both sides, so the
  * map and the outline stay visually in step too — the demo data's
  * `# Heading`, `**bold**`, tables and `$$math$$` nodes show it.
- * Open /outliner-demo.html with the vite dev server.
+ * Open /demos/outliner.html with the vite dev server.
  */
 import 'katex/dist/katex.min.css'
 import MindElixir from './index'

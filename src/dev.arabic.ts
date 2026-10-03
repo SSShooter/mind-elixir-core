@@ -1,7 +1,7 @@
 /**
  * Demo: one Arabic dataset, two maps — `rtl: false` (the default) on the left,
  * `rtl: true` on the right, so the text direction is comparable at a glance.
- * Open /arabic-demo.html with the vite dev server (`pnpm dev`).
+ * Open /demos/arabic.html with the vite dev server (`pnpm dev`).
  */
 import MindElixir from './index'
 import arabicSample from './exampleData/arabic'

@@ -421,11 +421,11 @@ pnpm i
 pnpm dev
 ```
 
-`dev.dist.ts`で生成されたファイルをテストします：
+生成されたファイルと型をテストします：
 
 ```
 pnpm build
-pnpm link ./
+pnpm type-test
 ```
 
 ドキュメントを更新します：

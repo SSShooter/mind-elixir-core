@@ -15,7 +15,8 @@ import type { Summary } from './summary'
 import { mindElixirToPlaintext, plaintextExample, plaintextToMindElixir } from './utils/plaintextConverter'
 import { en } from './i18n'
 import { markmapMain, markmapSub, straightMain, straightSub, straightUnderlineMain, straightUnderlineSub } from './branchTests'
-import '../dev.css'
+import './dev.css'
+import './dev.highlight.css'
 
 interface Window {
   m?: MindElixir

@@ -1,16 +1,17 @@
 import { fileURLToPath } from 'node:url'
+import { resolve } from 'node:path'
 import { build } from 'vite'
 import strip from '@rollup/plugin-strip'
 
-const __dirname = fileURLToPath(new URL('.', import.meta.url))
+const rootDir = fileURLToPath(new URL('..', import.meta.url))
 const buildList = [
   {
     name: 'MindElixir',
-    enrty: __dirname + './src/index.ts',
+    entry: resolve(rootDir, './src/index.ts'),
   },
   {
     name: 'MindElixirLite',
-    enrty: __dirname + './src/index.ts',
+    entry: resolve(rootDir, './src/index.ts'),
     mode: 'lite',
   },
   {
@@ -19,29 +20,30 @@ const buildList = [
     // 'mind-elixir/outliner'`. `index.ts` still re-exports it (it is part of the
     // main API surface), so both entry points stay available.
     name: 'Outliner',
-    enrty: __dirname + './src/outliner/index.ts',
+    entry: resolve(rootDir, './src/outliner/index.ts'),
   },
   {
     name: 'example',
-    enrty: __dirname + './src/exampleData/1.ts',
+    entry: resolve(rootDir, './src/exampleData/1.ts'),
   },
-{
+  {
     name: 'PlaintextConverter',
-    enrty: __dirname + './src/utils/plaintextConverter.ts',
+    entry: resolve(rootDir, './src/utils/plaintextConverter.ts'),
   },
   {
     name: 'i18n',
-    enrty: __dirname + './src/i18n.ts',
+    entry: resolve(rootDir, './src/i18n.ts'),
   },
 ]
 for (let i = 0; i < buildList.length; i++) {
   const info = buildList[i]
   console.log(`\n\nBuilding ${info.name}...\n\n`)
   await build({
+    root: rootDir,
     build: {
       emptyOutDir: i === 0,
       lib: {
-        entry: info.enrty,
+        entry: info.entry,
         fileName: info.name,
         name: info.name,
         formats: ['es'],

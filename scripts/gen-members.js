@@ -27,7 +27,8 @@ import { dirname, join } from 'node:path'
 import ts from 'typescript-5'
 
 const here = dirname(fileURLToPath(import.meta.url))
-const indexPath = join(here, 'src', 'index.ts')
+const rootDir = join(here, '..')
+const indexPath = join(rootDir, 'src', 'index.ts')
 
 // Options refined by hand on the class (excluded from the generated block).
 const OMITTED_OPTIONS = new Set(['el', 'theme', 'markdown', 'imageProxy'])
@@ -52,14 +53,14 @@ const clean = s => {
 const cleanMethod = s => clean(s).replace(/^\(this:\s*(?:Partial<)?MindElixir<M>>?(?:,\s*)?/, '(')
 
 // --- type checker over src -------------------------------------------------
-const configFile = ts.readConfigFile(join(here, 'tsconfig.json'), ts.sys.readFile)
+const configFile = ts.readConfigFile(join(rootDir, 'tsconfig.json'), ts.sys.readFile)
 if (configFile.error) throw new Error(ts.flattenDiagnosticMessageText(configFile.error.messageText, '\n'))
-const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, here)
+const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, rootDir)
 const program = ts.createProgram(parsed.fileNames, { ...parsed.options, noEmit: true, emitDeclarationOnly: false })
 const checker = program.getTypeChecker()
 
 const getSource = rel => {
-  const abs = join(here, 'src', rel).replace(/\\/g, '/')
+  const abs = join(rootDir, 'src', rel).replace(/\\/g, '/')
   const sf = program.getSourceFiles().find(f => f.fileName.replace(/\\/g, '/').toLowerCase() === abs.toLowerCase())
   if (!sf) throw new Error(`source file not found in program: src/${rel}`)
   return sf

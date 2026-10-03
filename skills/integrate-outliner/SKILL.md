@@ -8,8 +8,8 @@ description: Guide for putting the outline view beside a Mind Elixir map — one
 The outliner is a **second view of ONE Mind Elixir document**, not a second document. It renders
 `mei.nodeData` **by reference**, routes every edit back through the map's own node operations, and
 re-reads the tree whenever the map's undo/redo journal moves. The repo ships a live demo of exactly
-this wiring: `outliner-demo.html` + `src/dev.outliner.ts` (`pnpm dev`, then open
-`/outliner-demo.html`).
+this wiring: `demos/outliner.html` + `src/dev.outliner.ts` (`pnpm dev`, then open
+`/demos/outliner.html`).
 
 ## 1. What it is not
 

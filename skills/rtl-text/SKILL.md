@@ -128,7 +128,7 @@ object of the same shape and pass it to `contextMenu.locale`.
 
 ## 7. See it live
 
-`pnpm dev`, then open `/arabic-demo.html`. It mounts the same Arabic dataset twice
+`pnpm dev`, then open `/demos/arabic.html`. It mounts the same Arabic dataset twice
 — left pane `rtl: false`, right pane `rtl: true` — so the two modes sit side by
 side. The page footer lists what to look at in each. Source: `src/dev.arabic.ts`,
 data in `src/exampleData/arabic.ts`.

@@ -13,7 +13,7 @@
     "lint": "biome check --write --error-on-warnings src",
     "format": "biome format --write src",
     "dev": "vite",
-    "build": "node build.js && tsc",
+    "build": "node scripts/build.js && tsc",
     "tsc": "tsc",
     "type-test": "tsc -p tsconfig.type-test.json",
     "preview": "vite preview",
@@ -24,7 +24,7 @@
     "nyc": "nyc report --reporter=html",
     "doc": "api-extractor run --local --verbose",
     "doc:md": "api-documenter markdown --input-folder ./api --output-folder ./md",
-    "gen:members": "node gen-members.js",
+    "gen:members": "node scripts/gen-members.js",
     "beta": "npm run build && npm publish --tag beta"
   },
   "exports": {

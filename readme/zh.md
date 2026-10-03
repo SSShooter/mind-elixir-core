@@ -422,11 +422,11 @@ pnpm i
 pnpm dev
 ```
 
-使用 `dev.dist.ts` 测试生成的文件：
+测试生成的文件与类型：
 
 ```
 pnpm build
-pnpm link ./
+pnpm type-test
 ```
 
 更新文档：

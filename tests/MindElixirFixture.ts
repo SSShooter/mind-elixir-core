@@ -19,7 +19,7 @@ export class MindElixirFixture {
   }
 
   async goto() {
-    await this.page.goto('http://localhost:23334/test.html')
+    await this.page.goto('http://localhost:23334/tests/test.html')
   }
   async init(data: MindElixirData, el = '#map') {
     const dataStr = JSON.stringify(data)

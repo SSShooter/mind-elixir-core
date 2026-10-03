@@ -445,11 +445,11 @@ pnpm i
 pnpm dev
 ```
 
-Testar arquivos gerados com `dev.dist.ts`:
+Testar tipos e arquivos gerados:
 
 ```
 pnpm build
-pnpm link ./
+pnpm type-test
 ```
 
 Atualizar documentação:
