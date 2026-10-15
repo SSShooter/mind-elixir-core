@@ -25,6 +25,7 @@ const data = {
       { id: 'lhs', topic: AR_PUNCT, direction: 0 },
       { id: 'rhs', topic: AR_PUNCT, direction: 1 },
       { id: 'ml', topic: AR_ML, direction: 1 },
+      { id: 'ltrpunct', topic: 'hello!', direction: 1 },
       { id: 'tags', topic: AR_LONG, direction: 1, tags: [AR_PUNCT, 'الثاني', 'الثالث'] },
     ],
   },
@@ -253,4 +254,45 @@ test('a chip is text too, so its own paragraph follows the direction', async ({ 
 
   const off = await probeTags(page, '#map2', 'tags')
   expect(off.charLefts[off.charLefts.length - 1]).toBeGreaterThan(off.charLefts[0])
+})
+
+test('a host document with dir=rtl cannot leak into the canvas', async ({ page }) => {
+  // Regression: an RTL host page used to inherit `direction` into the canvas.
+  // `.me-nodes` is a flex container, so the main axis mirrored (branches
+  // swapped sides), LTR paragraphs were re-segmented (a trailing neutral
+  // jumped to the far edge), and link anchors no longer matched the classes
+  // they were chosen by. The base sheet now pins `.map-container` to `ltr`,
+  // so embedding the library in an RTL document must be indistinguishable
+  // from the LTR baseline — while the rtl map keeps working right next to it.
+  // Maps are initialized in an LTR document (beforeEach); `dir` is flipped
+  // afterwards on purpose: the flex mirror is live CSS, so a leak shows up
+  // immediately, and the assertions below catch it.
+  await page.evaluate(() => document.documentElement.setAttribute('dir', 'rtl'))
+
+  // 1) geometry: the flex main axis must not mirror
+  const geometry = await page.evaluate(() => {
+    const mind = (window as any)['#map2']
+    const box = (id: string) => (mind.findEle(id) as HTMLElement).getBoundingClientRect()
+    return {
+      nodesDir: getComputedStyle(document.querySelector('#map2 .me-nodes')!).direction,
+      containerDir: getComputedStyle(document.querySelector('#map2 .map-container')!).direction,
+      lhsLeft: box('lhs').left,
+      rootLeft: box('root').left,
+      rhsLeft: box('rhs').left,
+    }
+  })
+  expect(geometry.containerDir).toBe('ltr')
+  expect(geometry.nodesDir).toBe('ltr')
+  expect(geometry.lhsLeft).toBeLessThan(geometry.rootLeft)
+  expect(geometry.rhsLeft).toBeGreaterThan(geometry.rootLeft)
+
+  // 2) text: LTR paragraphs must not be re-segmented (trailing `!` stays right)
+  const off = await probeTopic(page, '#map2', 'ltrpunct')
+  expect(off.dir).toBe('ltr')
+  expect(neutralSide(off.chars)).toBe('right')
+
+  // 3) positive control: the rtl map next to it still reads right-to-left
+  const on = await probeTopic(page, '#map', 'rhs')
+  expect(on.dir).toBe('rtl')
+  expect(neutralSide(on.chars)).toBe('left')
 })

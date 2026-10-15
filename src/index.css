@@ -1,4 +1,11 @@
 .map-container {
+  /* Pin the canvas to LTR so a host document with `dir="rtl"` cannot leak its
+     direction in here: `.me-nodes` is a flex container, so an inherited `rtl`
+     mirrors the main axis (branches swap sides), rewrites the bidi paragraph
+     direction of LTR text, and misplaces link anchors — while in an LTR
+     document this rule is a no-op. Everything that needs RTL declares it
+     itself: `.lhs` below, and the whole `&.rtl` text-direction block. */
+  direction: ltr;
   --me-md-accent: var(--selected);
   --me-md-heading: var(--selected);
   p {
