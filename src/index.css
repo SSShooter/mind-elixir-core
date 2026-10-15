@@ -309,6 +309,7 @@
 
   #input-box {
     position: absolute;
+    white-space: pre-wrap; /* preserve line breaks for innerText in webkit */
     top: 0;
     left: 0;
     width: max-content; /* let words expand the div and keep max length at the same time */
