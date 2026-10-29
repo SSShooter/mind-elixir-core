@@ -22,8 +22,8 @@ const data = {
     topic: 'root',
     id: 'root',
     children: [
-      { id: 'lhs', topic: AR_PUNCT, direction: 0 },
-      { id: 'rhs', topic: AR_PUNCT, direction: 1 },
+      { id: 'lhs', topic: AR_PUNCT, direction: 0, children: [{ id: 'lhs-c', topic: 'lhs child' }] },
+      { id: 'rhs', topic: AR_PUNCT, direction: 1, children: [{ id: 'rhs-c', topic: 'rhs child' }] },
       { id: 'ml', topic: AR_ML, direction: 1 },
       { id: 'ltrpunct', topic: 'hello!', direction: 1 },
       { id: 'tags', topic: AR_LONG, direction: 1, tags: [AR_PUNCT, 'الثاني', 'الثالث'] },
@@ -285,6 +285,29 @@ test('a host document with dir=rtl cannot leak into the canvas', async ({ page }
   expect(geometry.nodesDir).toBe('ltr')
   expect(geometry.lhsLeft).toBeLessThan(geometry.rootLeft)
   expect(geometry.rhsLeft).toBeGreaterThan(geometry.rootLeft)
+
+  // 1b) the inline-block axis: `.me-parent` / `.me-children` are
+  // `display:inline-block`, so their order follows the INLINE direction —
+  // a second, independent axis that the flex mirror above never touched.
+  // `.lhs` declares `direction: rtl` on itself (that is how a branch grows
+  // leftwards, and it must survive the pin); `.rhs` declares nothing, so it
+  // INHERITS — under an RTL host it used to inherit `rtl` and flip its own
+  // siblings, mirroring the whole rhs subtree.
+  const inlineOrder = await page.evaluate(() => {
+    const mind = (window as any)['#map2']
+    const read = (id: string) => {
+      const tpc = mind.findEle(id) as HTMLElement
+      const wrapper = tpc.closest('.me-wrapper') as HTMLElement
+      const p = wrapper.querySelector('.me-parent')!.getBoundingClientRect()
+      const c = wrapper.querySelector('.me-children')!.getBoundingClientRect()
+      return { parentCx: p.left + p.width / 2, childrenCx: c.left + c.width / 2 }
+    }
+    return { lhs: read('lhs'), rhs: read('rhs') }
+  })
+  // `.lhs` grows leftwards: its parent sits RIGHT of its children.
+  expect(inlineOrder.lhs.parentCx).toBeGreaterThan(inlineOrder.lhs.childrenCx)
+  // `.rhs` grows rightwards: its parent sits LEFT of its children.
+  expect(inlineOrder.rhs.parentCx).toBeLessThan(inlineOrder.rhs.childrenCx)
 
   // 2) text: LTR paragraphs must not be re-segmented (trailing `!` stays right)
   const off = await probeTopic(page, '#map2', 'ltrpunct')
