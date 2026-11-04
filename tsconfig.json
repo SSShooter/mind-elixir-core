@@ -21,6 +21,5 @@
     "noErrorTruncation": true,
     "moduleResolution": "bundler"
   },
-  "include": ["src"],
-  "exclude": ["src/dev.dist.ts"]
+  "include": ["src"]
 }

@@ -1,4 +1,4 @@
-import type { MindElixirInstance } from '..'
+import type MindElixir from '../index'
 import { DirectionClass } from '../types/index'
 
 export interface MainLineParams {
@@ -68,7 +68,7 @@ export function main({ pT, pL, pW, pH, cT, cL, cW, cH, direction, containerHeigh
   return `M ${x1} ${y1} Q ${x1} ${y2} ${x2} ${y2}`
 }
 
-export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
+export function sub(this: MindElixir, { pT, pL, pW, pH, cT, cL, cW, cH, direction, isFirst }: SubLineParams) {
   if (direction === DirectionClass.DOWN) {
     // top-down: from parent bottom center to child top center
     const x1 = pL + pW / 2
@@ -90,18 +90,20 @@ export function sub(this: MindElixirInstance, { pT, pL, pW, pH, cT, cL, cW, cH, 
   let x1 = 0
   let x2 = 0
   let xMid = 0
-  const offset = (Math.abs(y1 - y2) / 300) * GAP
+  // Make S-curve more stretched as vertical distance increases, but must clamp to GAP:
+  // Otherwise control points will cross start/end points, curve will turn back and bulge in the middle
+  const offset = Math.min((Math.abs(y1 - y2) / 300) * GAP, GAP)
   if (direction === DirectionClass.LHS) {
     xMid = pL
     x1 = xMid + GAP
     x2 = xMid - GAP
     end = cL + GAP
-    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
+    return `M ${x1} ${y1} C ${xMid - offset} ${y1} ${xMid + offset} ${y2} ${x2} ${y2} H ${end}`
   } else {
     xMid = pL + pW
     x1 = xMid - GAP
     x2 = xMid + GAP
     end = cL + cW - GAP
-    return `M ${x1} ${y1} C ${xMid} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
+    return `M ${x1} ${y1} C ${xMid + offset} ${y1} ${xMid - offset} ${y2} ${x2} ${y2} H ${end}`
   }
 }

@@ -77,18 +77,18 @@ test.describe('Mobile Multi-Select', () => {
   test('should select multiple nodes by tapping without modifier keys', async ({ page, me }) => {
     // Tap first node
     await me.click('Node 1')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(1)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
 
     // Tap second node - should add to selection
     await me.click('Node 2')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeVisible()
 
     // Tap third node - should add to selection
     await me.click('Node 3')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(3)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(3)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 3' })).toBeVisible()
@@ -99,11 +99,11 @@ test.describe('Mobile Multi-Select', () => {
     await me.click('Node 1')
     await me.click('Node 2')
     await me.click('Node 3')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(3)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(3)
 
     // Tap already selected node - should deselect it
     await me.click('Node 2')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeHidden()
     await expect(page.locator('.selected').filter({ hasText: 'Node 3' })).toBeVisible()
@@ -113,7 +113,7 @@ test.describe('Mobile Multi-Select', () => {
     // Select two nodes
     await me.click('Node 1-1')
     await me.click('Node 1-2')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
 
     // Drag to move them
     await me.dragOver('Node 1-2', 'in')
@@ -139,11 +139,11 @@ test.describe('Mobile Multi-Select', () => {
 
     // Tap first node
     await me.click('Node 1')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(1)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
 
     // Tap second node - should replace selection (not add)
     await me.click('Node 2')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(1)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeHidden()
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeVisible()
 
@@ -159,7 +159,7 @@ test.describe('Mobile Multi-Select', () => {
 
     // Now tapping should add to selection
     await me.click('Node 1')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeVisible()
   })
@@ -167,13 +167,13 @@ test.describe('Mobile Multi-Select', () => {
   test('should not select root node in multi-select', async ({ page, me }) => {
     // Try to select root node
     await me.click(topic)
-    await expect(page.locator('me-tpc.selected')).toHaveCount(1)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
 
     // Select another node - root should be deselected since it's in multi-select mode
     await me.click('Node 1')
 
     // Both should be selected in mobile multi-select mode
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
   })
 
@@ -181,7 +181,7 @@ test.describe('Mobile Multi-Select', () => {
     // Select multiple nodes
     await me.click('Node 1')
     await me.click('Node 2')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
 
     // Double-click to edit one of the selected nodes
     await me.dblclick('Node 1')
@@ -192,7 +192,7 @@ test.describe('Mobile Multi-Select', () => {
     await expect(page.locator('#input-box')).toBeHidden()
 
     // Only the edited node should remain selected
-    await expect(page.locator('me-tpc.selected')).toHaveCount(1)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeHidden()
   })
@@ -201,7 +201,7 @@ test.describe('Mobile Multi-Select', () => {
     // Select multiple nodes
     await me.click('Node 1-1')
     await me.click('Node 1-2')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
 
     // Delete selected nodes
     await page.keyboard.press('Delete')
@@ -232,11 +232,11 @@ test.describe('Mobile Multi-Select Disabled', () => {
 
     // Click first node
     await me.click('Node 1')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(1)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
 
     // Click second node without modifier - should replace selection
     await me.click('Node 2')
-    await expect(page.locator('me-tpc.selected')).toHaveCount(1)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(1)
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeHidden()
 
@@ -245,7 +245,7 @@ test.describe('Mobile Multi-Select Disabled', () => {
     await me.click('Node 1')
     await page.keyboard.up(modifier)
 
-    await expect(page.locator('me-tpc.selected')).toHaveCount(2)
+    await expect(page.locator('.me-tpc.selected')).toHaveCount(2)
     await expect(page.locator('.selected').filter({ hasText: 'Node 1' })).toBeVisible()
     await expect(page.locator('.selected').filter({ hasText: 'Node 2' })).toBeVisible()
   })

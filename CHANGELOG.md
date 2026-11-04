@@ -1,5 +1,51 @@
 # Changelog
 
+## 6.0.0 - 2026-11-02
+
+### Breaking Changes
+
+See [skills/migrate-to-v6/SKILL.md](skills/migrate-to-v6/SKILL.md) for the full migration guide.
+
+### Features
+
+- Pass `rtl: true` to `Options` to switch node topics, the editor, labels and context menu to right-to-left text direction (Arabic, Hebrew, Persian, Urdu); branch layout axis is unaffected.
+- Add `ar` (Arabic) locale to the `i18n` export.
+- Pass a `markdown` renderer to `Options` (and `new Outliner(…)`) to render topics as Markdown / KaTeX in both the map and the outliner.
+- Arrow-key navigation crosses into neighbouring branches at boundaries: `ArrowDown` from the last child and `ArrowUp` from the first child of a branch step into the nearest sibling branch, landing at its first/last child or the branch node itself when collapsed.
+- `mei.diffRefresh(data)` applies only the difference between the current document and `data`, keeping unchanged nodes' elements, listeners and focus state; falls back to `refresh` when the change cannot be expressed incrementally.
+- Collapse / expand is now undoable: `Ctrl+Z` restores the previous fold state, and folds from the outliner and the map share one undo timeline.
+- `expandNode` and `expandNodeAll` accept `{ silent: true }` to skip the history entry, so an auto-expand before adding a child costs no extra undo step.
+- The outliner ships as its own entry point: `import { Outliner } from 'mind-elixir/outliner'` and `import 'mind-elixir/outliner/style.css'`; the main entry still re-exports it unchanged.
+
+### Bug Fixes
+
+- Input box now preserves line breaks (`white-space: pre-wrap`) so Shift+Enter newlines survive editing in WebKit.
+- `init()` no longer throws a `TypeError` when the instance is destroyed during `document.fonts.ready` (React StrictMode fast mount/unmount).
+- `destroy()` now properly releases internal references (focus backup tree, undo stack, pan/arrow helpers, dragged-node list) to prevent memory leaks.
+- Ensure focus backup tree and undo baseline are properly reset/re-anchored when using `refresh(data)` or undoing inside focus mode.
+- Folding a childless node or re-applying the existing fold state no longer touches the DOM or the history stack.
+- `reshapeNode` no longer passes an `origin` that already equals the new state to the `operation` event.
+- Removing a node whose parent pointer and sibling array had drifted apart no longer deletes the last sibling (`splice(-1, 1)`).
+- `removeListener` now drops every registration of a handler, not just the first.
+- `createSummary` with an unusable selection (nothing selected, the root, or nodes from different main topics) is now a no-op instead of throwing.
+
+### Behavior Changes
+
+- Undoing a no-op operation renders nothing; the incremental path only redraws when it patched something.
+- `focusNode` and `cancelFocus` clear the undo/redo stack, making the focus boundary a history boundary in both directions.
+- `refresh(data)` now leaves focus mode and fires a `refresh` event once the data is in place.
+- Plaintext export now escapes `\` and line breaks (`\\` / `\n`) so topics with Shift+Enter newlines round-trip correctly.
+
+### Refactors
+
+- Undo/redo patches the map with `diffRefresh` instead of rebuilding it; at 5 461 nodes undoing a one-node change drops from ~73 ms to ~14 ms.
+- The structural diff reconciles `children` order per parent rather than per rendered container, fixing SIDE-layout convergence.
+- Outliner rendering is a keyed reconciliation: unchanged nodes keep their DOM element, listeners and focus state; re-rendering at 5 461 nodes drops from 94 ms to ~1 ms.
+- Outliner event listeners are delegated to the container (8 per-node listeners → 0), and opening the `…` menu no longer re-runs markdown/KaTeX over every topic.
+- The outliner is now a pure view of a `MindElixir` instance: standalone mode, `refresh()`, `updateItem()`, `OutlineItem`/`OutlineData`/`OutlinerMei` types, and the internal tree DSL (`cloneTree`, `locate`, `walk`, six mutating operations) are all removed.
+- Link rendering batches all geometry reads before any DOM writes, cutting forced reflows from one per node to one total; `linkDiv` at 5 461 nodes drops from 124 ms to 9.6 ms.
+- Moving several nodes no longer re-walks the whole tree once per node.
+
 ## 5.15.0 - 2026-08-03
 
 ### Breaking Changes

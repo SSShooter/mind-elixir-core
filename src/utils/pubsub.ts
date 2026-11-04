@@ -2,98 +2,103 @@ import type { Arrow } from '../arrow'
 import type { Summary } from '../summary'
 import type { NodeObj } from '../types/index'
 
-type NodeOperation =
-  | {
-      name: 'moveNodeIn' | 'copyNode' | 'addChild' | 'insertParent' | 'insertBefore' | 'beginEdit'
-      obj: NodeObj
-    }
-  | {
-      name: 'insertSibling'
-      type: 'before' | 'after'
-      obj: NodeObj
-    }
-  | {
-      name: 'reshapeNode'
-      obj: NodeObj
+type OperationBase<Name extends string, Target> = {
+  name: Name
+  target: Target
+  silent?: boolean
+}
+
+export type NodeOperation =
+  | OperationBase<'addChild' | 'insertParent' | 'beginEdit', NodeObj>
+  | (OperationBase<'insertSibling', NodeObj> & {
+      position: 'before' | 'after'
+    })
+  | (OperationBase<'reshapeNode', NodeObj> & {
       origin: NodeObj
-    }
-  | {
-      name: 'finishEdit'
-      obj: NodeObj
+    })
+  | (OperationBase<'finishEdit', NodeObj> & {
       origin: string
-    }
-  | {
-      name: 'moveNodeAfter' | 'moveNodeBefore' | 'moveNodeIn'
-      objs: NodeObj[]
-      toObj: NodeObj
-    }
+    })
+  | (OperationBase<'moveNodesAfter' | 'moveNodesBefore' | 'moveNodesIn', NodeObj[]> & {
+      destination: NodeObj
+    })
+  | OperationBase<'removeNodes' | 'copyNodes', NodeObj[]>
 
-type MultipleNodeOperation =
-  | {
-      name: 'removeNodes'
-      objs: NodeObj[]
-    }
-  | {
-      name: 'copyNodes'
-      objs: NodeObj[]
-    }
-
-export type SummaryOperation =
-  | {
-      name: 'createSummary'
-      obj: Summary
-    }
-  | {
-      name: 'removeSummary'
-      obj: { id: string }
-    }
-  | {
-      name: 'finishEditSummary'
-      obj: Summary
-    }
+export type SummaryOperation = OperationBase<'createSummary' | 'removeSummary' | 'finishEditSummary', Summary>
 
 export type ArrowOperation =
-  | {
-      name: 'createArrow'
-      obj: Arrow
-    }
-  | {
-      name: 'removeArrow'
-      obj: { id: string }
-    }
-  | {
-      name: 'finishEditArrowLabel'
-      obj: Arrow
-    }
-  | {
-      name: 'reshapeArrow'
-      obj: Arrow
+  | OperationBase<'createArrow' | 'removeArrow' | 'finishEditArrowLabel', Arrow>
+  | (OperationBase<'reshapeArrow', Arrow> & {
       origin: Arrow
-    }
+    })
 
-export type Operation = NodeOperation | MultipleNodeOperation | SummaryOperation | ArrowOperation
+/**
+ * Collapse / expand of a node. `expanded` lives in the node data, so folding is
+ * a document change like any other and lands on the undo timeline. `recursive`
+ * and `level` describe the batch entry points (`expandNodeAll`, Ctrl+K) that
+ * touch descendants too.
+ */
+export type ExpandOperation = OperationBase<'expandNode' | 'collapseNode', NodeObj> & {
+  recursive?: boolean
+  /** Depth limit passed to the recursive walk. `undefined` means every level. */
+  level?: number
+}
+
+export type Operation = NodeOperation | SummaryOperation | ArrowOperation | ExpandOperation
 export type OperationType = Operation['name']
 
-export type EventMap = {
-  operation: (info: Operation) => void
-  selectNewNode: (nodeObj: NodeObj) => void
-  selectNodes: (nodeObj: NodeObj[]) => void
-  unselectNodes: (nodeObj: NodeObj[]) => void
-  expandNode: (nodeObj: NodeObj) => void
-  changeDirection: (direction: number) => void
-  linkDiv: () => void
-  scale: (scale: number) => void
-  move: (data: { dx: number; dy: number }) => void
-  /**
-   *  please use throttling to prevent performance degradation
-   */
-  updateArrowDelta: (arrow: Arrow) => void
+/** Data mutation events such as node, arrow and summary operations. */
+export type OperationEventMap = {
+  /** Public data mutation event. Every operation uses `target`; batch operations use an array. */
+  operation: (operation: Operation) => void
+}
+
+/** Selection state events for nodes, arrows and summaries. */
+export type SelectionEventMap = {
+  selectNewNode: (node: NodeObj) => void
+  selectNodes: (nodes: NodeObj[]) => void
+  unselectNodes: (nodes: NodeObj[]) => void
   selectArrow: (arrow: Arrow) => void
   unselectArrow: () => void
   selectSummary: (summary: Summary) => void
   unselectSummary: () => void
-  showContextMenu: (e: MouseEvent) => void
 }
+
+/** Viewport and map state events. */
+export type ViewportEventMap = {
+  changeDirection: (direction: number) => void
+  scale: (scale: number) => void
+  move: (data: { dx: number; dy: number }) => void
+}
+
+/** Internal rendering events. */
+export type RenderEventMap = {
+  linkDiv: () => void
+  /** Please use throttling to prevent performance degradation. */
+  updateArrowDelta: (arrow: Arrow) => void
+}
+
+/** Internal context-menu event. */
+export type ContextMenuEventMap = {
+  showContextMenu: (event: MouseEvent) => void
+}
+
+/** Document lifecycle events. */
+export type DocumentEventMap = {
+  /**
+   * A new document was installed through `refresh(data)`.
+   * Fired after the data is in place; listeners may re-baseline their own state.
+   */
+  refresh: () => void
+}
+
+/**
+ * Events emitted by a MindElixir instance.
+ *
+ * The intersections keep the existing bus API compatible while grouping event
+ * names by responsibility for maintainers and generated type declarations.
+ */
+export type EventMap = OperationEventMap & SelectionEventMap & ViewportEventMap & RenderEventMap & ContextMenuEventMap & DocumentEventMap
 
 export function createBus<T extends Record<string, (...args: any[]) => void> = EventMap>() {
   return {
@@ -116,9 +121,12 @@ export function createBus<T extends Record<string, (...args: any[]) => void> = E
       if (!handler) {
         handlers.length = 0
       } else if (handlers.length) {
-        for (let i = 0; i < handlers.length; i++) {
+        // Walk backwards: removing an entry while iterating forwards skips the
+        // handler that slides into its place, so a doubly-registered handler
+        // kept one registration behind.
+        for (let i = handlers.length - 1; i >= 0; i--) {
           if (handlers[i] === handler) {
-            this.handlers[type].splice(i, 1)
+            handlers.splice(i, 1)
           }
         }
       }

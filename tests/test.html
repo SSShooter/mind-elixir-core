@@ -27,12 +27,18 @@
 </head>
 
 <body>
-  <div id="map"></div>
+  <div id="map" class="me-md"></div>
   <div id="map2"></div>
+  <div id="outline" class="me-md"></div>
   <script type="module">
+    import 'katex/dist/katex.min.css'
     import MindElixir from '/src/index.ts'
+    import { Outliner } from '/src/outliner/index.ts'
+    import { renderMarkdown } from '/src/dev.markdown.ts'
     window.MindElixir = MindElixir
+    window.Outliner = Outliner
     window.E = MindElixir.E
+    window.renderMarkdown = renderMarkdown
   </script>
 </body>
 

@@ -132,7 +132,7 @@ test('Operation History - Copy Multiple Nodes', async ({ page, me }) => {
 })
 
 test('Operation History - Node Movement Operations', async ({ page, me }) => {
-  // Test moveNodeBefore operation
+  // Test moveNodesBefore operation
   await me.click('Leaf A2')
   await page.keyboard.press('Alt+ArrowUp') // Move up (before sibling)
 
@@ -142,7 +142,7 @@ test('Operation History - Node Movement Operations', async ({ page, me }) => {
   // Redo move operation
   await page.keyboard.press(`${modifier}+y`)
 
-  // Test moveNodeAfter operation
+  // Test moveNodesAfter operation
   await page.keyboard.press('Alt+ArrowDown') // Move down (after sibling)
 
   // Undo move operation
@@ -292,4 +292,42 @@ test('Operation History - Stress Test Multiple Rapid Operations', async ({ page,
 
   // Should have all nodes back
   await expect(newNodes).toHaveCount(10)
+})
+
+test('Operation History - Collapse interleaves with edits', async ({ page, me }) => {
+  // Fold Branch A, then edit a node that lives in another branch
+  await page.locator('.me-tpc[data-nodeid="mebranch-a"]').locator('..').locator('.me-epd').click()
+  await expect(me.getByText('Leaf A1')).toBeHidden()
+
+  await me.dblclick('Leaf B1')
+  await page.keyboard.press(`${modifier}+a`)
+  await page.keyboard.insertText('Edited Leaf B1')
+  await page.keyboard.press('Enter')
+  await expect(me.getByText('Edited Leaf B1')).toBeVisible()
+
+  // Undo the edit, then the fold — in that order. If the fold had pushed a
+  // stale `before` snapshot, the second undo would not bring Leaf A1 back.
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(me.getByText('Leaf B1')).toBeVisible()
+  await expect(me.getByText('Edited Leaf B1')).toBeHidden()
+
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(me.getByText('Leaf A1')).toBeVisible()
+})
+
+test('Operation History - Whole-map fold (Ctrl+K) is ONE entry', async ({ page, me }) => {
+  // `currentIndex` — undone entries stay on the stack for redo
+  const size = () => page.evaluate(() => (window as any)['#map'].historyStack.currentIndex)
+  const before = await size()
+
+  await me.click('Branch A')
+  await page.keyboard.press(`${modifier}+k`)
+  await page.keyboard.press(`${modifier}+0`)
+  await expect(me.getByText('Leaf A1')).toBeHidden()
+  await expect(me.getByText('Leaf B1')).toBeHidden()
+  expect(await size()).toBe(before + 1)
+
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(me.getByText('Leaf A1')).toBeVisible()
+  await expect(me.getByText('Leaf B1')).toBeVisible()
 })

@@ -19,7 +19,7 @@ currentSelectedNodes   // 当前选中的节点（用于记录操作上下文）
 |------|------|
 | `prev` | 操作前的完整数据快照 |
 | `next` | 操作后的完整数据快照 |
-| `operation` | 操作类型（如 `removeNodes`、`moveNodeIn` 等） |
+| `operation` | 操作类型（如 `removeNodes`、`moveNodesIn` 等） |
 | `currentSelected` | 操作时选中的节点 ID 列表 |
 | `currentTarget` | 操作的目标对象，区分 `nodes` / `summary` / `arrow` 三种类型 |
 

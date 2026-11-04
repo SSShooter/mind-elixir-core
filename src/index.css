@@ -1,17 +1,21 @@
 .map-container {
+  /* Pin the canvas to LTR so a host document with `dir="rtl"` cannot leak its
+     direction in here: `.me-nodes` is a flex container, so an inherited `rtl`
+     mirrors the main axis (branches swap sides), rewrites the bidi paragraph
+     direction of LTR text, and misplaces link anchors — while in an LTR
+     document this rule is a no-op. Everything that needs RTL declares it
+     itself: `.lhs` below, and the whole `&.rtl` text-direction block. */
+  direction: ltr;
+  --me-md-accent: var(--selected);
+  --me-md-heading: var(--selected);
   p {
     margin: 0; /* remove markdown block margin */
   }
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   font-family:
+    system-ui,
     -apple-system,
     BlinkMacSystemFont,
-    Helvetica Neue,
-    PingFang SC,
-    Microsoft YaHei,
-    Source Han Sans SC,
-    Noto Sans CJK SC,
-    WenQuanYi Micro Hei,
     sans-serif;
   user-select: none;
   -webkit-user-select: none; /* for iOS */
@@ -48,52 +52,52 @@
     text-decoration: none;
     margin-left: 0.3em;
   }
-  me-main > me-wrapper > me-parent > me-epd {
+  .me-main > .me-wrapper > .me-parent > .me-epd {
     top: calc(50% - 9px);
   }
-  me-epd {
+  .me-epd {
     top: calc(100% - 9px);
   }
   .lhs {
     direction: rtl;
-    & > me-wrapper > me-parent > me-epd {
+    & > .me-wrapper > .me-parent > .me-epd {
       left: -10px;
     }
-    me-epd {
+    .me-epd {
       left: 5px;
     }
-    me-tpc {
+    .me-tpc {
       direction: ltr;
     }
   }
   .rhs {
-    & > me-wrapper > me-parent > me-epd {
+    & > .me-wrapper > .me-parent > .me-epd {
       right: -10px;
     }
-    me-epd {
+    .me-epd {
       right: 5px;
     }
   }
 
   /* top-down layout */
-  me-nodes.down {
+  .me-nodes.down {
     flex-direction: column;
-    me-main {
+    .me-main {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
       justify-content: center;
     }
     /* swap main gaps: bigger vertical, smaller horizontal */
-    & > me-main > me-wrapper {
+    & > .me-main > .me-wrapper {
       margin: var(--main-gap-x) var(--main-gap-y);
     }
-    me-wrapper {
+    .me-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    me-children {
+    .me-children {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
@@ -102,19 +106,19 @@
       margin-top: var(--node-gap-x);
     }
     /* node box tightly wraps the topic so connectors attach to the node edges */
-    me-parent {
+    .me-parent {
       margin: 0;
       padding: 0 var(--node-gap-y); /* small horizontal padding -> small sibling gap */
     }
     /* org-chart style: give child nodes a visible border */
-    me-children me-parent > me-tpc {
+    .me-children .me-parent > .me-tpc {
       border: 1px solid var(--main-color);
       background-color: var(--main-bgcolor);
       border-radius: 6px;
       padding: 6px 12px;
     }
-    me-epd,
-    & > me-main > me-wrapper > me-parent > me-epd {
+    .me-epd,
+    & > .me-main > .me-wrapper > .me-parent > .me-epd {
       top: calc(100% - 9px);
       left: calc(50% - 9px);
       right: auto;
@@ -143,7 +147,7 @@
     user-select: none;
     width: fit-content; /* 100% width if not set */
     transform: scale(1);
-    me-nodes {
+    .me-nodes {
       position: relative;
       display: flex;
       justify-content: center;
@@ -153,15 +157,15 @@
       padding: var(--map-padding);
     }
   }
-  me-main {
+  .me-main {
     /* primary node / main node */
-    & > me-wrapper {
+    & > .me-wrapper {
       position: relative; /* make subline svg's offsetParent be the main node */
       margin: var(--main-gap-y) var(--main-gap-x);
-      & > me-parent {
+      & > .me-parent {
         margin: 10px;
         padding: 0;
-        & > me-tpc {
+        & > .me-tpc {
           border-radius: var(--main-radius);
           background-color: var(--main-bgcolor);
           border: var(--main-border, 2px solid var(--main-color));
@@ -171,21 +175,21 @@
       }
     }
   }
-  me-wrapper {
+  .me-wrapper {
     display: block;
     width: fit-content;
     /* position: relative; */
   }
-  me-children,
-  me-parent {
+  .me-children,
+  .me-parent {
     display: inline-block;
     vertical-align: middle;
   }
-  me-root {
+  .me-root {
     position: relative;
     margin: 45px 0;
     z-index: 10;
-    me-tpc {
+    .me-tpc {
       font-size: 25px;
       color: var(--root-color);
       padding: 10px 30px;
@@ -194,13 +198,13 @@
       background-color: var(--root-bgcolor);
     }
   }
-  me-parent {
+  .me-parent {
     position: relative; /* for locating expand button */
     cursor: pointer;
     padding: 6px var(--node-gap-x);
     margin-top: var(--node-gap-y);
     z-index: 10;
-    me-tpc {
+    .me-tpc {
       position: relative;
       border-radius: 3px;
       color: var(--color);
@@ -232,7 +236,7 @@
         bottom: -14px;
       }
     }
-    me-epd {
+    .me-epd {
       position: absolute;
       height: 18px;
       width: 18px;
@@ -305,6 +309,7 @@
 
   #input-box {
     position: absolute;
+    white-space: pre-wrap; /* preserve line breaks for innerText in webkit */
     top: 0;
     left: 0;
     width: max-content; /* let words expand the div and keep max length at the same time */
@@ -319,7 +324,7 @@
     z-index: 100;
   }
 
-  me-tpc {
+  .me-tpc {
     display: block;
     max-width: 35em;
     /* allow shift enter to wrap text. */
@@ -374,6 +379,7 @@
   }
 
   .tags {
+    font-size: 12px;
     direction: ltr;
     span {
       display: inline-block;
@@ -381,11 +387,8 @@
       padding: 2px 4px;
       background: #d6f0f8;
       color: #276f86;
-      margin: 0px;
-      font-size: 12px;
+      margin: 4px 4px 0 0;
       line-height: 1.3em;
-      margin-right: 4px;
-      margin-top: 2px;
     }
   }
   .icons {
@@ -417,6 +420,13 @@
     display: none;
     pointer-events: none;
     z-index: 1000;
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
   }
 
   .selection-area {
@@ -433,13 +443,66 @@
     cursor: pointer;
     z-index: 10;
     width: max-content;
-    p {
-      max-width: 200px;
+    max-width: 200px;
+    /* KaTeX formulas are `white-space: nowrap` and can never wrap,
+       so expand the label to contain them instead of letting them
+       overflow the label boundary */
+    &:has(.katex) {
+      max-width: none;
     }
     border-radius: 3px;
     padding: var(--topic-padding);
     &[data-type="arrow"] {
       background-color: var(--main-bgcolor-transparent);
     }
+  }
+
+  /* RTL text mode: `rtl: true` puts the `rtl` class on the container, and this
+     block is the whole override set — every rule above stays as written, so an
+     LTR map is untouched. Text direction only; where the main branches are
+     placed is a separate axis (`direction` / `.lhs` / `.rhs`). */
+  &.rtl {
+    /* every surface that holds user- or locale-supplied text */
+    .me-tpc,
+    #input-box,
+    .svg-label,
+    .mind-elixir-ghost,
+    .context-menu .menu-list li,
+    .tips {
+      direction: rtl;
+    }
+    /* the shortcut hint is a Latin binding: it keeps reading LTR, and it
+       belongs on the leading edge now instead of the trailing one */
+    .context-menu .menu-list li span:last-child {
+      float: left;
+    }
+    .context-menu .key {
+      direction: ltr;
+    }
+    /* the icon/hyperlink blocks sit after the text in logical order, so their
+       gap moves to the right side. What is inside them is a separate question —
+       see the tag row and the icon note below. */
+    .hyper-link {
+      margin-left: 0;
+      margin-right: 0.3em;
+    }
+    .icons {
+      margin-left: 0;
+      margin-right: 5px;
+    }
+    /* A tag is text: both the characters inside it and the order of the row are
+       read, so the row follows the paragraph and starts at the leading (right)
+       edge. The base sheet pins `.tags` to `ltr`, which hangs the row off the
+       trailing edge while the topic sits on the right. */
+    .tags {
+      direction: rtl;
+      /* mirror of the base `margin: 4px 4px 0 0` — the separating gap moves to
+         the chip's other side, so the leftover 4px stays at the row's end */
+      span {
+        margin: 4px 0 0 4px;
+      }
+    }
+    /* `.icons` is the opposite case: a set of symbols carries no reading order,
+       so it keeps the base `direction: ltr` and only its offset flips. */
   }
 }

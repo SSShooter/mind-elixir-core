@@ -68,7 +68,7 @@ let options = {
   overflowHidden: false, // default false
   mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
   contextMenu: {
-    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv]
+    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv,ar]
     focus: true,
     link: true,
     extend: [
@@ -163,9 +163,9 @@ mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
 })
 
-// Listen to node expansion
-mind.bus.addListener('expandNode', node => {
-  console.log('expandNode: ', node)
+// Listen to data operations (including node add, remove, expandNode, collapseNode)
+mind.bus.addListener('operation', operation => {
+  console.log(operation)
 })
 ```
 

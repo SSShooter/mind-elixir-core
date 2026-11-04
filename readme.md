@@ -108,7 +108,6 @@ npx skills add ssshooter/mind-elixir-core
   - [Markdown Support](#markdown-support)
   - [Operation Guards](#operation-guards)
 - [Export as a Image](#export-as-a-image)
-  - [Deprecated API](#deprecated-api)
 - [Theme](#theme)
 - [Shortcuts](#shortcuts)
 - [Who's using](#whos-using)
@@ -192,7 +191,7 @@ let options = {
   overflowHidden: false, // default false
   mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
   contextMenu: {
-    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv]
+    locale: en, // [cn,zh_CN,zh_TW,en,ru,ja,pt,it,es,fr,ko,ro,da,fi,de,nl,nb,sv,ar]
     focus: true,
     link: true,
     extend: [
@@ -276,10 +275,6 @@ mind.bus.addListener('operation', operation => {
 mind.bus.addListener('selectNodes', nodes => {
   console.log(nodes)
 })
-
-mind.bus.addListener('expandNode', node => {
-  console.log('expandNode: ', node)
-})
 ```
 
 ### Data Export And Import
@@ -345,27 +340,23 @@ let mind = new MindElixir({
 
 ## Export as a Image
 
-Install `@zumer/snapdom`, then:
+Install `@mind-elixir/export-mindmap`, then:
 
 ```typescript
-import { snapdom } from '@zumer/snapdom'
+import { downloadImage, exportImage } from '@mind-elixir/export-mindmap'
 
 const download = async () => {
-  const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture' })
+  // Download directly as PNG / JPEG / WEBP
+  await downloadImage(mind, 'png')
+
+  // Or get a URL for preview / custom handling
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false }) // pass options like this
 }
 ```
 
+> Note: Exports include a Mind Elixir watermark by default. Pass `{ watermarkEnabled: false }` in the options to disable it.
+
 For other export formats and advanced options, see the [Mind Elixir documentation](https://ssshooter.com/en/how-to-use-mind-elixir/#exporting-images).
-
-### Deprecated API
-
-> ⚠️ **Deprecated**: The `mind.exportSvg()` method is deprecated and will be removed in a future version.
-
-```typescript
-// DEPRECATED - Do not use in new projects
-const svgData = await mind.exportSvg()
-```
 
 ## Theme
 
@@ -412,7 +403,9 @@ See [Shortcuts Guide](https://docs.mind-elixir.com/docs/guides/shortcuts) for de
 
 ## Who's using
 
-- [Mind Elixir Desktop](https://desktop.mind-elixir.com/)
+Welcome to submit a PR to add your project here!
+
+- [Mind Elixir App](https://app.mind-elixir.com/)
 - [ebook-to-mindmap](https://github.com/SSShooter/ebook-to-mindmap)
 - [M10C-Video-Summary](https://github.com/SSShooter/M10C-Video-Summary)
 
@@ -425,6 +418,8 @@ See [Shortcuts Guide](https://docs.mind-elixir.com/docs/guides/shortcuts) for de
 - [mind-elixir-react](https://github.com/ssshooter/mind-elixir-react)
 - [@erseco/mind-elixir-export-mermaid](https://github.com/erseco/mind-elixir-export-mermaid)
 - [@erseco/mind-elixir-export-svg](https://github.com/erseco/mind-elixir-export-svg)
+- [export-mindmap](https://github.com/mind-elixir/plugins/tree/main/packages/export-mindmap)
+- [mindmapcn](https://github.com/ssshooter/mindmapcn)
 
 PRs are welcome!
 
@@ -435,11 +430,11 @@ pnpm i
 pnpm dev
 ```
 
-Test generated files with `dev.dist.ts`:
+Test generated types and files:
 
 ```
 pnpm build
-pnpm link ./
+pnpm type-test
 ```
 
 Update docs:

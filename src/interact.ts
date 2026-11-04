@@ -1,10 +1,11 @@
+import type MindElixir from './index'
 import { DOWN } from './const'
 import { rmSubline } from './nodeOperation'
 import type { Topic, Wrapper } from './types/dom'
-import type { MindElixirData, MindElixirInstance, NodeObj } from './types/index'
+import type { ExpandNodeOptions, MindElixirData, NodeObj } from './types/index'
 import { fillParent, getTranslate, setExpand } from './utils/index'
 
-function collectData(instance: MindElixirInstance) {
+function collectData(instance: MindElixir) {
   return {
     nodeData: instance.isFocusMode ? instance.nodeDataBackup : instance.nodeData,
     arrows: instance.arrows,
@@ -16,7 +17,7 @@ function collectData(instance: MindElixirInstance) {
   }
 }
 
-export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElement, forceCenter = false) {
+export const scrollIntoView = function (this: MindElixir, el: HTMLElement, forceCenter = false) {
   // scrollIntoView needs to be implemented manually because native scrollIntoView behaves incorrectly after transform
   const container = this.container
   const rect = el.getBoundingClientRect()
@@ -39,9 +40,8 @@ export const scrollIntoView = function (this: MindElixirInstance, el: HTMLElemen
   }
 }
 
-export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
+export const selectNode = function (this: MindElixir, tpc: Topic, isNewNode?: boolean, e?: MouseEvent): void {
   // selectNode clears all selected nodes by default
-  console.trace('selectNode')
   this.clearSelection()
   this.scrollIntoView(tpc)
   this.selection?.select(tpc)
@@ -50,19 +50,17 @@ export const selectNode = function (this: MindElixirInstance, tpc: Topic, isNewN
   }
 }
 
-export const selectNodes = function (this: MindElixirInstance, tpcs: Topic[]): void {
-  console.trace('selectNodes')
+export const selectNodes = function (this: MindElixir, tpcs: Topic[]): void {
   // update currentNodes in selection.ts to keep sync with SelectionArea cache
   this.selection?.select(tpcs)
 }
 
-export const unselectNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
+export const unselectNodes = function (this: MindElixir, tpcs: Topic[]) {
   // no selection if editable === false
   this.selection?.deselect(tpcs)
 }
 
-export const clearSelection = function (this: MindElixirInstance) {
-  console.trace('clearSelection')
+export const clearSelection = function (this: MindElixir) {
   this.unselectNodes(this.currentNodes)
   this.unselectSummary()
   this.unselectArrow()
@@ -83,7 +81,7 @@ export const stringifyData = function (data: object) {
  * @memberof MapInteraction
  * @return {string}
  */
-export const getDataString = function (this: MindElixirInstance) {
+export const getDataString = function (this: MindElixir) {
   const data = collectData(this)
   return stringifyData(data)
 }
@@ -95,7 +93,7 @@ export const getDataString = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  * @return {Object}
  */
-export const getData = function (this: MindElixirInstance) {
+export const getData = function (this: MindElixir) {
   return JSON.parse(this.getDataString()) as MindElixirData
 }
 
@@ -105,7 +103,7 @@ export const getData = function (this: MindElixirInstance) {
  * @name enableEdit
  * @memberof MapInteraction
  */
-export const enableEdit = function (this: MindElixirInstance) {
+export const enableEdit = function (this: MindElixir) {
   this.editable = true
 }
 
@@ -115,7 +113,7 @@ export const enableEdit = function (this: MindElixirInstance) {
  * @name disableEdit
  * @memberof MapInteraction
  */
-export const disableEdit = function (this: MindElixirInstance) {
+export const disableEdit = function (this: MindElixir) {
   this.editable = false
 }
 
@@ -127,7 +125,7 @@ export const disableEdit = function (this: MindElixirInstance) {
  * @memberof MapInteraction
  * @param {number}
  */
-export const scale = function (this: MindElixirInstance, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
+export const scale = function (this: MindElixir, scaleVal: number, offset: { x: number; y: number } = { x: 0, y: 0 }) {
   if ((scaleVal < this.scaleMin && scaleVal < this.scaleVal) || (scaleVal > this.scaleMax && scaleVal > this.scaleVal)) return
   const rect = this.container.getBoundingClientRect()
   // refer to /refs/scale-calc.excalidraw for the process
@@ -156,7 +154,7 @@ export const scale = function (this: MindElixirInstance, scaleVal: number, offse
 /**
  * Better to use with option `alignment: 'nodes'`.
  */
-export const scaleFit = function (this: MindElixirInstance) {
+export const scaleFit = function (this: MindElixir) {
   const heightPercent = this.nodes.offsetHeight / this.container.offsetHeight
   const widthPercent = this.nodes.offsetWidth / this.container.offsetWidth
   const scale = 1 / Math.max(1, Math.max(heightPercent, widthPercent))
@@ -172,7 +170,7 @@ export const scaleFit = function (this: MindElixirInstance) {
  * Returns whether the map actually moved, so callers (e.g. wheel handler)
  * can let the event bubble when the map is stuck at the edge.
  */
-export const move = function (this: MindElixirInstance, dx: number, dy: number, smooth = false): boolean {
+export const move = function (this: MindElixir, dx: number, dy: number, smooth = false): boolean {
   const { map, scaleVal, bus, container, nodes } = this
   if (smooth && map.style.transition === 'transform 0.3s') {
     // Prevent consecutive smooth moves
@@ -220,7 +218,7 @@ export const move = function (this: MindElixirInstance, dx: number, dy: number, 
 /**
  * 获取默认居中的偏移
  */
-const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
+const getCenterDefault = (mei: MindElixir, forceAlignNodes = false) => {
   const { container, map, nodes } = mei
 
   let dx, dy
@@ -231,7 +229,7 @@ const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
     dy = (container.offsetHeight - nodes.offsetHeight) / 2
     map.style.transformOrigin = `50% 50%`
   } else {
-    const root = map.querySelector('me-root') as HTMLElement
+    const root = map.querySelector('.me-root') as HTMLElement
     const pT = root.offsetTop
     const pL = root.offsetLeft
     const pW = root.offsetWidth
@@ -250,7 +248,7 @@ const getCenterDefault = (mei: MindElixirInstance, forceAlignNodes = false) => {
  * @description Reset position of the map to center.
  * @memberof MapInteraction
  */
-export const toCenter = function (this: MindElixirInstance) {
+export const toCenter = function (this: MindElixir) {
   const { map, container } = this
   const { dx, dy } = getCenterDefault(this)
   container.scrollTop = 0
@@ -265,7 +263,7 @@ export const toCenter = function (this: MindElixirInstance) {
  * @description Install plugin.
  * @memberof MapInteraction
  */
-export const install = function (this: MindElixirInstance, plugin: (instance: MindElixirInstance) => void) {
+export const install = function (this: MindElixir, plugin: (instance: MindElixir) => void) {
   plugin(this)
 }
 
@@ -273,11 +271,13 @@ export const install = function (this: MindElixirInstance, plugin: (instance: Mi
  * @function
  * @instance
  * @name focusNode
- * @description Enter focus mode, set the target element as root.
+ * @description Enter focus mode, set the target element as root. Focus mode is a
+ * history boundary: the undo/redo stack is cleared, because the rendered
+ * document changes while `getData()` keeps reporting the whole diagram.
  * @memberof MapInteraction
  * @param {TargetElement} el - Target element return by E('...'), default value: currentTarget.
  */
-export const focusNode = function (this: MindElixirInstance, el: Topic) {
+export const focusNode = function (this: MindElixir, el: Topic) {
   if (!el.nodeObj.parent) return
   this.clearSelection()
   if (this.tempDirection === null) {
@@ -289,22 +289,32 @@ export const focusNode = function (this: MindElixirInstance, el: Topic) {
   }
   this.nodeData = el.nodeObj
   this.initRight()
+  // Focus mode swaps the visible document: the map now renders the focused
+  // subtree while `getData()` keeps reporting the backup tree (see
+  // `collectData`). Entries recorded against the previous view are therefore
+  // not replayable, so drop the stack and re-baseline on the focused document.
+  this.clearHistory?.()
   this.toCenter()
 }
 /**
  * @function
  * @instance
  * @name cancelFocus
- * @description Exit focus mode.
+ * @description Exit focus mode. Restores the pre-focus document and, like
+ * `focusNode`, clears the undo/redo stack.
  * @memberof MapInteraction
  */
-export const cancelFocus = function (this: MindElixirInstance) {
+export const cancelFocus = function (this: MindElixir) {
   this.isFocusMode = false
   if (this.tempDirection !== null) {
     this.nodeData = this.nodeDataBackup
     this.direction = this.tempDirection
     this.tempDirection = null
     this.refresh()
+    // Restoring the full tree is another document swap — same reasoning as
+    // `focusNode`: undo must not travel across the focus boundary. Cleared
+    // AFTER `refresh()` so the re-baseline snapshot is the restored tree.
+    this.clearHistory?.()
     this.toCenter()
   }
 }
@@ -315,7 +325,7 @@ export const cancelFocus = function (this: MindElixirInstance) {
  * @description Child nodes will distribute on the left side of the root node.
  * @memberof MapInteraction
  */
-export const initLeft = function (this: MindElixirInstance) {
+export const initLeft = function (this: MindElixir) {
   this.direction = 0
   this.refresh()
   this.toCenter()
@@ -328,7 +338,7 @@ export const initLeft = function (this: MindElixirInstance) {
  * @description Child nodes will distribute on the right side of the root node.
  * @memberof MapInteraction
  */
-export const initRight = function (this: MindElixirInstance) {
+export const initRight = function (this: MindElixir) {
   this.direction = 1
   this.refresh()
   this.toCenter()
@@ -341,7 +351,7 @@ export const initRight = function (this: MindElixirInstance) {
  * @description Child nodes will distribute on both left and right side of the root node.
  * @memberof MapInteraction
  */
-export const initSide = function (this: MindElixirInstance) {
+export const initSide = function (this: MindElixir) {
   this.direction = 2
   this.refresh()
   this.toCenter()
@@ -355,22 +365,40 @@ export const initSide = function (this: MindElixirInstance) {
  * @description Child nodes will distribute below the root node (top-down layout).
  * @memberof MapInteraction
  */
-export const initDown = function (this: MindElixirInstance) {
+export const initDown = function (this: MindElixir) {
   this.direction = 3
   this.refresh()
   this.toCenter()
   this.bus.fire('changeDirection', this.direction)
 }
 
-export const expandNode = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
+/** Any node in the subtree that is not explicitly collapsed. */
+const hasAnyExpanded = (node: NodeObj): boolean => node.expanded !== false || (node.children ?? []).some(hasAnyExpanded)
+
+/**
+ * Would `setExpand` actually move something? Mirrors its walk (level === 0 forces
+ * every descendant closed) so batch calls that change nothing record no history.
+ */
+const wouldExpandChange = (node: NodeObj, target: boolean, level?: number): boolean => {
+  if ((node.expanded !== false) !== target) return true
+  const children = node.children ?? []
+  if (!children.length) return false
+  if (level !== undefined && level <= 0) return children.some(hasAnyExpanded)
+  const nextLevel = level !== undefined ? level - 1 : undefined
+  return children.some(child => wouldExpandChange(child, target, nextLevel))
+}
+
+export const expandNode = function (this: MindElixir, el: Topic, isExpand?: boolean, options?: ExpandNodeOptions) {
   const node = el.nodeObj
-  if (typeof isExpand === 'boolean') {
-    node.expanded = isExpand
-  } else if (node.expanded !== false) {
-    node.expanded = false
-  } else {
-    node.expanded = true
-  }
+  // No children — nothing to fold (no expander is rendered either), so there is
+  // neither DOM work nor history to record. Guards direct API calls on leaves.
+  if (!node.children?.length) return
+  const wasExpanded = node.expanded !== false
+  const expanded = typeof isExpand === 'boolean' ? isExpand : !wasExpanded
+  // Already in the requested state: skip both the DOM work and the history
+  // entry, so a stray click cannot record a step that changes nothing.
+  if (expanded === wasExpanded) return
+  node.expanded = expanded
 
   // Calculate position before expansion
   const expanderRect = el.getBoundingClientRect()
@@ -382,7 +410,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
   const parent = el.parentNode
   const expander = parent.children[1]!
   expander.expanded = node.expanded
-  expander.className = node.expanded ? 'minus' : ''
+  expander.className = 'me-epd' + (node.expanded ? ' minus' : '')
 
   rmSubline(el)
   if (node.expanded) {
@@ -398,7 +426,7 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
     children.remove()
   }
 
-  this.linkDiv(el.closest('me-main > me-wrapper') as Wrapper)
+  this.linkDiv(el.closest('.me-main > .me-wrapper') as Wrapper)
 
   // Calculate position after expansion and compensate for drift
   const afterRect = el.getBoundingClientRect()
@@ -413,17 +441,28 @@ export const expandNode = function (this: MindElixirInstance, el: Topic, isExpan
 
   this.move(driftX, driftY)
 
-  this.bus.fire('expandNode', node)
+  // `expanded` is part of the node data (`getData()` exports it), so folding is a
+  // tracked operation like any other edit and must be undoable. `silent` is for
+  // internal callers that already record an operation of their own.
+  this.bus.fire('operation', {
+    name: expanded ? 'expandNode' : 'collapseNode',
+    target: node,
+    silent: options?.silent,
+  })
 }
 
-export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isExpand?: boolean) {
+export const expandNodeAll = function (this: MindElixir, el: Topic, isExpand?: boolean, options?: ExpandNodeOptions) {
   const node = el.nodeObj
+  const expanded = isExpand ?? !node.expanded
+  // Every level already sits in the requested state — skip both the re-render
+  // and the history entry.
+  if (!wouldExpandChange(node, expanded)) return
   const beforeRect = el.getBoundingClientRect()
   const beforePosition = {
     x: beforeRect.left,
     y: beforeRect.top,
   }
-  setExpand(node, isExpand ?? !node.expanded)
+  setExpand(node, expanded)
   this.refresh()
   const afterRect = this.findEle(node.id).getBoundingClientRect()
   const afterPosition = {
@@ -434,17 +473,24 @@ export const expandNodeAll = function (this: MindElixirInstance, el: Topic, isEx
   const driftY = beforePosition.y - afterPosition.y
 
   this.move(driftX, driftY)
+
+  this.bus.fire('operation', {
+    name: expanded ? 'expandNode' : 'collapseNode',
+    target: node,
+    recursive: true,
+    silent: options?.silent,
+  })
 }
 
 /**
  * @function
  * @instance
  * @name refresh
- * @description Refresh mind map, you can use it after modified `this.nodeData`. Only `nodeData`, `arrows`, `summaries` and `meta` are applied; `data.theme` is ignored, use `changeTheme` to switch theme explicitly.
+ * @description Refresh the mind map after modifying its data. Only `nodeData`, `arrows`, `summaries`, and `meta` are applied. `direction`, `compact`, and `theme` are intentionally ignored; use the corresponding direction methods, `changeCompact`, or `changeTheme` to update them separately.
  * @memberof MapInteraction
  * @param {TargetElement} data mind elixir data
  */
-export const refresh = function (this: MindElixirInstance, data?: MindElixirData) {
+export const refresh = function (this: MindElixir, data?: MindElixirData) {
   this.clearSelection()
   if (data) {
     data = JSON.parse(JSON.stringify(data)) as MindElixirData // it shouldn't contanimate the original data
@@ -454,6 +500,14 @@ export const refresh = function (this: MindElixirInstance, data?: MindElixirData
     if (data.meta) {
       this.meta = data.meta
     }
+    // A new document replaces whatever focus mode was showing. While focused,
+    // `getData()` reports `nodeDataBackup` (see `collectData`), which would
+    // still be the pre-refresh tree. `initLeft/Right/Side/Down` call
+    // `refresh()` with no data and must keep the focused view intact —
+    // `focusNode` renders through `initRight()` right after entering focus.
+    this.isFocusMode = false
+    this.nodeDataBackup = this.nodeData
+    this.bus.fire('refresh')
   }
   fillParent(this.nodeData)
   // create dom element for every node

@@ -41,5 +41,3 @@ const blob = await domToBlob(element, 'png', options)
 const dataUrl = await domToDataURL(element, 'jpeg', options)
 const objectUrl = await domToObjectURL(element, 'webp', options) // most memory-efficient for downloads
 ```
-
-> **Note**: The built-in `mind.exportSvg()` method is deprecated. Please use the method above for new projects.

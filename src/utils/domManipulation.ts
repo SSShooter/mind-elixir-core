@@ -1,11 +1,12 @@
+import type MindElixir from '../index'
 import { DOWN, LEFT, RIGHT, SIDE } from '../const'
 import { rmSubline } from '../nodeOperation'
-import type { MindElixirInstance, NodeObj } from '../types'
+import type { NodeObj } from '../types'
 import type { Topic, Wrapper } from '../types/dom'
 import { createExpander } from './dom'
 
 // Judge new added node L or R
-export const judgeDirection = function ({ map, direction }: MindElixirInstance, obj: NodeObj) {
+export const judgeDirection = function ({ map, direction }: MindElixir, obj: NodeObj) {
   if (direction === LEFT) {
     return LEFT
   } else if (direction === RIGHT) {
@@ -26,10 +27,10 @@ export const judgeDirection = function ({ map, direction }: MindElixirInstance, 
   }
 }
 
-export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper: Wrapper) {
+export const addChildDom = function (mei: MindElixir, to: Topic, wrapper: Wrapper) {
   const tpc = wrapper.children[0].children[0]
   const top = to.parentElement
-  if (top.tagName === 'ME-PARENT') {
+  if (top.classList.contains('me-parent')) {
     rmSubline(tpc)
     if (top.children[1]) {
       top.nextSibling.appendChild(wrapper)
@@ -39,11 +40,11 @@ export const addChildDom = function (mei: MindElixirInstance, to: Topic, wrapper
       top.insertAdjacentElement('afterend', c)
     }
     mei.linkDiv(wrapper.offsetParent as Wrapper)
-  } else if (top.tagName === 'ME-ROOT') {
+  } else if (top.classList.contains('me-root')) {
     const direction = judgeDirection(mei, tpc.nodeObj)
     if (direction === DOWN) {
-      // `me-nodes` carries the `down` class as well, so the tag name is required here
-      mei.container.querySelector('me-main.down')?.appendChild(wrapper)
+      // `me-nodes` carries the `down` class as well, so qualify with `.me-main`
+      mei.container.querySelector('.me-main.down')?.appendChild(wrapper)
     } else if (direction === LEFT) {
       mei.container.querySelector('.lhs')?.appendChild(wrapper)
     } else {
@@ -58,7 +59,7 @@ export const removeNodeDom = function (tpc: Topic, siblingLength: number) {
   if (siblingLength === 0) {
     // remove epd when children length === 0
     const c = p.parentNode.parentNode
-    if (c.tagName !== 'ME-MAIN') {
+    if (!c.classList.contains('me-main')) {
       // Root
       c.previousSibling.children[1]!.remove() // remove epd
       c.remove() // remove Children div

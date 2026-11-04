@@ -1,10 +1,14 @@
+import type MindElixir from '../index'
 import { DARK_THEME, THEME } from '../const'
-import type { MindElixirInstance } from '../types/index'
 import type { Theme } from '../types/index'
 import { main, sub } from './generateBranch'
 
-export const changeTheme = function (this: MindElixirInstance, theme: Theme, shouldRefresh = true) {
-  this.theme = theme as MindElixirInstance['theme']
+/**
+ * Change the visual theme independently from `refresh`.
+ * `refresh` intentionally does not apply `data.theme`.
+ */
+export const changeTheme = function (this: MindElixir, theme: Theme, shouldRefresh = true) {
+  this.theme = theme as MindElixir['theme']
 
   this.generateMainBranch = this.theme.generateMainBranch || main
   this.generateSubBranch = this.theme.generateSubBranch || sub
@@ -28,7 +32,11 @@ export const changeTheme = function (this: MindElixirInstance, theme: Theme, sho
   shouldRefresh && this.refresh()
 }
 
-export const changeCompact = function (this: MindElixirInstance, compact: boolean) {
+/**
+ * Change compact layout mode independently from `refresh`.
+ * `refresh` intentionally does not apply `data.compact`.
+ */
+export const changeCompact = function (this: MindElixir, compact: boolean) {
   this.compact = compact
   if (this.theme) {
     this.changeTheme(this.theme)

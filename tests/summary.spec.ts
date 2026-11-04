@@ -376,3 +376,32 @@ test('Summary with empty text handling', async ({ page, me }) => {
   // When text is cleared, it should revert to the original 'summary' text
   await expect(summaryText).toHaveText('summary')
 })
+
+test('createSummary - nothing selected is a no-op, not an uncaught error', async ({ page }) => {
+  const count = await page.evaluate(() => {
+    const m = (window as any)['#map']
+    m.clearSelection()
+    m.createSummary()
+    return m.summaries.length
+  })
+  // `currentNodes` is `[]` rather than null when nothing is selected, so the
+  // old `if (!this.currentNodes) return` guard never fired and the range
+  // calculation threw straight out of the click handler.
+  expect(count).toBe(0)
+})
+
+test('createSummary - a root node or a cross-main-topic selection is a no-op', async ({ page }) => {
+  const result = await page.evaluate(() => {
+    const m = (window as any)['#map']
+    // a root node has no parent to anchor the range to
+    m.selectNodes([m.findEle('root')])
+    m.createSummary()
+    const afterRoot = m.summaries.length
+    // two nodes under different main topics: their closest common parent IS the root
+    m.selectNodes([m.findEle('left-child-1'), m.findEle('right-child-1')])
+    m.createSummary()
+    return { afterRoot, afterCrossMainTopic: m.summaries.length }
+  })
+  expect(result).toEqual({ afterRoot: 0, afterCrossMainTopic: 0 })
+})
+

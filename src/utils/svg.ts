@@ -1,7 +1,7 @@
+import type MindElixir from '../index'
 import { setAttributes } from '.'
 import type { Arrow } from '../arrow'
 import type { Summary } from '../summary'
-import type { MindElixirInstance } from '../types'
 import type { ArrowSvg } from '../types/dom'
 import { selectText } from './dom'
 
@@ -173,7 +173,7 @@ export const createArrowGroup = function (
   return g
 }
 
-export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivElement, node: Summary | Arrow) {
+export const editSvgText = function (mei: MindElixir, textEl: HTMLDivElement, node: Summary | Arrow) {
   if (!textEl) return
 
   // textEl is now a div element directly
@@ -228,14 +228,16 @@ export const editSvgText = function (mei: MindElixirInstance, textEl: HTMLDivEle
     calculatePrecisePosition(textEl)
 
     if ('parent' in node) {
+      // a label size change can shift enclosing summaries, re-render all of them
+      mei.renderSummary()
       mei.bus.fire('operation', {
         name: 'finishEditSummary',
-        obj: node,
+        target: node,
       })
     } else {
       mei.bus.fire('operation', {
         name: 'finishEditArrowLabel',
-        obj: node,
+        target: node,
       })
     }
   })

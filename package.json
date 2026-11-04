@@ -1,6 +1,6 @@
 {
   "name": "mind-elixir",
-  "version": "5.15.1",
+  "version": "6.0.0",
   "type": "module",
   "description": "Mind elixir is a free open source mind map core.",
   "keywords": [
@@ -13,8 +13,9 @@
     "lint": "biome check --write --error-on-warnings src",
     "format": "biome format --write src",
     "dev": "vite",
-    "build": "node build.js && tsc",
+    "build": "node scripts/build.js && tsc",
     "tsc": "tsc",
+    "type-test": "tsc -p tsconfig.type-test.json",
     "preview": "vite preview",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
@@ -23,7 +24,7 @@
     "nyc": "nyc report --reporter=html",
     "doc": "api-extractor run --local --verbose",
     "doc:md": "api-documenter markdown --input-folder ./api --output-folder ./md",
-    "gen:members": "node gen-members.js",
+    "gen:members": "node scripts/gen-members.js",
     "beta": "npm run build && npm publish --tag beta"
   },
   "exports": {
@@ -32,20 +33,21 @@
       "import": "./dist/MindElixir.js"
     },
     "./lite": {
-      "import": "./dist/MindElixirLite.iife.js"
+      "import": "./dist/MindElixirLite.js"
     },
     "./example": {
       "types": "./dist/types/exampleData/1.d.ts",
       "import": "./dist/example.js"
     },
-    "./LayoutSsr": {
-      "types": "./dist/types/utils/LayoutSsr.d.ts",
-      "import": "./dist/LayoutSsr.js"
-    },
     "./readme.md": "./readme.md",
     "./package.json": "./package.json",
     "./style": "./dist/MindElixir.css",
     "./style.css": "./dist/MindElixir.css",
+    "./outliner": {
+      "types": "./dist/types/outliner/index.d.ts",
+      "import": "./dist/Outliner.js"
+    },
+    "./outliner/style.css": "./dist/Outliner.css",
     "./plaintextConverter": {
       "types": "./dist/types/utils/plaintextConverter.d.ts",
       "import": "./dist/PlaintextConverter.js"
@@ -79,11 +81,10 @@
     "@commitlint/config-conventional": "^20.0.0",
     "@microsoft/api-documenter": "^7.26.34",
     "@microsoft/api-extractor": "^7.52.13",
-    "@playwright/test": "^1.58.0",
+    "@mind-elixir/export-mindmap": "^0.1.9",
+    "@playwright/test": "^1.62.1",
     "@rollup/plugin-strip": "^3.0.4",
     "@types/node": "^24.5.2",
-    "@viselect/vanilla": "3.9.0",
-    "@zumer/snapdom": "^1.9.11",
     "baseline-browser-mapping": "^2.10.21",
     "browserslist": "^4.28.7",
     "husky": "^9.1.7",
@@ -96,7 +97,7 @@
     "simple-markdown-to-html": "^1.0.0",
     "typescript": "^7.0.2",
     "typescript-5": "npm:typescript@^5.9.3",
-    "vite": "^7.1.7",
-    "vite-plugin-istanbul": "^7.2.0"
+    "vite": "^8.2.0",
+    "vite-plugin-istanbul": "^9.0.1"
   }
 }

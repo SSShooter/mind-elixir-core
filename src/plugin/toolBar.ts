@@ -1,4 +1,4 @@
-import type { MindElixirInstance } from '../types/index'
+import type MindElixir from '../index'
 import { getTranslate } from '../utils/index'
 import side from '../icons/side.svg?raw'
 import left from '../icons/left.svg?raw'
@@ -26,7 +26,7 @@ const createButton = (id: string, name: string) => {
   return button
 }
 
-function createToolBarRBContainer(mind: MindElixirInstance) {
+function createToolBarRBContainer(mind: MindElixir) {
   const toolBarRBContainer = document.createElement('div')
   const fc = createButton('fullscreen', 'full')
   const gc = createButton('toCenter', 'living')
@@ -78,7 +78,15 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
     }
   }
 
-  mind.el.addEventListener('fullscreenchange', handleFullscreenChange)
+  const element = mind.el
+  element.addEventListener('fullscreenchange', handleFullscreenChange)
+  let disposed = false
+  const dispose = () => {
+    if (disposed) return
+    disposed = true
+    element.removeEventListener('fullscreenchange', handleFullscreenChange)
+    fullscreenChangeData = null
+  }
   fc.onclick = () => {
     recordCurrentState()
     if (document.fullscreenElement !== mind.el) {
@@ -103,9 +111,9 @@ function createToolBarRBContainer(mind: MindElixirInstance) {
   zi.onclick = () => {
     mind.scale(mind.scaleVal + mind.scaleSensitivity)
   }
-  return toolBarRBContainer
+  return { element: toolBarRBContainer, dispose }
 }
-function createToolBarLTContainer(mind: MindElixirInstance) {
+function createToolBarLTContainer(mind: MindElixir) {
   const toolBarLTContainer = document.createElement('div')
   const l = createButton('tbltl', 'left')
   const r = createButton('tbltr', 'right')
@@ -127,7 +135,9 @@ function createToolBarLTContainer(mind: MindElixirInstance) {
   return toolBarLTContainer
 }
 
-export default function (mind: MindElixirInstance) {
-  mind.container.append(createToolBarRBContainer(mind))
+export default function (mind: MindElixir) {
+  const toolBarRBContainer = createToolBarRBContainer(mind)
+  mind.container.append(toolBarRBContainer.element)
   mind.container.append(createToolBarLTContainer(mind))
+  return toolBarRBContainer.dispose
 }

@@ -1,8 +1,9 @@
+import type MindElixir from './index'
 import { fillParent, refreshIds, unionTopics } from './utils/index'
 import { createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Children, Topic } from './types/dom'
-import { DirectionClass, type MindElixirInstance, type NodeObj } from './types/index'
+import { DirectionClass, type NodeObj } from './types/index'
 import { insertNodeObj, insertParentNodeObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
 import { addChildDom, removeNodeDom } from './utils/domManipulation'
 import { LEFT, RIGHT, SIDE } from './const'
@@ -18,28 +19,33 @@ export const rmSubline = function (tpc: Topic) {
   if (lc?.tagName === 'svg') lc?.remove() // clear svg group of main node
 }
 
-export const reshapeNode = function (this: MindElixirInstance, tpc: Topic, patchData: Partial<NodeObj>) {
+export const reshapeNode = function (this: MindElixir, tpc: Topic, patchData: Partial<NodeObj>) {
   const nodeObj = tpc.nodeObj
   const origin = deepClone(nodeObj)
   // merge styles
   if (origin.style && patchData.style) {
-    patchData.style = Object.assign(origin.style, patchData.style)
+    // Merge into a NEW object: `origin` is the "before" snapshot handed to the
+    // `operation` event, so mutating it in place would make origin.style and
+    // nodeObj.style the same object and the snapshot would show the new style.
+    patchData.style = Object.assign({}, origin.style, patchData.style)
   }
   const newObj = Object.assign(nodeObj, patchData)
   shapeTpc.call(this, tpc, newObj)
   this.linkDiv()
   this.bus.fire('operation', {
     name: 'reshapeNode',
-    obj: newObj,
+    target: newObj,
     origin,
   })
 }
 
-const addChildFunc = function (mei: MindElixirInstance, tpc: Topic, node?: NodeObj) {
+const addChildFunc = function (mei: MindElixir, tpc: Topic, node?: NodeObj) {
   if (!tpc) return null
   const nodeObj = tpc.nodeObj
   if (nodeObj.expanded === false) {
-    mei.expandNode(tpc, true)
+    // silent: this expand is part of the addChild below — let THAT operation own
+    // the history entry so one undo removes the child and re-folds the parent.
+    mei.expandNode(tpc, true, { silent: true })
     // dom had resetted
     tpc = mei.findEle(nodeObj.id) as Topic
   }
@@ -53,7 +59,7 @@ const addChildFunc = function (mei: MindElixirInstance, tpc: Topic, node?: NodeO
   return { newTop, newNodeObj }
 }
 
-export const insertSibling = function (this: MindElixirInstance, type: 'before' | 'after', el?: Topic, node?: NodeObj) {
+export const insertSibling = function (this: MindElixir, type: 'before' | 'after', el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const nodeObj = nodeEle.nodeObj
@@ -71,7 +77,7 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   }
   const newNodeObj = node || this.generateNewObj()
   if (!nodeObj.parent?.parent) {
-    const direction = nodeEle.closest('me-main')!.className === DirectionClass.LHS ? LEFT : RIGHT
+    const direction = nodeEle.closest('.me-main')!.classList.contains(DirectionClass.LHS) ? LEFT : RIGHT
     newNodeObj.direction = direction
   }
   insertNodeObj(newNodeObj, type, nodeObj)
@@ -91,13 +97,13 @@ export const insertSibling = function (this: MindElixirInstance, type: 'before' 
   console.timeEnd('insertSibling_DOM')
   this.bus.fire('operation', {
     name: 'insertSibling',
-    type,
-    obj: newNodeObj,
+    position: type,
+    target: newNodeObj,
   })
   this.selectNode(top.firstChild, true)
 }
 
-export const insertParent = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
+export const insertParent = function (this: MindElixir, el?: Topic, node?: NodeObj) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   rmSubline(nodeEle)
@@ -107,7 +113,7 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   }
   const newNodeObj = node || this.generateNewObj()
   if (!nodeObj.parent?.parent) {
-    const direction = nodeEle.closest('me-main')!.className === DirectionClass.LHS ? LEFT : RIGHT
+    const direction = nodeEle.closest('.me-main')!.classList.contains(DirectionClass.LHS) ? LEFT : RIGHT
     newNodeObj.direction = direction
   }
   insertParentNodeObj(nodeObj, newNodeObj)
@@ -130,13 +136,13 @@ export const insertParent = function (this: MindElixirInstance, el?: Topic, node
   // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
   this.bus.fire('operation', {
     name: 'insertParent',
-    obj: newNodeObj,
+    target: newNodeObj,
   })
   this.selectNode(top.firstChild, true)
   console.timeEnd('insertParent_DOM')
 }
 
-export const addChild = function (this: MindElixirInstance, el?: Topic, node?: NodeObj) {
+export const addChild = function (this: MindElixir, el?: Topic, node?: NodeObj) {
   console.time('addChild')
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
@@ -146,7 +152,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   // 添加节点关注添加节点前选择的节点，所以先触发事件再选择节点
   this.bus.fire('operation', {
     name: 'addChild',
-    obj: newNodeObj,
+    target: newNodeObj,
   })
   console.timeEnd('addChild')
   if (!node) {
@@ -155,23 +161,7 @@ export const addChild = function (this: MindElixirInstance, el?: Topic, node?: N
   this.selectNode(newTop.firstChild, true)
 }
 
-export const copyNode = function (this: MindElixirInstance, node: Topic, to: Topic) {
-  console.time('copyNode')
-  const deepCloneObj = deepClone(node.nodeObj)
-  refreshIds(deepCloneObj)
-  const res = addChildFunc(this, to, deepCloneObj)
-  if (!res) return
-  const { newNodeObj } = res
-  console.timeEnd('copyNode')
-  // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
-  this.bus.fire('operation', {
-    name: 'copyNode',
-    obj: newNodeObj,
-  })
-  this.selectNode(this.findEle(newNodeObj.id))
-}
-
-export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: Topic) {
+export const copyNodes = function (this: MindElixir, tpcs: Topic[], to: Topic) {
   const objs = []
   for (let i = 0; i < tpcs.length; i++) {
     const node = tpcs[i]
@@ -185,7 +175,7 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
   // 同 addChild，先触发事件再选择节点，undo 时才能恢复操作前的选中状态
   this.bus.fire('operation', {
     name: 'copyNodes',
-    objs,
+    target: objs,
   })
   this.unselectNodes(this.currentNodes)
   this.selectNodes(objs.map(obj => this.findEle(obj.id)))
@@ -193,7 +183,7 @@ export const copyNodes = function (this: MindElixirInstance, tpcs: Topic[], to: 
 
 // Resolve a move up/down into a before/after move against the adjacent
 // sibling. A move at the first/last sibling is a no-op instead of wrapping.
-const getMoveTarget = function (mei: MindElixirInstance, obj: NodeObj, delta: -1 | 1): { to: NodeObj; type: 'before' | 'after' } | undefined {
+const getMoveTarget = function (mei: MindElixir, obj: NodeObj, delta: -1 | 1): { to: NodeObj; type: 'before' | 'after' } | undefined {
   const siblings = obj.parent?.children as NodeObj[] | undefined
   if (siblings === undefined) return undefined
   // In SIDE layout root-level children are rendered into separate .lhs/.rhs
@@ -218,7 +208,7 @@ const getMoveTarget = function (mei: MindElixirInstance, obj: NodeObj, delta: -1
   return undefined
 }
 
-export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
+export const moveUpNode = function (this: MindElixir, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const obj = nodeEle.nodeObj
@@ -228,7 +218,7 @@ export const moveUpNode = function (this: MindElixirInstance, el?: Topic) {
   moveNode([nodeEle], target.type, this.findEle(target.to.id), this)
 }
 
-export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
+export const moveDownNode = function (this: MindElixir, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   const obj = nodeEle.nodeObj
@@ -238,7 +228,7 @@ export const moveDownNode = function (this: MindElixirInstance, el?: Topic) {
   moveNode([nodeEle], target.type, this.findEle(target.to.id), this)
 }
 
-export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
+export const removeNodes = function (this: MindElixir, tpcs: Topic[]) {
   tpcs = unionTopics(tpcs)
   if (tpcs.length === 0) return
   for (const tpc of tpcs) {
@@ -252,18 +242,20 @@ export const removeNodes = function (this: MindElixirInstance, tpcs: Topic[]) {
   // 删除关注的是删除后选择的节点，所以先选择节点，再触发 removeNodes 事件可以在事件中通过 currentNodes 获取之后选择的节点
   this.bus.fire('operation', {
     name: 'removeNodes',
-    objs: tpcs.map(tpc => tpc.nodeObj),
+    target: tpcs.map(tpc => tpc.nodeObj),
   })
 }
 
-const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei: MindElixirInstance) => {
+const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei: MindElixir) => {
   from = unionTopics(from)
 
   let toObj = to.nodeObj
 
   // Handle 'in' type: expand node if collapsed
   if (type === 'in' && toObj.expanded === false) {
-    mei.expandNode(to, true) // rerender
+    // silent: the move below records the operation, so one undo restores both the
+    // old position and the collapsed state of the destination.
+    mei.expandNode(to, true, { silent: true }) // rerender
     to = mei.findEle(toObj.id) as Topic
     toObj = to.nodeObj
   }
@@ -276,8 +268,10 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
 
   for (const f of from) {
     const obj = f.nodeObj
+    // `moveNodeObj` only reads the destination's parent pointer, and a node
+    // that has not been moved yet still has a valid one — so one walk after the
+    // loop is enough instead of one full-tree `fillParent` per moved node.
     moveNodeObj(type, obj, toObj)
-    fillParent(mei.nodeData)
 
     if (type === 'in') {
       // For 'in' type: move as child
@@ -297,11 +291,14 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
     }
   }
 
+  // Re-anchor every parent pointer once, now that the tree has settled
+  fillParent(mei.nodeData)
+
   // When nodes are moved away, the original parent node may become childless
   // In this case, we need to clean up the related DOM structure:
   // remove expander buttons and empty wrapper containers
   for (const item of c) {
-    if (item.childElementCount === 0 && item.tagName !== 'ME-MAIN') {
+    if (item.childElementCount === 0 && !item.classList.contains('me-main')) {
       item.previousSibling.children[1]!.remove()
       item.remove()
     }
@@ -312,34 +309,34 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
   // 在 selectNodes 里 scrollIntoView 也没效果，所以在这里单独 scrollIntoView
   mei.scrollIntoView(from[from.length - 1])
 
-  const eventName = type === 'before' ? 'moveNodeBefore' : type === 'after' ? 'moveNodeAfter' : 'moveNodeIn'
+  const eventName = type === 'before' ? 'moveNodesBefore' : type === 'after' ? 'moveNodesAfter' : 'moveNodesIn'
   mei.bus.fire('operation', {
     name: eventName,
-    objs: from.map(f => f.nodeObj),
-    toObj,
+    target: from.map(f => f.nodeObj),
+    destination: toObj,
   })
 }
 
-export const moveNodeIn = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+export const moveNodesIn = function (this: MindElixir, from: Topic[], to: Topic) {
   moveNode(from, 'in', to, this)
 }
 
-export const moveNodeBefore = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+export const moveNodesBefore = function (this: MindElixir, from: Topic[], to: Topic) {
   moveNode(from, 'before', to, this)
 }
 
-export const moveNodeAfter = function (this: MindElixirInstance, from: Topic[], to: Topic) {
+export const moveNodesAfter = function (this: MindElixir, from: Topic[], to: Topic) {
   moveNode(from, 'after', to, this)
 }
 
-export const beginEdit = function (this: MindElixirInstance, el?: Topic) {
+export const beginEdit = function (this: MindElixir, el?: Topic) {
   const nodeEle = el || this.currentNode
   if (!nodeEle) return
   if (nodeEle.nodeObj.dangerouslySetInnerHTML) return
   this.editTopic(nodeEle)
 }
 
-export const setNodeTopic = function (this: MindElixirInstance, el: Topic, topic: string) {
+export const setNodeTopic = function (this: MindElixir, el: Topic, topic: string) {
   el.text.textContent = topic
   el.nodeObj.topic = topic
   this.linkDiv()

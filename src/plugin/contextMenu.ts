@@ -1,5 +1,5 @@
+import type MindElixir from '../index'
 import type { Topic } from '../types/dom'
-import type { MindElixirInstance } from '../types/index'
 import { encodeHTML, isTopic } from '../utils/index'
 import './contextMenu.css'
 import type { ArrowOptions } from '../arrow'
@@ -17,7 +17,7 @@ export type ContextMenuOption = {
   locale?: LangPack
 }
 
-export default function (mind: MindElixirInstance, option: true | ContextMenuOption) {
+export default function (mind: MindElixir, option: true | ContextMenuOption) {
   const defaultOption = {
     focus: true,
     link: true,
@@ -85,10 +85,9 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
   let isRoot = true
   // Helper function to actually render and position context menu.
   const showMenu = (e: MouseEvent) => {
-    console.log('showContextMenu', e)
     const target = e.target as HTMLElement
     if (isTopic(target)) {
-      if (target.parentElement!.tagName === 'ME-ROOT') {
+      if (target.parentElement!.classList.contains('me-root')) {
         isRoot = true
       } else {
         isRoot = false
@@ -193,10 +192,8 @@ export default function (mind: MindElixirInstance, option: true | ContextMenuOpt
         e.preventDefault()
         tips.remove()
         const target = e.target as Topic
-        if (target.parentElement.tagName === 'ME-PARENT' || target.parentElement.tagName === 'ME-ROOT') {
+        if (target.parentElement.classList.contains('me-parent') || target.parentElement.classList.contains('me-root')) {
           mind.createArrow(from, target, options)
-        } else {
-          console.log('link cancel')
         }
       },
       {

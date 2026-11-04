@@ -1,8 +1,10 @@
+import type MindElixir from '../index'
 import { stringifyData } from '../interact'
 import type { Topic } from '../types/dom'
-import type { KeypressOptions, MindElixirInstance, NodeObj } from '../types/index'
+import type { KeypressOptions, NodeObj } from '../types/index'
 import { DirectionClass } from '../types/index'
 import { setExpand, unionTopics } from '../utils'
+import { directionOf } from '../utils/dom'
 
 const COPY_MAGIC = 'MIND-ELIXIR-WAIT-COPY'
 const WHEEL_ZOOM_LINE_HEIGHT = 40
@@ -32,41 +34,47 @@ export const getWheelZoomScaleDelta = ({ deltaMode, deltaY, scaleSensitivity, vi
   return Math.max(-scaleSensitivity, Math.min(scaleSensitivity, rawScaleDelta))
 }
 
-const applyScaleDelta = (mei: MindElixirInstance, scaleDelta: number, offset?: ZoomOffset) => {
+const applyScaleDelta = (mei: MindElixir, scaleDelta: number, offset?: ZoomOffset) => {
   if (scaleDelta === 0) return
   mei.scale(mei.scaleVal + scaleDelta, offset)
 }
 
-const selectRootSide = (mei: MindElixirInstance, direction: DirectionClass) => {
-  const tpcs = mei.map.querySelectorAll(`.${direction}>me-wrapper>me-parent>me-tpc`)
+// Arrow-key navigation anchors on the last-clicked node; returns null when
+// nothing is selected or the selection cache is gone.
+const currentAnchor = (mei: MindElixir): Topic | null => {
+  const nodes = mei.currentNodes
+  return nodes && nodes.length > 0 ? nodes[nodes.length - 1] : null
+}
+
+const selectRootSide = (mei: MindElixir, direction: DirectionClass) => {
+  const tpcs = mei.map.querySelectorAll(`.${direction}>.me-wrapper>.me-parent>.me-tpc`)
   if (tpcs.length === 0) return
   mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
 }
-const selectRoot = (mei: MindElixirInstance) => {
-  mei.selectNode(mei.map.querySelector('me-root>me-tpc') as Topic)
+const selectRoot = (mei: MindElixir) => {
+  mei.selectNode(mei.map.querySelector('.me-root>.me-tpc') as Topic)
 }
-const selectParent = function (mei: MindElixirInstance, currentNode: Topic) {
+const selectParent = function (mei: MindElixir, currentNode: Topic) {
   const parent = currentNode.parentElement.parentElement.parentElement.previousSibling
   if (parent) {
     const target = parent.firstChild
     mei.selectNode(target)
   }
 }
-const selectFirstChild = function (mei: MindElixirInstance, currentNode: Topic) {
+const selectFirstChild = function (mei: MindElixir, currentNode: Topic) {
   const children = currentNode.parentElement.nextSibling
   if (children && children.firstChild) {
     const target = children.firstChild.firstChild.firstChild
     mei.selectNode(target)
   }
 }
-const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionClass) {
-  const current = mei.currentNode || mei.currentNodes?.[0]
+const handleLeftRight = function (mei: MindElixir, direction: DirectionClass) {
+  const current = currentAnchor(mei)
   if (!current) return
   const nodeObj = current.nodeObj
-  const main = current.offsetParent.offsetParent.parentElement
   if (!nodeObj.parent) {
     selectRootSide(mei, direction)
-  } else if (main.className === direction) {
+  } else if (directionOf(current.closest('.me-main')!) === direction) {
     selectFirstChild(mei, current)
   } else {
     if (!nodeObj.parent?.parent) {
@@ -76,8 +84,32 @@ const handleLeftRight = function (mei: MindElixirInstance, direction: DirectionC
     }
   }
 }
-const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' | 'next') {
-  const current = mei.currentNode
+// At the end of a sibling run the adjacent node lives in the nearest
+// neighbouring branch on the same side: walk up until an ancestor has a
+// sibling in `direction`, then enter that branch at its outermost child —
+// its first child for `next`, its last child for `previous`; the branch node
+// itself when it has no rendered children. Returns null when no branch exists.
+const boundaryBranch = (wrapper: Element, direction: 'previous' | 'next'): Topic | null => {
+  const s = direction === 'next' ? 'nextElementSibling' : 'previousElementSibling'
+  const pos = direction === 'next' ? 'firstElementChild' : 'lastElementChild'
+  let node: Element | null = wrapper
+  while (node) {
+    const branch = node[s]
+    if (branch) {
+      const chldr = branch.children[1] // .me-children, absent when collapsed or childless
+      const edge = chldr ? (chldr[pos] as HTMLElement | null) : null
+      const entry = edge || branch // child wrappers and the branch share one shape: wrapper > me-parent > me-tpc
+      return (entry.firstElementChild?.firstElementChild as Topic) || null
+    }
+    // step up: wrapper -> its .me-children/.me-main container -> ancestor wrapper
+    const container: Element | null = node.parentElement
+    if (!container || container.classList.contains('me-main')) return null
+    node = container.parentElement
+  }
+  return null
+}
+const handlePrevNext = function (mei: MindElixir, direction: 'previous' | 'next') {
+  const current = currentAnchor(mei)
   if (!current) return
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) return
@@ -86,12 +118,21 @@ const handlePrevNext = function (mei: MindElixirInstance, direction: 'previous' 
   if (sibling) {
     mei.selectNode(sibling.firstChild.firstChild)
   } else {
-    // handle multiple nodes including last node
-    mei.selectNode(current)
+    const cousin = boundaryBranch(current.parentElement.parentElement, direction)
+    if (cousin) {
+      mei.selectNode(cousin)
+      return
+    }
+    // Nowhere to go: keep the anchor. Only re-select when a multi-selection
+    // has to collapse — a lone node re-selecting itself would fire a pointless
+    // unselect/select event pair on every boundary keypress.
+    if (mei.currentNodes && mei.currentNodes.length !== 1) {
+      mei.selectNode(current)
+    }
   }
 }
 // top-down layout: Up selects parent, Down selects first child
-const selectDownParent = function (mei: MindElixirInstance, current: Topic) {
+const selectDownParent = function (mei: MindElixir, current: Topic) {
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) return
   if (!nodeObj.parent.parent) {
@@ -100,22 +141,22 @@ const selectDownParent = function (mei: MindElixirInstance, current: Topic) {
     selectParent(mei, current)
   }
 }
-const selectDownChild = function (mei: MindElixirInstance, current: Topic) {
+const selectDownChild = function (mei: MindElixir, current: Topic) {
   const nodeObj = current.nodeObj
   if (!nodeObj.parent) {
-    const tpcs = mei.map.querySelectorAll('.down>me-wrapper>me-parent>me-tpc')
+    const tpcs = mei.map.querySelectorAll('.down>.me-wrapper>.me-parent>.me-tpc')
     if (tpcs.length === 0) return
     mei.selectNode(tpcs[Math.ceil(tpcs.length / 2) - 1] as Topic)
   } else {
     selectFirstChild(mei, current)
   }
 }
-export const handleKeypressZoom = function (mei: MindElixirInstance, direction: 'in' | 'out', offset?: ZoomOffset) {
+export const handleKeypressZoom = function (mei: MindElixir, direction: 'in' | 'out', offset?: ZoomOffset) {
   const scaleDelta = direction === 'in' ? mei.scaleSensitivity : -mei.scaleSensitivity
   applyScaleDelta(mei, scaleDelta, offset)
 }
 
-export const handleWheelZoom = (mei: MindElixirInstance, e: WheelEvent) => {
+export const handleWheelZoom = (mei: MindElixir, e: WheelEvent) => {
   const scaleDelta = getWheelZoomScaleDelta({
     deltaMode: e.deltaMode,
     deltaY: e.deltaY,
@@ -126,7 +167,7 @@ export const handleWheelZoom = (mei: MindElixirInstance, e: WheelEvent) => {
   applyScaleDelta(mei, scaleDelta, { x: e.clientX, y: e.clientY })
 }
 
-export default function (mind: MindElixirInstance, options: boolean | KeypressOptions) {
+export default function (mind: MindElixir, options: boolean | KeypressOptions) {
   options = options === true ? {} : options
   const handleRemove = () => {
     if (mind.currentArrow) mind.removeArrow()
@@ -156,19 +197,27 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       return
     }
     let handled = true
+    // Doubles as "did a fold happen": null means this key is not ours, so no
+    // operation may be recorded.
+    let expanded: boolean | null = null
+    let level: number | undefined
     if (e.key === '0') {
       // Ctrl+K+Ctrl+0: Collapse all nodes
+      expanded = false
       for (const node of nodeData.children) {
         setExpand(node, false)
       }
     } else if (e.key === '=') {
       // Ctrl+K+Ctrl+1: Expand all nodes
+      expanded = true
       for (const node of nodeData.children) {
         setExpand(node, true)
       }
     } else if (['1', '2', '3', '4', '5', '6', '7', '8', '9'].includes(e.key)) {
+      expanded = true
+      level = Number(e.key) - 1
       for (const node of nodeData.children) {
-        setExpand(node, true, Number(e.key) - 1)
+        setExpand(node, true, level)
       }
     } else {
       handled = false
@@ -176,6 +225,16 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
     if (handled) {
       mind.refresh()
       mind.toCenter()
+      // ONE history entry for the whole batch — `expanded` is part of the node
+      // data, so a whole-map fold must be undoable like any other edit.
+      if (expanded !== null) {
+        mind.bus.fire('operation', {
+          name: expanded ? 'expandNode' : 'collapseNode',
+          target: nodeData,
+          recursive: true,
+          level,
+        })
+      }
     }
     cleanupCtrlK()
   }
@@ -211,7 +270,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       } else if (e.metaKey || e.ctrlKey) {
         return mind.initSide()
       } else if (mind.direction === 3) {
-        const current = mind.currentNode || mind.currentNodes?.[0]
+        const current = currentAnchor(mind)
         if (current) selectDownParent(mind, current)
       } else {
         handlePrevNext(mind, 'previous')
@@ -221,7 +280,7 @@ export default function (mind: MindElixirInstance, options: boolean | KeypressOp
       if (e.altKey) {
         mind.moveDownNode()
       } else if (mind.direction === 3) {
-        const current = mind.currentNode || mind.currentNodes?.[0]
+        const current = currentAnchor(mind)
         if (current) selectDownChild(mind, current)
       } else {
         handlePrevNext(mind, 'next')

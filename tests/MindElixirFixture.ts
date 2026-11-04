@@ -1,23 +1,25 @@
 import { type Page, type Locator, expect } from '@playwright/test'
-import type { MindElixirCtor, MindElixirData, MindElixirInstance, Options } from '../src'
+import type { MindElixirData, Options } from '../src'
 import type MindElixir from '../src'
 interface Window {
-  m: MindElixirInstance
-  MindElixir: MindElixirCtor
+  m: MindElixir
+  MindElixir: typeof MindElixir
+  Outliner: any
   E: typeof MindElixir.E
+  renderMarkdown: (text: string) => string
   [key: string]: any
 }
 declare let window: Window
 
 export class MindElixirFixture {
-  // private m: MindElixirInstance
+  // private m: MindElixir
 
   constructor(public readonly page: Page) {
     //
   }
 
   async goto() {
-    await this.page.goto('http://localhost:23334/test.html')
+    await this.page.goto('http://localhost:23334/tests/test.html')
   }
   async init(data: MindElixirData, el = '#map') {
     const dataStr = JSON.stringify(data)
@@ -39,8 +41,35 @@ export class MindElixirFixture {
     )
   }
   async getInstance(el = '#map') {
-    const instanceHandle = await this.page.evaluateHandle(el => Promise.resolve(window[el] as MindElixirInstance), el)
+    const instanceHandle = await this.page.evaluateHandle(el => Promise.resolve(window[el] as MindElixir), el)
     return instanceHandle
+  }
+  /** Create a map bound to an outliner — ONE data, TWO views. */
+  async initBoundOutliner(data: MindElixirData, el = '#map', outlineEl = '#outline', markdown = false) {
+    const dataStr = JSON.stringify(data)
+    await this.page.evaluate(
+      async ({ dataStr, el, outlineEl, markdown }) => {
+        const MindElixir = window.MindElixir
+        const mind = new MindElixir({
+          el,
+          direction: MindElixir.SIDE,
+          allowUndo: true,
+          keypress: true,
+          editable: true,
+          ...(markdown ? { markdown: window.renderMarkdown } : {}),
+        })
+        // historyStack is created during init — await it before binding
+        await mind.init(JSON.parse(dataStr))
+        window[el] = mind
+        window.outliner = new window.Outliner({
+          el: outlineEl,
+          mei: mind,
+          fileName: 'outline',
+          ...(markdown ? { markdown: window.renderMarkdown } : {}),
+        })
+      },
+      { dataStr, el, outlineEl, markdown }
+    )
   }
   async getData(el = '#map') {
     const data = await this.page.evaluate(el => {
@@ -105,7 +134,7 @@ export class MindElixirFixture {
     await this.page.mouse.up()
   }
   async toHaveScreenshot(locator?: Locator) {
-    await expect(locator || this.page.locator('me-nodes')).toHaveScreenshot({
+    await expect(locator || this.page.locator('.me-nodes')).toHaveScreenshot({
       maxDiffPixelRatio: 0.02,
     })
   }

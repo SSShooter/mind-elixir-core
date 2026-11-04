@@ -1,8 +1,8 @@
 // Codegen: regenerate the `MindElixir` class's option + prototype-method field
 // declarations (the `// #region GENERATED` block in src/index.ts) with fully
 // expanded signatures. This keeps the published .d.ts and the API docs showing
-// real types (e.g. `(this: MindElixirInstance, tpcs: Topic[], to: Topic) =>
-// Promise<void>`) instead of the DRY indexed-access aliases the class would
+// real types (e.g. `(tpcs: Topic<M>[], to: Topic<M>) => Promise<void>`)
+// instead of the DRY indexed-access aliases the class would
 // otherwise carry (`MindElixirMethods['copyNodes']`, `ResolvedOptions['...']`).
 //
 // Source of truth: the TypeScript checker, run directly over `src` via the
@@ -27,7 +27,8 @@ import { dirname, join } from 'node:path'
 import ts from 'typescript-5'
 
 const here = dirname(fileURLToPath(import.meta.url))
-const indexPath = join(here, 'src', 'index.ts')
+const rootDir = join(here, '..')
+const indexPath = join(rootDir, 'src', 'index.ts')
 
 // Options refined by hand on the class (excluded from the generated block).
 const OMITTED_OPTIONS = new Set(['el', 'theme', 'markdown', 'imageProxy'])
@@ -39,17 +40,27 @@ const END = '  // #endregion GENERATED'
 const stripImports = s => s.replace(/import\((?:"[^"]*"|'[^']*')\)\./g, '')
 const inlineAliases = s => s.replace(/\bPathString\b/g, 'string')
 const oneLine = s => s.replace(/\s+/g, ' ').trim()
-const clean = s => oneLine(inlineAliases(stripImports(s)))
+const clean = s => {
+  const text = oneLine(inlineAliases(stripImports(s)))
+  return text
+    .replace(/\b(MindElixir|MindElixirData|NodeObj|NodeObjExport|Topic|Arrow|Theme)<any>/g, '$1<M>')
+    .replace(/\b(MindElixir|MindElixirData|NodeObj|NodeObjExport|Topic|Arrow|Theme)\b(?!<)/g, '$1<M>')
+}
+
+// A generated method is declared as a member of the class, so its explicit
+// `this` parameter is redundant. Keep `this` in Options/Theme callbacks: those
+// are user-provided functions whose callback context is part of the API.
+const cleanMethod = s => clean(s).replace(/^\(this:\s*(?:Partial<)?MindElixir<M>>?(?:,\s*)?/, '(')
 
 // --- type checker over src -------------------------------------------------
-const configFile = ts.readConfigFile(join(here, 'tsconfig.json'), ts.sys.readFile)
+const configFile = ts.readConfigFile(join(rootDir, 'tsconfig.json'), ts.sys.readFile)
 if (configFile.error) throw new Error(ts.flattenDiagnosticMessageText(configFile.error.messageText, '\n'))
-const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, here)
+const parsed = ts.parseJsonConfigFileContent(configFile.config, ts.sys, rootDir)
 const program = ts.createProgram(parsed.fileNames, { ...parsed.options, noEmit: true, emitDeclarationOnly: false })
 const checker = program.getTypeChecker()
 
 const getSource = rel => {
-  const abs = join(here, 'src', rel).replace(/\\/g, '/')
+  const abs = join(rootDir, 'src', rel).replace(/\\/g, '/')
   const sf = program.getSourceFiles().find(f => f.fileName.replace(/\\/g, '/').toLowerCase() === abs.toLowerCase())
   if (!sf) throw new Error(`source file not found in program: src/${rel}`)
   return sf
@@ -75,7 +86,7 @@ if (!methodsDecl) throw new Error('`const methods` not found in src/methods.ts')
 const methodsType = checker.getTypeAtLocation(methodsDecl.name)
 const methods = checker.getPropertiesOfType(methodsType).map(prop => ({
   name: prop.getName(),
-  type: typeText(checker.getTypeOfSymbolAtLocation(prop, methodsDecl)),
+  type: cleanMethod(typeText(checker.getTypeOfSymbolAtLocation(prop, methodsDecl))),
 }))
 if (!methods.length) throw new Error('no methods resolved from src/methods.ts')
 

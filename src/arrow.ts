@@ -1,8 +1,9 @@
+import type MindElixir from './index'
 import { deepClone, generateUUID, getArrowPoints, getObjById, getOffsetLT, setAttributes } from './utils/index'
 import LinkPanHelper from './utils/LinkPanHelper'
 import { calculatePrecisePosition, createArrowGroup, createLabel, editSvgText, svgNS } from './utils/svg'
 import type { ArrowSvg, Topic } from './types/dom'
-import { type MindElixirInstance, type Uid } from './index'
+import type { Uid } from './index'
 
 const highlightColor = '#4dc4ff'
 
@@ -221,7 +222,7 @@ function updateArrowPath(
 /**
  * calc control point, center point and div size
  */
-function calcCtrlP(mei: MindElixirInstance, tpc: Topic, delta: { x: number; y: number }) {
+function calcCtrlP(mei: MindElixir, tpc: Topic, delta: { x: number; y: number }) {
   const { offsetLeft: x, offsetTop: y } = getOffsetLT(mei.nodes, tpc)
   const w = tpc.offsetWidth
   const h = tpc.offsetHeight
@@ -279,7 +280,7 @@ function calcP(data: DivData) {
 /**
  * Calculate default delta values based on node positions and directions
  */
-const calculateDefaultDeltas = function (mei: MindElixirInstance, from: Topic, to: Topic) {
+const calculateDefaultDeltas = function (mei: MindElixir, from: Topic, to: Topic) {
   // Calculate center positions of both nodes
   const fromOffset = getOffsetLT(mei.nodes, from)
   const toOffset = getOffsetLT(mei.nodes, to)
@@ -308,8 +309,8 @@ const calculateDefaultDeltas = function (mei: MindElixirInstance, from: Topic, t
   const isCloseDistance = distance < 150
   if (isCloseDistance) {
     // root topic has no me-main ancestor; bulge away from the target's side instead
-    const fromMain = from.closest('me-main')
-    const xMul = fromMain ? (fromMain.className === 'lhs' ? -1 : 1) : dx > 0 ? -1 : 1
+    const fromMain = from.closest('.me-main')
+    const xMul = fromMain ? (fromMain.classList.contains('lhs') ? -1 : 1) : dx > 0 ? -1 : 1
     delta1 = { x: 200 * xMul, y: 0 }
     delta2 = { x: 200 * xMul, y: 0 }
   } else if (absDx > absDy * 1.5) {
@@ -361,7 +362,7 @@ const calculateDefaultDeltas = function (mei: MindElixirInstance, from: Topic, t
  * p3: control point of end point
  * p4: end point
  */
-const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj: Arrow, isInitPaint?: boolean) {
+const drawArrow = function (mei: MindElixir, from: Topic, to: Topic, obj: Arrow, isInitPaint?: boolean) {
   if (!from || !to) {
     return // not expand
   }
@@ -418,7 +419,7 @@ const drawArrow = function (mei: MindElixirInstance, from: Topic, to: Topic, obj
   }
 }
 
-export const createArrow = function (this: MindElixirInstance, from: Topic, to: Topic, options: ArrowOptions = {}) {
+export const createArrow = function (this: MindElixir, from: Topic, to: Topic, options: ArrowOptions = {}) {
   // Create arrow object without delta values - they will be calculated in drawArrow
   const arrowObj = {
     id: generateUUID(),
@@ -431,22 +432,22 @@ export const createArrow = function (this: MindElixirInstance, from: Topic, to: 
 
   this.bus.fire('operation', {
     name: 'createArrow',
-    obj: arrowObj,
+    target: arrowObj,
   })
 }
 
-export const createArrowFrom = function (this: MindElixirInstance, arrow: Omit<Arrow, 'id'>) {
+export const createArrowFrom = function (this: MindElixir, arrow: Omit<Arrow, 'id'>) {
   hideLinkController(this)
   const arrowObj = { ...arrow, id: generateUUID() }
   drawArrow(this, this.findEle(arrowObj.from), this.findEle(arrowObj.to), arrowObj)
 
   this.bus.fire('operation', {
     name: 'createArrow',
-    obj: arrowObj,
+    target: arrowObj,
   })
 }
 
-export const removeArrow = function (this: MindElixirInstance, linkSvg?: ArrowSvg) {
+export const removeArrow = function (this: MindElixir, linkSvg?: ArrowSvg) {
   let link
   if (linkSvg) {
     link = linkSvg
@@ -455,20 +456,18 @@ export const removeArrow = function (this: MindElixirInstance, linkSvg?: ArrowSv
   }
   if (!link) return
   hideLinkController(this)
-  const id = link.arrowObj!.id
-  this.arrows = this.arrows.filter(arrow => arrow.id !== id)
+  const target = deepClone(link.arrowObj!)
+  this.arrows = this.arrows.filter(arrow => arrow.id !== target.id)
 
   link.labelEl?.remove()
   link.remove()
   this.bus.fire('operation', {
     name: 'removeArrow',
-    obj: {
-      id,
-    },
+    target,
   })
 }
 
-export const selectArrow = function (this: MindElixirInstance, link: ArrowSvg) {
+export const selectArrow = function (this: MindElixir, link: ArrowSvg) {
   this.currentArrow = link
   const obj = link.arrowObj
 
@@ -486,7 +485,7 @@ export const selectArrow = function (this: MindElixirInstance, link: ArrowSvg) {
   this.bus.fire('selectArrow', obj)
 }
 
-export const unselectArrow = function (this: MindElixirInstance) {
+export const unselectArrow = function (this: MindElixir) {
   hideLinkController(this)
   this.currentArrow = null
   this.bus.fire('unselectArrow')
@@ -550,7 +549,7 @@ const updateArrowHighlight = function (arrow: ArrowSvg) {
   }
 }
 
-const hideLinkController = function (mei: MindElixirInstance) {
+const hideLinkController = function (mei: MindElixir) {
   mei.helper1?.destroy!()
   mei.helper2?.destroy!()
   mei.linkController.style.display = 'none'
@@ -561,7 +560,7 @@ const hideLinkController = function (mei: MindElixirInstance) {
   }
 }
 
-const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, fromData: DivData, toData: DivData) {
+const showLinkController = function (mei: MindElixir, linkItem: Arrow, fromData: DivData, toData: DivData) {
   const { linkController, P2, P3, line1, line2, nodes, map, currentArrow, bus } = mei
   if (!currentArrow) return
   linkController.style.display = 'initial'
@@ -592,7 +591,7 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   const handleDragEnd = () => {
     bus.fire('operation', {
       name: 'reshapeArrow',
-      obj: linkItem,
+      target: linkItem,
       origin: dragOrigin,
     })
     dragOrigin = deepClone(linkItem)
@@ -649,7 +648,7 @@ const showLinkController = function (mei: MindElixirInstance, linkItem: Arrow, f
   )
 }
 
-export function renderArrow(this: MindElixirInstance) {
+export function renderArrow(this: MindElixir) {
   this.arrowSvg.innerHTML = ''
 
   // Clear all arrow labels before re-rendering
@@ -667,20 +666,20 @@ export function renderArrow(this: MindElixirInstance) {
   this.nodes.appendChild(this.arrowSvg)
 }
 
-export function editArrowLabel(this: MindElixirInstance, el: ArrowSvg) {
+export function editArrowLabel(this: MindElixir, el: ArrowSvg) {
   hideLinkController(this)
   if (!el) return
   if (!el.labelEl) return
   editSvgText(this, el.labelEl, el.arrowObj)
 }
 
-export function tidyArrow(this: MindElixirInstance) {
+export function tidyArrow(this: MindElixir) {
   this.arrows = this.arrows.filter(arrow => {
     return getObjById(arrow.from, this.nodeData) && getObjById(arrow.to, this.nodeData)
   })
 }
 
-export const reshapeArrow = function (this: MindElixirInstance, arrow: Arrow, patchData: Partial<Arrow>) {
+export const reshapeArrow = function (this: MindElixir, arrow: Arrow, patchData: Partial<Arrow>) {
   const origin = deepClone(arrow)
   // merge styles
   if (origin.style && patchData.style) {
@@ -726,7 +725,7 @@ export const reshapeArrow = function (this: MindElixirInstance, arrow: Arrow, pa
 
   this.bus.fire('operation', {
     name: 'reshapeArrow',
-    obj: arrow,
+    target: arrow,
     origin,
   })
 }

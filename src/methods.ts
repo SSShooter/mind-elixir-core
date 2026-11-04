@@ -1,6 +1,8 @@
-import type { MindElixirInstance, MindElixirData } from './index'
+import type MindElixir from './index'
+import type { MindElixirData } from './index'
 import linkDiv from './linkDiv'
 import contextMenu from './plugin/contextMenu'
+import diffRefresh from './plugin/diffRefresh'
 import keypressInit from './plugin/keypress'
 import nodeDraggable from './plugin/nodeDraggable'
 import operationHistory from './plugin/operationHistory'
@@ -14,8 +16,6 @@ import * as interact from './interact'
 import * as nodeOperation from './nodeOperation'
 import * as arrow from './arrow'
 import * as summary from './summary'
-import * as exportImage from './plugin/exportImage'
-import type { MainLineParams, SubLineParams } from './utils/generateBranch'
 
 export type OperationMap = typeof nodeOperation
 export type Operations = keyof OperationMap
@@ -23,11 +23,8 @@ type NodeOperation = {
   [K in Operations]: ReturnType<typeof beforeHook<K>>
 }
 
-function beforeHook<T extends Operations>(
-  fn: OperationMap[T],
-  fnName: T
-): (this: MindElixirInstance, ...args: Parameters<OperationMap[T]>) => Promise<void> {
-  return async function (this: MindElixirInstance, ...args: Parameters<OperationMap[T]>) {
+function beforeHook<T extends Operations>(fn: OperationMap[T], fnName: T): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<void> {
+  return async function (this: MindElixir, ...args: Parameters<OperationMap[T]>) {
     const hook = this.before[fnName]
     if (hook) {
       const res = await hook.apply(this, args)
@@ -70,8 +67,9 @@ const methods = {
   ...(nodeOperationHooked as NodeOperation),
   ...arrow,
   ...summary,
-  ...exportImage,
-  init(this: MindElixirInstance, data: MindElixirData) {
+  async init(this: MindElixir, data: MindElixirData) {
+    if (this.pluginsInitialized) return
+
     data = JSON.parse(JSON.stringify(data))
     if (!data || !data.nodeData) return new Error('MindElixir: `data` is required')
     if (data.direction !== undefined) {
@@ -89,8 +87,20 @@ const methods = {
     this.arrows = data.arrows || []
     this.summaries = data.summaries || []
     this.tidyArrow()
-    // plugins
-    this.toolBar && toolBar(this)
+    this.container.style.opacity = '0'
+    this.layout()
+    await document.fonts.ready
+    // `destroy()` may have run while we were waiting (StrictMode double-invoke,
+    // fast mount/unmount). It nulls `container` and the DOM infrastructure, so
+    // bail out instead of throwing an unhandled rejection.
+    if (!this.container) return
+    this.linkDiv()
+    this.toCenter()
+    this.container.style.opacity = ''
+
+    if (this.toolBar) {
+      this.disposable.push(toolBar(this))
+    }
     if (import.meta.env.MODE !== 'lite') {
       this.keypress && keypressInit(this, this.keypress)
 
@@ -99,14 +109,24 @@ const methods = {
       if (this.contextMenu) {
         this.disposable.push(contextMenu(this, this.contextMenu))
       }
+      // Must come before `operationHistory`: `restore()` uses `mei.diffRefresh`
+      // when it is available, and reads it at call time.
+      diffRefresh(this)
       this.allowUndo && this.disposable.push(operationHistory(this))
     }
-    this.layout()
-    this.linkDiv()
-    this.toCenter()
+    this.pluginsInitialized = true
   },
-  destroy(this: Partial<MindElixirInstance>) {
-    this.disposable!.forEach(fn => fn())
+  destroy(this: Partial<MindElixir>) {
+    // A destroyed instance is not reusable: its DOM infrastructure is cleared
+    // below, so a later init() must not attempt to initialize it again.
+    this.pluginsInitialized = true
+    const disposables = this.disposable || []
+    this.disposable = []
+    disposables.forEach(fn => fn())
+    // The link controllers keep pointer listeners on the map; they are only
+    // torn down by `hideLinkController`, which never runs on this path.
+    this.helper1?.destroy?.()
+    this.helper2?.destroy?.()
     if (this.el) this.el.innerHTML = ''
     this.el = undefined
     this.nodeData = undefined
@@ -128,6 +148,18 @@ const methods = {
     this.line1 = undefined
     this.line2 = undefined
     this.nodes = undefined
+    this.root = undefined
+    this.summarySvg = undefined
+    this.labelContainer = undefined
+    // Everything below holds onto the diagram itself or the whole instance, so
+    // leaving any of them behind keeps detached DOM and full data trees alive.
+    this.dragged = null
+    this.nodeDataBackup = undefined
+    this.meta = undefined
+    this.panHelper = undefined
+    this.helper1 = undefined
+    this.helper2 = undefined
+    this.historyStack = undefined
     this.selection?.destroy()
     this.selection = undefined
   },
@@ -135,7 +167,7 @@ const methods = {
    * @public
    * @param {boolean} enable
    */
-  enableMobileMultiSelect(this: MindElixirInstance, enable: boolean) {
+  enableMobileMultiSelect(this: MindElixir, enable: boolean) {
     this.mobileMultiSelect = enable
   },
 }

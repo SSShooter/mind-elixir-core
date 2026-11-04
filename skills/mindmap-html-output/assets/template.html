@@ -28,13 +28,13 @@
 
 <div class="toolbar">
   <button id="btn-png">导出 PNG</button>
-  <button id="btn-svg" class="secondary">导出 SVG</button>
   <button id="btn-json" class="secondary">保存数据</button>
   <button id="btn-html" class="secondary">导出 HTML</button>
 </div>
 
 <script type="module">
 import MindElixir from 'https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.js'
+import { downloadUrl, exportImage } from 'https://cdn.jsdelivr.net/npm/@mind-elixir/export-mindmap@0.1/+esm'
 
 // ============================================================
 //  编辑这里：把 __MINDMAP_DATA__ 换成你的 MindElixirData JSON
@@ -66,13 +66,8 @@ function download(blob, filename) {
 }
 
 document.getElementById('btn-png').onclick = async () => {
-  const blob = await mind.exportPng() // 内置方法，无需额外依赖
-  if (blob) download(blob, 'mindmap.png')
-}
-
-document.getElementById('btn-svg').onclick = () => {
-  const blob = mind.exportSvg()
-  download(blob, 'mindmap.svg')
+  const url = await exportImage(mind, 'png', { watermarkEnabled: false })
+  await downloadUrl(url, 'mindmap.png')
 }
 
 document.getElementById('btn-json').onclick = () => {

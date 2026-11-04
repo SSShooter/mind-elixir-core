@@ -1,6 +1,6 @@
-import type { MindElixirInstance } from '../types/index'
+import type MindElixir from '../index'
 
-export function createPanHelper(mei: MindElixirInstance) {
+export function createPanHelper(mei: MindElixir) {
   return {
     x: 0,
     y: 0,

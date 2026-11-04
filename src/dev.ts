@@ -3,25 +3,24 @@ import example from './exampleData/1'
 import example2 from './exampleData/2'
 import example3 from './exampleData/3'
 import org from './exampleData/org'
-import type { Options, MindElixirInstance, NodeObj } from './types/index'
+import largeMap from './exampleData/largeMap'
+import type { Options, NodeObj } from './types/index'
 import type { Operation } from './utils/pubsub'
 import 'katex/dist/katex.min.css'
-import katex from 'katex'
-import { layoutSSR, renderSSRHTML } from './utils/layout-ssr'
-import { snapdom } from '@zumer/snapdom'
-import type { Tokens } from 'marked'
-import { marked } from 'marked'
+import { downloadUrl, exportImage } from '@mind-elixir/export-mindmap'
 import { md2html } from 'simple-markdown-to-html'
+import { renderMarkdown } from './dev.markdown'
 import type { Arrow } from './arrow'
 import type { Summary } from './summary'
 import { mindElixirToPlaintext, plaintextExample, plaintextToMindElixir } from './utils/plaintextConverter'
 import { en } from './i18n'
 import { markmapMain, markmapSub, straightMain, straightSub, straightUnderlineMain, straightUnderlineSub } from './branchTests'
-import '../dev.css'
+import './dev.css'
+import './dev.highlight.css'
 
 interface Window {
-  m?: MindElixirInstance
-  m2?: MindElixirInstance
+  m?: MindElixir
+  m2?: MindElixir
   M: typeof MindElixir
   E: typeof MindElixir.E
   downloadPng: () => void
@@ -39,48 +38,8 @@ const options: Options = {
   newTopicName: '子节点',
   // mouseSelectionButton: 2,
   editable: true,
-  markdown: (text: string, obj: (NodeObj & { useMd?: boolean }) | (Arrow & { useMd?: boolean }) | (Summary & { useMd?: boolean })) => {
-    if (!text) return ''
-    // if (!obj.useMd) return text
-    try {
-      // Configure marked renderer to add target="_blank" to links
-      const renderer = {
-        strong(token: Tokens.Strong) {
-          if (token.raw.startsWith('**')) {
-            return `<strong class="asterisk-emphasis">${token.text}</strong>`
-          } else if (token.raw.startsWith('__')) {
-            return `<strong class="underscore-emphasis">${token.text}</strong>`
-          }
-          return `<strong>${token.text}</strong>`
-        },
-        link(token: Tokens.Link) {
-          const href = token.href || ''
-          const title = token.title ? ` title="${token.title}"` : ''
-          const text = token.text || ''
-          return `<a href="${href}"${title} target="_blank">${text}</a>`
-        },
-      }
-
-      marked.use({ renderer, gfm: true })
-      let html = marked.parse(text) as string
-      // let html = md2html(text)
-
-      // Process KaTeX math expressions
-      // Handle display math ($$...$$)
-      html = html.replace(/\$\$([^$]+)\$\$/g, (_, math) => {
-        return katex.renderToString(math.trim(), { displayMode: true })
-      })
-
-      // Handle inline math ($...$)
-      html = html.replace(/\$([^$]+)\$/g, (_, math) => {
-        return katex.renderToString(math.trim(), { displayMode: false })
-      })
-
-      return html.trim().replace(/\n/g, '')
-    } catch (error) {
-      return text
-    }
-  },
+  // markdown + KaTeX renderer shared with dev.outliner.ts
+  markdown: renderMarkdown,
   // To disable markdown, simply omit the markdown option or set it to undefined
   // if you set contextMenu to false, you should handle contextmenu event by yourself, e.g. preventDefault
   contextMenu: {
@@ -129,7 +88,7 @@ const options: Options = {
   },
   // scaleMin:0.1
   // alignment: 'nodes',
-
+  // mouseSelectionButton: 2,
   // ================= 测试不同的分支样式 =================
   // 现在可以通过 mind.changeBranch 动态切换了！
 }
@@ -139,52 +98,57 @@ let mind = new MindElixir(options)
 const data = MindElixir.new('new topic')
 // example.theme = MindElixir.DARK_THEME
 mind.init(example)
+// mind.init(largeMap)
 
-const branchThemes = {
-  markmap: {
-    generateMainBranch: markmapMain,
-    generateSubBranch: markmapSub,
-    cssVar: {
-      '--root-color': mind.theme.cssVar['--main-color'],
-      '--root-bgcolor': 'transparent',
-      '--root-border-color': 'transparent',
-      '--root-radius': '5px',
-      '--main-radius': '5px',
-      '--main-bgcolor': 'transparent',
-      '--main-border': 'transparent',
+function changeTheme() {
+  const branchThemes = {
+    markmap: {
+      generateMainBranch: markmapMain,
+      generateSubBranch: markmapSub,
+      cssVar: {
+        '--root-color': mind.theme.cssVar['--main-color'],
+        '--root-bgcolor': 'transparent',
+        '--root-border-color': 'transparent',
+        '--root-radius': '5px',
+        '--main-radius': '5px',
+        '--main-bgcolor': 'transparent',
+        '--main-border': 'transparent',
+      },
     },
-  },
-  straightUnderline: {
-    generateMainBranch: straightUnderlineMain,
-    generateSubBranch: straightUnderlineSub,
-    cssVar: {
-      '--main-radius': '0',
-      '--main-bgcolor': 'transparent',
-      '--main-border': 'transparent',
+    straightUnderline: {
+      generateMainBranch: straightUnderlineMain,
+      generateSubBranch: straightUnderlineSub,
+      cssVar: {
+        '--main-radius': '0',
+        '--main-bgcolor': 'transparent',
+        '--main-border': 'transparent',
+      },
     },
-  },
-  straight: {
-    generateMainBranch: straightMain,
-    generateSubBranch: straightSub,
-  },
+    straight: {
+      generateMainBranch: straightMain,
+      generateSubBranch: straightSub,
+    },
+  }
+
+  // 动态切换为特定风格，并记录在 meta 中
+  // 注意：必须先设置 dataset.branchStyle 让相关 CSS(dev.css)先生效，
+  // 再 changeTheme 触发 refresh 重算布局和连线，否则连线会按旧节点尺寸绘制而错位
+  mind.container.dataset.branchStyle = 'markmap'
+  mind.changeTheme({
+    ...mind.theme,
+    ...branchThemes.markmap,
+    cssVar: {
+      ...mind.theme.cssVar,
+      ...branchThemes.markmap.cssVar,
+    },
+  })
+  mind.meta = {
+    ...mind.meta,
+    branchStyle: 'markmap',
+  }
 }
 
-// 动态切换为特定风格，并记录在 meta 中
-// 注意：必须先设置 dataset.branchStyle 让相关 CSS(dev.css)先生效，
-// 再 changeTheme 触发 refresh 重算布局和连线，否则连线会按旧节点尺寸绘制而错位
-mind.container.dataset.branchStyle = 'markmap'
-mind.changeTheme({
-  ...mind.theme,
-  ...branchThemes.markmap,
-  cssVar: {
-    ...mind.theme.cssVar,
-    ...branchThemes.markmap.cssVar,
-  },
-})
-mind.meta = {
-  ...mind.meta,
-  branchStyle: 'markmap',
-}
+// changeTheme()
 
 const m2 = new MindElixir({
   el: '#map2',
@@ -214,7 +178,7 @@ mind.bus.addListener('operation', (operation: Operation) => {
   // name: [insertSibling|addChild|removeNode|beginEdit|finishEdit]
   // obj: target
 
-  // name: moveNodeIn
+  // name: moveNodesIn
   // obj: {from:target1,to:target2}
 })
 mind.bus.addListener('selectNodes', nodes => {
@@ -228,8 +192,11 @@ mind.bus.addListener('selectSummary', summary => {
 })
 
 const dl2 = async () => {
-  const result = await snapdom(mind.nodes)
-  await result.download({ format: 'jpg', filename: 'my-capture.jpg', backgroundColor: mind.theme.cssVar['--bgcolor'] })
+  const url = await exportImage(mind, 'jpeg', {
+    backgroundColor: mind.theme.cssVar['--bgcolor'],
+    watermarkEnabled: false,
+  })
+  await downloadUrl(url, 'my-capture.jpg')
 }
 
 window.downloadPng = dl2
@@ -247,8 +214,6 @@ window.destroy = () => {
   // @ts-expect-error remove reference
   window.m = null
 }
-
-document.querySelector('#ssr')!.innerHTML = renderSSRHTML(layoutSSR(window.m.nodeData))
 
 // const convertedData = plaintextToMindElixir(plaintextExample)
 // console.log('convertedData', convertedData)

@@ -1,5 +1,6 @@
+import type MindElixir from '../index'
 import type { Topic } from '../types/dom'
-import type { NodeObj, MindElixirInstance, NodeObjExport } from '../types/index'
+import type { NodeObj, NodeObjExport } from '../types/index'
 
 export function encodeHTML(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;')
@@ -97,10 +98,10 @@ export function getArrowPoints(p3x: number, p3y: number, p4x: number, p4y: numbe
 }
 
 export function generateUUID(): string {
-  return (new Date().getTime().toString(16) + Math.random().toString(16).substring(2)).substring(2, 18)
+  return Date.now().toString(36) + Math.random().toString(36).substring(2, 8)
 }
 
-export const generateNewObj = function (this: MindElixirInstance): NodeObjExport {
+export const generateNewObj = function (this: MindElixir): NodeObjExport {
   const id = generateUUID()
   return {
     topic: this.newTopicName,
@@ -136,7 +137,7 @@ export const setAttributes = (el: HTMLElement | SVGElement, attrs: { [key: strin
 }
 
 export const isTopic = (target?: HTMLElement): target is Topic => {
-  return target ? target.tagName === 'ME-TPC' : false
+  return target ? target.classList.contains('me-tpc') : false
 }
 
 export const unionTopics = (nodes: Topic[]) => {

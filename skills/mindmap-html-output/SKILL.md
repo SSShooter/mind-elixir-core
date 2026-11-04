@@ -22,7 +22,7 @@ If the user instead wants to embed Mind Elixir into a React/Vue project, use the
 1. **Collect / parse the content.** Accept free text, markdown, or a tree. Reduce it to a single-rooted hierarchy.
 2. **Build the `MindElixirData` JSON** (see below). Prefer JSON when you need styling, icons, tags, links, or images. For a plain nested-list outline you may instead use `plaintextConverter` (optional, see end).
 3. **Produce the HTML file** from the template `assets/template.html`: replace `__TITLE__` with a title and `__MINDMAP_DATA__` with the pretty-printed `MindElixirData` JSON object. Keep everything else intact.
-4. **Deliver** the `.html` file via `present_files` so the user can open it in the built-in preview or a browser. Tell them the toolbar buttons (PNG / SVG / 保存数据 / 导出 HTML) let them re-export or snapshot edits.
+4. **Deliver** the `.html` file via `present_files` so the user can open it in the built-in preview or a browser. Tell them the toolbar buttons (PNG / 保存数据 / 导出 HTML) let them re-export or snapshot edits.
 
 ## `MindElixirData` shape
 
@@ -68,7 +68,7 @@ Render options (set on `new MindElixir(options)`): `el`, `direction: MindElixir.
   `https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.js`  
   `https://cdn.jsdelivr.net/npm/mind-elixir@5/dist/MindElixir.css`
 - The CSS file is **`MindElixir.css`** (not `style.css`) on the CDN — match the package's `dist` output.
-- PNG/SVG export use Mind Elixir's **built-in** `mind.exportPng()` / `mind.exportSvg()` — no `@zumer/snapdom` dependency needed for the standalone file.
+- PNG export uses `@mind-elixir/export-mindmap` loaded from the CDN (`exportImage(mind, 'png', { watermarkEnabled: false })` → `downloadUrl`) — no npm install or build step needed for the standalone file. Set `watermarkEnabled: true` (the package default) to keep the Mind Elixir watermark on exported images.
 
 ## Optional: convert a plain outline with plaintextConverter
 
@@ -89,4 +89,4 @@ Then pass `data` into the template's `__MINDMAP_DATA__` slot. Plaintext format s
 - Always give the root and every node a **unique, stable `id`**; regenerate ids deterministically from content paths to avoid the whole graph re-rendering on refresh.
 - Keep topics short; long text hurts layout. Put detail in child nodes.
 - The standalone file needs **internet access** on first open (CDN). If the user needs a fully offline file, download `MindElixir.js` + `MindElixir.css` and rewrite the two CDN URLs to relative/local paths.
-- `exportPng()` is async and may return `null` if capture fails — the template guards against that.
+- `exportImage(mind, 'png')` is async and may reject if the DOM cannot be captured (e.g. cross-origin resources) — the PNG export button is best-effort.

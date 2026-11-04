@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true,
+    "emitDeclarationOnly": false
+  },
+  "include": ["tests/generic-instance.type-test.ts", "src/vite-env.d.ts", "src/types/global.ts"]
+}

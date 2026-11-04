@@ -1,5 +1,5 @@
+import type MindElixir from '../index'
 import type { Topic } from '../types/dom'
-import type { MindElixirInstance } from '../types/index'
 
 export type InsertType = 'before' | 'after' | 'in' | null
 
@@ -29,13 +29,13 @@ export const clearPreview = function (el: Element | null) {
 export const canMove = function (el: Element, dragged: Topic[]) {
   for (const node of dragged) {
     const isContain = node.parentElement.parentElement.contains(el)
-    const ok = el && el.tagName === 'ME-TPC' && el !== node && !isContain && (el as Topic).nodeObj.parent
+    const ok = el && el.classList.contains('me-tpc') && el !== node && !isContain && (el as Topic).nodeObj.parent
     if (!ok) return false
   }
   return true
 }
 
-export const createGhost = function (mei: MindElixirInstance) {
+export const createGhost = function (mei: MindElixir) {
   const ghost = document.createElement('div')
   ghost.className = 'mind-elixir-ghost'
   mei.container.appendChild(ghost)
@@ -43,11 +43,11 @@ export const createGhost = function (mei: MindElixirInstance) {
 }
 
 export class EdgeMoveController {
-  private mind: MindElixirInstance
+  private mind: MindElixir
   private isMoving = false
   private interval: ReturnType<typeof setInterval> | null = null
   private speed = 20
-  constructor(mind: MindElixirInstance) {
+  constructor(mind: MindElixir) {
     this.mind = mind
   }
   move(dx: number, dy: number) {
@@ -77,7 +77,7 @@ export interface NodeDragState {
   pointerId: number | null
 }
 
-export function createNodeDragState(mind: MindElixirInstance): NodeDragState {
+export function createNodeDragState(mind: MindElixir): NodeDragState {
   return {
     isDragging: false,
     insertType: null,
@@ -93,12 +93,12 @@ export function createNodeDragState(mind: MindElixirInstance): NodeDragState {
 // Threshold to distinguish between click and drag (in pixels)
 const DRAG_THRESHOLD = 5
 
-export function handleNodeDragStart(mind: MindElixirInstance, state: NodeDragState, e: PointerEvent, immediate = false): boolean {
+export function handleNodeDragStart(mind: MindElixir, state: NodeDragState, e: PointerEvent, immediate = false): boolean {
   // Don't start drag when space is pressed (map panning mode)
   if (mind.spacePressed) return false
 
   const target = e.target as Topic
-  if (target?.tagName !== 'ME-TPC') return false
+  if (!target?.classList.contains('me-tpc')) return false
 
   // Prevent dragging root node
   if (!target.nodeObj.parent) return false
@@ -132,7 +132,7 @@ export function updateGhostPosition(ghost: HTMLElement, x: number, y: number): v
 /**
  * Show ghost element immediately to indicate drag is ready
  */
-export function showDragGhost(mind: MindElixirInstance, state: NodeDragState): void {
+export function showDragGhost(mind: MindElixir, state: NodeDragState): void {
   const { dragged } = mind
   if (!dragged) return
   const activeElement = document.activeElement as HTMLElement
@@ -158,7 +158,7 @@ export function showDragGhost(mind: MindElixirInstance, state: NodeDragState): v
   mind.panHelper.clear()
 }
 
-export function handleNodeDragMove(mind: MindElixirInstance, state: NodeDragState, e: PointerEvent): void {
+export function handleNodeDragMove(mind: MindElixir, state: NodeDragState, e: PointerEvent): void {
   const { dragged } = mind
   if (!dragged || state.pointerId !== e.pointerId) return
 
@@ -262,7 +262,7 @@ export function handleNodeDragMove(mind: MindElixirInstance, state: NodeDragStat
   }
 }
 
-export function handleNodeDragEnd(mind: MindElixirInstance, state: NodeDragState, e: PointerEvent): void {
+export function handleNodeDragEnd(mind: MindElixir, state: NodeDragState, e: PointerEvent): void {
   const { dragged } = mind
   if (!dragged || state.pointerId !== e.pointerId) return
 
@@ -281,11 +281,11 @@ export function handleNodeDragEnd(mind: MindElixirInstance, state: NodeDragState
   if (state.isDragging && state.meet) {
     clearPreview(state.meet)
     if (state.insertType === 'before') {
-      mind.moveNodeBefore(dragged, state.meet)
+      mind.moveNodesBefore(dragged, state.meet)
     } else if (state.insertType === 'after') {
-      mind.moveNodeAfter(dragged, state.meet)
+      mind.moveNodesAfter(dragged, state.meet)
     } else if (state.insertType === 'in') {
-      mind.moveNodeIn(dragged, state.meet)
+      mind.moveNodesIn(dragged, state.meet)
     }
   }
 
@@ -297,7 +297,7 @@ export function handleNodeDragEnd(mind: MindElixirInstance, state: NodeDragState
   state.pointerId = null
 }
 
-export function handleNodeDragCancel(mind: MindElixirInstance, state: NodeDragState): void {
+export function handleNodeDragCancel(mind: MindElixir, state: NodeDragState): void {
   const { dragged } = mind
   if (!dragged) return
 
@@ -327,7 +327,7 @@ export function handleNodeDragCancel(mind: MindElixirInstance, state: NodeDragSt
 
 // Default export for backward compatibility - now returns empty disposable
 // The actual functionality is handled in mouse.ts
-export default function (_mind: MindElixirInstance) {
+export default function (_mind: MindElixir) {
   // Node dragging is now handled by pointer events in mouse.ts
   // This function is kept for backward compatibility but does nothing
   return () => {}
