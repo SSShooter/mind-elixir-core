@@ -64,10 +64,10 @@ jobs:
           npm run doc:md
 
       - name: Copy build results to docs repository
-        run: | 
-          cp -r ./md/* ./me-docs/docs/api   
-          cp -r ./md/* ./me-docs/i18n/ja/docusaurus-plugin-content-docs/current/api
-          cp -r ./md/* ./me-docs/i18n/zh-Hans/docusaurus-plugin-content-docs/current/api
+        run: |
+          rm -rf ./me-docs/docs/api
+          mkdir -p ./me-docs/docs/api
+          cp -r ./md/* ./me-docs/docs/api
 
       - name: Push changes to docs repository
         run: |
