@@ -89,6 +89,11 @@ const methods = {
     this.tidyArrow()
     this.container.style.opacity = '0'
     this.layout()
+    // Set the flag *before* the first await: everything above is synchronous,
+    // so a concurrent init() can only interleave at `document.fonts.ready`.
+    // Flipping it here prevents a second call from re-running plugin setup
+    // (duplicate copy/cut/paste listeners, a leaked duplicate history stack).
+    this.pluginsInitialized = true
     await document.fonts.ready
     // `destroy()` may have run while we were waiting (StrictMode double-invoke,
     // fast mount/unmount). It nulls `container` and the DOM infrastructure, so
@@ -114,7 +119,6 @@ const methods = {
       diffRefresh(this)
       this.allowUndo && this.disposable.push(operationHistory(this))
     }
-    this.pluginsInitialized = true
   },
   destroy(this: Partial<MindElixir>) {
     // A destroyed instance is not reusable: its DOM infrastructure is cleared
