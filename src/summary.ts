@@ -295,7 +295,7 @@ const drawSummary = function (mei: MindElixir, summary: Summary, inner: Summary[
     const y = maxBottom + BRACKET_OFFSET + push
     const mid = (startLeft + endRight) / 2
     path = createPath(`M ${startLeft} ${y - 10} c 0 5 5 10 10 10 L ${endRight - 10} ${y} c 5 0 10 -5 10 -10 M ${mid} ${y} v 10`, strokeColor)
-    text = createLabel(renderedLabel, mid, y + 20, { anchor: 'middle', color: labelColor, dataType: 'summary', svgId: groupId })
+    text = createLabel(renderedLabel, mid, y + 20, { anchor: 'middle', color: labelColor, dataType: 'summary', svgId: groupId, html: !!mei.markdown })
   } else {
     const offset = !parentObj.parent ? 0 : 10
     const top = startTop + offset
@@ -306,13 +306,13 @@ const drawSummary = function (mei: MindElixir, summary: Summary, inner: Summary[
         `M ${left + 10 - push} ${top} c -5 0 -10 5 -10 10 L ${left - push} ${bottom - 10} c 0 5 5 10 10 10 M ${left - push} ${md} h -10`,
         strokeColor
       )
-      text = createLabel(renderedLabel, left - 20 - push, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId })
+      text = createLabel(renderedLabel, left - 20 - push, md, { anchor: 'end', color: labelColor, dataType: 'summary', svgId: groupId, html: !!mei.markdown })
     } else {
       path = createPath(
         `M ${right - 10 + push} ${top} c 5 0 10 5 10 10 L ${right + push} ${bottom - 10} c 0 5 -5 10 -10 10 M ${right + push} ${md} h 10`,
         strokeColor
       )
-      text = createLabel(renderedLabel, right + 20 + push, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId })
+      text = createLabel(renderedLabel, right + 20 + push, md, { anchor: 'start', color: labelColor, dataType: 'summary', svgId: groupId, html: !!mei.markdown })
     }
   }
   const group = creatGroup(groupId)

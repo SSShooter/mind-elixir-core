@@ -12,6 +12,11 @@ export interface SvgTextOptions {
   color?: string
   dataType: string
   svgId: string // Associated SVG element ID
+  /**
+   * When true, `text` is treated as pre-rendered HTML (e.g. markdown output).
+   * Only enable this for content produced by a trusted renderer.
+   */
+  html?: boolean
 }
 
 /**
@@ -52,7 +57,11 @@ export const createLabel = function (text: string, x: number, y: number, options
   // Generate unique ID for the label
   const labelId = 'label-' + svgId
   labelDiv.id = labelId
-  labelDiv.innerHTML = text
+  if (options.html) {
+    labelDiv.innerHTML = text
+  } else {
+    labelDiv.textContent = text
+  }
 
   labelDiv.dataset.type = dataType
   labelDiv.dataset.svgId = svgId

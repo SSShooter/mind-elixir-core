@@ -405,6 +405,7 @@ const drawArrow = function (mei: MindElixir, from: Topic, to: Topic, obj: Arrow,
     color: labelColor,
     dataType: 'arrow',
     svgId: groupId,
+    html: !!mei.markdown,
   })
   newSvgGroup.labelEl = label // Store reference to label element
   newSvgGroup.arrowObj = obj
@@ -690,8 +691,11 @@ export const reshapeArrow = function (this: MindElixir, arrow: Arrow, patchData:
   const el = this.arrowSvg.querySelector(`g[data-linkid="${arrow.id}"]`) as ArrowSvg | null
   if (el) {
     if (patchData.label !== undefined && el.labelEl) {
-      const renderedLabel = this.markdown ? this.markdown(arrow.label, arrow) : arrow.label
-      el.labelEl.innerHTML = renderedLabel
+      if (this.markdown) {
+        el.labelEl.innerHTML = this.markdown(arrow.label, arrow)
+      } else {
+        el.labelEl.textContent = arrow.label
+      }
     }
 
     const from = this.findEle(arrow.from)
