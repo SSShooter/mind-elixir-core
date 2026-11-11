@@ -1,19 +1,16 @@
-# This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
-# For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
-
-name: Node.js Package
+# Manually triggered release pipeline:
+# build -> create tag + GitHub release (with changelog section) -> publish to npm -> sync API docs
+name: Release
 
 on:
-  release:
-    types: [created]
   workflow_dispatch:
 
 permissions:
-  id-token: write  # Required for OIDC
-  contents: read
+  id-token: write  # Required for npm OIDC
+  contents: write  # Required to create tags and releases
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -36,10 +33,46 @@ jobs:
 
       - run: npm run build
 
+      - name: Read version and check tag
+        id: version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VERSION"; then
+            echo "::error::Tag v$VERSION already exists"
+            exit 1
+          fi
+          echo "Releasing v$VERSION"
+
+      - name: Extract changelog section for this version
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          awk -v pat="## $VERSION " '
+            index($0, pat) == 1 { found = 1; next }
+            found && /^## / { exit }
+            found { print }
+          ' CHANGELOG.md > release_notes.md
+          if [ ! -s release_notes.md ]; then
+            echo "::error::No changelog section found for $VERSION in CHANGELOG.md"
+            exit 1
+          fi
+          echo "--- release notes ---"
+          cat release_notes.md
+
+      - name: Create tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          gh release create "v$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "v$VERSION" \
+            --notes-file release_notes.md
+
       - name: Determine npm dist-tag
         id: disttag
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          VERSION="${{ steps.version.outputs.version }}"
           if [[ "$VERSION" == *-* ]]; then
             # Prerelease (e.g. 5.15.0-beta.1) -> use the prerelease identifier as dist-tag
             TAG=$(echo "$VERSION" | sed -E 's/^[^-]+-([a-zA-Z]+).*/\1/')
@@ -59,7 +92,7 @@ jobs:
           path: me-docs
 
       - name: Generate API documentation
-        run: | 
+        run: |
           npm run doc
           npm run doc:md
 
@@ -81,4 +114,3 @@ jobs:
             git commit -m "Update API documentation"
             git push
           fi
-
