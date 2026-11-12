@@ -393,6 +393,8 @@ export const createSummaryFrom = function (this: MindElixir, summary: Omit<Summa
 export const removeSummary = function (this: MindElixir, id: string) {
   const target = this.summaries.find(summary => summary.id === id)
   if (!target || !detachSummary(this, id)) return
+  // clear stale selection so a following Delete/F2 won't act on the removed summary
+  if (this.currentSummary?.summaryObj.id === id) this.unselectSummary()
   // re-render so enclosing summaries pull their brackets/labels back inward
   // after the removed summary no longer occupies space (nested summary case)
   this.renderSummary()

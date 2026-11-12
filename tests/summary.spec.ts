@@ -192,6 +192,32 @@ test('Remove summary', async ({ page, me }) => {
   await expect(page.locator('svg g[id^="s-"]')).not.toBeVisible()
 })
 
+test('Removing the selected summary clears the stale selection reference', async ({ page, me }) => {
+  // Create a summary first
+  await me.click('Left Child 1')
+  await page.getByText('Left Child 1', { exact: true }).click({ button: 'right', force: true })
+  await page.locator('#cm-summary').click()
+
+  // Wait for edit mode to finish (press Enter to complete editing)
+  await page.keyboard.press('Enter')
+  await expect(page.locator('#input-box')).toBeHidden()
+
+  // Select then delete
+  await page.locator('svg g[id^="s-"]').click()
+  await expect(page.locator('.svg-label[data-type="summary"].selected').first()).toBeVisible()
+  await page.keyboard.press('Delete')
+  await expect(page.locator('svg g[id^="s-"]')).not.toBeVisible()
+
+  // The stale selection must be cleared — previously `currentSummary` kept
+  // pointing at the detached SVG, so F2 edited a removed element's DOM
+  const state = await page.evaluate(instance => ({
+    currentSummary: instance.currentSummary,
+    currentSummaryConnected: instance.currentSummary?.isConnected ?? false,
+  }), await me.getInstance())
+  expect(state.currentSummary).toBe(null)
+  expect(state.currentSummaryConnected).toBe(false)
+})
+
 test('Cannot create summary on root node', async ({ page, me }) => {
   // Try to select root node
   await me.click('Root Topic')

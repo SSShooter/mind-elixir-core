@@ -440,6 +440,31 @@ test('Arrow deletion via keyboard', async ({ page, me }) => {
   await expect(page.locator('svg g[data-linkid]')).not.toBeVisible()
 })
 
+test('Repeated Delete on a removed arrow does not push empty history steps', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+
+  // Create arrow first
+  await page.evaluate(async instance => {
+    instance.createArrow(instance.findEle('left-child-1'), instance.findEle('right-child-1'))
+  }, instanceHandle)
+
+  // Select then delete
+  await page.locator('svg g[data-linkid]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid] .arrow-highlight')).toBeVisible()
+  await page.keyboard.press('Delete')
+  await expect(page.locator('svg g[data-linkid]')).not.toBeVisible()
+
+  // The stale selection must be cleared — a second Delete must be a no-op
+  // (previously it re-pushed the removal, adding an empty undo step)
+  await page.keyboard.press('Delete')
+  await expect(page.locator('.linkcontroller')).not.toBeVisible()
+
+  // One undo must restore the arrow; with the bug, the first undo was eaten
+  // by the duplicated empty step and a second press was required
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(page.locator('svg g[data-linkid]')).toBeVisible()
+})
+
 test('Arrow label text anchor positioning', async ({ page, me }) => {
   const instanceHandle = await me.getInstance()
 

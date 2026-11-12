@@ -462,6 +462,8 @@ export const removeArrow = function (this: MindElixir, linkSvg?: ArrowSvg) {
 
   link.labelEl?.remove()
   link.remove()
+  // clear stale selection so a following Delete/F2 won't act on the removed arrow
+  if (this.currentArrow === link) this.unselectArrow()
   this.bus.fire('operation', {
     name: 'removeArrow',
     target,
