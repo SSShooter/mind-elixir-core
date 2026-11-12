@@ -415,6 +415,7 @@ const drawArrow = function (mei: MindElixir, from: Topic, to: Topic, obj: Arrow,
   calculatePrecisePosition(label)
   if (!isInitPaint) {
     mei.arrows.push(obj)
+    hideLinkController(mei)
     mei.currentArrow = newSvgGroup
     showLinkController(mei, obj, fromData, toData)
   }
