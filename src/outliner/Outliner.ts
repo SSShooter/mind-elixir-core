@@ -394,9 +394,22 @@ export class Outliner {
     if (this.suppressSync) return
     this.bindRoot()
     if (this.zoomedId && !this.byId(this.zoomedId)) this.zoomedId = null
-    this.editingId = null
+    // A sync can arrive while a topic is mid-edit (programmatic undo/redo, a
+    // change from another view): commit the uncommitted typing FIRST. The
+    // render below reads the model, so anything left only in the DOM would be
+    // clobbered, and the late focusout — seeing a cleared editingId — would
+    // drop it on the floor. setNodeTopicBound suppresses sync, so the flush
+    // cannot re-enter this method through the journal entry it pushes.
+    this.flushEditingText()
+    // Keep the editing session alive when the row survived the render — the
+    // caret, the raw-source markup and the eventual focusout commit all stay
+    // valid — and drop it when the row left the DOM (deleted, folded away).
+    // View-object identity tells the two cases apart: a surviving row keeps
+    // its view, a remounted one gets a fresh instance.
+    const editingView = this.editingId ? this.views.get(this.editingId) : null
     this.openMenuId = null
     this.render()
+    if (this.editingId && this.views.get(this.editingId) !== editingView) this.editingId = null
     this.emitChange()
   }
 
@@ -1168,6 +1181,10 @@ export class Outliner {
     const key = e.key.toLowerCase()
 
     if (isContentEditable && isModifier && key === 'z' && !e.shiftKey) {
+      // Without this the browser's own undo — the keydown default action —
+      // fires on top of the execCommand below: one keystroke, two steps
+      // reverted.
+      e.preventDefault()
       const currentContent = active.textContent || ''
       let undoResult = false
       try {
@@ -1178,7 +1195,11 @@ export class Outliner {
       setTimeout(() => {
         const newContent = active.textContent || ''
         if (!undoResult || currentContent === newContent) {
-          active.blur()
+          // Native undo had nothing to revert: step the shared journal. No
+          // manual blur here — the sync the undo triggers commits the
+          // uncommitted typing itself (see rerenderFromMei), so the journal
+          // step lands on the last REAL operation instead of a just-pushed
+          // reshape, and the edit survives with its caret intact.
           this.mei.undo()
         }
       }, 0)
