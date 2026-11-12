@@ -794,6 +794,59 @@ test('Undo of a control point drag keeps the arrow selected', async ({ page, me 
   expect(selected.currentArrow).toBe(selected.linkId)
 })
 
+test('Repeated link from context menu does not stack once listeners', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+  // Right-click node A → "link" → leave it pending; repeat on node B.
+  // The first pending listener must be cancelled by the second invocation,
+  // otherwise the next click creates two arrows (one from each stale origin).
+  await page.locator('[data-nodeid="meleft-child-1"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+
+  await page.locator('[data-nodeid="meright-child-2"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+
+  // Pick the target — only the latest pending link may react
+  await page.locator('[data-nodeid="meright-child-1"]').click({ force: true })
+
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(1)
+  await expect(page.locator('.tips')).toHaveCount(0)
+
+  const arrow = await page.evaluate(instance => instance.arrows[0], instanceHandle)
+  expect(arrow.from).toBe('right-child-2')
+  expect(arrow.to).toBe('right-child-1')
+
+  // The consumed listener must not linger: a later click creates nothing
+  await page.locator('[data-nodeid="meleft-child-2"]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(1)
+})
+
+test('Clicking blank space cancels the pending link', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+
+  await page.locator('[data-nodeid="meleft-child-1"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+
+  // Blank click inside the map must dismiss the tips and consume the pending link
+  await page.locator('#map').click({ position: { x: 15, y: 280 } })
+  await expect(page.locator('.tips')).toHaveCount(0)
+
+  // Pending link is gone — clicking a node afterwards must NOT create an arrow
+  await page.locator('[data-nodeid="meright-child-1"]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(0)
+
+  // Same for clicks entirely outside the container
+  await page.locator('[data-nodeid="meleft-child-2"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+  await page.mouse.click(10, 10)
+  await expect(page.locator('.tips')).toHaveCount(0)
+  await page.locator('[data-nodeid="meright-child-1"]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(0)
+})
+
 test('Creating an arrow while another is selected does not hijack the old one', async ({ page, me }) => {
   const instanceHandle = await me.getInstance()
 

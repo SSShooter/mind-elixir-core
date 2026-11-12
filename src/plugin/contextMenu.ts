@@ -181,25 +181,40 @@ export default function (mind: MindElixir, option: true | ContextMenuOption) {
     mind.moveDownNode()
     menuContainer.hidden = true
   }
+  // A pending link waits on a document-level capture click: a valid node click
+  // creates the arrow, any other click (blank space, menu, outside the map)
+  // cancels it. Triggering "link" again before that must cancel the previous
+  // listener, otherwise one click fires both and creates two arrows from
+  // stale origins.
+  let pendingLink: (() => void) | null = null
+  const cancelPendingLink = () => {
+    if (!pendingLink) return
+    const cleanup = pendingLink
+    pendingLink = null
+    cleanup()
+  }
   const linkFunc = (options?: ArrowOptions) => {
     menuContainer.hidden = true
+    cancelPendingLink()
     const from = mind.currentNode as Topic
     const tips = createTips(lang.clickTips)
     mind.container.appendChild(tips)
-    mind.map.addEventListener(
-      'click',
-      e => {
+    const handler = (e: MouseEvent) => {
+      pendingLink = null
+      document.removeEventListener('click', handler, true)
+      tips.remove()
+      const target = e.target as HTMLElement
+      const parent = target.parentElement
+      if (parent && (parent.classList.contains('me-parent') || parent.classList.contains('me-root'))) {
         e.preventDefault()
-        tips.remove()
-        const target = e.target as Topic
-        if (target.parentElement.classList.contains('me-parent') || target.parentElement.classList.contains('me-root')) {
-          mind.createArrow(from, target, options)
-        }
-      },
-      {
-        once: true,
+        mind.createArrow(from, target as Topic, options)
       }
-    )
+    }
+    pendingLink = () => {
+      document.removeEventListener('click', handler, true)
+      tips.remove()
+    }
+    document.addEventListener('click', handler, true)
   }
   link.onclick = () => linkFunc()
   linkBidirectional.onclick = () => linkFunc({ bidirectional: true })
@@ -222,5 +237,6 @@ export default function (mind: MindElixir, option: true | ContextMenuOption) {
     summary.onclick = null
     menuContainer.onclick = null
     mind.container.oncontextmenu = null
+    cancelPendingLink()
   }
 }
