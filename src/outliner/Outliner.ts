@@ -1094,6 +1094,8 @@ export class Outliner {
         if (!meiEl) return
         const newId = generateUUID()
         const item = this.byId(id)
+        // The sibling insertion sync must flush the split prefix, not the old full text.
+        el.textContent = textBefore
         if (textBefore !== (item?.topic ?? '')) this.setNodeTopicBound(id, textBefore)
         this.mei.insertSibling('after', meiEl, { id: newId, topic: textAfter, children: [] })
         this.focusItem(newId)
