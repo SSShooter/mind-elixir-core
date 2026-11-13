@@ -33,7 +33,34 @@ export function insertParentNodeObj(obj: NodeObj, newObj: NodeObj) {
   newObj.children = [obj]
 }
 
-export function moveNodeObj(type: 'in' | 'before' | 'after', from: NodeObj, to: NodeObj) {
+/**
+ * True when `to` is `from` itself or lives inside `from`'s subtree. Moving a
+ * node under itself re-parents it as its own ancestor — the data becomes a
+ * cycle and `fillParent` / `getData` blow up — so callers must reject it.
+ * The visited set only guards against an already-corrupted tree whose parent
+ * chain loops; a healthy chain strictly shrinks towards the root.
+ */
+export function isDescendantOrSelf(from: NodeObj, to: NodeObj): boolean {
+  let cur: NodeObj | undefined = to
+  const seen = new Set<NodeObj>()
+  while (cur && !seen.has(cur)) {
+    if (cur === from) return true
+    seen.add(cur)
+    cur = cur.parent
+  }
+  return false
+}
+
+/**
+ * Move `from` relative to `to`. Returns `false` (data untouched) when the
+ * target is `from` itself or one of its descendants — callers can use the
+ * return value to detect a rejected move.
+ */
+export function moveNodeObj(type: 'in' | 'before' | 'after', from: NodeObj, to: NodeObj): boolean {
+  // e.g. `moveNodesIn([A], A)` used to push A into its own children; for
+  // before/after, `removeNodeObj` above made `indexOf(to)` return -1 and
+  // `splice(-1, 0, from)` silently landed on the wrong slot.
+  if (isDescendantOrSelf(from, to)) return false
   removeNodeObj(from)
   if (!to.parent?.parent) {
     from.direction = to.direction
@@ -44,11 +71,12 @@ export function moveNodeObj(type: 'in' | 'before' | 'after', from: NodeObj, to: 
   } else {
     if (from.direction !== undefined) from.direction = to.direction
     const { siblings, index } = getSibling(to)
-    if (siblings === undefined) return
+    if (siblings === undefined) return false
     if (type === 'before') {
       siblings.splice(index, 0, from)
     } else {
       siblings.splice(index + 1, 0, from)
     }
   }
+  return true
 }

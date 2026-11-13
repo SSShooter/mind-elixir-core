@@ -4,7 +4,7 @@ import { createExpander, shapeTpc } from './utils/dom'
 import { deepClone } from './utils/index'
 import type { Children, Topic } from './types/dom'
 import { DirectionClass, type NodeObj } from './types/index'
-import { insertNodeObj, insertParentNodeObj, removeNodeObj, moveNodeObj } from './utils/objectManipulation'
+import { insertNodeObj, insertParentNodeObj, removeNodeObj, moveNodeObj, isDescendantOrSelf } from './utils/objectManipulation'
 import { addChildDom, removeNodeDom } from './utils/domManipulation'
 import { LEFT, RIGHT, SIDE } from './const'
 
@@ -246,10 +246,18 @@ export const removeNodes = function (this: MindElixir, tpcs: Topic[]) {
   })
 }
 
-const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei: MindElixir) => {
+const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei: MindElixir): boolean => {
   from = unionTopics(from)
 
   let toObj = to.nodeObj
+
+  // The drag path guards this with `canMove`, but the public APIs had no such
+  // check. Reject self/descendant targets before any side effect (including
+  // the expand below) so data and DOM stay untouched. The boolean return
+  // lets callers detect the rejection.
+  for (const f of from) {
+    if (isDescendantOrSelf(f.nodeObj, toObj)) return false
+  }
 
   // Handle 'in' type: expand node if collapsed
   if (type === 'in' && toObj.expanded === false) {
@@ -315,18 +323,19 @@ const moveNode = (from: Topic[], type: 'before' | 'after' | 'in', to: Topic, mei
     target: from.map(f => f.nodeObj),
     destination: toObj,
   })
+  return true
 }
 
 export const moveNodesIn = function (this: MindElixir, from: Topic[], to: Topic) {
-  moveNode(from, 'in', to, this)
+  return moveNode(from, 'in', to, this)
 }
 
 export const moveNodesBefore = function (this: MindElixir, from: Topic[], to: Topic) {
-  moveNode(from, 'before', to, this)
+  return moveNode(from, 'before', to, this)
 }
 
 export const moveNodesAfter = function (this: MindElixir, from: Topic[], to: Topic) {
-  moveNode(from, 'after', to, this)
+  return moveNode(from, 'after', to, this)
 }
 
 export const beginEdit = function (this: MindElixir, el?: Topic) {

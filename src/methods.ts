@@ -23,14 +23,19 @@ type NodeOperation = {
   [K in Operations]: ReturnType<typeof beforeHook<K>>
 }
 
-function beforeHook<T extends Operations>(fn: OperationMap[T], fnName: T): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<void> {
+function beforeHook<T extends Operations>(
+  fn: OperationMap[T],
+  fnName: T
+): (this: MindElixir, ...args: Parameters<OperationMap[T]>) => Promise<Awaited<ReturnType<OperationMap[T]>> | undefined> {
   return async function (this: MindElixir, ...args: Parameters<OperationMap[T]>) {
     const hook = this.before[fnName]
     if (hook) {
       const res = await hook.apply(this, args)
-      if (!res) return
+      // a falsy hook result cancels the operation; `undefined` tells the
+      // caller the method never ran (vs. a `false` the method itself returned)
+      if (!res) return undefined
     }
-    ;(fn as any).apply(this, args)
+    return (fn as any).apply(this, args)
   }
 }
 
@@ -39,7 +44,10 @@ const nodeOperationHooked = {} as NodeOperation
 if (import.meta.env.MODE !== 'lite') {
   for (let i = 0; i < operations.length; i++) {
     const operation = operations[i]
-    nodeOperationHooked[operation] = beforeHook(nodeOperation[operation], operation)
+    // `as any`: indexing the mapped type with the union key yields an
+    // intersection of every method's signature, which no single hooked
+    // function satisfies — each entry really does match its own key
+    nodeOperationHooked[operation] = beforeHook(nodeOperation[operation], operation) as any
   }
 }
 

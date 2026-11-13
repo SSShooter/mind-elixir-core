@@ -230,9 +230,12 @@ class MindElixir<M = any> {
   declare moveUpNode: (el?: Topic<M> | undefined) => Promise<void>
   declare moveDownNode: (el?: Topic<M> | undefined) => Promise<void>
   declare removeNodes: (tpcs: Topic<M>[]) => Promise<void>
-  declare moveNodesIn: (from: Topic<M>[], to: Topic<M>) => Promise<void>
-  declare moveNodesBefore: (from: Topic<M>[], to: Topic<M>) => Promise<void>
-  declare moveNodesAfter: (from: Topic<M>[], to: Topic<M>) => Promise<void>
+  // resolves to `false` when the target is the moved node itself or one of
+  // its descendants (move rejected, nothing changed), `undefined` when a
+  // `before` hook cancelled the call, `true` when the move executed
+  declare moveNodesIn: (from: Topic<M>[], to: Topic<M>) => Promise<boolean | undefined>
+  declare moveNodesBefore: (from: Topic<M>[], to: Topic<M>) => Promise<boolean | undefined>
+  declare moveNodesAfter: (from: Topic<M>[], to: Topic<M>) => Promise<boolean | undefined>
   declare beginEdit: (el?: Topic<M> | undefined) => Promise<void>
   declare setNodeTopic: (el: Topic<M>, topic: string) => Promise<void>
   declare scrollIntoView: (el: HTMLElement, forceCenter?: boolean) => void
