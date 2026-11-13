@@ -221,23 +221,20 @@ class MindElixir<M = any> {
   declare selectArrow: (link: ArrowSvg) => void
   declare unselectArrow: () => void
   declare reshapeArrow: (arrow: Arrow<M>, patchData: Partial<Arrow<M>>) => void
-  declare rmSubline: (tpc: Topic<M>) => Promise<void>
-  declare reshapeNode: (tpc: Topic<M>, patchData: Partial<NodeObj<M>>) => Promise<void>
-  declare insertSibling: (type: 'before' | 'after', el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void>
-  declare insertParent: (el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void>
-  declare addChild: (el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void>
-  declare copyNodes: (tpcs: Topic<M>[], to: Topic<M>) => Promise<void>
-  declare moveUpNode: (el?: Topic<M> | undefined) => Promise<void>
-  declare moveDownNode: (el?: Topic<M> | undefined) => Promise<void>
-  declare removeNodes: (tpcs: Topic<M>[]) => Promise<void>
-  // resolves to `false` when the target is the moved node itself or one of
-  // its descendants (move rejected, nothing changed), `undefined` when a
-  // `before` hook cancelled the call, `true` when the move executed
+  declare rmSubline: (tpc: Topic<M>) => Promise<void | undefined>
+  declare reshapeNode: (tpc: Topic<M>, patchData: Partial<NodeObj<M>>) => Promise<void | undefined>
+  declare insertSibling: (type: 'before' | 'after', el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void | undefined>
+  declare insertParent: (el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void | undefined>
+  declare addChild: (el?: Topic<M> | undefined, node?: NodeObj<M> | undefined) => Promise<void | undefined>
+  declare copyNodes: (tpcs: Topic<M>[], to: Topic<M>) => Promise<void | undefined>
+  declare moveUpNode: (el?: Topic<M> | undefined) => Promise<void | undefined>
+  declare moveDownNode: (el?: Topic<M> | undefined) => Promise<void | undefined>
+  declare removeNodes: (tpcs: Topic<M>[]) => Promise<void | undefined>
   declare moveNodesIn: (from: Topic<M>[], to: Topic<M>) => Promise<boolean | undefined>
   declare moveNodesBefore: (from: Topic<M>[], to: Topic<M>) => Promise<boolean | undefined>
   declare moveNodesAfter: (from: Topic<M>[], to: Topic<M>) => Promise<boolean | undefined>
-  declare beginEdit: (el?: Topic<M> | undefined) => Promise<void>
-  declare setNodeTopic: (el: Topic<M>, topic: string) => Promise<void>
+  declare beginEdit: (el?: Topic<M> | undefined) => Promise<void | undefined>
+  declare setNodeTopic: (el: Topic<M>, topic: string) => Promise<void | undefined>
   declare scrollIntoView: (el: HTMLElement, forceCenter?: boolean) => void
   declare selectNode: (tpc: Topic<M>, isNewNode?: boolean, e?: MouseEvent) => void
   declare selectNodes: (tpcs: Topic<M>[]) => void
