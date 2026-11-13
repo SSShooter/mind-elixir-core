@@ -1,5 +1,24 @@
 # Changelog
 
+## 6.0.1 - 2026-11-13
+
+### Features
+
+- Markdown and KaTeX now render in arrow and summary labels, including when an arrow label is edited.
+
+### Bug Fixes
+
+- Moving a node into itself or one of its own children is now rejected instead of corrupting the map.
+- Initializing a map twice in quick succession no longer duplicates its behaviour.
+- Unfinished typing in the outliner is no longer lost when the map updates elsewhere or when you undo.
+- Choosing "link" repeatedly no longer creates duplicate arrows, and clicking away cancels an unfinished link.
+- Removing an arrow or summary no longer leaves it selected, so delete and rename target the right element.
+- Box selection stays aligned when the map auto-scrolls to its edge.
+
+### Behavior Changes
+
+- Some operation methods now return `undefined` when a call is cancelled, with no change to runtime behaviour.
+
 ## 6.0.0 - 2026-11-02
 
 ### Breaking Changes

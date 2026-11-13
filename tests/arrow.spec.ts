@@ -1,6 +1,21 @@
+import type { Page } from '@playwright/test'
 import { test, expect } from './mind-elixir-test'
 
 const modifier = process.platform === 'darwin' ? 'Meta' : 'Control'
+
+/**
+ * Click on the arrow curve itself. A bezier's bounding-box centre sits off the
+ * stroke, so a plain `locator.click()` can land on a node that crosses the path.
+ */
+async function clickOnArrow(page: Page, index: number) {
+  const point = await page.evaluate(i => {
+    const g = document.querySelectorAll('svg g[data-linkid]')[i] as SVGGElement & { line: SVGPathElement }
+    const p = g.line.getPointAtLength(g.line.getTotalLength() * 0.4)
+    const m = g.line.getScreenCTM()!
+    return { x: p.x * m.a + p.y * m.c + m.e, y: p.x * m.b + p.y * m.d + m.f }
+  }, index)
+  await page.mouse.click(point.x, point.y)
+}
 
 const data = {
   nodeData: {
@@ -440,6 +455,31 @@ test('Arrow deletion via keyboard', async ({ page, me }) => {
   await expect(page.locator('svg g[data-linkid]')).not.toBeVisible()
 })
 
+test('Repeated Delete on a removed arrow does not push empty history steps', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+
+  // Create arrow first
+  await page.evaluate(async instance => {
+    instance.createArrow(instance.findEle('left-child-1'), instance.findEle('right-child-1'))
+  }, instanceHandle)
+
+  // Select then delete
+  await page.locator('svg g[data-linkid]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid] .arrow-highlight')).toBeVisible()
+  await page.keyboard.press('Delete')
+  await expect(page.locator('svg g[data-linkid]')).not.toBeVisible()
+
+  // The stale selection must be cleared — a second Delete must be a no-op
+  // (previously it re-pushed the removal, adding an empty undo step)
+  await page.keyboard.press('Delete')
+  await expect(page.locator('.linkcontroller')).not.toBeVisible()
+
+  // One undo must restore the arrow; with the bug, the first undo was eaten
+  // by the duplicated empty step and a second press was required
+  await page.keyboard.press(`${modifier}+z`)
+  await expect(page.locator('svg g[data-linkid]')).toBeVisible()
+})
+
 test('Arrow label text anchor positioning', async ({ page, me }) => {
   const instanceHandle = await me.getInstance()
 
@@ -752,4 +792,111 @@ test('Undo of a control point drag keeps the arrow selected', async ({ page, me 
     linkId: instance.arrows[0].id,
   }), instanceHandle)
   expect(selected.currentArrow).toBe(selected.linkId)
+})
+
+test('Repeated link from context menu does not stack once listeners', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+  // Right-click node A → "link" → leave it pending; repeat on node B.
+  // The first pending listener must be cancelled by the second invocation,
+  // otherwise the next click creates two arrows (one from each stale origin).
+  await page.locator('[data-nodeid="meleft-child-1"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+
+  await page.locator('[data-nodeid="meright-child-2"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+
+  // Pick the target — only the latest pending link may react
+  await page.locator('[data-nodeid="meright-child-1"]').click({ force: true })
+
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(1)
+  await expect(page.locator('.tips')).toHaveCount(0)
+
+  const arrow = await page.evaluate(instance => instance.arrows[0], instanceHandle)
+  expect(arrow.from).toBe('right-child-2')
+  expect(arrow.to).toBe('right-child-1')
+
+  // The consumed listener must not linger: a later click creates nothing
+  await page.locator('[data-nodeid="meleft-child-2"]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(1)
+})
+
+test('Clicking blank space cancels the pending link', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+
+  await page.locator('[data-nodeid="meleft-child-1"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+
+  // Blank click inside the map must dismiss the tips and consume the pending link
+  await page.locator('#map').click({ position: { x: 15, y: 280 } })
+  await expect(page.locator('.tips')).toHaveCount(0)
+
+  // Pending link is gone — clicking a node afterwards must NOT create an arrow
+  await page.locator('[data-nodeid="meright-child-1"]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(0)
+
+  // Same for clicks entirely outside the container
+  await page.locator('[data-nodeid="meleft-child-2"]').click({ button: 'right', force: true })
+  await page.locator('#cm-link').click()
+  await expect(page.locator('.tips')).toBeVisible()
+  await page.mouse.click(10, 10)
+  await expect(page.locator('.tips')).toHaveCount(0)
+  await page.locator('[data-nodeid="meright-child-1"]').click({ force: true })
+  await expect(page.locator('svg g[data-linkid]')).toHaveCount(0)
+})
+
+test('Creating an arrow while another is selected does not hijack the old one', async ({ page, me }) => {
+  const instanceHandle = await me.getInstance()
+
+  await page.evaluate(instance => {
+    instance.createArrow(instance.findEle('left-child-1'), instance.findEle('right-child-1'))
+  }, instanceHandle)
+  await clickOnArrow(page, 0)
+  await expect(page.locator('.linkcontroller')).toBeVisible()
+
+  const before = await page.evaluate(instance => {
+    const group = instance.nodes.querySelector(`#a-${instance.arrows[0].id}`) as SVGGElement
+    return {
+      delta1: JSON.stringify(instance.arrows[0].delta1),
+      highlights: group.querySelectorAll('.arrow-highlight').length,
+    }
+  }, instanceHandle)
+  expect(before.highlights).toBe(1)
+
+  // A second arrow is created while the first one's controller is still up.
+  // Its helpers must be destroyed, otherwise they stay bound to P2/P3 (the one
+  // shared pair of control points) and keep driving the old arrow.
+  await page.evaluate(instance => {
+    instance.createArrow(instance.findEle('left-child-2'), instance.findEle('right-child-2'))
+  }, instanceHandle)
+
+  const afterCreate = await page.evaluate(instance => {
+    const group = instance.nodes.querySelector(`#a-${instance.arrows[0].id}`) as SVGGElement
+    return {
+      staleHighlights: group.querySelectorAll('.arrow-highlight').length,
+      delta1: JSON.stringify(instance.arrows[1].delta1),
+    }
+  }, instanceHandle)
+
+  // The old arrow is no longer the selected one — it must not look selected.
+  expect(afterCreate.staleHighlights).toBe(0)
+
+  // Dragging the new arrow's control point must leave the old arrow's data alone.
+  const p2 = page.locator('.circle').first()
+  const box = (await p2.boundingBox())!
+  await p2.hover()
+  await page.mouse.down()
+  await page.mouse.move(box.x + 60, box.y + 40)
+  await page.mouse.up()
+
+  const afterDrag = await page.evaluate(instance => JSON.stringify(instance.arrows[0].delta1), instanceHandle)
+  expect(afterDrag).toBe(before.delta1)
+
+  // One undo reverts the drag — the stale helper's `handleDragEnd` used to push
+  // an extra, empty `reshapeArrow` step that ate the first Ctrl+Z.
+  await page.keyboard.press(`${modifier}+z`)
+  const afterUndo = await page.evaluate(instance => JSON.stringify(instance.arrows[1].delta1), instanceHandle)
+  expect(afterUndo).toBe(afterCreate.delta1)
 })

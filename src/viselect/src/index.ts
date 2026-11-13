@@ -11,6 +11,7 @@ import { on, off, simplifyEvent } from './utils/events'
 import type { SelectAllSelectors } from './utils/selectAll'
 import { selectAll } from './utils/selectAll'
 import { matchesTrigger } from './utils/matchesTrigger'
+import { getTranslate } from '../../utils'
 
 // Re-export types
 export * from './types'
@@ -402,11 +403,15 @@ export default class SelectionArea extends EventTarget<SelectionEvents> {
           if (dx || dy) {
             // 使用 MindElixir 的 move 方法
             // 注意：移动方向与滚动速度相反
+            // move 会把位移钳制在边界内（可能部分生效或完全不生效），
+            // 锚点只能按实际位移修正，否则地图到边界后选择框会持续漂移
+            const before = getTranslate(mindElixirInstance.map.style.transform)
             mindElixirInstance.move(-dx, -dy)
+            const after = getTranslate(mindElixirInstance.map.style.transform)
 
             // 更新区域位置，保持选择区域的相对位置
-            _areaLocation.x1 -= dx
-            _areaLocation.y1 -= dy
+            _areaLocation.x1 += after.x - before.x
+            _areaLocation.y1 += after.y - before.y
           }
         }
 
