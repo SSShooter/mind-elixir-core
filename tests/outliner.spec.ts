@@ -221,6 +221,35 @@ test('Backspace removes a node whose topic was emptied, and never the root', asy
   expect(nodeData.children[0].children.map((c: any) => c.topic)).toEqual(['Child 2'])
 })
 
+test('Enter inside the root topic preserves the document and undo history', async ({ page, me }) => {
+  const before = await me.getData()
+  // A previous map selection must not turn the attempted split into an unrelated child.
+  await page.locator('#map .me-tpc[data-nodeid="mechild1"]').click()
+  const root = page.locator('#outline .outline-item-topic[data-item-id="root"]')
+  await root.click()
+  await page.keyboard.press('ArrowLeft')
+  await page.keyboard.press('ArrowLeft')
+  await page.keyboard.press('Enter')
+
+  await expect(root).toHaveText('root')
+  expect(await me.getData()).toEqual(before)
+  expect(await page.evaluate(() => window['#map'].historyStack.getEntries().length)).toBe(0)
+
+  await outlineTopic(page, 'Branch 1').click()
+  await page.keyboard.press(`${modifier}+z`)
+  expect(await me.getData()).toEqual(before)
+})
+
+test('Enter inside a child topic still splits it into siblings', async ({ page, me }) => {
+  await outlineTopic(page, 'Child 1').click()
+  await page.keyboard.press('ArrowLeft')
+  await page.keyboard.press('Enter')
+
+  const branch = (await me.getData()).nodeData.children[0]
+  expect(branch.children.map((child: any) => child.topic)).toEqual(['Child ', '1', 'Child 2'])
+  await expect(outlineTopic(page, '1')).toBeFocused()
+})
+
 test('Silent expandNode from map still syncs the outline', async ({ page }) => {
   const expander = page.locator('.me-tpc[data-nodeid="mebranch1"]').locator('..').locator('.me-epd')
   await expander.click()

@@ -1054,6 +1054,8 @@ export class Outliner {
       }
     } else if (e.key === 'Enter') {
       e.preventDefault()
+      // The root has no sibling, so splitting must not change its topic either.
+      if (this.isRoot(id)) return
       if (e.shiftKey) {
         this.applyOperation({ type: 'addSiblingBefore', id })
         return
