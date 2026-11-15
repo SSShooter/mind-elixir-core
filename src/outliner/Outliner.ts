@@ -1067,6 +1067,8 @@ export class Outliner {
       }
     } else if (e.key === 'Enter') {
       e.preventDefault()
+      // The root has no sibling, so splitting must not change its topic either.
+      if (this.isRoot(id)) return
       if (e.shiftKey) {
         this.applyOperation({ type: 'addSiblingBefore', id })
         return
@@ -1092,6 +1094,8 @@ export class Outliner {
         if (!meiEl) return
         const newId = generateUUID()
         const item = this.byId(id)
+        // The sibling insertion sync must flush the split prefix, not the old full text.
+        el.textContent = textBefore
         if (textBefore !== (item?.topic ?? '')) this.setNodeTopicBound(id, textBefore)
         this.mei.insertSibling('after', meiEl, { id: newId, topic: textAfter, children: [] })
         this.focusItem(newId)
