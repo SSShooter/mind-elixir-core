@@ -87,6 +87,14 @@ export class MindElixirFixture {
     await element.click({ force: true })
   }
   async click(topic: string) {
+    // `scrollIntoView` pans the canvas with a 0.3s transition. A force click
+    // skips Playwright's stability wait, so it can compute the box mid-pan and
+    // land outside the container. Wait for the inline transition to clear.
+    await this.page.waitForFunction(() =>
+      Array.from(document.querySelectorAll('.map-canvas')).every(
+        el => (el as HTMLElement).style.transition !== 'transform 0.3s'
+      )
+    )
     await this.page.getByText(topic, { exact: true }).click({
       force: true,
     })
