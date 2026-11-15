@@ -20,14 +20,25 @@ class PtTree {
 }
 
 /**
+ * Escape a topic so it survives the line-based format:
+ * - `\` and line breaks have syntactic meaning (escape sequences / record separator)
+ * - a leading `>` or `}` would turn the whole line into an arrow or summary record
+ *
+ * The leading marker is escaped last, otherwise the backslash added here would
+ * itself be doubled by the first replacement.
+ */
+export const escapeTopic = (topic: string): string =>
+  topic
+    .replace(/\\/g, '\\\\')
+    .replace(/\r?\n/g, '\\n')
+    .replace(/^(\s*)([>}])/, '$1\\$2')
+
+/**
  * Convert MindElixirData back to plaintext format
  *
  * @param data - The MindElixirData object to convert
  * @returns Plaintext string
  */
-/** Escape `\` and line breaks so a topic survives the line-based format. */
-export const escapeTopic = (topic: string): string => topic.replace(/\\/g, '\\\\').replace(/\r?\n/g, '\\n')
-
 export function mindElixirToPlaintext(data: MindElixirData): string {
   const { nodeData, arrows = [], summaries = [] } = data
 

@@ -13,17 +13,14 @@ export interface ArrowPlaintextMeta {
 }
 
 interface ParseContext {
-  arrowLines: { content: string; parentId: string | null; index: number }[]
+  arrowLines: { arrow: Arrow; parentId: string | null; index: number }[]
   nodeIdMap: Map<string, string> // maps [^id] to actual node id
 }
 
-interface ParsedLine {
-  type: 'node' | 'arrow' | 'summary'
-  topic: string
-  content: string
-  refId?: string
-  style?: NodeObj['style']
-}
+type ParsedLine =
+  | { type: 'arrow'; arrow: Arrow }
+  | { type: 'summary'; content: string }
+  | { type: 'node'; topic: string; refId?: string; style?: NodeObj['style'] }
 
 export const plaintextExample = `- Root Node
   - Child Node 1
@@ -105,7 +102,7 @@ export function plaintextToMindElixir(plaintext: string, rootName = 'Root'): Min
 
     if (parsed.type === 'arrow') {
       context.arrowLines.push({
-        content: parsed.content,
+        arrow: parsed.arrow,
         parentId: parent?.id ?? null,
         index: parentChildren.length,
       })
@@ -158,15 +155,13 @@ export function plaintextToMindElixir(plaintext: string, rootName = 'Root'): Min
   }
 
   // Process arrows (deferred because they depend on nodeIdMap which is built during the pass)
-  const arrows = context.arrowLines
-    .map(({ content, parentId, index }) => {
-      const arrow = parseArrow(content, context)
-      if (arrow) {
-        arrow.metadata = { parentId, index } as ArrowPlaintextMeta
-      }
-      return arrow
-    })
-    .filter((a): a is Arrow => a !== null)
+  const arrows = context.arrowLines.map(({ arrow, parentId, index }) => {
+    // parseArrow keeps the raw reference ids; resolve them to real node ids now
+    arrow.from = context.nodeIdMap.get(arrow.from) ?? arrow.from
+    arrow.to = context.nodeIdMap.get(arrow.to) ?? arrow.to
+    arrow.metadata = { parentId, index } as ArrowPlaintextMeta
+    return arrow
+  })
 
   return {
     nodeData: rootNode,
@@ -194,8 +189,8 @@ function parseStyleObject(styleStr: string): NodeObj['style'] | null {
   }
 }
 
-/** Inverse of `escapeTopic`: restore escaped line breaks and backslashes. */
-const unescapeTopic = (topic: string): string => topic.replace(/\\(n|\\)/g, (_match, ch) => (ch === 'n' ? '\n' : '\\'))
+/** Inverse of `escapeTopic`: restore escaped line breaks, backslashes and structural markers. */
+const unescapeTopic = (topic: string): string => topic.replace(/\\(n|\\|>|\})/g, (_match, ch) => (ch === 'n' ? '\n' : ch))
 
 function parseLine(line: string): ParsedLine {
   const trimmed = line.trim()
@@ -204,21 +199,15 @@ function parseLine(line: string): ParsedLine {
   const content = trimmed.replace(/^-\s*/, '')
 
   // Arrow: > [^id1] <-label-> [^id2]
+  // Only a line that matches the full arrow grammar is an arrow. A topic that
+  // merely starts with `>` (e.g. "> quoted reply") must fall through and be
+  // parsed as a node instead of being silently dropped.
   if (content.startsWith('>')) {
-    return {
-      type: 'arrow',
-      topic: '',
-      content: content.substring(1).trim(),
-    }
-  }
-
-  // Summary: }:2 label or } label
-  if (content.startsWith('}')) {
-    return {
-      type: 'summary',
-      topic: '',
-      content: content.substring(1).trim(),
-    }
+    const arrow = parseArrow(content.substring(1).trim())
+    if (arrow) return { type: 'arrow', arrow }
+  } else if (content.startsWith('}')) {
+    // Summary: }:2 label or } label
+    return { type: 'summary', content: content.substring(1).trim() }
   }
 
   // Regular node: Node text [^id] {color: #hex}
@@ -252,16 +241,17 @@ function parseLine(line: string): ParsedLine {
   return {
     type: 'node',
     topic,
-    content: topic,
     refId,
     style,
   }
 }
 
-function parseArrow(content: string, context: ParseContext): Arrow | null {
+function parseArrow(content: string): Arrow | null {
   // Bidirectional: [^id1] (x,y) <-label-> (x,y) [^id2]
+  // The label keeps its raw text (including `-`) and is resolved against the
+  // surrounding ref ids, hence the greedy `[\s\S]*` instead of `[^-]*`.
   const bidirectionalMatch = content.match(
-    /\[\^([\w-]+)\](?:\s*\(([\d.-]+),([\d.-]+)\))?\s*<-([^-]*)->(?:\s*\(([\d.-]+),([\d.-]+)\))?\s*\[\^([\w-]+)\]/
+    /^\[\^([\w-]+)\](?:\s*\(([\d.-]+),([\d.-]+)\))?\s*<-([\s\S]*)->(?:\s*\(([\d.-]+),([\d.-]+)\))?\s*\[\^([\w-]+)\]$/
   )
   if (bidirectionalMatch) {
     const fromRefId = bidirectionalMatch[1]
@@ -275,8 +265,8 @@ function parseArrow(content: string, context: ParseContext): Arrow | null {
     return {
       id: generateUUID(),
       label,
-      from: context.nodeIdMap.get(fromRefId) || fromRefId,
-      to: context.nodeIdMap.get(toRefId) || toRefId,
+      from: fromRefId,
+      to: toRefId,
       delta1: d1x && d1y ? { x: Number(d1x), y: Number(d1y) } : undefined,
       delta2: d2x && d2y ? { x: Number(d2x), y: Number(d2y) } : undefined,
       bidirectional: true,
@@ -284,7 +274,9 @@ function parseArrow(content: string, context: ParseContext): Arrow | null {
   }
 
   // Forward: [^id1] (x,y) >-label-> (x,y) [^id2]
-  const forwardMatch = content.match(/\[\^([\w-]+)\](?:\s*\(([\d.-]+),([\d.-]+)\))?\s*>-([^-]*)->(?:\s*\(([\d.-]+),([\d.-]+)\))?\s*\[\^([\w-]+)\]/)
+  const forwardMatch = content.match(
+    /^\[\^([\w-]+)\](?:\s*\(([\d.-]+),([\d.-]+)\))?\s*>-([\s\S]*)->(?:\s*\(([\d.-]+),([\d.-]+)\))?\s*\[\^([\w-]+)\]$/
+  )
   if (forwardMatch) {
     const fromRefId = forwardMatch[1]
     const d1x = forwardMatch[2]
@@ -297,8 +289,8 @@ function parseArrow(content: string, context: ParseContext): Arrow | null {
     return {
       id: generateUUID(),
       label,
-      from: context.nodeIdMap.get(fromRefId) || fromRefId,
-      to: context.nodeIdMap.get(toRefId) || toRefId,
+      from: fromRefId,
+      to: toRefId,
       delta1: d1x && d1y ? { x: Number(d1x), y: Number(d1y) } : undefined,
       delta2: d2x && d2y ? { x: Number(d2x), y: Number(d2y) } : undefined,
     } as Arrow

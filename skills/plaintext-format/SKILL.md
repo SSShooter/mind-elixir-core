@@ -28,6 +28,18 @@ The plaintext format uses indentation-based syntax similar to Markdown lists. Ea
 - Each child is indented by 2 spaces relative to its parent
 - Each node line starts with `-` followed by a space and the topic text
 
+### Escaping
+
+A topic that starts with `>` or `}` would be read as a link or summary line. Escape the leading character with a backslash:
+
+```text
+- Root
+  - \> quoted reply
+  - \} closing brace
+```
+
+Backslashes (`\\`) and line breaks (`\n`) inside a topic are escaped the same way when exporting, and restored on import.
+
 ## 2. Advanced Features
 
 ### 2.1 Node References (IDs)

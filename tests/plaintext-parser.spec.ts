@@ -73,3 +73,38 @@ test('Backslashes are not swallowed by the escaping', () => {
   const result = plaintextToMindElixir(plaintext)
   expect(result.nodeData.children?.map(c => c.topic)).toEqual(['path\\to\\file', 'tail\nslash'])
 })
+
+test('Topics starting with > or } and arrow labels containing - survive the round-trip', () => {
+  const data = {
+    nodeData: {
+      id: 'r',
+      topic: 'Root',
+      children: [
+        { id: 'a', topic: '> quoted reply', children: [{ id: 'a1', topic: 'sub' }] },
+        { id: 'b', topic: '} closing brace' },
+        { id: 'c', topic: 'next' },
+      ],
+    },
+    arrows: [
+      { id: 'x', label: 'follow-up', from: 'a', to: 'c' },
+      { id: 'y', label: 'A->B', from: 'a', to: 'b', bidirectional: true },
+    ],
+  }
+
+  const text = mindElixirToPlaintext(data as any)
+  const back = plaintextToMindElixir(text)
+
+  expect(back.nodeData.children?.map(n => n.topic)).toEqual(['> quoted reply', '} closing brace', 'next'])
+  expect(back.nodeData.children?.[0].children?.map(n => n.topic)).toEqual(['sub'])
+  expect(back.summaries).toBeUndefined()
+  expect(back.arrows?.map(a => a.label)).toEqual(['follow-up', 'A->B'])
+
+  // Writing the parsed data back must reproduce the exact same plaintext
+  expect(mindElixirToPlaintext(back)).toBe(text)
+})
+
+test('An arrow-like line that does not match the arrow grammar is kept as a node', () => {
+  const result = plaintextToMindElixir(['- root', '  - > not an arrow'].join('\n'))
+  expect(result.nodeData.children?.map(n => n.topic)).toEqual(['> not an arrow'])
+  expect(result.arrows).toBeUndefined()
+})
