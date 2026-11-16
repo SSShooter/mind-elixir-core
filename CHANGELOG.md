@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.0.2 - 2026-11-16
+
+### Bug Fixes
+
+- **outliner**: Pressing `Enter` on the root topic no longer modifies the root topic or adds an undo step.
+- **outliner**: Splitting a topic with `Enter` now correctly preserves the split prefix before the cursor instead of reverting to the old text during sync.
+- Plaintext export now escapes leading `>` and `}` in node topics to prevent them from being imported as arrows or summaries, and non-arrow lines starting with `>` are preserved as topics.
+
 ## 6.0.1 - 2026-11-13
 
 ### Features
