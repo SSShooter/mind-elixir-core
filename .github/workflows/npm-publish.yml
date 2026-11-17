@@ -1,5 +1,5 @@
 # Manually triggered release pipeline:
-# build -> create tag + GitHub release (with changelog section) -> publish to npm -> sync API docs
+# build -> publish to npm -> create tag + GitHub release (with changelog section) -> sync API docs
 name: Release
 
 on:
@@ -59,16 +59,6 @@ jobs:
           echo "--- release notes ---"
           cat release_notes.md
 
-      - name: Create tag and GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION="${{ steps.version.outputs.version }}"
-          gh release create "v$VERSION" \
-            --target "$GITHUB_SHA" \
-            --title "v$VERSION" \
-            --notes-file release_notes.md
-
       - name: Determine npm dist-tag
         id: disttag
         run: |
@@ -82,7 +72,18 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "Publishing $VERSION with dist-tag: $TAG"
 
+      # Publish before tagging so a failed publish never leaves a tag behind.
       - run: NODE_AUTH_TOKEN="" npm publish --tag ${{ steps.disttag.outputs.tag }}
+
+      - name: Create tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          gh release create "v$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "v$VERSION" \
+            --notes-file release_notes.md
 
       - name: Checkout docs repository
         uses: actions/checkout@v3
