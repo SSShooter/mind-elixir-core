@@ -178,6 +178,99 @@ export function selectText(div: HTMLElement) {
   }
 }
 
+/**
+ * IME-guarded commit/cancel keymap for the inline editor. Internal — wired by
+ * {@link openInlineEditor}.
+ *
+ * IME guard: Safari fires compositionend BEFORE the Enter/Esc that confirms the
+ * IME candidate, so those keydowns arrive with `isComposing === false`. A
+ * `compositionJustEnded` flag — set on compositionend, cleared by a 0 ms timer —
+ * swallows Enter/Esc until the end of that task, so confirming a candidate
+ * never closes the editor; any keydown in a LATER task is an ordinary command.
+ * Only Enter/Esc are swallowed there — those are the keys that can dismiss the
+ * candidate window — so a late timer can never eat an ordinary keystroke.
+ * `isComposing` + keyCode 229 cover the keydowns fired DURING a composition
+ * (both engines report them). Same pattern as Outliner's `compositionJustEnded`.
+ *
+ * Behavior: Enter/Tab commit (blur + refocus the map container; Shift+Enter
+ * keeps the wrap). Escape cancels — the editor text is reset to `original`
+ * before blur, so the caller's commit policy sees unchanged input and reverts.
+ */
+const bindEditorKeydown = function (div: HTMLElement, container: HTMLElement, original: string) {
+  let compositionJustEnded = false
+  div.addEventListener('compositionend', () => {
+    compositionJustEnded = true
+    setTimeout(() => {
+      compositionJustEnded = false
+    }, 0)
+  })
+
+  div.addEventListener('keydown', e => {
+    e.stopPropagation()
+    if (e.isComposing || e.keyCode === 229) return
+    if (compositionJustEnded && (e.key === 'Enter' || e.key === 'Escape')) return
+
+    if (e.key === 'Enter' || e.key === 'Tab') {
+      // keep wrap for shift enter
+      if (e.shiftKey) return
+
+      e.preventDefault()
+      div.blur()
+      container.focus()
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      div.textContent = original // Discard edits — blur then reads unchanged input
+      div.blur()
+      container.focus()
+    }
+  })
+}
+
+/**
+ * Open the map's inline editor over `host`: a contenteditable div that replaces
+ * the visible content while editing. Shared mechanism of node-topic editing
+ * ({@link editTopic}) and SVG-label editing (`editSvgText`); the caller
+ * positions and styles the div and keeps the commit POLICY, this wires the
+ * shared MECHANISM:
+ *
+ * - `#input-box` identity, plaintext-only content, initial text, selection
+ * - the IME-guarded keymap (see {@link bindEditorKeydown})
+ * - `host` is hidden while editing and unhidden on blur
+ * - blur: read the trimmed content (innerText — Safari maps `<br>` to `\n`
+ *   there; read before remove, innerText degrades on detached elements), then
+ *   hand the RAW content to `onCommit`. Empty and unchanged input are NOT
+ *   filtered here: the topic editor treats both as no-ops, the label editor
+ *   treats empty as a revert.
+ */
+export const openInlineEditor = function (options: {
+  mei: MindElixir
+  editor: HTMLDivElement
+  host: HTMLElement
+  original: string
+  onCommit: (content: string) => void
+  /** Extra blur-time restore (e.g. the topic selection outline). */
+  onRestore?: () => void
+}) {
+  const { mei, editor, host, original, onCommit, onRestore } = options
+  editor.id = 'input-box'
+  editor.textContent = original
+  editor.contentEditable = 'plaintext-only'
+  editor.spellcheck = false
+  selectText(editor)
+  bindEditorKeydown(editor, mei.container, original)
+  host.style.opacity = '0'
+
+  editor.addEventListener('blur', () => {
+    // NOTE: Do not use textContent here. Safari requires innerText to properly
+    // map <br> tags to \n line breaks for editable content.
+    const content = editor.innerText?.trim() || ''
+    editor.remove()
+    host.style.opacity = '1'
+    onRestore?.()
+    onCommit(content)
+  })
+}
+
 export const editTopic = function (this: MindElixir, el: Topic) {
   console.time('editTopic')
   if (!el) return
@@ -200,10 +293,6 @@ export const editTopic = function (this: MindElixir, el: Topic) {
 
   // Insert input box into this.nodes instead of el
   this.nodes.appendChild(div)
-  div.id = 'input-box'
-  div.textContent = originalContent
-  div.contentEditable = 'plaintext-only'
-  div.spellcheck = false
   div.style.cssText = `
   left: ${offsetLeft}px;
   top: ${offsetTop}px;
@@ -216,61 +305,37 @@ export const editTopic = function (this: MindElixir, el: Topic) {
   border: ${style.border};
   border-radius:${style.borderRadius}; `
   if (this.direction === LEFT) div.style.right = '0'
-  textEl.style.opacity = '0'
   // Hide the selection outline while editing; the input box replaces it visually.
   el.style.outline = 'none'
-  selectText(div)
 
   this.bus.fire('operation', {
     name: 'beginEdit',
     target: el.nodeObj,
   })
 
-  div.addEventListener('keydown', e => {
-    e.stopPropagation()
-    if (e.isComposing) return
-    const key = e.key
-
-    if (key === 'Enter' || key === 'Tab') {
-      // keep wrap for shift enter
-      if (e.shiftKey) return
-
-      e.preventDefault()
-      div.blur()
-      this.container.focus()
-    } else if (key === 'Escape') {
-      e.preventDefault()
-      div.textContent = originalContent // Discard edits
-      div.blur()
-      this.container.focus()
-    }
-  })
-
-  div.addEventListener('blur', () => {
-    if (!div) return
-    textEl.style.opacity = '1'
-    el.style.outline = ''
-    // NOTE: Do not use textContent here. Safari requires innerText to properly map <br> tags to \n line breaks for editable content.
-    // Read before remove(): innerText degrades to textContent on detached elements and loses line breaks.
-    const inputContent = div.innerText?.trim() || ''
-    div.remove()
-    if (inputContent === originalContent || inputContent === '') return
-
-    // Update topic content
-    node.topic = inputContent
-
-    if (this.markdown) {
-      el.text.innerHTML = this.markdown(node.topic, node)
-    } else {
-      el.text.textContent = inputContent
-    }
-
-    this.linkDiv()
-    this.bus.fire('operation', {
-      name: 'finishEdit',
-      target: node,
-      origin: originalContent,
-    })
+  openInlineEditor({
+    mei: this,
+    editor: div,
+    host: textEl,
+    original: originalContent,
+    onRestore: () => {
+      el.style.outline = ''
+    },
+    onCommit: content => {
+      if (content === originalContent || content === '') return
+      node.topic = content
+      if (this.markdown) {
+        el.text.innerHTML = this.markdown(node.topic, node)
+      } else {
+        el.text.textContent = content
+      }
+      this.linkDiv()
+      this.bus.fire('operation', {
+        name: 'finishEdit',
+        target: node,
+        origin: originalContent,
+      })
+    },
   })
   console.timeEnd('editTopic')
 }

@@ -171,6 +171,23 @@ test('Edit summary text', async ({ page, me }) => {
   await expect(page.locator('.svg-label[data-type="summary"]').first()).toHaveText('Updated Summary')
 })
 
+test('ESC cancels summary label edit and reverts to original', async ({ page, me }) => {
+  // Create a summary first — it automatically enters edit mode
+  await me.click('Left Child 1')
+  await page.getByText('Left Child 1', { exact: true }).click({ button: 'right', force: true })
+  await page.locator('#cm-summary').click()
+  await expect(page.locator('#input-box')).toBeVisible()
+
+  // Type a new label, then cancel with Escape
+  await page.keyboard.press(`${modifier}+a`)
+  await page.keyboard.insertText('Discarded Label')
+  await page.keyboard.press('Escape')
+
+  // Editor closes and the label reverts to the default
+  await expect(page.locator('#input-box')).toBeHidden()
+  await expect(page.locator('.svg-label[data-type="summary"]').first()).toHaveText('summary')
+})
+
 test('Remove summary', async ({ page, me }) => {
   // Create a summary first
   await me.click('Left Child 1')

@@ -3,7 +3,7 @@ import { setAttributes } from '.'
 import type { Arrow } from '../arrow'
 import type { Summary } from '../summary'
 import type { ArrowSvg } from '../types/dom'
-import { selectText } from './dom'
+import { openInlineEditor } from './dom'
 
 export const svgNS = 'http://www.w3.org/2000/svg'
 
@@ -187,67 +187,46 @@ export const editSvgText = function (mei: MindElixir, textEl: HTMLDivElement, no
 
   // textEl is now a div element directly
   const origin = node.label
-  textEl.style.opacity = '0'
   const div = textEl.cloneNode(true) as HTMLDivElement
   mei.nodes.appendChild(div)
-  div.id = 'input-box'
-  div.textContent = origin
-  div.contentEditable = 'plaintext-only'
-  div.spellcheck = false
-
   div.style.cssText = `
     left:${textEl.style.left};
     top:${textEl.style.top}; 
     max-width: 200px;
   `
-  selectText(div)
   mei.scrollIntoView(div)
 
-  div.addEventListener('keydown', e => {
-    e.stopPropagation()
-    if (e.isComposing) return
-    const key = e.key
+  openInlineEditor({
+    mei,
+    editor: div,
+    host: textEl,
+    original: origin,
+    onCommit: text => {
+      // empty input reverts to the original label
+      node.label = text === '' ? origin : text
+      if (text === origin) return
 
-    if (key === 'Enter' || key === 'Tab') {
-      // keep wrap for shift enter
-      if (e.shiftKey) return
+      if (mei.markdown) {
+        ;(textEl as HTMLDivElement).innerHTML = mei.markdown(node.label, node as any)
+      } else {
+        textEl.textContent = node.label
+      }
+      // Recalculate position with new content while preserving existing color
+      calculatePrecisePosition(textEl)
 
-      e.preventDefault()
-      div.blur()
-      mei.container.focus()
-    }
-  })
-
-  div.addEventListener('blur', () => {
-    if (!div) return
-    // NOTE: Do not use textContent here. Safari requires innerText to properly map <br> tags to \n line breaks for editable content.
-    const text = div.innerText?.trim() || ''
-    if (text === '') node.label = origin
-    else node.label = text
-    textEl.style.opacity = '1'
-    div.remove()
-    if (text === origin) return
-
-    if (mei.markdown) {
-      ;(textEl as HTMLDivElement).innerHTML = mei.markdown(node.label, node as any)
-    } else {
-      textEl.textContent = node.label
-    }
-    // Recalculate position with new content while preserving existing color
-    calculatePrecisePosition(textEl)
-
-    if ('parent' in node) {
-      // a label size change can shift enclosing summaries, re-render all of them
-      mei.renderSummary()
-      mei.bus.fire('operation', {
-        name: 'finishEditSummary',
-        target: node,
-      })
-    } else {
-      mei.bus.fire('operation', {
-        name: 'finishEditArrowLabel',
-        target: node,
-      })
-    }
+      if ('parent' in node) {
+        // a label size change can shift enclosing summaries, re-render all of them
+        mei.renderSummary()
+        mei.bus.fire('operation', {
+          name: 'finishEditSummary',
+          target: node,
+        })
+      } else {
+        mei.bus.fire('operation', {
+          name: 'finishEditArrowLabel',
+          target: node,
+        })
+      }
+    },
   })
 }
