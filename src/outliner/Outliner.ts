@@ -175,8 +175,14 @@ export class Outliner {
     const handleOperation = (op: Operation) => {
       if (op.silent) this.scheduleSync()
     }
-    this.mei.bus.addListener('operation', handleOperation)
-    this.disposers.push(() => this.mei.bus.removeListener('operation', handleOperation))
+    // Capture the bus instance instead of reading `this.mei.bus` at teardown:
+    // `mei.destroy()` nulls that property, and a host framework may tear the
+    // Outliner down after the map (React unmounts parent effects before
+    // children). The captured emitter stays valid regardless of the map's
+    // destroy state, so this disposer never depends on the map's lifecycle.
+    const bus = this.mei.bus
+    bus.addListener('operation', handleOperation)
+    this.disposers.push(() => bus.removeListener('operation', handleOperation))
     // Undo/redo while the focus is anywhere - see the containment guard in the
     // handler for why the map's own shortcut must not be handled twice.
     document.addEventListener('keydown', this.handleGlobalKeydown)
