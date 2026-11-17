@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.0.3 - 2026-11-17
+
+### Bug Fixes
+
+- Guard Safari IME confirm keys in topic and SVG label editors; `Esc` now reverts SVG label edits.
+- Ignore clipboard cut and paste when the map is not editable.
+- Capture the event bus in the outliner disposer to avoid teardown errors after the map is destroyed.
+
 ## 6.0.2 - 2026-11-16
 
 ### Bug Fixes
