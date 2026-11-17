@@ -1,15 +1,6 @@
 import { type Page, type Locator, expect } from '@playwright/test'
 import type { MindElixirData, Options } from '../src'
 import type MindElixir from '../src'
-interface Window {
-  m: MindElixir
-  MindElixir: typeof MindElixir
-  Outliner: any
-  E: typeof MindElixir.E
-  renderMarkdown: (text: string) => string
-  [key: string]: any
-}
-declare let window: Window
 
 export class MindElixirFixture {
   // private m: MindElixir

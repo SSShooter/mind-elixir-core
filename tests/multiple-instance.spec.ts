@@ -1,9 +1,4 @@
 import { test, expect } from './mind-elixir-test'
-import type MindElixir from '../src/index'
-
-declare let window: {
-  E: typeof MindElixir.E
-}
 
 const data1 = {
   nodeData: {

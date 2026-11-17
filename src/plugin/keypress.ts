@@ -377,10 +377,12 @@ export default function (mind: MindElixir, options: boolean | KeypressOptions) {
 
   mind.container.addEventListener('copy', handleSetNodesClip)
   mind.container.addEventListener('cut', (e: ClipboardEvent) => {
+    if (!mind.editable) return
     if (handleSetNodesClip(e)) handleRemove()
   })
 
   mind.container.addEventListener('paste', (e: ClipboardEvent) => {
+    if (!mind.editable) return
     const json = e.clipboardData?.getData('text/plain')
     if (json) {
       try {

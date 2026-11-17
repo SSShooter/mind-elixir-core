@@ -1,10 +1,5 @@
 import { test, expect } from './mind-elixir-test'
 
-interface Window {
-  [key: string]: any
-}
-declare let window: Window
-
 const id = 'root-id'
 const topic = 'root-topic'
 const data = {
